@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kodemy
+    driver-class-name: org.postgresql.Driver
+    username: kodemy_usr
+    password: password
+  liquibase:
+    contexts: prod
+  sql:
+    init:
+      platform: postgres
