@@ -1,4 +1,6 @@
 spring:
+  banner:
+    location: classpath:banner.txt
   liquibase:
     change-log: classpath:/db/changelog/master.xml
   jpa:
