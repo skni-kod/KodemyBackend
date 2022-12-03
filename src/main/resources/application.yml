@@ -6,8 +6,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-  profiles:
-    default: dev
   sql:
     init:
       mode: never

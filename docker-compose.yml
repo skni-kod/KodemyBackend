@@ -7,29 +7,5 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    networks:
-      - lan
-    depends_on:
-      - postgredb
-
-  postgredb:
-    image: postgres
-    container_name: kodemy_db
-    restart: always
     environment:
-      - POSTGRES_USER=kodemy_usr
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=kodemy
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgresql:/var/lib/postgresql/data
-    networks:
-      - lan
-
-networks:
-  lan:
-    driver: bridge
-
-volumes:
-  postgresql:
+      - "SPRING_PROFILES_ACTIVE=dev"
