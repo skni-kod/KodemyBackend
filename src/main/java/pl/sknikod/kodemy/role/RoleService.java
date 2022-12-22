@@ -1,10 +1,10 @@
-package pl.sknikod.kodemy.user;
+package pl.sknikod.kodemy.role;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+public class RoleService {
+    private final RoleRepository roleRepository;
 }

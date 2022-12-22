@@ -1,10 +1,10 @@
-package pl.sknikod.kodemy.user;
+package pl.sknikod.kodemy.role;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class RoleController {
+    private final RoleService roleService;
 }

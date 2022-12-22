@@ -1,8 +1,8 @@
-package pl.sknikod.kodemy.user;
+package pl.sknikod.kodemy.role;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+public interface RoleRepository extends PagingAndSortingRepository<Role, Long> {
 }

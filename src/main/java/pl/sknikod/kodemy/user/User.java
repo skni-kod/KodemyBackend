@@ -1,25 +1,42 @@
 package pl.sknikod.kodemy.user;
 
+import pl.sknikod.kodemy.role.Role;
+import pl.sknikod.kodemy.role.RoleName;
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
     private String principalId;
     private String name;
+    @Email
     private String email;
     private String photo;
     private LocalDateTime created;
     private LocalDateTime lastLogin;
     @Enumerated(EnumType.STRING)
     private UserProvider userProvider;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+    })
+    @JoinTable(
+            name = "users_role",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -85,6 +102,14 @@ public class User {
         this.userProvider = userProvider;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,6 +133,16 @@ public class User {
                 ", created=" + created +
                 ", lastLogin=" + lastLogin +
                 ", userProvider=" + userProvider +
+                ", roles=" + roles +
                 '}';
+    }
+
+    public boolean addRole(Role role) {
+        return roles.add(role);
+    }
+
+    public boolean removeRole(Role role) {
+        if (role.getName().equals(RoleName.USER)) return false;
+        return roles.remove(role);
     }
 }
