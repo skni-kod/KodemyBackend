@@ -1,0 +1,11 @@
+spring:
+  banner:
+    location: classpath:banner.txt
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+  sql:
+    init:
+      mode: never

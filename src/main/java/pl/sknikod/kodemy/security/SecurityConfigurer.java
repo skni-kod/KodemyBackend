@@ -14,6 +14,7 @@ public class SecurityConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable();
         return http.build();
     }
 }
