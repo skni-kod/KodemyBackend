@@ -8,5 +8,4 @@ public class KodemyBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KodemyBackendApplication.class, args);
 	}
-
 }
