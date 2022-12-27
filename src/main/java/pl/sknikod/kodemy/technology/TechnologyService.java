@@ -7,5 +7,4 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class TechnologyService {
     private final TechnologyRepository technologyRepository;
-
 }

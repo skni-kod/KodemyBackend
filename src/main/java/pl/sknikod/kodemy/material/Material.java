@@ -20,7 +20,6 @@ public class Material {
     private MaterialStatus status;
     private LocalDateTime createdDate;
     private boolean isActive;
-
     @ManyToMany(fetch = FetchType.EAGER,
                cascade = {
                         CascadeType.PERSIST,
@@ -31,7 +30,6 @@ public class Material {
             joinColumns =  @JoinColumn(name = "technology_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id")
     )
-
     private Set<Technology> technologies = new HashSet<>();
 
     public Long getId() {
@@ -114,6 +112,5 @@ public class Material {
         if (technologies == null)
             return false;
         return technologies.remove(technology);
-
     }
 }
