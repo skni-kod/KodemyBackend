@@ -4,13 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "type")
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private int id;
-
     private String name;
 
     public Type() {
@@ -56,5 +54,4 @@ public class Type {
                 ", name=" + name +
                 '}';
     }
-
 }
