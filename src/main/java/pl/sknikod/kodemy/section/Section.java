@@ -1,6 +1,5 @@
 package pl.sknikod.kodemy.section;
 
-import pl.sknikod.kodemy.category.Category;
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,23 +12,30 @@ public class Section {
     private long id;
     @Enumerated(EnumType.STRING)
     private SectionName name;
+
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
+
     public SectionName getName() {
         return name;
     }
+
     public Section() {
     }
+
     public Section(SectionName name) {
         this.name = name;
     }
+
     public void setName(SectionName name) {
         this.name = name;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,7 +50,7 @@ public class Section {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Section{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
