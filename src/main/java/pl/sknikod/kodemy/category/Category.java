@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 @Entity
-@Table(name = "category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
