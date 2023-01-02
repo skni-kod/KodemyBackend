@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.type;
 
+import pl.sknikod.kodemy.category.Category;
 import pl.sknikod.kodemy.material.Material;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Type {
     @Column(nullable = false)
     private int id;
     private String name;
+
     @OneToMany(mappedBy = "type")
     private Set<Material> materials = new HashSet<>();
 
@@ -40,6 +42,14 @@ public class Type {
         this.name = name;
     }
 
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+        this.materials = materials;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,6 +68,16 @@ public class Type {
         return "Type{" +
                 "id=" + id +
                 ", name=" + name +
+                ", materials=" + materials +
                 '}';
+    }
+    public boolean addMaterial(Material material){
+        return materials.add(material);
+    }
+
+    public boolean removeMaterial(Material material){
+        if (materials == null)
+            return false;
+        return materials.remove(material);
     }
 }

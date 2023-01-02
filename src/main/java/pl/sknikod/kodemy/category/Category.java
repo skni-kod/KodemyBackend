@@ -1,6 +1,8 @@
 package pl.sknikod.kodemy.category;
 
 import pl.sknikod.kodemy.material.Material;
+import pl.sknikod.kodemy.role.Role;
+import pl.sknikod.kodemy.role.RoleName;
 import pl.sknikod.kodemy.section.Section;
 
 
@@ -39,6 +41,14 @@ public class Category {
         this.name = name;
     }
 
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+        this.materials = materials;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
@@ -46,7 +56,17 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" + "id=" + id + ", name='" + name + '\'' + '}';
+        return "Category{" + "id=" + id + ", name='" + name + '\'' + ", materials=" + materials + '}';
+    }
+
+    public boolean addMaterial(Material material) {
+        return materials.add(material);
+    }
+
+    public boolean removeMaterial(Material material) {
+        if (materials == null)
+            return false;
+        return materials.remove(material);
     }
 }
 

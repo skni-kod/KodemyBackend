@@ -23,10 +23,6 @@ public class Grade {
 
     @Override
     public String toString() {
-        return "Grade{" +
-                "id=" + id +
-//                ", users='" + users + '\'' +
-//                ", materials='" + materials + '\'' +
-                '}';
+        return "Grade{" + "id=" + id + '}';
     }
 }

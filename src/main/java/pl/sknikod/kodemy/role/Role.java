@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.role;
 
+import pl.sknikod.kodemy.technology.Technology;
 import pl.sknikod.kodemy.user.User;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Role {
     private Long id;
     @Enumerated(EnumType.STRING)
     private RoleName name;
+
     @ManyToMany
     private Set<User> users = new HashSet<>();
 
@@ -41,6 +43,14 @@ public class Role {
         this.name = name;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,6 +69,17 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", name=" + name +
+                ", users=" + users +
                 '}';
+    }
+
+    public boolean addUser(User user){
+        return users.add(user);
+    }
+
+    public boolean removeUser(User user){
+        if (users == null)
+            return false;
+        return users.remove(user);
     }
 }

@@ -1,6 +1,8 @@
 package pl.sknikod.kodemy.section;
 
 import pl.sknikod.kodemy.category.Category;
+import pl.sknikod.kodemy.technology.Technology;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class Section {
     private long id;
     @Enumerated(EnumType.STRING)
     private SectionName name;
+
     @OneToMany(mappedBy = "section")
     private Set<Category> categories = new HashSet<>();
 
@@ -41,6 +44,14 @@ public class Section {
         this.name = name;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,6 +70,17 @@ public class Section {
         return "Section{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", categories='" + categories + '\'' +
                 '}';
+    }
+
+    public boolean addCategory(Category category){
+        return categories.add(category);
+    }
+
+    public boolean removeCategory(Category category){
+        if (categories == null)
+            return false;
+        return categories.remove(category);
     }
 }

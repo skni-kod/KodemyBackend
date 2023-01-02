@@ -96,6 +96,14 @@ public class Material {
         isActive = active;
     }
 
+    public Set<Technology> getTechnologies() {
+        return technologies;
+    }
+
+    public void setTechnologies(Set<Technology> technologies) {
+        this.technologies = technologies;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,6 +125,7 @@ public class Material {
                 ", status='" + status + '\'' +
                 ", createdDate=" + createdDate +
                 ", isActive=" + isActive +
+                ", technologies=" + technologies +
                 '}';
     }
 
