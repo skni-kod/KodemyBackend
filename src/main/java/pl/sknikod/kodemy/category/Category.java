@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.category;
 
+import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.section.Section;
 
 
@@ -15,9 +16,12 @@ public class Category {
     @Column(nullable = false)
     private long id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "section_id")
-    private Set<Section> sections = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Section section;
+
+    @OneToMany(mappedBy = "category")
+    private Set<Material> materials = new HashSet<>();
 
     public long getId() {
         return id;
@@ -35,14 +39,6 @@ public class Category {
         this.name = name;
     }
 
-    public void setSections(Set<Section> sections) {
-        this.sections = sections;
-    }
-
-    public Set<Section> getSection() {
-        return sections;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
@@ -50,11 +46,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" + "id=" + id + ", name='" + name + '\'' + ", sections='" + sections + '\'' + '}';
-    }
-
-    public boolean addSection(Section section) {
-        return sections.add(section);
+        return "Category{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 }
 

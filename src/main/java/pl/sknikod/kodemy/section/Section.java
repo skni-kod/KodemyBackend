@@ -1,7 +1,10 @@
 package pl.sknikod.kodemy.section;
 
+import pl.sknikod.kodemy.category.Category;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -12,6 +15,8 @@ public class Section {
     private long id;
     @Enumerated(EnumType.STRING)
     private SectionName name;
+    @OneToMany(mappedBy = "section")
+    private Set<Category> categories = new HashSet<>();
 
     public long getId() {
         return id;

@@ -1,5 +1,7 @@
 package pl.sknikod.kodemy.user;
 
+import pl.sknikod.kodemy.grade.Grade;
+import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.role.RoleName;
 
@@ -27,16 +29,21 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserProvider userProvider;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-    })
+    @ManyToMany()
     @JoinTable(
             name = "users_role",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Set<Grade> grades = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private Material material;
 
     public Long getId() {
         return id;

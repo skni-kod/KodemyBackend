@@ -1,6 +1,10 @@
 package pl.sknikod.kodemy.material;
 
+import pl.sknikod.kodemy.category.Category;
+import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.technology.Technology;
+import pl.sknikod.kodemy.type.Type;
+import pl.sknikod.kodemy.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,17 +24,29 @@ public class Material {
     private MaterialStatus status;
     private LocalDateTime createdDate;
     private boolean isActive;
-    @ManyToMany(fetch = FetchType.EAGER,
-               cascade = {
-                        CascadeType.PERSIST,
-                        CascadeType.MERGE
-    })
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToMany
     @JoinTable(
             name = "material_technology",
             joinColumns =  @JoinColumn(name = "technology_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id")
     )
     private Set<Technology> technologies = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private Type type;
+
+    @OneToMany
+    @JoinColumn(name = "material_id")
+    private Set<Grade> grades = new HashSet<>();
+
+    @OneToOne(mappedBy = "material")
+    private User user;
 
     public Long getId() {
         return id;

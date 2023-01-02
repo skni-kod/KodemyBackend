@@ -1,7 +1,11 @@
 package pl.sknikod.kodemy.type;
 
+import pl.sknikod.kodemy.material.Material;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Type {
@@ -10,6 +14,8 @@ public class Type {
     @Column(nullable = false)
     private int id;
     private String name;
+    @OneToMany(mappedBy = "type")
+    private Set<Material> materials = new HashSet<>();
 
     public Type() {
     }

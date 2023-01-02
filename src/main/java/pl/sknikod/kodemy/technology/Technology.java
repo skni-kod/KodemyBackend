@@ -1,7 +1,11 @@
 package pl.sknikod.kodemy.technology;
 
+import pl.sknikod.kodemy.material.Material;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Technology {
@@ -10,6 +14,9 @@ public class Technology {
     @Column(nullable = false)
     private Long id;
     private String name;
+
+    @ManyToMany
+    private Set<Material> materials = new HashSet<>();
 
     public Technology() {
     }
