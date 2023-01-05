@@ -1,6 +1,5 @@
 package pl.sknikod.kodemy.role;
 
-import pl.sknikod.kodemy.technology.Technology;
 import pl.sknikod.kodemy.user.User;
 
 import javax.persistence.*;

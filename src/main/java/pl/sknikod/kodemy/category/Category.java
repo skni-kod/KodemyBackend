@@ -1,10 +1,7 @@
 package pl.sknikod.kodemy.category;
 
 import pl.sknikod.kodemy.material.Material;
-import pl.sknikod.kodemy.role.Role;
-import pl.sknikod.kodemy.role.RoleName;
 import pl.sknikod.kodemy.section.Section;
-
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -19,7 +16,7 @@ public class Category {
     private long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name="category_id")
+    @JoinColumn(name="section_id")
     private Section section;
 
     @OneToMany(mappedBy = "category")

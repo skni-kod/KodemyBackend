@@ -29,23 +29,23 @@ public class Material {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "material_technology",
-            joinColumns =  @JoinColumn(name = "technology_id"),
-            inverseJoinColumns = @JoinColumn(name = "material_id")
-    )
-    private Set<Technology> technologies = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
 
-    @OneToMany
-    @JoinColumn(name = "material_id")
-    private Set<Grade> grades = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "material_technology",
+            joinColumns =  @JoinColumn(name = "material_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
+    )
+    private Set<Technology> technologies = new HashSet<>();
 
-    @OneToOne(mappedBy = "material")
+    @OneToMany(mappedBy = "material")
+    private Set<Grade> grades  = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Long getId() {
@@ -104,6 +104,14 @@ public class Material {
         this.technologies = technologies;
     }
 
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -137,5 +145,15 @@ public class Material {
         if (technologies == null)
             return false;
         return technologies.remove(technology);
+    }
+
+    public boolean addGrade(Grade grade){
+        return grades.add(grade);
+    }
+
+    public boolean removeGrade(Grade grade){
+        if (grades == null)
+            return false;
+        return grades.remove(grades);
     }
 }

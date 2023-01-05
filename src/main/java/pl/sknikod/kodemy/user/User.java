@@ -29,20 +29,18 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserProvider userProvider;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
             name = "users_role",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "user_id")
+    @OneToMany(mappedBy = "user")
     private Set<Grade> grades = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "user")
     private Material material;
 
     public Long getId() {

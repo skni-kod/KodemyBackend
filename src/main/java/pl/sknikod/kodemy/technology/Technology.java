@@ -1,6 +1,5 @@
 package pl.sknikod.kodemy.technology;
 
-import pl.sknikod.kodemy.category.Category;
 import pl.sknikod.kodemy.material.Material;
 
 import javax.persistence.*;

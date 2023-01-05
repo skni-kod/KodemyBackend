@@ -1,13 +1,11 @@
 package pl.sknikod.kodemy.section;
 
 import pl.sknikod.kodemy.category.Category;
-import pl.sknikod.kodemy.technology.Technology;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 
 @Entity
 public class Section {
