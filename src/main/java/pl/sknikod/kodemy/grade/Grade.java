@@ -1,7 +1,9 @@
 package pl.sknikod.kodemy.grade;
 
+import pl.sknikod.kodemy.material.Material;
+import pl.sknikod.kodemy.user.User;
+
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Objects;
 
 @Entity
@@ -9,57 +11,66 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private long id;
-//    @ManyToOne
-//    @JoinColumn(name = user_id)
-//    private Set<User> users = new HashSet<>();
-//    @ManyToOne
-//    @JoinColumn(name = material_id)
-//    private Set<Material> materials = new HashSet<>();
+    private Long id;
+    @Column(precision = 3, scale = 2)
+    private Double grade;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "material_id")
+    private Material material;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
-//
-//    public Set<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setMaterials(Set<Material> materials) {
-//        this.materials = materials;
-//    }
-//
-//    public Set<Material> getMaterials() {
-//        return materials;
-//    }
-//
-//    public boolean addUser(User user) {
-//        return users.add(user);
-//    }
-//
-//    public boolean addMaterial(Material material) {
-//        return materials.add(material);
-//    }
+    public Double getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Double grade) {
+        this.grade = grade;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Grade grade = (Grade) o;
+        return Objects.equals(id, grade.id) && Objects.equals(grade, grade.grade) && Objects.equals(user, grade.user);
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, grade, user);
     }
 
     @Override
     public String toString() {
         return "Grade{" +
                 "id=" + id +
-//                ", users='" + users + '\'' +
-//                ", materials='" + materials + '\'' +
+                ", value=" + grade +
                 '}';
     }
 }

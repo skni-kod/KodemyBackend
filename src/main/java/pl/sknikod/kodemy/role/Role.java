@@ -3,7 +3,9 @@ package pl.sknikod.kodemy.role;
 import pl.sknikod.kodemy.user.User;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Role {
@@ -13,6 +15,8 @@ public class Role {
     private Long id;
     @Enumerated(EnumType.STRING)
     private RoleName name;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 
     public Role() {
     }
@@ -37,6 +41,14 @@ public class Role {
         this.name = name;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,5 +68,15 @@ public class Role {
                 "id=" + id +
                 ", name=" + name +
                 '}';
+    }
+
+    public boolean addUser(User user){
+        return users.add(user);
+    }
+
+    public boolean removeUser(User user){
+        if (users == null)
+            return false;
+        return users.remove(user);
     }
 }

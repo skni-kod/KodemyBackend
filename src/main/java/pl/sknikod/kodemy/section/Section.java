@@ -1,29 +1,22 @@
 package pl.sknikod.kodemy.section;
 
-import javax.persistence.*;
-import java.util.Objects;
+import pl.sknikod.kodemy.category.Category;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private long id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private SectionName name;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public SectionName getName() {
-        return name;
-    }
+    @OneToMany(mappedBy = "section")
+    private Set<Category> categories = new HashSet<>();
 
     public Section() {
     }
@@ -32,8 +25,28 @@ public class Section {
         this.name = name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SectionName getName() {
+        return name;
+    }
+
     public void setName(SectionName name) {
         this.name = name;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     @Override
@@ -53,7 +66,17 @@ public class Section {
     public String toString() {
         return "Section{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name=" + name +
                 '}';
+    }
+
+    public boolean addCategory(Category category){
+        return categories.add(category);
+    }
+
+    public boolean removeCategory(Category category){
+        if (categories == null)
+            return false;
+        return categories.remove(category);
     }
 }

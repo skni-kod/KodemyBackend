@@ -1,7 +1,7 @@
 package pl.sknikod.kodemy.category;
 
+import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.section.Section;
-
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,17 +13,19 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private long id;
+    private Long id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "section_id")
-    private Set<Section> sections = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="section_id")
+    private Section section;
+    @OneToMany(mappedBy = "category")
+    private Set<Material> materials = new HashSet<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -35,26 +37,42 @@ public class Category {
         this.name = name;
     }
 
-    public void setSections(Set<Section> sections) {
-        this.sections = sections;
+    public Section getSection() {
+        return section;
     }
 
-    public Set<Section> getSection() {
-        return sections;
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+        this.materials = materials;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(id, category.id) && Objects.equals(name, category.name) && Objects.equals(section, category.section);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, section);
     }
 
-    @Override
-    public String toString() {
-        return "Category{" + "id=" + id + ", name='" + name + '\'' + ", sections='" + sections + '\'' + '}';
+    public boolean addMaterial(Material material) {
+        return materials.add(material);
     }
 
-    public boolean addSection(Section section) {
-        return sections.add(section);
+    public boolean removeMaterial(Material material) {
+        if (materials == null)
+            return false;
+        return materials.remove(material);
     }
 }
-

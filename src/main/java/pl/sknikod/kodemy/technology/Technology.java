@@ -1,7 +1,11 @@
 package pl.sknikod.kodemy.technology;
 
+import pl.sknikod.kodemy.material.Material;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Technology {
@@ -10,6 +14,13 @@ public class Technology {
     @Column(nullable = false)
     private Long id;
     private String name;
+    @ManyToMany
+    @JoinTable(
+            name = "technology_material",
+            joinColumns =  @JoinColumn(name = "technology_id"),
+            inverseJoinColumns = @JoinColumn(name = "material_id")
+    )
+    private Set<Material> materials = new HashSet<>();
 
     public Technology() {
     }
@@ -34,10 +45,19 @@ public class Technology {
         this.name = name;
     }
 
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+        this.materials = materials;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Technology that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        Technology that = (Technology) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
@@ -52,5 +72,15 @@ public class Technology {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public boolean addMaterial(Material material){
+        return materials.add(material);
+    }
+
+    public boolean removeMaterial(Material material){
+        if (materials == null)
+            return false;
+        return materials.remove(material);
     }
 }
