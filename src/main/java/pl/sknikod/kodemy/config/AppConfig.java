@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        SecurityConfig.class
+        SecurityConfig.class,
+        H2Config.class
 })
 public class AppConfig {
 }
