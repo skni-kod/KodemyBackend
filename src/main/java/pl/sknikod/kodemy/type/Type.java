@@ -14,7 +14,6 @@ public class Type {
     @Column(nullable = false)
     private int id;
     private String name;
-
     @OneToMany(mappedBy = "type")
     private Set<Material> materials = new HashSet<>();
 
@@ -54,7 +53,7 @@ public class Type {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Type type = (Type) o;
-        return Objects.equals(id, type.id) && name == type.name;
+        return id == type.id && Objects.equals(name, type.name);
     }
 
     @Override
@@ -66,10 +65,10 @@ public class Type {
     public String toString() {
         return "Type{" +
                 "id=" + id +
-                ", name=" + name +
-                ", materials=" + materials +
+                ", name='" + name + '\'' +
                 '}';
     }
+
     public boolean addMaterial(Material material){
         return materials.add(material);
     }

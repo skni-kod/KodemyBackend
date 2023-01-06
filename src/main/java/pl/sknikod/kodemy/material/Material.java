@@ -24,26 +24,16 @@ public class Material {
     private MaterialStatus status;
     private LocalDateTime createdDate;
     private boolean isActive;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
-
-    @ManyToMany
-    @JoinTable(
-            name = "material_technology",
-            joinColumns =  @JoinColumn(name = "material_id"),
-            inverseJoinColumns = @JoinColumn(name = "technology_id")
-    )
+    @ManyToMany(mappedBy = "materials")
     private Set<Technology> technologies = new HashSet<>();
-
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades  = new HashSet<>();
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -96,6 +86,22 @@ public class Material {
         isActive = active;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public Set<Technology> getTechnologies() {
         return technologies;
     }
@@ -112,11 +118,20 @@ public class Material {
         this.grades = grades;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Material material)) return false;
-        return isActive == material.isActive && Objects.equals(id, material.id) && Objects.equals(title, material.title) && Objects.equals(description, material.description) && Objects.equals(status, material.status) && Objects.equals(createdDate, material.createdDate);
+        if (o == null || getClass() != o.getClass()) return false;
+        Material material = (Material) o;
+        return isActive == material.isActive && Objects.equals(id, material.id) && Objects.equals(title, material.title) && Objects.equals(description, material.description) && status == material.status && Objects.equals(createdDate, material.createdDate);
     }
 
     @Override
@@ -130,10 +145,9 @@ public class Material {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 ", createdDate=" + createdDate +
                 ", isActive=" + isActive +
-                ", technologies=" + technologies +
                 '}';
     }
 

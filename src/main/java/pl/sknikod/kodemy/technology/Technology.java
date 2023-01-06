@@ -14,8 +14,12 @@ public class Technology {
     @Column(nullable = false)
     private Long id;
     private String name;
-
     @ManyToMany
+    @JoinTable(
+            name = "technology_material",
+            joinColumns =  @JoinColumn(name = "technology_id"),
+            inverseJoinColumns = @JoinColumn(name = "material_id")
+    )
     private Set<Material> materials = new HashSet<>();
 
     public Technology() {
@@ -52,7 +56,8 @@ public class Technology {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Technology that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        Technology that = (Technology) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
@@ -66,7 +71,6 @@ public class Technology {
         return "Technology{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", materials='" + materials + '\'' +
                 '}';
     }
 

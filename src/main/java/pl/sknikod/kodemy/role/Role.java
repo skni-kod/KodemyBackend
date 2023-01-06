@@ -15,8 +15,7 @@ public class Role {
     private Long id;
     @Enumerated(EnumType.STRING)
     private RoleName name;
-
-    @ManyToMany
+    @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
     public Role() {
@@ -68,7 +67,6 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", name=" + name +
-                ", users=" + users +
                 '}';
     }
 

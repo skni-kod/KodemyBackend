@@ -27,8 +27,7 @@ public class User {
     private LocalDateTime created;
     private LocalDateTime lastLogin;
     @Enumerated(EnumType.STRING)
-    private UserProvider userProvider;
-
+    private UserProvider provider;
     @ManyToMany
     @JoinTable(
             name = "users_role",
@@ -36,10 +35,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-
     @OneToMany(mappedBy = "user")
     private Set<Grade> grades = new HashSet<>();
-
     @OneToOne(mappedBy = "user")
     private Material material;
 
@@ -99,12 +96,12 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
-    public UserProvider getUserProvider() {
-        return userProvider;
+    public UserProvider getProvider() {
+        return provider;
     }
 
-    public void setUserProvider(UserProvider userProvider) {
-        this.userProvider = userProvider;
+    public void setProvider(UserProvider provider) {
+        this.provider = provider;
     }
 
     public Set<Role> getRoles() {
@@ -115,17 +112,33 @@ public class User {
         this.roles = roles;
     }
 
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id.equals(user.id) && principalId.equals(user.principalId) && name.equals(user.name) && email.equals(user.email) && created.equals(user.created);
+        return id.equals(user.id) && Objects.equals(principalId, user.principalId) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(created, user.created) && Objects.equals(lastLogin, user.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, principalId, name, email, created);
+        return Objects.hash(id, principalId, name, email, created, lastLogin);
     }
 
     @Override
@@ -137,8 +150,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", created=" + created +
                 ", lastLogin=" + lastLogin +
-                ", userProvider=" + userProvider +
-                ", roles=" + roles +
+                ", provider=" + provider +
                 '}';
     }
 

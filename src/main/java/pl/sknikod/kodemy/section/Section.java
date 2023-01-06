@@ -12,30 +12,29 @@ public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private long id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private SectionName name;
-
     @OneToMany(mappedBy = "section")
     private Set<Category> categories = new HashSet<>();
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public SectionName getName() {
-        return name;
-    }
 
     public Section() {
     }
 
     public Section(SectionName name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SectionName getName() {
+        return name;
     }
 
     public void setName(SectionName name) {
@@ -67,8 +66,7 @@ public class Section {
     public String toString() {
         return "Section{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", categories='" + categories + '\'' +
+                ", name=" + name +
                 '}';
     }
 
