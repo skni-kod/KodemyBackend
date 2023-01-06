@@ -5,7 +5,7 @@ spring:
     hibernate:
       ddl-auto: validate
   liquibase:
-    change-log: classpath:/db/changelog/master.xml
+    change-log: classpath:/db/changelog/db.changelog-root.xml
   sql:
     init:
       mode: never
