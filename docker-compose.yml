@@ -3,9 +3,37 @@ version: '3'
 services:
   app:
     build: .
-    container_name: kodemy_app
+    container_name: kodemy_api_dev
     restart: unless-stopped
+    deploy:
+      mode: replicated
+      replicas: ${SPRING_APP_REPLICAS:-1}
     ports:
-      - "8080:8080"
-    environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
+      - "${SPRING_PORT}:8080"
+    env_file:
+      - .env
+    networks:
+      - lan
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    container_name: kodemy_postgres_dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgresql_dev:/var/lib/postgresql/data
+      - ./sql:/var/lib/postgresql/sql
+    networks:
+      - lan
+
+networks:
+  lan:
+    driver: bridge
+
+volumes:
+  postgresql_dev:

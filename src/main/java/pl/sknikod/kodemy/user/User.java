@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@Table(name = "users")
 public class User implements UserDetails, OAuth2User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +39,7 @@ public class User implements UserDetails, OAuth2User {
             CascadeType.PERSIST
     })
     @JoinTable(
-            name = "users_role",
+            name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -315,7 +314,7 @@ public class User implements UserDetails, OAuth2User {
             roles.add(role);
         }
 
-        public User build() {
+        public User build(){
             return new User(this);
         }
     }

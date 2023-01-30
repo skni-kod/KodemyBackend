@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password:
+  jpa:
+    database: h2
+    show-sql: true
+  liquibase:
+    contexts: dev
