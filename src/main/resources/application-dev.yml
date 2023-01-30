@@ -12,3 +12,13 @@ spring:
     user:
       name: admin
       password: admin
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: 6fbe33527fc7bce1820f
+            clientSecret: 95ba6be1aacccd5547b19248d77b28bf492bde71
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - user:email
+              - read:user
