@@ -1,34 +1,44 @@
 package pl.sknikod.kodemy.user;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.role.RoleName;
+import pl.sknikod.kodemy.user.provider.UserProvider;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails, OAuth2User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    private String principalId;
-    private String name;
+    private String username;
     @Email
     private String email;
     private String photo;
-    private LocalDateTime created;
-    private LocalDateTime lastLogin;
-    @Enumerated(EnumType.STRING)
-    private UserProvider provider;
-    @ManyToMany
+    private Boolean isExpired;
+    private Boolean isLocked;
+    private Boolean isCredentialsExpired;
+    private Boolean isEnabled;
+    @Transient
+    private Map<String, Object> attributes;
+    @OneToMany(mappedBy = "user", cascade = {
+            CascadeType.PERSIST
+    })
+    private Set<UserProvider> userProviders = new HashSet<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST
+    })
     @JoinTable(
             name = "users_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -39,6 +49,28 @@ public class User {
     private Set<Grade> grades = new HashSet<>();
     @OneToOne(mappedBy = "user")
     private Material material;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastLoginDate;
+
+    public User() {
+    }
+
+    private User(UserBuilder builder) {
+        username = builder.username;
+        email = builder.email;
+        photo = builder.photo;
+        isExpired = builder.isExpired;
+        isLocked = builder.isLocked;
+        isCredentialsExpired = builder.isCredentialsExpired;
+        isEnabled = builder.isEnabled;
+        attributes = builder.attributes;
+        userProviders = builder.userProviders;
+        roles = builder.roles;
+        createdDate = builder.createdDate;
+        lastModifiedDate = builder.lastModifiedDate;
+        lastLoginDate = builder.lastLoginDate;
+    }
 
     public Long getId() {
         return id;
@@ -48,20 +80,13 @@ public class User {
         this.id = id;
     }
 
-    public String getPrincipalId() {
-        return principalId;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public void setPrincipalId(String principalId) {
-        this.principalId = principalId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -80,28 +105,44 @@ public class User {
         this.photo = photo;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public Boolean getExpired() {
+        return isExpired;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setExpired(Boolean expired) {
+        isExpired = expired;
     }
 
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
+    public Boolean getLocked() {
+        return isLocked;
     }
 
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setLocked(Boolean locked) {
+        isLocked = locked;
     }
 
-    public UserProvider getProvider() {
-        return provider;
+    public Boolean getCredentialsExpired() {
+        return isCredentialsExpired;
     }
 
-    public void setProvider(UserProvider provider) {
-        this.provider = provider;
+    public void setCredentialsExpired(Boolean credentialsExpired) {
+        isCredentialsExpired = credentialsExpired;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public Set<UserProvider> getUserProviders() {
+        return userProviders;
+    }
+
+    public void setUserProviders(Set<UserProvider> userDetails) {
+        this.userProviders = userDetails;
     }
 
     public Set<Role> getRoles() {
@@ -128,29 +169,57 @@ public class User {
         this.material = material;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public LocalDateTime getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(LocalDateTime lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id.equals(user.id) && Objects.equals(principalId, user.principalId) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(created, user.created) && Objects.equals(lastLogin, user.lastLogin);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(photo, user.photo) && Objects.equals(isExpired, user.isExpired) && Objects.equals(isLocked, user.isLocked) && Objects.equals(isCredentialsExpired, user.isCredentialsExpired) && Objects.equals(isEnabled, user.isEnabled) && Objects.equals(createdDate, user.createdDate) && Objects.equals(lastModifiedDate, user.lastModifiedDate) && Objects.equals(lastLoginDate, user.lastLoginDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, principalId, name, email, created, lastLogin);
+        return Objects.hash(id, username, email, photo, isExpired, isLocked, isCredentialsExpired, isEnabled, createdDate, lastModifiedDate, lastLoginDate);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", principalId='" + principalId + '\'' +
-                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", created=" + created +
-                ", lastLogin=" + lastLogin +
-                ", provider=" + provider +
+                ", photo='" + photo + '\'' +
+                ", isExpired=" + isExpired +
+                ", isLocked=" + isLocked +
+                ", isCredentialsExpired=" + isCredentialsExpired +
+                ", isEnabled=" + isEnabled +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", lastLoginDate=" + lastLoginDate +
                 '}';
     }
 
@@ -161,5 +230,93 @@ public class User {
     public boolean removeRole(Role role) {
         if (role.getName().equals(RoleName.USER)) return false;
         return roles.remove(role);
+    }
+
+    @Override
+    public String getName() {
+        return username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName().toString()));
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return !isExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !isLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !isCredentialsExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public static class UserBuilder {
+        // required
+        private String username;
+        private String email;
+        private String photo;
+        private Map<String, Object> attributes;
+
+        // default
+        private Boolean isExpired;
+        private Boolean isLocked;
+        private Boolean isCredentialsExpired;
+        private Boolean isEnabled;
+        private Set<UserProvider> userProviders = new HashSet<>();
+        private Set<Role> roles = new HashSet<>();
+        private LocalDateTime createdDate;
+        private LocalDateTime lastModifiedDate;
+        private LocalDateTime lastLoginDate;
+
+        public UserBuilder(String username, String email, String photo, Map<String, Object> attributes, String principalId, UserProviderType authProvider) {
+            this.username = username;
+            this.email = email;
+            this.photo = photo;
+            this.attributes = attributes;
+
+            isExpired = isLocked = isCredentialsExpired = false;
+            isEnabled = true;
+            createdDate = lastModifiedDate = lastLoginDate = null;
+
+            UserProvider userProvider = new UserProvider();
+            userProvider.setPrincipalId(principalId);
+            userProvider.setProviderType(authProvider);
+            userProvider.setEmail(email);
+            userProvider.setPhoto(photo);
+            userProviders.add(userProvider);
+
+            Role role = new Role(RoleName.USER);
+            roles.add(role);
+        }
+
+        public User build() {
+            return new User(this);
+        }
     }
 }
