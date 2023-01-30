@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 @Configuration
 public class H2Config {
-    @Profile("dev")
+    @Profile("h2")
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2Server() throws SQLException {
         return Server.createTcpServer("-tcp");

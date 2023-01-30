@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    # PosgreSQL from .env
+    # jdbc:postgresql://localhost:POSTGRES_PORT/POSTGRES_DB
+    url: jdbc:postgresql://localhost:5432/kodemy
+    # POSTGRES_USER
+    username: kodemy_usr
+    # POSTGRES_PASSWORD
+    password: P@55w0rd!

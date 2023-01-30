@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .env
+**/application-local.yml
 
 ### STS ###
 .apt_generated
@@ -19,6 +20,7 @@ target/
 *.iws
 *.iml
 *.ipr
+hs_err_*.log
 
 ### NetBeans ###
 /nbproject/private/
