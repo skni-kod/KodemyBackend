@@ -6,9 +6,9 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="1" author="KartVen">
-        <createTable tableName="users">
+        <createTable tableName="user">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
             </column>
             <column name="username" type="VARCHAR(255)"/>
             <column name="email" type="VARCHAR(255)"/>
@@ -33,12 +33,12 @@
     </changeSet>
 
     <changeSet id="3" author="KartVen">
-        <createTable tableName="users_role">
+        <createTable tableName="user_role">
             <column name="role_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="users_role_role_fk" references="role(id)"/>
+                <constraints nullable="false" foreignKeyName="user_role_role_fk" references="role(id)"/>
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="users_role_users_fk" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="user_role_user_fk" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -92,7 +92,7 @@
                 <constraints nullable="false" foreignKeyName="material_type_fk" references="type(id)"/>
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="material_users_fk" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="material_user_fk" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -124,7 +124,7 @@
             </column>
             <column name="grade" type="DOUBLE PRECISION"/>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="grade_users_fk" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="grade_user_fk" references="user(id)"/>
             </column>
             <column name="material_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="grade_material_fk" references="material(id)"/>
@@ -133,9 +133,9 @@
     </changeSet>
 
     <changeSet id="11" author="KartVen">
-        <createTable tableName="users_provider">
+        <createTable tableName="user_provider">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users_provider"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_provider"/>
             </column>
             <column name="principal_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -146,7 +146,7 @@
             <column name="email" type="VARCHAR(255)"/>
             <column name="photo" type="VARCHAR(255)"/>
             <column name="user_id" type="BIGINT">
-                <constraints foreignKeyName="users_users_provider_fk" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="user_user_provider_fk" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
