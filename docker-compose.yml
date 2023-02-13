@@ -1,13 +1,12 @@
-version: '3'
+version: '3.7'
 
 services:
   api:
     build: .
     container_name: kodemy_api_dev
+    profiles:
+      - test
     restart: unless-stopped
-    deploy:
-      mode: replicated
-      replicas: ${SPRING_APP_REPLICAS:-1}
     ports:
       - "${SPRING_PORT}:8080"
     env_file:
