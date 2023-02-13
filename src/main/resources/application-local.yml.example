@@ -1,3 +1,5 @@
+server:
+  port: 8181
 spring:
   datasource:
     # PosgreSQL from .env
@@ -7,3 +9,7 @@ spring:
     username: kodemy_usr
     # POSTGRES_PASSWORD
     password: P@55w0rd!
+  jpa:
+    show-sql: true
+  liquibase:
+    contexts: local

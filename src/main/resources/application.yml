@@ -12,6 +12,7 @@ spring:
     database: postgresql
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
+    contexts: prod
   security:
     oauth2:
       client:
