@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface BaseCrudOperations<REQ, RES> {
     @GetMapping
-    public ResponseEntity<List<RES>> getAll();
+    public ResponseEntity<List<RES>> findAll();
 
     @GetMapping("/{id}")
-    public ResponseEntity<RES> getById(@PathVariable Long id);
+    public ResponseEntity<RES> findById(@PathVariable Long id);
 
     @PostMapping
     public ResponseEntity<RES> create(@RequestBody REQ body, HttpServletRequest request);
