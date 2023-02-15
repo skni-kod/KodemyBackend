@@ -9,6 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
@@ -24,3 +25,8 @@ spring:
             scope:
               - user:email
               - read:user
+springdoc:
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/docs.html

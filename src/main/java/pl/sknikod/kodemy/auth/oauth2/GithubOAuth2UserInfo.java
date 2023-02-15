@@ -1,7 +1,5 @@
 package pl.sknikod.kodemy.auth.oauth2;
 
-import pl.sknikod.kodemy.auth.oauth2.OAuth2UserInfo;
-
 import java.util.Map;
 
 public class GithubOAuth2UserInfo extends OAuth2UserInfo {

@@ -35,5 +35,4 @@ public class AuthAuthorizationFailureHandler extends SimpleUrlAuthenticationFail
     protected final void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         authSessionRequestRepository.removeAuthorizationSession(request, response);
     }
-
 }
