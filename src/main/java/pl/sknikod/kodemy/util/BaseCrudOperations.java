@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface BaseCrudOperations<REQ, RES> {
     @GetMapping
-    public ResponseEntity<List<RES>> findAll();
+    public ResponseEntity<List<RES>> getAll();
 
     @GetMapping("/{id}")
-    public ResponseEntity<RES> findById(@PathVariable Long id);
+    public ResponseEntity<RES> getById(@PathVariable Long id);
 
     @PostMapping
     public ResponseEntity<RES> create(@RequestBody REQ body, HttpServletRequest request);
@@ -20,5 +20,5 @@ public interface BaseCrudOperations<REQ, RES> {
     public void deleteById(@PathVariable Long id);
 
     @PutMapping("/{id}")
-    public ResponseEntity<RES> update(@PathVariable Long id,@RequestBody REQ body);
+    public ResponseEntity<RES> update(@PathVariable Long id, @RequestBody REQ body);
 }
