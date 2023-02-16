@@ -8,29 +8,33 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import pl.sknikod.kodemy.auth.AuthSessionRequestRepository;
+import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
+import pl.sknikod.kodemy.auth.AuthEntryPoint;
 import pl.sknikod.kodemy.auth.handler.AuthAuthorizationFailureHandler;
 import pl.sknikod.kodemy.auth.handler.AuthAuthorizationSuccessHandler;
+import pl.sknikod.kodemy.auth.handler.AuthLogoutSuccessHandler;
 import pl.sknikod.kodemy.auth.oauth2.OAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
-    private AuthSessionRequestRepository authSessionRequestRepository;
+    private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
+    @Autowired
+    private AuthEntryPoint authEntryPoint;
     @Autowired
     private OAuth2UserService authUserService;
     @Autowired
     private AuthAuthorizationSuccessHandler authAuthorizationSuccessHandler;
     @Autowired
     private AuthAuthorizationFailureHandler authAuthorizationFailureHandler;
+    @Autowired
+    private AuthLogoutSuccessHandler authLogoutSuccessHandler;
     public final static String AUTH_REQUEST_BASE_URI = "/api/oauth2/authorize";
     @Value("${springdoc.api-docs.path}")
     private String apiDocsPath;
     @Value("${springdoc.swagger-ui.path}")
     private String swaggerUiPath;
-    @Value("${spring.security.enabled}")
-    private boolean springSecurityEnabled;
 
     private String[] RequestGetWhitelist() {
         return new String[]{
@@ -45,7 +49,6 @@ public class SecurityConfig {
                 "/api/docs/swagger-config",
                 apiDocsPath,
                 swaggerUiPath,
-                springSecurityEnabled ? "/" : "**"
         };
     }
 
@@ -64,10 +67,15 @@ public class SecurityConfig {
         http
                 .formLogin()
                 .disable()
+                //.httpBasic()
+                //.disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(authEntryPoint)
+                .and()
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri(AUTH_REQUEST_BASE_URI)
-                .authorizationRequestRepository(authSessionRequestRepository)
+                .authorizationRequestRepository(authCookieAuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/api/oauth2/callback/**")
@@ -76,7 +84,16 @@ public class SecurityConfig {
                 .userService(authUserService)
                 .and()
                 .successHandler(authAuthorizationSuccessHandler)
-                .failureHandler(authAuthorizationFailureHandler);
+                .failureHandler(authAuthorizationFailureHandler)
+                .and()
+                .logout()
+                .logoutUrl("api/logout")
+                .logoutSuccessHandler(authLogoutSuccessHandler)
+                .invalidateHttpSession(true)
+                .deleteCookies(
+                        "JSESSIONID",
+                        AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME
+                );
         return http.build();
     }
 }

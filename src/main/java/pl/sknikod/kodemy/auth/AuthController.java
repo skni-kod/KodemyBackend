@@ -16,7 +16,7 @@ public class AuthController {
     @Hidden
     @GetMapping("/authorize/{provider}")
     @Operation(summary = "Sign in via OAuth2")
-    public void authorize(@PathVariable UserProviderType provider, @RequestParam String redirect, HttpServletRequest request) {}
+    public void authorize(@PathVariable UserProviderType provider, @RequestParam String redirect_uri, HttpServletRequest request) {}
 
     @GetMapping("/providers")
     @Operation(summary = "Get all OAuth2 providers")
