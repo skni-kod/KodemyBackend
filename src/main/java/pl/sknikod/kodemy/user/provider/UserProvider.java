@@ -1,5 +1,8 @@
 package pl.sknikod.kodemy.user.provider;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
 
@@ -7,7 +10,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "user_providers")
 public class UserProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,54 +30,6 @@ public class UserProvider {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrincipalId() {
-        return principalId;
-    }
-
-    public void setPrincipalId(String principalId) {
-        this.principalId = principalId;
-    }
-
-    public UserProviderType getProviderType() {
-        return providerType;
-    }
-
-    public void setProviderType(UserProviderType providerType) {
-        this.providerType = providerType;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     @Override
     public boolean equals(Object o) {
