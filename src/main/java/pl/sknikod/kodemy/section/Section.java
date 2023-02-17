@@ -1,8 +1,5 @@
 package pl.sknikod.kodemy.section;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import pl.sknikod.kodemy.category.Category;
 
 import javax.persistence.*;
@@ -10,11 +7,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
-@Table(name = "sections")
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +18,35 @@ public class Section {
     @OneToMany(mappedBy = "section")
     private Set<Category> categories = new HashSet<>();
 
+    public Section() {
+    }
+
     public Section(SectionName name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SectionName getName() {
+        return name;
+    }
+
+    public void setName(SectionName name) {
+        this.name = name;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     @Override

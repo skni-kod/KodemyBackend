@@ -1,8 +1,5 @@
 package pl.sknikod.kodemy.user;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +15,7 @@ import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
-@Table(name = "users")
 public class User implements UserDetails, OAuth2User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +52,9 @@ public class User implements UserDetails, OAuth2User {
     private LocalDateTime lastModifiedDate;
     private LocalDateTime lastLoginDate;
 
+    public User() {
+    }
+
     private User(UserBuilder builder) {
         username = builder.username;
         email = builder.email;
@@ -73,6 +69,127 @@ public class User implements UserDetails, OAuth2User {
         createdDate = builder.createdDate;
         lastModifiedDate = builder.lastModifiedDate;
         lastLoginDate = builder.lastLoginDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public Boolean getExpired() {
+        return isExpired;
+    }
+
+    public void setExpired(Boolean expired) {
+        isExpired = expired;
+    }
+
+    public Boolean getLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(Boolean locked) {
+        isLocked = locked;
+    }
+
+    public Boolean getCredentialsExpired() {
+        return isCredentialsExpired;
+    }
+
+    public void setCredentialsExpired(Boolean credentialsExpired) {
+        isCredentialsExpired = credentialsExpired;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public Set<UserProvider> getUserProviders() {
+        return userProviders;
+    }
+
+    public void setUserProviders(Set<UserProvider> userDetails) {
+        this.userProviders = userDetails;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public LocalDateTime getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(LocalDateTime lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
     }
 
     @Override

@@ -1,8 +1,5 @@
 package pl.sknikod.kodemy.technology;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 
 import javax.persistence.*;
@@ -10,11 +7,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
-@Table(name = "technologies")
 public class Technology {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +22,35 @@ public class Technology {
     )
     private Set<Material> materials = new HashSet<>();
 
+    public Technology() {
+    }
+
     public Technology(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+        this.materials = materials;
     }
 
     @Override
