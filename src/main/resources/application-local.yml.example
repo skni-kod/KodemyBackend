@@ -6,10 +6,8 @@ spring:
     # jdbc:postgresql://localhost:POSTGRES_PORT/POSTGRES_DB
     url: jdbc:postgresql://localhost:5432/kodemy
     # POSTGRES_USER
-    username: kodemy_usr
+    username: root
     # POSTGRES_PASSWORD
-    password: P@55w0rd!
-  jpa:
-    show-sql: true
+    password: password
   liquibase:
     contexts: local
