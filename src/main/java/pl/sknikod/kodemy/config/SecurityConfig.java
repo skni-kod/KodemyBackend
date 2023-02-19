@@ -5,29 +5,38 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
 import pl.sknikod.kodemy.auth.AuthEntryPoint;
-import pl.sknikod.kodemy.auth.handler.AuthAuthorizationFailureHandler;
-import pl.sknikod.kodemy.auth.handler.AuthAuthorizationSuccessHandler;
+import pl.sknikod.kodemy.auth.handler.AuthAccessDeniedHandler;
+import pl.sknikod.kodemy.auth.handler.AuthAuthenticationFailureHandler;
+import pl.sknikod.kodemy.auth.handler.AuthAuthenticationSuccessHandler;
 import pl.sknikod.kodemy.auth.handler.AuthLogoutSuccessHandler;
 import pl.sknikod.kodemy.auth.oauth2.OAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig {
     @Autowired
     private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
     @Autowired
-    private AuthEntryPoint authEntryPoint;
-    @Autowired
     private OAuth2UserService authUserService;
     @Autowired
-    private AuthAuthorizationSuccessHandler authAuthorizationSuccessHandler;
+    private AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
     @Autowired
-    private AuthAuthorizationFailureHandler authAuthorizationFailureHandler;
+    private AuthAuthenticationFailureHandler authAuthenticationFailureHandler;
+    @Autowired
+    private AuthEntryPoint authEntryPoint;
+    @Autowired
+    private AuthAccessDeniedHandler authAccessDeniedHandler;
     @Autowired
     private AuthLogoutSuccessHandler authLogoutSuccessHandler;
     public final static String AUTH_REQUEST_BASE_URI = "/api/oauth2/authorize";
@@ -40,6 +49,7 @@ public class SecurityConfig {
         return new String[]{
                 //Base
                 "/",
+                "/**/favicon.ico",
                 "/api",
                 "/error",
                 //Auth
@@ -55,23 +65,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
-                .csrf()
-                .disable();
-        http
+                .cors().disable()
                 .authorizeRequests(autz -> autz
                         .antMatchers(HttpMethod.GET, RequestGetWhitelist()).permitAll()
                         .anyRequest().authenticated()
-                );
-        http
-                .formLogin()
-                .disable()
-                //.httpBasic()
-                //.disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint)
-                .and()
+                )
+                .formLogin().disable()
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri(AUTH_REQUEST_BASE_URI)
@@ -83,8 +82,12 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(authUserService)
                 .and()
-                .successHandler(authAuthorizationSuccessHandler)
-                .failureHandler(authAuthorizationFailureHandler)
+                .successHandler(authAuthenticationSuccessHandler)
+                .failureHandler(authAuthenticationFailureHandler)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authEntryPoint)
+                .accessDeniedHandler(authAccessDeniedHandler)
                 .and()
                 .logout()
                 .logoutUrl("api/logout")

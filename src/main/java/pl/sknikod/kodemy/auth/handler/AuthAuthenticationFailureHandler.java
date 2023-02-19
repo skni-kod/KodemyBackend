@@ -12,14 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
+
 @Component
 @AllArgsConstructor
-public class AuthAuthorizationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        String redirect = Cookie.getCookie(request, AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME);
+        String redirect = Cookie.getCookie(request, REDIRECT_URI_COOKIE_NAME);
         if (redirect == null) redirect = "/";
         String redirectUri = UriComponentsBuilder
                 .fromUriString(redirect)

@@ -3,12 +3,13 @@ package pl.sknikod.kodemy.auth.handler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
 import pl.sknikod.kodemy.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
 
 @Component
 public class AuthLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
@@ -22,7 +23,7 @@ public class AuthLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
     private void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         Cookie.deleteCookie(request, response,
-                AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME
+                AUTHORIZATION_REQUEST_COOKIE_NAME
         );
         request.getSession().invalidate();
     }

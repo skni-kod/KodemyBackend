@@ -1,6 +1,6 @@
 package pl.sknikod.kodemy.auth.oauth2;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -8,14 +8,24 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemy.role.Role;
+import pl.sknikod.kodemy.role.RoleRepository;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
 import pl.sknikod.kodemy.user.UserRepository;
+import pl.sknikod.kodemy.provider.Provider;
+import pl.sknikod.kodemy.provider.ProviderRepository;
+
+import java.util.HashSet;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    public static final String DEFAULT_USER_ROLE_NAME = "ROLE_USER";
+    private final ProviderRepository providerRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -23,16 +33,20 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         User user;
         try {
             String registrationId = userRequest.getClientRegistration().getRegistrationId();
+            UserProviderType providerType = UserProviderType.valueOf(registrationId);
+
             OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
                     registrationId,
                     oAuth2User.getAttributes()
             );
             user = userRepository.findUserByPrincipalIdAndAuthProvider(
                     authUserInfo.getPrincipalId(),
-                    UserProviderType.valueOf(registrationId)
+                    providerType
             );
             if (user == null)
-                user = createUser(authUserInfo, UserProviderType.valueOf(registrationId));
+                user = createUser(authUserInfo, providerType);
+            else
+                user.setAttributes(authUserInfo.attributes);
             return user;
         } catch (AuthenticationException ex) {
             throw ex;
@@ -41,15 +55,26 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    private User createUser(OAuth2UserInfo authUserInfo, UserProviderType authProvider) {
-        User user = new User.UserBuilder(
+    private User createUser(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
+        Role role = roleRepository
+                .findByName(DEFAULT_USER_ROLE_NAME)
+                .orElse(roleRepository.save(
+                        new Role(DEFAULT_USER_ROLE_NAME)
+                ));
+        User user = userRepository.save(new User(
                 authUserInfo.getUsername(),
                 authUserInfo.getEmail(),
                 authUserInfo.getPhoto(),
                 authUserInfo.attributes,
+                new HashSet<>(List.of(role))
+        ));
+        providerRepository.save(new Provider(
                 authUserInfo.getPrincipalId(),
-                authProvider
-        ).build();
-        return userRepository.save(user);
+                providerType,
+                authUserInfo.getEmail(),
+                authUserInfo.getPhoto(),
+                user
+        ));
+        return user;
     }
 }
