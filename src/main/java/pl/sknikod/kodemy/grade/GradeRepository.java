@@ -1,8 +1,8 @@
 package pl.sknikod.kodemy.grade;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GradeRepository extends PagingAndSortingRepository<Grade, Long> {
+public interface GradeRepository extends JpaRepository<Grade, Long> {
 }

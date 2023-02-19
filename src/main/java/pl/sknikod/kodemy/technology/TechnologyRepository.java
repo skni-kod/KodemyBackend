@@ -1,8 +1,8 @@
 package pl.sknikod.kodemy.technology;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TechnologyRepository extends PagingAndSortingRepository<Technology, Long> {
+public interface TechnologyRepository extends JpaRepository<Technology, Long> {
 }
