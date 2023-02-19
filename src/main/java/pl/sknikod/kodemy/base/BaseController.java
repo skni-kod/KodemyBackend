@@ -42,9 +42,4 @@ public class BaseController {
     public ResponseEntity<?> getMe(Principal principal) {
         return ResponseEntity.ok("Logged in as: " + principal.getName());
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> checkAuth(){
-        return ResponseEntity.ok().build();
-    }
 }

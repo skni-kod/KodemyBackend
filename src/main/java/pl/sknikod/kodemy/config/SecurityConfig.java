@@ -9,13 +9,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
 import pl.sknikod.kodemy.auth.AuthEntryPoint;
-import pl.sknikod.kodemy.auth.handler.AuthAccessDeniedHandler;
-import pl.sknikod.kodemy.auth.handler.AuthAuthenticationFailureHandler;
-import pl.sknikod.kodemy.auth.handler.AuthAuthenticationSuccessHandler;
-import pl.sknikod.kodemy.auth.handler.AuthLogoutSuccessHandler;
+import pl.sknikod.kodemy.auth.handler.*;
 import pl.sknikod.kodemy.auth.oauth2.OAuth2UserService;
+
+import static pl.sknikod.kodemy.auth.AuthController.DEFAULT_REDIRECT_URL_AFTER_LOGOUT;
+import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +39,8 @@ public class SecurityConfig {
     @Autowired
     private AuthAccessDeniedHandler authAccessDeniedHandler;
     @Autowired
+    private AuthLogoutHandler authLogoutHandler;
+    @Autowired
     private AuthLogoutSuccessHandler authLogoutSuccessHandler;
     public final static String AUTH_REQUEST_BASE_URI = "/api/oauth2/authorize";
     @Value("${springdoc.api-docs.path}")
@@ -54,6 +57,7 @@ public class SecurityConfig {
                 "/error",
                 //Auth
                 "/api/oauth2/**",
+                "/api/logout",
                 //OpenAPI
                 "/api/swagger-ui/**",
                 "/api/docs/swagger-config",
@@ -90,12 +94,16 @@ public class SecurityConfig {
                 .accessDeniedHandler(authAccessDeniedHandler)
                 .and()
                 .logout()
-                .logoutUrl("api/logout")
+                .logoutRequestMatcher(
+                        new AntPathRequestMatcher("/api/oauth2/logout", HttpMethod.GET.name())
+                )
+                .addLogoutHandler(authLogoutHandler)
                 .logoutSuccessHandler(authLogoutSuccessHandler)
+                .logoutSuccessUrl(DEFAULT_REDIRECT_URL_AFTER_LOGOUT)
                 .invalidateHttpSession(true)
                 .deleteCookies(
                         "JSESSIONID",
-                        AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME
+                        AUTHORIZATION_REQUEST_COOKIE_NAME
                 );
         return http.build();
     }
