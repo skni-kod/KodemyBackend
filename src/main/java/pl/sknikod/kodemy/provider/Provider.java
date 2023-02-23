@@ -1,5 +1,8 @@
-package pl.sknikod.kodemy.user.provider;
+package pl.sknikod.kodemy.provider;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
 
@@ -7,8 +10,12 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-public class UserProvider {
+@Table(name = "providers")
+public class Provider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -24,59 +31,11 @@ public class UserProvider {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrincipalId() {
-        return principalId;
-    }
-
-    public void setPrincipalId(String principalId) {
-        this.principalId = principalId;
-    }
-
-    public UserProviderType getProviderType() {
-        return providerType;
-    }
-
-    public void setProviderType(UserProviderType providerType) {
-        this.providerType = providerType;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserProvider that = (UserProvider) o;
+        Provider that = (Provider) o;
         return Objects.equals(id, that.id) && Objects.equals(principalId, that.principalId) && Objects.equals(user, that.user);
     }
 
@@ -87,7 +46,7 @@ public class UserProvider {
 
     @Override
     public String toString() {
-        return "UserProvider{" +
+        return "Provider{" +
                 "id=" + id +
                 ", principalId='" + principalId + '\'' +
                 ", providerType=" + providerType +

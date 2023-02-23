@@ -6,7 +6,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="1" author="KartVen">
-        <createTable tableName="user">
+        <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
             </column>
@@ -21,60 +21,48 @@
             <column name="last_modified_date" type="DATETIME"/>
             <column name="last_login_date" type="DATETIME"/>
         </createTable>
-    </changeSet>
 
-    <changeSet id="2" author="KartVen">
-        <createTable tableName="role">
+        <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
 
-    <changeSet id="3" author="KartVen">
-        <createTable tableName="user_role">
+        <createTable tableName="users_roles">
             <column name="role_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="user_role_role_fk" references="role(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_users_roles_role" references="roles(id)"/>
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="user_role_user_fk" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_users_roles_user" references="users(id)"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="4" author="KartVen">
-        <createTable tableName="section">
+        <createTable tableName="sections">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_section"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
 
-    <changeSet id="5" author="KartVen">
-        <createTable tableName="category">
+        <createTable tableName="categories">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
             <column name="section_id" type="BIGINT">
-                <constraints foreignKeyName="category_section_fk" references="section(id)"/>
+                <constraints foreignKeyName="fk_categories_section" references="sections(id)"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="6" author="KartVen">
-        <createTable tableName="type">
+        <createTable tableName="types">
             <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_type"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
 
-    <changeSet id="7" author="KartVen">
-        <createTable tableName="material">
+        <createTable tableName="materials">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_material"/>
             </column>
@@ -86,56 +74,48 @@
                 <constraints nullable="false"/>
             </column>
             <column name="category_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="material_category_fk" references="category(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_materials_category" references="categories(id)"/>
             </column>
             <column name="type_id" type="INT">
-                <constraints nullable="false" foreignKeyName="material_type_fk" references="type(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="material_user_fk" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_materials_user" references="users(id)"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="8" author="KartVen">
-        <createTable tableName="technology">
+        <createTable tableName="technologies">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technology"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
 
-    <changeSet id="9" author="KartVen">
-        <createTable tableName="technology_material">
+        <createTable tableName="technologies_materials">
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="technology_material_material_fk" references="material(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material_fk" references="materials(id)"/>
             </column>
             <column name="technology_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="technology_material_technology_fk" references="technology(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology_fk" references="technologies(id)"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="10" author="KartVen">
-        <createTable tableName="grade">
+        <createTable tableName="grades">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grade"/>
             </column>
             <column name="grade" type="DOUBLE PRECISION"/>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="grade_user_fk" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_grades_user" references="users(id)"/>
             </column>
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="grade_material_fk" references="material(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="11" author="KartVen">
-        <createTable tableName="user_provider">
+        <createTable tableName="providers">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_provider"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_provider"/>
             </column>
             <column name="principal_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -146,7 +126,7 @@
             <column name="email" type="VARCHAR(255)"/>
             <column name="photo" type="VARCHAR(255)"/>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="user_user_provider_fk" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_providers_user" references="users(id)"/>
             </column>
         </createTable>
     </changeSet>
