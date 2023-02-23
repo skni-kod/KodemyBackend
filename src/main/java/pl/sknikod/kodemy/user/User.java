@@ -11,7 +11,7 @@ import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.role.RoleName;
-import pl.sknikod.kodemy.user.provider.UserProvider;
+import pl.sknikod.kodemy.provider.Provider;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -41,12 +41,12 @@ public class User implements UserDetails, OAuth2User {
     @OneToMany(mappedBy = "user", cascade = {
             CascadeType.PERSIST
     })
-    private Set<UserProvider> userProviders = new HashSet<>();
+    private Set<Provider> providers = new HashSet<>();
     @ManyToMany(cascade = {
             CascadeType.PERSIST
     })
     @JoinTable(
-            name = "user_role",
+            name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -68,7 +68,7 @@ public class User implements UserDetails, OAuth2User {
         isCredentialsExpired = builder.isCredentialsExpired;
         isEnabled = builder.isEnabled;
         attributes = builder.attributes;
-        userProviders = builder.userProviders;
+        providers = builder.providers;
         roles = builder.roles;
         createdDate = builder.createdDate;
         lastModifiedDate = builder.lastModifiedDate;
@@ -170,7 +170,7 @@ public class User implements UserDetails, OAuth2User {
         private Boolean isLocked;
         private Boolean isCredentialsExpired;
         private Boolean isEnabled;
-        private Set<UserProvider> userProviders = new HashSet<>();
+        private Set<Provider> providers = new HashSet<>();
         private Set<Role> roles = new HashSet<>();
         private LocalDateTime createdDate;
         private LocalDateTime lastModifiedDate;
@@ -186,12 +186,12 @@ public class User implements UserDetails, OAuth2User {
             isEnabled = true;
             createdDate = lastModifiedDate = lastLoginDate = null;
 
-            UserProvider userProvider = new UserProvider();
-            userProvider.setPrincipalId(principalId);
-            userProvider.setProviderType(authProvider);
-            userProvider.setEmail(email);
-            userProvider.setPhoto(photo);
-            userProviders.add(userProvider);
+            Provider provider = new Provider();
+            provider.setPrincipalId(principalId);
+            provider.setProviderType(authProvider);
+            provider.setEmail(email);
+            provider.setPhoto(photo);
+            providers.add(provider);
 
             Role role = new Role(RoleName.USER);
             roles.add(role);

@@ -23,7 +23,7 @@ public class Technology {
     private String name;
     @ManyToMany
     @JoinTable(
-            name = "technology_material",
+            name = "technologies_materials",
             joinColumns =  @JoinColumn(name = "technology_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id")
     )

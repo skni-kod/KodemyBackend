@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.user.provider;
+package pl.sknikod.kodemy.provider;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +14,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "user_providers")
-public class UserProvider {
+@Table(name = "providers")
+public class Provider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class UserProvider {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserProvider that = (UserProvider) o;
+        Provider that = (Provider) o;
         return Objects.equals(id, that.id) && Objects.equals(principalId, that.principalId) && Objects.equals(user, that.user);
     }
 
@@ -46,7 +46,7 @@ public class UserProvider {
 
     @Override
     public String toString() {
-        return "UserProvider{" +
+        return "Provider{" +
                 "id=" + id +
                 ", principalId='" + principalId + '\'' +
                 ", providerType=" + providerType +
