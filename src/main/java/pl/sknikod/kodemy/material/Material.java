@@ -40,7 +40,7 @@ public class Material {
     @ManyToMany(mappedBy = "materials")
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
-    private Set<Grade> grades  = new HashSet<>();
+    private Set<Grade> grades = new HashSet<>();
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -70,21 +70,21 @@ public class Material {
                 '}';
     }
 
-    public boolean addTechnology(Technology technology){
+    public boolean addTechnology(Technology technology) {
         return technologies.add(technology);
     }
 
-    public boolean removeTechnology(Technology technology){
+    public boolean removeTechnology(Technology technology) {
         if (technologies == null)
             return false;
         return technologies.remove(technology);
     }
 
-    public boolean addGrade(Grade grade){
+    public boolean addGrade(Grade grade) {
         return grades.add(grade);
     }
 
-    public boolean removeGrade(Grade grade){
+    public boolean removeGrade(Grade grade) {
         if (grades == null)
             return false;
         return grades.remove(grade);

@@ -49,11 +49,11 @@ public class Type {
                 '}';
     }
 
-    public boolean addMaterial(Material material){
+    public boolean addMaterial(Material material) {
         return materials.add(material);
     }
 
-    public boolean removeMaterial(Material material){
+    public boolean removeMaterial(Material material) {
         if (materials == null)
             return false;
         return materials.remove(material);

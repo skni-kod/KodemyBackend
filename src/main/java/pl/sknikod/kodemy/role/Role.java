@@ -50,11 +50,11 @@ public class Role {
                 '}';
     }
 
-    public boolean addUser(User user){
+    public boolean addUser(User user) {
         return users.add(user);
     }
 
-    public boolean removeUser(User user){
+    public boolean removeUser(User user) {
         if (users == null)
             return false;
         return users.remove(user);

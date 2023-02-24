@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.material.Material;
-import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.provider.Provider;
+import pl.sknikod.kodemy.role.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;

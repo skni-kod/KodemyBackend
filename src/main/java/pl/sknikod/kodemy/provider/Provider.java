@@ -31,6 +31,14 @@ public class Provider {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Provider(String principalId, UserProviderType providerType, String email, String photo, User user) {
+        this.principalId = principalId;
+        this.providerType = providerType;
+        this.email = email;
+        this.photo = photo;
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

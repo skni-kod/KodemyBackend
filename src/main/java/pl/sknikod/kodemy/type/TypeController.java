@@ -1,7 +1,7 @@
 package pl.sknikod.kodemy.type;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor

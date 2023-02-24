@@ -8,13 +8,13 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemy.provider.Provider;
+import pl.sknikod.kodemy.provider.ProviderRepository;
 import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.role.RoleRepository;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
 import pl.sknikod.kodemy.user.UserRepository;
-import pl.sknikod.kodemy.provider.Provider;
-import pl.sknikod.kodemy.provider.ProviderRepository;
 
 import java.util.HashSet;
 import java.util.List;

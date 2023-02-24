@@ -29,6 +29,7 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, redirectUriAfterLogin);
     }
+
     private void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
         authCookieAuthorizationRequestRepository.removeAuthorizationSession(request, response);

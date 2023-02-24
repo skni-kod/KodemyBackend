@@ -24,7 +24,7 @@ public class Technology {
     @ManyToMany
     @JoinTable(
             name = "technologies_materials",
-            joinColumns =  @JoinColumn(name = "technology_id"),
+            joinColumns = @JoinColumn(name = "technology_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id")
     )
     private Set<Material> materials = new HashSet<>();
@@ -54,11 +54,11 @@ public class Technology {
                 '}';
     }
 
-    public boolean addMaterial(Material material){
+    public boolean addMaterial(Material material) {
         return materials.add(material);
     }
 
-    public boolean removeMaterial(Material material){
+    public boolean removeMaterial(Material material) {
         if (materials == null)
             return false;
         return materials.remove(material);

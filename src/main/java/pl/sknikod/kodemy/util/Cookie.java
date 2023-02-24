@@ -15,8 +15,8 @@ public class Cookie {
 
     public static String getCookie(HttpServletRequest request, String name) {
         var cookies = request.getCookies();
-        if (cookies != null){
-            for (var cookie : cookies){
+        if (cookies != null) {
+            for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     return cookie.getValue();
                 }
@@ -31,8 +31,8 @@ public class Cookie {
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         var cookies = request.getCookies();
-        if (cookies != null){
-            for (var cookie : cookies){
+        if (cookies != null) {
+            for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     cookie.setValue("");
                     cookie.setPath("/");

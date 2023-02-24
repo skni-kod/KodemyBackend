@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class ForbiddenCodeException extends RuntimeException{
+public class ForbiddenCodeException extends RuntimeException {
     public ForbiddenCodeException(String message) {
         super(message);
     }
