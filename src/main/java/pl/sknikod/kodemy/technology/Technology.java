@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.technology;
 
 import pl.sknikod.kodemy.material.Material;
+import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Technology {
+public class Technology extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
