@@ -50,11 +50,11 @@ public class Section {
                 '}';
     }
 
-    public boolean addCategory(Category category){
+    public boolean addCategory(Category category) {
         return categories.add(category);
     }
 
-    public boolean removeCategory(Category category){
+    public boolean removeCategory(Category category) {
         if (categories == null)
             return false;
         return categories.remove(category);

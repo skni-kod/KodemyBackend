@@ -7,9 +7,9 @@ import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.section.Section;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.HashSet;
 
 @Getter
 @Setter
@@ -23,7 +23,7 @@ public class Category {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name="section_id")
+    @JoinColumn(name = "section_id")
     private Section section;
     @OneToMany(mappedBy = "category")
     private Set<Material> materials = new HashSet<>();

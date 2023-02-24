@@ -1,26 +1,31 @@
 package pl.sknikod.kodemy.auth;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemy.user.UserProviderType;
 
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequestMapping("/api/oauth2")
 @Tag(name = "OAuth2")
 public class AuthController {
-    @Hidden
+    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGIN = "http://localhost:8181/";
+    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGOUT = "http://localhost:8181/";
+
     @GetMapping("/authorize/{provider}")
     @Operation(summary = "Sign in via OAuth2")
-    public void authorize(@PathVariable UserProviderType provider, @RequestParam String redirect, HttpServletRequest request) {}
+    public void authorize(@PathVariable UserProviderType provider, @RequestParam String redirect_uri) {
+    }
+
+    @GetMapping("/logout")
+    @Operation(summary = "Logout")
+    public void logout(@RequestParam String redirect_uri) {
+    }
 
     @GetMapping("/providers")
     @Operation(summary = "Get all OAuth2 providers")
-    public ResponseEntity<?> getProvidersList(){
+    public ResponseEntity<?> getProvidersList() {
         return ResponseEntity.ok(UserProviderType.values());
     }
 }

@@ -20,12 +20,12 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private RoleName name;
+    @Column(unique = true)
+    private String name;
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
-    public Role(RoleName name) {
+    public Role(String name) {
         this.name = name;
     }
 
@@ -34,7 +34,7 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(id, role.id) && name == role.name;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
     }
 
     @Override
@@ -50,11 +50,11 @@ public class Role {
                 '}';
     }
 
-    public boolean addUser(User user){
+    public boolean addUser(User user) {
         return users.add(user);
     }
 
-    public boolean removeUser(User user){
+    public boolean removeUser(User user) {
         if (users == null)
             return false;
         return users.remove(user);
