@@ -1,17 +1,17 @@
 package pl.sknikod.kodemy.util;
 
-public class ExceptionRestMessage {
+public class ExceptionRestGenericMessage {
 
     private long timeStamp;
     private int status;
     private String message;
     private String description;
 
-    public ExceptionRestMessage() {
+    public ExceptionRestGenericMessage() {
 
     }
 
-    public ExceptionRestMessage(long timeStamp, int status, String message, String description) {
+    public ExceptionRestGenericMessage(long timeStamp, int status, String message, String description) {
         this.timeStamp = timeStamp;
         this.status = status;
         this.message = message;
