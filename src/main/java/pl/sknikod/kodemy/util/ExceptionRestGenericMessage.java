@@ -1,5 +1,15 @@
 package pl.sknikod.kodemy.util;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExceptionRestGenericMessage {
 
     private long timeStamp;
@@ -7,46 +17,4 @@ public class ExceptionRestGenericMessage {
     private String message;
     private String description;
 
-    public ExceptionRestGenericMessage() {
-
-    }
-
-    public ExceptionRestGenericMessage(long timeStamp, int status, String message, String description) {
-        this.timeStamp = timeStamp;
-        this.status = status;
-        this.message = message;
-        this.description = description;
-    }
-
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
