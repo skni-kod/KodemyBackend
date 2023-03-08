@@ -5,6 +5,8 @@ import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.technology.Technology;
 import pl.sknikod.kodemy.type.Type;
 import pl.sknikod.kodemy.user.User;
+import pl.sknikod.kodemy.util.Auditable;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Material {
+public class Material extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
