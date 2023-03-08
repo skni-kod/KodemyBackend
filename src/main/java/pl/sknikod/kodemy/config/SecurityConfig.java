@@ -12,8 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
 import pl.sknikod.kodemy.auth.AuthEntryPoint;
+import pl.sknikod.kodemy.auth.AuthService;
 import pl.sknikod.kodemy.auth.handler.*;
-import pl.sknikod.kodemy.auth.oauth2.OAuth2UserService;
+import pl.sknikod.kodemy.util.ExceptionRestHandler;
 
 import static pl.sknikod.kodemy.auth.AuthController.DEFAULT_REDIRECT_URL_AFTER_LOGOUT;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
@@ -29,7 +30,7 @@ public class SecurityConfig {
     @Autowired
     private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
     @Autowired
-    private OAuth2UserService authUserService;
+    private AuthService authService;
     @Autowired
     private AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
     @Autowired
@@ -47,6 +48,8 @@ public class SecurityConfig {
     private String apiDocsPath;
     @Value("${springdoc.swagger-ui.path}")
     private String swaggerUiPath;
+    @Autowired
+    private ExceptionRestHandler exceptionRestHandler;
 
     private String[] RequestGetWhitelist() {
         return new String[]{
@@ -84,7 +87,7 @@ public class SecurityConfig {
                 .baseUri("/api/oauth2/callback/**")
                 .and()
                 .userInfoEndpoint()
-                .userService(authUserService)
+                .userService(authService)
                 .and()
                 .successHandler(authAuthenticationSuccessHandler)
                 .failureHandler(authAuthenticationFailureHandler)

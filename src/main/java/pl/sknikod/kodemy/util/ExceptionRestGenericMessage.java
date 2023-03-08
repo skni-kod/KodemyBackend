@@ -16,7 +16,7 @@ public class ExceptionRestGenericMessage {
 
     private Instant timeStamp;
     private int status;
+    private String error;
     private String message;
-    private String description;
 
 }
