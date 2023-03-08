@@ -131,4 +131,13 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2" author="KartVen" labels="primary_roles_records">
+        <sql>
+            <![CDATA[
+            insert into ROLES (name)
+            values ('ROLE_USER'), ('ROLE_MODERATOR'), ('ROLE_ADMIN'), ('ROLE_SUPERADMIN');
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
