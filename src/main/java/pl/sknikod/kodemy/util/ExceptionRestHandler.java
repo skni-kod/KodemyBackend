@@ -1,65 +1,136 @@
 package pl.sknikod.kodemy.util;
 
+import lombok.NonNull;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import pl.sknikod.kodemy.exception.ForbiddenCodeException;
-import pl.sknikod.kodemy.exception.NotFoundCodeException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.sknikod.kodemy.exception.ForbiddenException;
+import pl.sknikod.kodemy.exception.NotFoundException;
 import pl.sknikod.kodemy.exception.OAuth2AuthenticationProcessingException;
-import pl.sknikod.kodemy.exception.UnauthorizedCodeException;
+import pl.sknikod.kodemy.exception.UnauthorizedException;
+
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.List;
 
 @ControllerAdvice
-public class ExceptionRestHandler {
+public class ExceptionRestHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            Exception exc, Object body, @NonNull HttpHeaders headers, @NotNull HttpStatus status, WebRequest request
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
+                status.value(),
+                "Internal Server Error",
+                exc.getMessage()
+        );
+        return new ResponseEntity<>(excMessage, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
+            HttpMediaTypeNotSupportedException exc, @NonNull HttpHeaders headers, HttpStatus status, @NonNull WebRequest request
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
+                status.value(),
+                "Unsupported Media Type",
+                exc.getMessage()
+        );
+        return new ResponseEntity<>(excMessage, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException exc, @NonNull HttpHeaders headers, HttpStatus status, @NonNull WebRequest request
+    ) {
+        BindingResult result = exc.getBindingResult();
+        List<String> errorList = result.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
+                status.value(),
+                "Method Argument Not Valid",
+                errorList.toString()
+        );
+        return new ResponseEntity<>(excMessage, status);
+    }
+
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionRestGenericMessage> handleException(Exception exc, WebRequest request) {
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(System.currentTimeMillis(),
-                HttpStatus.BAD_REQUEST.value(),
-                exc.getMessage() != null ? exc.getMessage() : HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                request.getDescription(false));
-
-        return new ResponseEntity<>(excMessage, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleAllException(
+            Exception exc
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                exc.getMessage()
+        );
+        return new ResponseEntity<>(excMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionRestGenericMessage> handleException(ForbiddenCodeException exc, WebRequest request) {
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(System.currentTimeMillis(),
+    public ResponseEntity<ExceptionRestGenericMessage> handleForbiddenException(
+            ForbiddenException exc
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
                 HttpStatus.FORBIDDEN.value(),
-                exc.getMessage() != null ? exc.getMessage() : HttpStatus.FORBIDDEN.getReasonPhrase(),
-                request.getDescription(false));
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                exc.getMessage()
+        );
 
         return new ResponseEntity<>(excMessage, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionRestGenericMessage> handleNotFoundException(NotFoundCodeException exc, WebRequest request) {
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(System.currentTimeMillis(),
+    public ResponseEntity<ExceptionRestGenericMessage> handleNotFoundException(
+            NotFoundException exc
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
                 HttpStatus.NOT_FOUND.value(),
-                exc.getMessage() != null ? exc.getMessage() : HttpStatus.NOT_FOUND.getReasonPhrase(),
-                request.getDescription(false));
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                exc.getMessage()
+        );
 
         return new ResponseEntity<>(excMessage, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionRestGenericMessage> handleException(OAuth2AuthenticationProcessingException exc, WebRequest request) {
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(System.currentTimeMillis(),
+    public ResponseEntity<ExceptionRestGenericMessage> handleOAuth2AuthenticationProcessingException(
+            OAuth2AuthenticationProcessingException exc
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                exc.getMessage() != null ? exc.getMessage() : HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                request.getDescription(false));
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                exc.getMessage()
+        );
 
         return new ResponseEntity<>(excMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionRestGenericMessage> handleUnauthorizedException(UnauthorizedCodeException exc, WebRequest request) {
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(System.currentTimeMillis(),
+    public ResponseEntity<ExceptionRestGenericMessage> handleUnauthorizedException(
+            UnauthorizedException exc
+    ) {
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
+                Instant.now(),
                 HttpStatus.UNAUTHORIZED.value(),
-                exc.getMessage() != null ? exc.getMessage() : HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                request.getDescription(false));
-
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                exc.getMessage()
+        );
         return new ResponseEntity<>(excMessage, HttpStatus.UNAUTHORIZED);
     }
 }

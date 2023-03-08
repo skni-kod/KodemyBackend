@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExceptionRestGenericMessage {
 
-    private long timeStamp;
+    private Instant timeStamp;
     private int status;
     private String message;
     private String description;
