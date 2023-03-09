@@ -51,12 +51,12 @@ public class Material extends Auditable<String>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Material material = (Material) o;
-        return isActive == material.isActive && Objects.equals(id, material.id) && Objects.equals(title, material.title) && Objects.equals(description, material.description) && status == material.status && Objects.equals(createdDate, material.createdDate);
+        return isActive == material.isActive && Objects.equals(id, material.id) && Objects.equals(title, material.title) && Objects.equals(description, material.description) && status == material.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status, createdDate, isActive);
+        return Objects.hash(id, title, description, status, isActive);
     }
 
     @Override
@@ -66,9 +66,8 @@ public class Material extends Auditable<String>{
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", createdDate=" + createdDate +
                 ", isActive=" + isActive +
-                '}';
+                "} " + super.toString();
     }
 
     public boolean addTechnology(Technology technology) {

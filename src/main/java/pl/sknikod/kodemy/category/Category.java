@@ -44,7 +44,7 @@ public class Category extends Auditable<String> {
                 ", name='" + name + '\'' +
                 ", section=" + section +
                 ", materials=" + materials +
-                '}';
+                "} " + super.toString();
     }
 
     @Override

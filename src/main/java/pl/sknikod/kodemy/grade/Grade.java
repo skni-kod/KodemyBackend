@@ -45,7 +45,7 @@ public class Grade extends Auditable<String> {
     public String toString() {
         return "Grade{" +
                 "id=" + id +
-                ", value=" + grade +
-                '}';
+                ", grade=" + grade +
+                "} " + super.toString();
     }
 }

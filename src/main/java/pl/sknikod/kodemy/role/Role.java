@@ -47,8 +47,8 @@ public class Role extends Auditable<String> {
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", name=" + name +
-                '}';
+                ", name='" + name + '\'' +
+                "} " + super.toString();
     }
 
     public boolean addUser(User user) {

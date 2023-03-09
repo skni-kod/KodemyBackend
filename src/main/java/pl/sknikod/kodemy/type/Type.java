@@ -47,7 +47,7 @@ public class Type extends Auditable<String> {
         return "Type{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                '}';
+                "} " + super.toString();
     }
 
     public boolean addMaterial(Material material) {

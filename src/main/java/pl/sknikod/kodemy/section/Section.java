@@ -48,7 +48,7 @@ public class Section extends Auditable<String> {
         return "Section{" +
                 "id=" + id +
                 ", name=" + name +
-                '}';
+                "} " + super.toString();
     }
 
     public boolean addCategory(Category category) {
