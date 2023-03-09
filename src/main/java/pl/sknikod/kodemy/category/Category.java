@@ -1,14 +1,21 @@
 package pl.sknikod.kodemy.category;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.section.Section;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.HashSet;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,42 +23,10 @@ public class Category {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name="section_id")
+    @JoinColumn(name = "section_id")
     private Section section;
     @OneToMany(mappedBy = "category")
     private Set<Material> materials = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
-
-    public Set<Material> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(Set<Material> materials) {
-        this.materials = materials;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -59,6 +34,16 @@ public class Category {
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
         return Objects.equals(id, category.id) && Objects.equals(name, category.name) && Objects.equals(section, category.section);
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", section=" + section +
+                ", materials=" + materials +
+                '}';
     }
 
     @Override

@@ -26,6 +26,7 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_dev:/var/lib/postgresql/data
+      - ./sql:/sql
     networks:
       - lan
 

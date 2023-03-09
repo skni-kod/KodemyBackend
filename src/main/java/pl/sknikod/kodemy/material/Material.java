@@ -1,5 +1,8 @@
 package pl.sknikod.kodemy.material;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.category.Category;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.technology.Technology;
@@ -14,7 +17,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "materials")
 public class Material extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,98 +42,10 @@ public class Material extends Auditable<String>{
     @ManyToMany(mappedBy = "materials")
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
-    private Set<Grade> grades  = new HashSet<>();
+    private Set<Grade> grades = new HashSet<>();
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public MaterialStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(MaterialStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public Set<Technology> getTechnologies() {
-        return technologies;
-    }
-
-    public void setTechnologies(Set<Technology> technologies) {
-        this.technologies = technologies;
-    }
-
-    public Set<Grade> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(Set<Grade> grades) {
-        this.grades = grades;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -153,23 +72,23 @@ public class Material extends Auditable<String>{
                 '}';
     }
 
-    public boolean addTechnology(Technology technology){
+    public boolean addTechnology(Technology technology) {
         return technologies.add(technology);
     }
 
-    public boolean removeTechnology(Technology technology){
+    public boolean removeTechnology(Technology technology) {
         if (technologies == null)
             return false;
         return technologies.remove(technology);
     }
 
-    public boolean addGrade(Grade grade){
+    public boolean addGrade(Grade grade) {
         return grades.add(grade);
     }
 
-    public boolean removeGrade(Grade grade){
+    public boolean removeGrade(Grade grade) {
         if (grades == null)
             return false;
-        return grades.remove(grades);
+        return grades.remove(grade);
     }
 }

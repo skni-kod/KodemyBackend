@@ -15,8 +15,8 @@ public class Cookie {
 
     public static String getCookie(HttpServletRequest request, String name) {
         var cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0){
-            for (var cookie : cookies){
+        if (cookies != null) {
+            for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     return cookie.getValue();
                 }
@@ -25,10 +25,14 @@ public class Cookie {
         return null;
     }
 
+    public static javax.servlet.http.Cookie[] getCookies(HttpServletRequest request) {
+        return request.getCookies();
+    }
+
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         var cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0){
-            for (var cookie : cookies){
+        if (cookies != null) {
+            for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     cookie.setValue("");
                     cookie.setPath("/");
@@ -36,6 +40,15 @@ public class Cookie {
                     response.addCookie(cookie);
                 }
             }
+        }
+    }
+
+    public static void clearAll(HttpServletRequest req, HttpServletResponse res) {
+        for (var cookie : req.getCookies()) {
+            String cookieName = cookie.getName();
+            var cookieToDelete = new javax.servlet.http.Cookie(cookieName, null);
+            cookieToDelete.setMaxAge(0);
+            res.addCookie(cookieToDelete);
         }
     }
 }

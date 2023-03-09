@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 
 @Repository
-public class AuthSessionRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-    public static final String REDIRECT_URI_COOKIE = "kodemy_uri";
-    public static final String AUTHORIZATION_REQUEST_COOKIE = "kodemy_sess";
+public class AuthCookieAuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+    public static final String REDIRECT_URI_COOKIE_NAME = "kodemy_uri";
+    public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "kodemy_sess";
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        var authorizationRequest = Cookie.getCookie(request, AUTHORIZATION_REQUEST_COOKIE);
+        var authorizationRequest = Cookie.getCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME);
         if (authorizationRequest != null)
             return (OAuth2AuthorizationRequest) SerializationUtils.deserialize(
                     Base64.getUrlDecoder().decode(authorizationRequest)
@@ -31,17 +31,17 @@ public class AuthSessionRequestRepository implements AuthorizationRequestReposit
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
-            Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE);
-            Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE);
+            Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);
+            Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
             return;
         }
-        String redirect = request.getParameter(REDIRECT_URI_COOKIE);
+        String redirectUriAfterLogin = request.getParameter("redirect_uri");
         String authRequestEncoded = Base64.getUrlEncoder().encodeToString(
                 SerializationUtils.serialize(authorizationRequest)
         );
-        Cookie.addCookie(response, AUTHORIZATION_REQUEST_COOKIE, authRequestEncoded, 5 * 60);
-        if (StringUtils.isNotBlank(redirect)) {
-            Cookie.addCookie(response, REDIRECT_URI_COOKIE, redirect, 5 * 60);
+        Cookie.addCookie(response, AUTHORIZATION_REQUEST_COOKIE_NAME, authRequestEncoded, 5 * 60);
+        if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
+            Cookie.addCookie(response, REDIRECT_URI_COOKIE_NAME, redirectUriAfterLogin, 5 * 60);
         }
     }
 
@@ -51,7 +51,7 @@ public class AuthSessionRequestRepository implements AuthorizationRequestReposit
     }
 
     public void removeAuthorizationSession(HttpServletRequest request, HttpServletResponse response) {
-        Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE);
-        Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE);
+        Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);
+        Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
     }
 }

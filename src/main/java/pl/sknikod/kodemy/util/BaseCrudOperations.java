@@ -6,19 +6,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@BaseApiResponses
 public interface BaseCrudOperations<REQ, RES> {
+    @BaseApiResponses.Read
     @GetMapping
-    public ResponseEntity<List<RES>> getAll();
+    ResponseEntity<List<RES>> getAll();
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RES> getById(@PathVariable Long id);
+    @BaseApiResponses.Read
+    ResponseEntity<RES> getById(@PathVariable Long id);
 
+    @BaseApiResponses.Create
     @PostMapping
-    public ResponseEntity<RES> create(@RequestBody REQ body, HttpServletRequest request);
+    ResponseEntity<RES> create(@RequestBody REQ body, HttpServletRequest request);
 
+    @BaseApiResponses.Delete
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id);
+    void deleteById(@PathVariable Long id);
 
+    @BaseApiResponses.Update
     @PutMapping("/{id}")
-    public ResponseEntity<RES> update(@PathVariable Long id, @RequestBody REQ body);
+    ResponseEntity<RES> update(@PathVariable Long id, @RequestBody REQ body);
 }

@@ -1,5 +1,8 @@
 package pl.sknikod.kodemy.role;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.user.User;
 
 import javax.persistence.*;
@@ -7,46 +10,23 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private RoleName name;
+    @Column(unique = true)
+    private String name;
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
-    public Role() {
-    }
-
-    public Role(RoleName name) {
+    public Role(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RoleName getName() {
-        return name;
-    }
-
-    public void setName(RoleName name) {
-        this.name = name;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     @Override
@@ -54,7 +34,7 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(id, role.id) && name == role.name;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
     }
 
     @Override
@@ -70,11 +50,11 @@ public class Role {
                 '}';
     }
 
-    public boolean addUser(User user){
+    public boolean addUser(User user) {
         return users.add(user);
     }
 
-    public boolean removeUser(User user){
+    public boolean removeUser(User user) {
         if (users == null)
             return false;
         return users.remove(user);

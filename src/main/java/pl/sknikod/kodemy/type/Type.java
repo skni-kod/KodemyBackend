@@ -1,5 +1,8 @@
 package pl.sknikod.kodemy.type;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 
 import javax.persistence.*;
@@ -7,7 +10,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "types")
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,35 +24,8 @@ public class Type {
     @OneToMany(mappedBy = "type")
     private Set<Material> materials = new HashSet<>();
 
-    public Type() {
-    }
-
     public Type(String name) {
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Material> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(Set<Material> materials) {
-        this.materials = materials;
     }
 
     @Override
@@ -69,11 +49,11 @@ public class Type {
                 '}';
     }
 
-    public boolean addMaterial(Material material){
+    public boolean addMaterial(Material material) {
         return materials.add(material);
     }
 
-    public boolean removeMaterial(Material material){
+    public boolean removeMaterial(Material material) {
         if (materials == null)
             return false;
         return materials.remove(material);

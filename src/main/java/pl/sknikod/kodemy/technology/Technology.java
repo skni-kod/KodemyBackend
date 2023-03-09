@@ -1,5 +1,8 @@
 package pl.sknikod.kodemy.technology;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.util.Auditable;
 
@@ -8,7 +11,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "technologies")
 public class Technology extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,41 +24,14 @@ public class Technology extends Auditable<String> {
     private String name;
     @ManyToMany
     @JoinTable(
-            name = "technology_material",
-            joinColumns =  @JoinColumn(name = "technology_id"),
+            name = "technologies_materials",
+            joinColumns = @JoinColumn(name = "technology_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id")
     )
     private Set<Material> materials = new HashSet<>();
 
-    public Technology() {
-    }
-
     public Technology(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Material> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(Set<Material> materials) {
-        this.materials = materials;
     }
 
     @Override
@@ -75,11 +55,11 @@ public class Technology extends Auditable<String> {
                 '}';
     }
 
-    public boolean addMaterial(Material material){
+    public boolean addMaterial(Material material) {
         return materials.add(material);
     }
 
-    public boolean removeMaterial(Material material){
+    public boolean removeMaterial(Material material) {
         if (materials == null)
             return false;
         return materials.remove(material);
