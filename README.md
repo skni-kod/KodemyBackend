@@ -1,6 +1,6 @@
 # KodemyBackend
 
-This is the backend for Kodemy project (SKNI Kod), written in Spring Boot and Maven
+This is the backend for Kodemy project (SKNI Kod), written in Spring Boot and Gradle
 
 ## Prerequisites
 
