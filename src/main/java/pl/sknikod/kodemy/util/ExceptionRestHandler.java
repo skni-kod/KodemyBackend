@@ -28,7 +28,6 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             InsufficientAuthenticationException.class,
-            AccessDeniedException.class,
             NotFoundException.class,
             OAuth2AuthenticationProcessingException.class
     })

@@ -51,9 +51,6 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
     private Set<Grade> grades = new HashSet<>();
     @OneToOne(mappedBy = "user")
     private Material material;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
-    private LocalDateTime lastLoginDate;
 
     public User(String username, String email, String photo, Map<String, Object> attributes, Set<Role> roles) {
         this.username = username;
@@ -63,8 +60,6 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
         this.roles = roles;
         isExpired = isLocked = isCredentialsExpired = false;
         isEnabled = true;
-        createdDate = lastModifiedDate = lastLoginDate = LocalDateTime.now();
-
     }
 
     @Override
@@ -72,12 +67,12 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(photo, user.photo) && Objects.equals(isExpired, user.isExpired) && Objects.equals(isLocked, user.isLocked) && Objects.equals(isCredentialsExpired, user.isCredentialsExpired) && Objects.equals(isEnabled, user.isEnabled) && Objects.equals(createdDate, user.createdDate) && Objects.equals(lastModifiedDate, user.lastModifiedDate) && Objects.equals(lastLoginDate, user.lastLoginDate);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(photo, user.photo) && Objects.equals(isExpired, user.isExpired) && Objects.equals(isLocked, user.isLocked) && Objects.equals(isCredentialsExpired, user.isCredentialsExpired) && Objects.equals(isEnabled, user.isEnabled);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, email, photo, isExpired, isLocked, isCredentialsExpired, isEnabled, createdDate, lastModifiedDate, lastLoginDate);
+        return Objects.hash(id, username, email, photo, isExpired, isLocked, isCredentialsExpired, isEnabled);
     }
 
     @Override
@@ -91,10 +86,7 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
                 ", isLocked=" + isLocked +
                 ", isCredentialsExpired=" + isCredentialsExpired +
                 ", isEnabled=" + isEnabled +
-                ", createdDate=" + createdDate +
-                ", lastModifiedDate=" + lastModifiedDate +
-                ", lastLoginDate=" + lastLoginDate +
-                '}';
+                "} " + super.toString();
     }
 
     public boolean addRole(Role role) {

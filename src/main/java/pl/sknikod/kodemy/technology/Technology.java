@@ -52,7 +52,7 @@ public class Technology extends Auditable<String> {
         return "Technology{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                '}';
+                "} " + super.toString();
     }
 
     public boolean addMaterial(Material material) {
