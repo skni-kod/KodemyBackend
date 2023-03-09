@@ -1,26 +1,29 @@
-version: '3'
+version: '3.7'
 
 services:
-  app:
-    environment:
-      - "SPRING_PROFILES_ACTIVE=prod"
+  api:
+    build: .
+    container_name: kodemy_api
+    restart: unless-stopped
+    ports:
+      - "${SPRING_PORT}:8080"
+    env_file:
+      - .env
     networks:
       - lan
     depends_on:
-      - postgredb
+      - postgres
 
-  postgredb:
-    image: postgres
-    container_name: kodemy_db
+  postgres:
+    image: postgres:14.1-alpine
+    container_name: kodemy_postgres_dev
     restart: always
-    environment:
-      - POSTGRES_USER=kodemy_usr
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=kodemy
+    env_file:
+      - .env
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgresql:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     networks:
       - lan
 
@@ -29,4 +32,4 @@ networks:
     driver: bridge
 
 volumes:
-  postgresql:
+  postgres:

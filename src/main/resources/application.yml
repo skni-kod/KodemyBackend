@@ -1,11 +1,32 @@
 spring:
   banner:
     location: classpath:banner.txt
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
   liquibase:
-    change-log: classpath:/db/changelog/master.xml
-  sql:
-    init:
-      mode: never
+    change-log: classpath:/db/changelog/db.changelog-root.xml
+    contexts: prod
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: 6fbe33527fc7bce1820f
+            clientSecret: 95ba6be1aacccd5547b19248d77b28bf492bde71
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - user:email
+              - read:user
+springdoc:
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/docs.html

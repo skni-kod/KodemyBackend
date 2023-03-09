@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="0001-1" author="KartVen">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="is_expired" type="BOOLEAN"/>
+            <column name="is_locked" type="BOOLEAN"/>
+            <column name="is_credentials_expired" type="BOOLEAN"/>
+            <column name="is_enabled" type="BOOLEAN"/>
+        </createTable>
+
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="users_roles">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_users_roles_role" references="roles(id)"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_users_roles_user" references="users(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="sections">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sections"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="section_id" type="BIGINT">
+                <constraints foreignKeyName="fk_categories_section" references="sections(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="types">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="materials">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_materials"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_materials_category" references="categories(id)"/>
+            </column>
+            <column name="type_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_materials_user" references="users(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="technologies">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="technologies_materials">
+            <column name="material_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material_fk" references="materials(id)"/>
+            </column>
+            <column name="technology_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology_fk" references="technologies(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="grades">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
+            </column>
+            <column name="grade" type="DOUBLE PRECISION"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_user" references="users(id)"/>
+            </column>
+            <column name="material_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="providers">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_providers"/>
+            </column>
+            <column name="principal_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_providers_user" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
+        <sql>
+            <![CDATA[
+            insert into ROLES (name)
+            values ('ROLE_USER'), ('ROLE_MODERATOR'), ('ROLE_ADMIN'), ('ROLE_SUPERADMIN');
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
