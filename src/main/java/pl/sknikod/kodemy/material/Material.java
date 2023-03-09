@@ -31,7 +31,6 @@ public class Material extends Auditable<String>{
     private String description;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
-    private LocalDateTime createdDate;
     private boolean isActive;
     @ManyToOne
     @JoinColumn(name = "category_id")

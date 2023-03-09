@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="0001-1" author="KartVen">
+        <addColumn tableName="categories">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="grades">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="materials">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="providers">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="sections">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="technologies">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="types">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="users">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+
+        <addColumn tableName="roles">
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

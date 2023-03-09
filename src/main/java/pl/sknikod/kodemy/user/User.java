@@ -11,6 +11,7 @@ import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.provider.Provider;
 import pl.sknikod.kodemy.role.Role;
+import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -22,7 +23,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails, OAuth2User {
+public class User extends Auditable<String> implements UserDetails, OAuth2User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
