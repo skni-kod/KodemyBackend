@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.section.Section;
+import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

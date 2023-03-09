@@ -8,6 +8,8 @@ import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.technology.Technology;
 import pl.sknikod.kodemy.type.Type;
 import pl.sknikod.kodemy.user.User;
+import pl.sknikod.kodemy.util.Auditable;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "materials")
-public class Material {
+public class Material extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -29,7 +31,6 @@ public class Material {
     private String description;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
-    private LocalDateTime createdDate;
     private boolean isActive;
     @ManyToOne
     @JoinColumn(name = "category_id")

@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1" author="KartVen">
+    <changeSet id="0001-1" author="KartVen">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
             </column>
             <column name="username" type="VARCHAR(255)"/>
             <column name="email" type="VARCHAR(255)"/>
@@ -17,14 +17,11 @@
             <column name="is_locked" type="BOOLEAN"/>
             <column name="is_credentials_expired" type="BOOLEAN"/>
             <column name="is_enabled" type="BOOLEAN"/>
-            <column name="created_date" type="DATETIME"/>
-            <column name="last_modified_date" type="DATETIME"/>
-            <column name="last_login_date" type="DATETIME"/>
         </createTable>
 
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
@@ -40,14 +37,14 @@
 
         <createTable tableName="sections">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_section"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sections"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
 
         <createTable tableName="categories">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
             <column name="section_id" type="BIGINT">
@@ -57,19 +54,18 @@
 
         <createTable tableName="types">
             <column autoIncrement="true" name="id" type="INT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_type"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
 
         <createTable tableName="materials">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_material"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_materials"/>
             </column>
             <column name="title" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="status" type="VARCHAR(255)"/>
-            <column name="created_date" type="DATETIME"/>
             <column name="is_active" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
@@ -86,7 +82,7 @@
 
         <createTable tableName="technologies">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technology"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
@@ -102,7 +98,7 @@
 
         <createTable tableName="grades">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grade"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
             </column>
             <column name="grade" type="DOUBLE PRECISION"/>
             <column name="user_id" type="BIGINT">
@@ -115,7 +111,7 @@
 
         <createTable tableName="providers">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_provider"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_providers"/>
             </column>
             <column name="principal_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -131,7 +127,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="KartVen" labels="primary_roles_records">
+    <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
         <sql>
             <![CDATA[
             insert into ROLES (name)

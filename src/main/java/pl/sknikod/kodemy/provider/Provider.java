@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
+import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "providers")
-public class Provider {
+public class Provider extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

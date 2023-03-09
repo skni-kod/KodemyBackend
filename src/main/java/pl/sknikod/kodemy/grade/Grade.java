@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.user.User;
+import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "grades")
-public class Grade {
+public class Grade extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
