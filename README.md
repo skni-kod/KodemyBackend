@@ -33,10 +33,10 @@ Before you can run the project, you will need the following applications:
    ```bash
    docker-compose --profile=test up -d
    ```
-   This command will run the project with profile `test` which will run Database  (PostgreSQL) and API (Spring Boot) at the same time.
+   This command will run the project with profile `test` which will run Database (PostgreSQL) and API (Spring Boot) at the same time.
 5. To run the project in development mode, set the active profiles in IntelliJ to `dev,local`.
 6. Run the project in IntelliJ IDEA.
-7. Once the project is running, you can access the API documentation (OpenAPI v3:
+7. Once the project is running, you can access the API documentation (OpenAPI v3):
 
    a. in JSON format, go to `http://localhost:8181/api/docs`,
 
