@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.auth.handler;
 
+import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static pl.sknikod.kodemy.auth.AuthController.DEFAULT_REDIRECT_URL_AFTER_LOGOUT;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
 
 @Component
@@ -21,16 +23,20 @@ public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        String redirect = Cookie.getCookie(request, REDIRECT_URI_COOKIE_NAME);
-        if (redirect == null) redirect = "/";
-        String redirectUri = UriComponentsBuilder
-                .fromUriString(redirect)
+        String redirectAfter = Option.of(request)
+                .flatMap(req -> Option.of(Cookie.getCookie(req, REDIRECT_URI_COOKIE_NAME))
+                        .orElse(Option.of(req.getHeader("Referer")))
+                )
+                .getOrElse(DEFAULT_REDIRECT_URL_AFTER_LOGOUT);
+
+        String redirectAfterUri = UriComponentsBuilder
+                .fromUriString(redirectAfter)
                 .queryParam("error", exception.getLocalizedMessage())
                 .build()
                 .toUriString();
 
         clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, redirectUri);
+        getRedirectStrategy().sendRedirect(request, response, redirectAfterUri);
     }
 
     protected final void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
