@@ -1,5 +1,7 @@
 package pl.sknikod.kodemy.auth;
 
+import io.vavr.control.Option;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -19,10 +21,7 @@ import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserProviderType;
 import pl.sknikod.kodemy.user.UserRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,24 +34,21 @@ public class AuthService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        User user;
         try {
-            String registrationId = userRequest.getClientRegistration().getRegistrationId();
-            UserProviderType providerType = UserProviderType.valueOf(registrationId);
-
+            UserProviderType providerType = Option.of(userRequest.getClientRegistration().getRegistrationId())
+                    .map(UserProviderType::valueOf)
+                    .getOrNull();
             OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
-                    registrationId,
-                    oAuth2User.getAttributes()
+                    providerType, oAuth2User.getAttributes()
             );
-            user = userRepository.findUserByPrincipalIdAndAuthProvider(
-                    authUserInfo.getPrincipalId(),
-                    providerType
-            );
-            if (user == null)
-                user = createUser(authUserInfo, providerType);
-            else
-                user.setAttributes(authUserInfo.attributes);
-            return user;
+            return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
+                            authUserInfo.getPrincipalId(), providerType
+                    ))
+                    .map(u -> {
+                        u.setAttributes(authUserInfo.attributes);
+                        return u;
+                    })
+                    .getOrElse(() -> createUser(authUserInfo, providerType));
         } catch (AuthenticationException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -61,25 +57,25 @@ public class AuthService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
-        Role role = roleRepository.findByName(DEFAULT_USER_ROLE_NAME)
-                .orElseGet(
-                        () -> roleRepository.save(new Role(DEFAULT_USER_ROLE_NAME))
-                );
-        User user = userRepository.save(new User(
-                authUserInfo.getUsername(),
-                authUserInfo.getEmail(),
-                authUserInfo.getPhoto(),
-                authUserInfo.attributes,
-                Set.of(role)
-        ));
-        providerRepository.save(new Provider(
-                authUserInfo.getPrincipalId(),
-                providerType,
-                authUserInfo.getEmail(),
-                authUserInfo.getPhoto(),
-                user
-        ));
-        return user;
+        return Try.of(() -> roleRepository.findByName(DEFAULT_USER_ROLE_NAME)
+                        .orElseGet(() -> roleRepository.save(new Role(DEFAULT_USER_ROLE_NAME))))
+                .map(role -> new User(
+                        authUserInfo.getUsername(),
+                        authUserInfo.getEmail(),
+                        authUserInfo.getPhoto(),
+                        authUserInfo.attributes,
+                        Set.of(role)))
+                .map(userRepository::save)
+                .map(user -> {
+                    providerRepository.save(new Provider(
+                            authUserInfo.getPrincipalId(),
+                            providerType,
+                            authUserInfo.getEmail(),
+                            authUserInfo.getPhoto(),
+                            user));
+                    return user;
+                })
+                .get();
     }
 
     public Map<String, String> getUserInfo(OAuth2AuthenticationToken authToken) {
