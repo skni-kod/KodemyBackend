@@ -12,6 +12,7 @@ import pl.sknikod.kodemy.util.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
+import java.util.Optional;
 
 @Repository
 public class AuthCookieAuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
@@ -20,12 +21,10 @@ public class AuthCookieAuthorizationRequestRepository implements AuthorizationRe
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        var authorizationRequest = Cookie.getCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME);
-        if (authorizationRequest != null)
-            return (OAuth2AuthorizationRequest) SerializationUtils.deserialize(
-                    Base64.getUrlDecoder().decode(authorizationRequest)
-            );
-        return null;
+        return Optional.ofNullable(Cookie.getCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME))
+                .map(cookie -> Base64.getUrlDecoder().decode(cookie))
+                .map(authReq -> (OAuth2AuthorizationRequest) SerializationUtils.deserialize(authReq))
+                .orElse(null);
     }
 
     @Override

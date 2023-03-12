@@ -19,7 +19,7 @@ import java.util.Map;
 @BaseApiResponses
 public class AuthController {
     public final static String DEFAULT_REDIRECT_URL_AFTER_LOGIN = "http://localhost:8181/api/oauth2/me";
-    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGOUT = "http://localhost:8181/api/me";
+    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGOUT = "http://localhost:8181/api/docs.html";
     private final AuthService authService;
 
     @GetMapping("/authorize/{provider}")

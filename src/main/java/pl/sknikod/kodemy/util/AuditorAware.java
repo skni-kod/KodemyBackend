@@ -1,14 +1,15 @@
 package pl.sknikod.kodemy.util;
 
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Objects;
+import java.security.Principal;
 import java.util.Optional;
 
 public class AuditorAware implements org.springframework.data.domain.AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return Optional.of(Objects.requireNonNullElse(username, "Unknown"));
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Principal::getName);
     }
 }
