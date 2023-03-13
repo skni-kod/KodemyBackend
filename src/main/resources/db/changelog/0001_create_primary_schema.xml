@@ -53,7 +53,7 @@
         </createTable>
 
         <createTable tableName="types">
-            <column autoIncrement="true" name="id" type="INT">
+            <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
@@ -72,7 +72,7 @@
             <column name="category_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_materials_category" references="categories(id)"/>
             </column>
-            <column name="type_id" type="INT">
+            <column name="type_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
             </column>
             <column name="user_id" type="BIGINT">
@@ -89,10 +89,12 @@
 
         <createTable tableName="technologies_materials">
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material_fk" references="materials(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material_fk"
+                             references="materials(id)"/>
             </column>
             <column name="technology_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology_fk" references="technologies(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology_fk"
+                             references="technologies(id)"/>
             </column>
         </createTable>
 
@@ -131,7 +133,10 @@
         <sql>
             <![CDATA[
             insert into ROLES (name)
-            values ('ROLE_USER'), ('ROLE_MODERATOR'), ('ROLE_ADMIN'), ('ROLE_SUPERADMIN');
+            values ('ROLE_USER'),
+                   ('ROLE_MODERATOR'),
+                   ('ROLE_ADMIN'),
+                   ('ROLE_SUPERADMIN');
             ]]>
         </sql>
     </changeSet>
