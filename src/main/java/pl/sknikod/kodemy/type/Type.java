@@ -20,7 +20,7 @@ public class Type extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int id;
+    private Long id;
     private String name;
     @OneToMany(mappedBy = "type")
     private Set<Material> materials = new HashSet<>();
