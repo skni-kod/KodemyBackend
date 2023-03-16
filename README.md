@@ -1,6 +1,6 @@
 # KodemyBackend
 
-This is the backend for Kodemy project (SKNI Kod), written in Spring Boot and Gradle
+This is the backend for Kodemy project (SKNI Kod), written in Spring Boot and Gradle.
 
 ## Prerequisites
 
@@ -41,3 +41,12 @@ Before you can run the project, you will need the following applications:
    a. in JSON format, go to `http://localhost:8181/api/docs`,
 
    b. in HTML format, go to `http://localhost:8181/api/docs.html`.
+
+## Migrate database
+
+1. Copy `db.sql` to `sql` directory.
+2. To migrate database, use the following commands:
+   ```bash
+   docker exec -it kodemy_postgres_dev /bin/bash
+   psql -U root -W -d kodemy < sql/db.sql
+   ```
