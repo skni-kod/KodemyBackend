@@ -5,7 +5,6 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -14,13 +13,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.sknikod.kodemy.exception.NotFoundException;
+import pl.sknikod.kodemy.exception.GeneralException;
 import pl.sknikod.kodemy.exception.OAuth2AuthenticationProcessingException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
@@ -28,29 +25,25 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             InsufficientAuthenticationException.class,
-            NotFoundException.class,
             OAuth2AuthenticationProcessingException.class
     })
-    public ResponseEntity<Object> handleExceptions(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> handleAuthException(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (exception instanceof InsufficientAuthenticationException) {
             status = HttpStatus.UNAUTHORIZED;
-        } else if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-        } else if (exception instanceof NotFoundException) {
-            status = HttpStatus.NOT_FOUND;
         } else if (exception instanceof OAuth2AuthenticationProcessingException) {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                exception.getMessage()
-        );
+        ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(status, exception.getMessage());
         return ResponseEntity.status(status).body(excMessage);
+    }
+
+    @ExceptionHandler(GeneralException.class)
+    public ResponseEntity<Object> handleGeneralException(GeneralException exception) {
+        var exceptionRestGenericMessage = exception.getExceptionRestGenericMessage();
+        return ResponseEntity.status(exceptionRestGenericMessage.getStatus()).body(exceptionRestGenericMessage);
     }
 
     @Override
@@ -58,7 +51,7 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
             Exception exc, Object body, @NonNull HttpHeaders headers, @NotNull HttpStatus status, WebRequest request
     ) {
         ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
-                Instant.now(),
+                LocalDateTime.now(),
                 status.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 exc.getMessage()
@@ -71,7 +64,7 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
             HttpMediaTypeNotSupportedException exc, @NonNull HttpHeaders headers, HttpStatus status, @NonNull WebRequest request
     ) {
         ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
-                Instant.now(),
+                LocalDateTime.now(),
                 status.value(),
                 "Unsupported Media Type",
                 exc.getMessage()
@@ -86,7 +79,7 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
         BindingResult result = exc.getBindingResult();
         List<String> errorList = result.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
         ExceptionRestGenericMessage excMessage = new ExceptionRestGenericMessage(
-                Instant.now(),
+                LocalDateTime.now(),
                 status.value(),
                 "Method Argument Not Valid",
                 errorList.toString()

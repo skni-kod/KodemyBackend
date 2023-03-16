@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemy.user.UserProviderType;
-import pl.sknikod.kodemy.util.BaseApiResponses;
+import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import java.util.Map;
 
@@ -16,10 +16,9 @@ import java.util.Map;
 @RequestMapping("/api/oauth2")
 @Tag(name = "OAuth2")
 @AllArgsConstructor
-@BaseApiResponses
+@SwaggerResponse
+@SwaggerResponse.SuccessCode
 public class AuthController {
-    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGIN = "http://localhost:8181/api/oauth2/me";
-    public final static String DEFAULT_REDIRECT_URL_AFTER_LOGOUT = "http://localhost:8181/api/docs.html";
     private final AuthService authService;
 
     @GetMapping("/authorize/{provider}")
@@ -34,12 +33,13 @@ public class AuthController {
 
     @GetMapping("/providers")
     @Operation(summary = "Get all OAuth2 providers")
-    public ResponseEntity<?> getProvidersList() {
+    public ResponseEntity<UserProviderType[]> getProvidersList() {
         return ResponseEntity.ok(UserProviderType.values());
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
+    @SwaggerResponse.Auth
     @Operation(summary = "Get information about logged user")
     public ResponseEntity<Map<String, String>> getUserInfo(OAuth2AuthenticationToken auth) {
         return ResponseEntity.ok(authService.getUserInfo(auth));

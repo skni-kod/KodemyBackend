@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.auth.handler;
 
+import io.vavr.control.Option;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.sknikod.kodemy.auth.AuthController.DEFAULT_REDIRECT_URL_AFTER_LOGOUT;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
 
@@ -21,8 +21,11 @@ public class AuthLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         //super.onLogoutSuccess(request, response, authentication);
         if (response.isCommitted()) return;
 
-        String redirectUriAfterLogout = Cookie.getCookie(request, REDIRECT_URI_COOKIE_NAME);
-        if (redirectUriAfterLogout == null) redirectUriAfterLogout = DEFAULT_REDIRECT_URL_AFTER_LOGOUT;
+        String redirectUriAfterLogout = Option.of(request)
+                .flatMap(req -> Option.of(Cookie.getCookie(req, REDIRECT_URI_COOKIE_NAME))
+                        .orElse(Option.of(req.getHeader("Referer")))
+                )
+                .getOrElse("/");
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, redirectUriAfterLogout);
