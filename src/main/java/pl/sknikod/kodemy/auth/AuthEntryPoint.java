@@ -23,7 +23,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        ResponseEntity<Object> responseEntity = exceptionRestHandler.handleExceptions(authException, request, response);
+        ResponseEntity<Object> responseEntity = exceptionRestHandler.handleAuthException(authException);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());

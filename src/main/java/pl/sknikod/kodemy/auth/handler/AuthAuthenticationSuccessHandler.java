@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.sknikod.kodemy.auth.AuthController.DEFAULT_REDIRECT_URL_AFTER_LOGIN;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
 
 @Component
@@ -29,7 +28,7 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
                 .flatMap(req -> Option.of(Cookie.getCookie(req, REDIRECT_URI_COOKIE_NAME))
                         .orElse(Option.of(req.getHeader("Referer")))
                 )
-                .getOrElse(DEFAULT_REDIRECT_URL_AFTER_LOGIN);
+                .getOrElse("/");
 
         String redirectAfterUri = UriComponentsBuilder
                 .fromUriString(redirectAfter)

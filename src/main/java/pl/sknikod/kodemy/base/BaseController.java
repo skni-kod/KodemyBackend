@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import pl.sknikod.kodemy.util.BaseApiResponses;
+import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +19,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @AllArgsConstructor
 @Tag(name = "Base")
-@BaseApiResponses
 public class BaseController {
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @GetMapping
     @Operation(summary = "Get all API endpoints")
+    @SwaggerResponse
+    @SwaggerResponse.SuccessCode
     public ResponseEntity<List<String>> index() {
         return new ResponseEntity<>(
                 requestMappingHandlerMapping

@@ -4,15 +4,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 public interface NameExtendCrudOperations<RES, REQ> extends BaseCrudOperations<RES, REQ> {
-    @BaseApiResponses.Read
+    @SwaggerResponse.Read
     @GetMapping("/{name}")
     ResponseEntity<RES> getByName(@PathVariable String name);
 
-    @BaseApiResponses.Delete
+    @SwaggerResponse.Delete
     @DeleteMapping("/{name}")
-    void deleteByName(@PathVariable Long id);
+    void deleteByName(@PathVariable String name);
 
-    @BaseApiResponses.Update
+    @SwaggerResponse.Update
     @PutMapping("/{name}")
     ResponseEntity<RES> update(@PathVariable String name, @RequestBody REQ body);
 }
