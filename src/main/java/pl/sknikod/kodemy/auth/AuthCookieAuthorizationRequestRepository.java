@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
+import static pl.sknikod.kodemy.auth.AuthController.REDIRECT_URI_PARAMETER;
+
 @Repository
 public class AuthCookieAuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
     public static final String REDIRECT_URI_COOKIE_NAME = "kodemy_uri";
@@ -34,7 +36,7 @@ public class AuthCookieAuthorizationRequestRepository implements AuthorizationRe
             Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
             return;
         }
-        String redirectUriAfterLogin = request.getParameter("redirect_uri");
+        String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
         String authRequestEncoded = Base64.getUrlEncoder().encodeToString(
                 SerializationUtils.serialize(authorizationRequest)
         );

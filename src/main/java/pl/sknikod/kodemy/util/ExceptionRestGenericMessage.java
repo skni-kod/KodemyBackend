@@ -19,17 +19,6 @@ public class ExceptionRestGenericMessage {
     private String error;
     private String message;
 
-    public ExceptionRestGenericMessage(){
-        this.timeStamp = LocalDateTime.now();
-        this.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        this.error = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
-    }
-
-    public ExceptionRestGenericMessage(String message) {
-        this();
-        this.message = message;
-    }
-
     public ExceptionRestGenericMessage(HttpStatus httpStatus, String message) {
         this.timeStamp = LocalDateTime.now();
         this.status = httpStatus.value();

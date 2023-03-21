@@ -10,6 +10,7 @@ import pl.sknikod.kodemy.util.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static pl.sknikod.kodemy.auth.AuthController.REDIRECT_URI_PARAMETER;
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
 
 @Component
@@ -18,7 +19,7 @@ public class AuthLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String redirectUriAfterLogout = request.getParameter("redirect_uri");
+        String redirectUriAfterLogout = request.getParameter(REDIRECT_URI_PARAMETER);
 
         if (StringUtils.isNotBlank(redirectUriAfterLogout)) {
             Cookie.addCookie(response, REDIRECT_URI_COOKIE_NAME, redirectUriAfterLogout, 5 * 60);

@@ -9,13 +9,13 @@ public class GeneralException extends RuntimeException {
     @Getter
     private final ExceptionRestGenericMessage exceptionRestGenericMessage;
 
-    public GeneralException(HttpStatus httpStatus, String message) {
+    public GeneralException(HttpStatus exceptionCode, String message) {
         super();
-        this.exceptionRestGenericMessage = new ExceptionRestGenericMessage(httpStatus, message);
+        this.exceptionRestGenericMessage = new ExceptionRestGenericMessage(exceptionCode, message);
     }
 
     public GeneralException(String message) {
         super();
-        this.exceptionRestGenericMessage = new ExceptionRestGenericMessage(message);
+        this.exceptionRestGenericMessage = new ExceptionRestGenericMessage(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 }

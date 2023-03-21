@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .addLogoutHandler(authLogoutHandler)
                         .logoutSuccessHandler(authLogoutSuccessHandler)
                         .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
+                        .invalidateHttpSession(false)
                         .deleteCookies(
                                 "JSESSIONID",
                                 AUTHORIZATION_REQUEST_COOKIE_NAME
