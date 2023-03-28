@@ -15,7 +15,6 @@ import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -89,14 +88,6 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
                 "} " + super.toString();
     }
 
-    public boolean addRole(Role role) {
-        return roles.add(role);
-    }
-
-    public boolean removeRole(Role role) {
-        return roles.remove(role);
-    }
-
     @Override
     public String getName() {
         return username;
@@ -104,11 +95,10 @@ public class User extends Auditable<String> implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        return authorities;
+        return roles
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .toList();
     }
 
     @Override

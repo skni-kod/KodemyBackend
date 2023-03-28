@@ -5,9 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sknikod.kodemy.dto.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.user.UserProviderType;
-
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -30,7 +29,7 @@ public class AuthController implements AuthControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, String>> getUserInfo(OAuth2AuthenticationToken auth) {
-        return ResponseEntity.ok(authService.getUserInfo(auth));
+    public ResponseEntity<UserOAuth2MeResponse> getUserInfo(OAuth2AuthenticationToken authToken) {
+        return ResponseEntity.ok(authService.getUserInfo(authToken));
     }
 }

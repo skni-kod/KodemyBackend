@@ -1,9 +1,11 @@
 package pl.sknikod.kodemy.auth.oauth2;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Component
 @AllArgsConstructor
 public abstract class OAuth2UserInfo {
     public Map<String, Object> attributes;
