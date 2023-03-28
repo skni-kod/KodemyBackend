@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.sknikod.kodemy.dto.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.user.UserProviderType;
 import pl.sknikod.kodemy.util.SwaggerResponse;
-
-import java.util.Map;
 
 @RequestMapping("/api/oauth2")
 @Tag(name = "OAuth2")
@@ -32,6 +31,6 @@ public interface AuthControllerDefinition {
 
     @GetMapping("/me")
     @Operation(summary = "Get information about logged user")
-    @SwaggerResponse.Auth
-    ResponseEntity<Map<String, String>> getUserInfo(OAuth2AuthenticationToken auth);
+    @SwaggerResponse.AuthRequest
+    ResponseEntity<UserOAuth2MeResponse> getUserInfo(OAuth2AuthenticationToken auth);
 }

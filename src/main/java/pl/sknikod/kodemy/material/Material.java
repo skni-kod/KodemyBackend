@@ -10,9 +10,7 @@ import pl.sknikod.kodemy.type.Type;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.util.Auditable;
 
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -29,6 +27,7 @@ public class Material extends Auditable<String>{
     private Long id;
     private String title;
     private String description;
+    private String link;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
     private boolean isActive;
@@ -70,23 +69,4 @@ public class Material extends Auditable<String>{
                 "} " + super.toString();
     }
 
-    public boolean addTechnology(Technology technology) {
-        return technologies.add(technology);
-    }
-
-    public boolean removeTechnology(Technology technology) {
-        if (technologies == null)
-            return false;
-        return technologies.remove(technology);
-    }
-
-    public boolean addGrade(Grade grade) {
-        return grades.add(grade);
-    }
-
-    public boolean removeGrade(Grade grade) {
-        if (grades == null)
-            return false;
-        return grades.remove(grade);
-    }
 }

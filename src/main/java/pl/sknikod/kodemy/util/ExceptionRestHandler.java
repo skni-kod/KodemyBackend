@@ -1,7 +1,6 @@
 package pl.sknikod.kodemy.util;
 
 import lombok.NonNull;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,7 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    protected @NotNull ResponseEntity<Object> handleExceptionInternal(
+    public @NotNull ResponseEntity<Object> handleExceptionInternal(
             Exception exc, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request
     ) {
         return new ResponseEntity<>(new ExceptionRestGenericMessage(status, exc.getMessage()), status);
@@ -55,7 +54,7 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
+    public ResponseEntity<Object> handleHttpMediaTypeNotSupported(
             HttpMediaTypeNotSupportedException exc, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request
     ) {
         return new ResponseEntity<>(new ExceptionRestGenericMessage(status, exc.getMessage()), status);
@@ -63,14 +62,12 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+    public ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exc, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request
     ) {
         BindingResult result = exc.getBindingResult();
-        List<String> errorList = result
-                .getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+        List<String> errorList = result.getFieldErrors().stream()
+                .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .toList();
         return new ResponseEntity<>(new ExceptionRestGenericMessage(status, errorList.toString()), status);
     }

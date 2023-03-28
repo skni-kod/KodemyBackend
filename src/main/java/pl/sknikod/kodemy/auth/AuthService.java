@@ -13,8 +13,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.auth.oauth2.OAuth2UserInfoFactory;
+import pl.sknikod.kodemy.dto.mapper.UserMapper;
+import pl.sknikod.kodemy.dto.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.provider.Provider;
 import pl.sknikod.kodemy.provider.ProviderRepository;
+import pl.sknikod.kodemy.role.DefaultRoleName;
 import pl.sknikod.kodemy.role.Role;
 import pl.sknikod.kodemy.role.RoleRepository;
 import pl.sknikod.kodemy.user.User;
@@ -28,8 +31,8 @@ import java.util.*;
 public class AuthService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    public static final String DEFAULT_USER_ROLE_NAME = "ROLE_USER";
     private final ProviderRepository providerRepository;
+    private final UserMapper userMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -57,8 +60,10 @@ public class AuthService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
-        return Try.of(() -> roleRepository.findByName(DEFAULT_USER_ROLE_NAME)
-                        .orElseGet(() -> roleRepository.save(new Role(DEFAULT_USER_ROLE_NAME))))
+        return Try.of(() -> roleRepository.findByName(DefaultRoleName.ROLE_USER.name())
+                        .orElseGet(() -> roleRepository.save(
+                                new Role(DefaultRoleName.ROLE_USER.name()))
+                        ))
                 .map(role -> new User(
                         authUserInfo.getUsername(),
                         authUserInfo.getEmail(),
@@ -78,10 +83,7 @@ public class AuthService extends DefaultOAuth2UserService {
                 .get();
     }
 
-    public Map<String, String> getUserInfo(OAuth2AuthenticationToken authToken) {
-        return Map.of(
-                "name", authToken.getName(),
-                "authorities", authToken.getAuthorities().toString()
-        );
+    public UserOAuth2MeResponse getUserInfo(OAuth2AuthenticationToken authToken) {
+        return userMapper.map((User) authToken.getPrincipal());
     }
 }

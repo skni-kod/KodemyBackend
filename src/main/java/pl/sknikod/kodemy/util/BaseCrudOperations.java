@@ -8,23 +8,23 @@ import java.util.List;
 
 @SwaggerResponse
 public interface BaseCrudOperations<REQ, RES> {
-    @SwaggerResponse.Read
+    @SwaggerResponse.ReadRequest
     @GetMapping
     ResponseEntity<List<RES>> getAll();
 
-    @SwaggerResponse.Read
+    @SwaggerResponse.ReadRequest
     @GetMapping("/{id}")
     ResponseEntity<RES> getById(@PathVariable Long id);
 
-    @SwaggerResponse.Create
+    @SwaggerResponse.CreateRequest
     @PostMapping
     ResponseEntity<RES> create(@RequestBody REQ body, HttpServletRequest request);
 
-    @SwaggerResponse.Delete
+    @SwaggerResponse.DeleteRequest
     @DeleteMapping("/{id}")
     void deleteById(@PathVariable Long id);
 
-    @SwaggerResponse.Update
+    @SwaggerResponse.UpdateRequest
     @PutMapping("/{id}")
     ResponseEntity<RES> update(@PathVariable Long id, @RequestBody REQ body);
 }

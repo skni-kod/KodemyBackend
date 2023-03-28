@@ -49,33 +49,33 @@ public @interface SwaggerResponse {
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class)))
     @ApiResponse(responseCode = "403", description = "Forbidden",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class)))
-    @interface Auth {
+    @interface AuthRequest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @SwaggerResponse.CreatedCode
     @SwaggerResponse.BadRequestCode
-    @interface Create {
+    @interface CreateRequest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @SwaggerResponse.SuccessCode
     @SwaggerResponse.NotFoundCode
-    @interface Read {
+    @interface ReadRequest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @SwaggerResponse.BadRequestCode
     @SwaggerResponse.NotFoundCode
-    @interface Update {
+    @interface UpdateRequest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @SwaggerResponse.NotFoundCode
-    @interface Delete {
+    @interface DeleteRequest {
     }
 }
