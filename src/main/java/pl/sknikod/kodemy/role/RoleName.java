@@ -1,6 +1,6 @@
 package pl.sknikod.kodemy.role;
 
-public enum DefaultRoleName {
+public enum RoleName {
     ROLE_USER,
     ROLE_MODERATOR,
     ROLE_ADMIN,
