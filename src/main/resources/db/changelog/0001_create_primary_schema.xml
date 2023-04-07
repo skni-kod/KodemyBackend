@@ -6,6 +6,13 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="0001-1" author="KartVen">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
@@ -17,21 +24,8 @@
             <column name="is_locked" type="BOOLEAN"/>
             <column name="is_credentials_expired" type="BOOLEAN"/>
             <column name="is_enabled" type="BOOLEAN"/>
-        </createTable>
-
-        <createTable tableName="roles">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
-            </column>
-            <column name="name" type="VARCHAR(255)"/>
-        </createTable>
-
-        <createTable tableName="users_roles">
             <column name="role_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_users_roles_role" references="roles(id)"/>
-            </column>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_users_roles_user" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_users_role" references="roles(id)"/>
             </column>
         </createTable>
 
@@ -64,6 +58,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_materials"/>
             </column>
             <column name="title" type="VARCHAR(255)"/>
+            <column name="link" type="VARCHAR(1020)"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="status" type="VARCHAR(255)"/>
             <column name="is_active" type="BOOLEAN">
@@ -131,13 +126,11 @@
 
     <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
         <sql>
-            <![CDATA[
             insert into ROLES (name)
             values ('ROLE_USER'),
                    ('ROLE_MODERATOR'),
                    ('ROLE_ADMIN'),
                    ('ROLE_SUPERADMIN');
-            ]]>
         </sql>
     </changeSet>
 

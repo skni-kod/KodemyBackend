@@ -3,9 +3,8 @@ package pl.sknikod.kodemy.auth;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemy.dto.UserOAuth2MeResponse;
+import pl.sknikod.kodemy.rest.response.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.user.UserProviderType;
 
 @RestController
@@ -29,7 +28,7 @@ public class AuthController implements AuthControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserOAuth2MeResponse> getUserInfo(OAuth2AuthenticationToken authToken) {
-        return ResponseEntity.ok(authService.getUserInfo(authToken));
+    public ResponseEntity<UserOAuth2MeResponse> getUserInfo() {
+        return ResponseEntity.ok(authService.getUserInfo());
     }
 }

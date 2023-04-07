@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.auth.handler;
 
 import io.vavr.control.Option;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -16,16 +17,18 @@ import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.RE
 @Component
 public class AuthLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
+    @Value("${springdoc.swagger-ui.path}")
+    private String springdocSwaggerUiPAth;
+
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        //super.onLogoutSuccess(request, response, authentication);
         if (response.isCommitted()) return;
 
         String redirectUriAfterLogout = Option.of(request)
                 .flatMap(req -> Option.of(Cookie.getCookie(req, REDIRECT_URI_COOKIE_NAME))
                         .orElse(Option.of(req.getHeader("Referer")))
                 )
-                .getOrElse("/");
+                .getOrElse(springdocSwaggerUiPAth);
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, redirectUriAfterLogout);

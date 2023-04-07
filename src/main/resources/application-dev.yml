@@ -3,6 +3,3 @@ spring:
     show-sql: true
   liquibase:
     contexts: dev
-logging:
-  level:
-    org.springframework.security: DEBUG

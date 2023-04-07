@@ -1,11 +1,11 @@
-package pl.sknikod.kodemy.dto;
+package pl.sknikod.kodemy.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import pl.sknikod.kodemy.rest.BaseDetails;
 
 import java.util.Date;
-import java.util.Set;
 
 @Value
 public class UserOAuth2MeResponse {
@@ -15,7 +15,7 @@ public class UserOAuth2MeResponse {
     String photo;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Warsaw")
     Date createdDate;
-    Set<RoleDetails> roles;
+    RoleDetails role;
 
     @Value
     @EqualsAndHashCode(callSuper = true)

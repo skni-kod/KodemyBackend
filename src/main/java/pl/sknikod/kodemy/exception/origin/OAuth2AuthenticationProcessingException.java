@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.exception;
+package pl.sknikod.kodemy.exception.origin;
 
 import org.springframework.security.core.AuthenticationException;
 

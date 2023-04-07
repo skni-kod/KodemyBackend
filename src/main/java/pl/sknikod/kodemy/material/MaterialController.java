@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemy.dto.MaterialCreateRequest;
-import pl.sknikod.kodemy.dto.MaterialCreateResponse;
+import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
+import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
 
 import java.net.URI;
 

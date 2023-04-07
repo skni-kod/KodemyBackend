@@ -23,12 +23,8 @@ public class Role extends Auditable<String> {
     private Long id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     private Set<User> users = new HashSet<>();
-
-    public Role(String name) {
-        this.name = name;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -51,13 +47,4 @@ public class Role extends Auditable<String> {
                 "} " + super.toString();
     }
 
-    public boolean addUser(User user) {
-        return users.add(user);
-    }
-
-    public boolean removeUser(User user) {
-        if (users == null)
-            return false;
-        return users.remove(user);
-    }
 }

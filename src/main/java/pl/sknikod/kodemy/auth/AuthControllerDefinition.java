@@ -3,12 +3,11 @@ package pl.sknikod.kodemy.auth;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.sknikod.kodemy.dto.UserOAuth2MeResponse;
+import pl.sknikod.kodemy.rest.response.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.user.UserProviderType;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
@@ -32,5 +31,5 @@ public interface AuthControllerDefinition {
     @GetMapping("/me")
     @Operation(summary = "Get information about logged user")
     @SwaggerResponse.AuthRequest
-    ResponseEntity<UserOAuth2MeResponse> getUserInfo(OAuth2AuthenticationToken auth);
+    ResponseEntity<UserOAuth2MeResponse> getUserInfo();
 }

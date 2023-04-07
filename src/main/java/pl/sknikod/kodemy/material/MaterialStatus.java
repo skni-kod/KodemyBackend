@@ -2,7 +2,8 @@ package pl.sknikod.kodemy.material;
 
 public enum MaterialStatus {
     APPROVED, //CONFIRMED
-    UNAPPROVED, //UNCONFIRMED
+    PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING
     REJECTED,
-    EDITED //CORRECTED
+    EDITED, //CORRECTED
+    BANNED
 }

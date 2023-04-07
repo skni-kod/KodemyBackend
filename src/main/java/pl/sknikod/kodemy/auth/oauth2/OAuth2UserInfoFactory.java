@@ -1,6 +1,6 @@
 package pl.sknikod.kodemy.auth.oauth2;
 
-import pl.sknikod.kodemy.exception.OAuth2AuthenticationProcessingException;
+import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
 import pl.sknikod.kodemy.user.UserProviderType;
 
 import java.util.Map;

@@ -15,6 +15,7 @@ services:
       - lan
     depends_on:
       - postgres
+      - rabbitmq
 
   postgres:
     image: postgres:14.1-alpine
@@ -30,9 +31,24 @@ services:
     networks:
       - lan
 
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: kodemy_rabbitmq_dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    volumes:
+      - rabbitmq_dev:/var/lib/rabbitmq
+    networks:
+      - lan
+
 networks:
   lan:
     driver: bridge
 
 volumes:
   postgres_dev:
+  rabbitmq_dev:

@@ -1,9 +1,10 @@
-package pl.sknikod.kodemy.dto;
+package pl.sknikod.kodemy.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import pl.sknikod.kodemy.material.MaterialStatus;
+import pl.sknikod.kodemy.rest.BaseDetails;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +19,7 @@ public class MaterialCreateResponse {
     String link;
     @Enumerated(EnumType.STRING)
     MaterialStatus status;
-    BaseDetails createdBy;
+    UserDetails createdBy;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Warsaw")
     Date createdDate;
     TypeDetails type;
@@ -45,6 +46,14 @@ public class MaterialCreateResponse {
     @EqualsAndHashCode(callSuper = true)
     public static class TechnologyDetails extends BaseDetails {
         public TechnologyDetails(Long id, String name) {
+            super(id, name);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = true)
+    public static class UserDetails extends BaseDetails {
+        public UserDetails(Long id, String name) {
             super(id, name);
         }
     }
