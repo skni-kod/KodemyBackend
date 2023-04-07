@@ -11,3 +11,8 @@ spring:
     password: password
   liquibase:
     contexts: local
+  rabbitmq:
+    host: localhost
+    username: rabbitmq
+    password: password
+    port: 5672

@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.sknikod.kodemy.dto.MaterialCreateRequest;
-import pl.sknikod.kodemy.dto.MaterialCreateResponse;
+import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
+import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;

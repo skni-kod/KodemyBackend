@@ -8,11 +8,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
 import pl.sknikod.kodemy.auth.AuthEntryPoint;
 import pl.sknikod.kodemy.auth.AuthService;
 import pl.sknikod.kodemy.auth.handler.*;
+import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
 
 import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
 
@@ -33,22 +35,23 @@ public class SecurityConfig {
     private AuthAccessDeniedHandler authAccessDeniedHandler;
     private AuthLogoutHandler authLogoutHandler;
     private AuthLogoutSuccessHandler authLogoutSuccessHandler;
+    private AppConfig.SecurityAuthProperties authProperties;
+    private RefreshUserPrincipalFilter refreshUserPrincipalFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and().csrf().disable()
-                .authorizeRequests(autz -> autz
-                        .anyRequest().permitAll()
-                )
+                .addFilterBefore(refreshUserPrincipalFilter, FilterSecurityInterceptor.class)
+                .authorizeRequests(autz -> autz.anyRequest().permitAll())
                 .formLogin().disable()
                 .oauth2Login(login -> login
                         .authorizationEndpoint()
-                        .baseUri("/api/oauth2/authorize")
+                        .baseUri(authProperties.getLoginUri())
                         .authorizationRequestRepository(authCookieAuthorizationRequestRepository)
                         .and()
                         .redirectionEndpoint()
-                        .baseUri("/api/oauth2/callback/**")
+                        .baseUri(authProperties.getCallbackUri())
                         .and()
                         .userInfoEndpoint()
                         .userService(authService)
@@ -62,11 +65,10 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(
-                                new AntPathRequestMatcher("/api/oauth2/logout", HttpMethod.GET.name())
+                                new AntPathRequestMatcher(authProperties.getLogoutUri(), HttpMethod.GET.name())
                         )
                         .addLogoutHandler(authLogoutHandler)
                         .logoutSuccessHandler(authLogoutSuccessHandler)
-                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(false)
                         .deleteCookies(
                                 "JSESSIONID",

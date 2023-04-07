@@ -41,7 +41,7 @@ public class Material extends Auditable<String>{
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.dto;
+package pl.sknikod.kodemy.rest.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

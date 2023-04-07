@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.dto;
+package pl.sknikod.kodemy.rest;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
