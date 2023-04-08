@@ -51,14 +51,4 @@ public class Category extends Auditable<String> {
     public int hashCode() {
         return Objects.hash(id, name, section);
     }
-
-    public boolean addMaterial(Material material) {
-        return materials.add(material);
-    }
-
-    public boolean removeMaterial(Material material) {
-        if (materials == null)
-            return false;
-        return materials.remove(material);
-    }
 }
