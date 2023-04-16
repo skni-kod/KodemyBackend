@@ -3,7 +3,9 @@ package pl.sknikod.kodemy.material;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sknikod.kodemy.rest.request.MaterialAddGradeRequest;
 import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
 import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
 
@@ -21,5 +23,11 @@ public class MaterialController implements MaterialControllerDefinition {
         return ResponseEntity
                 .created(URI.create("/api/materials/" + materialResponse.getId()))
                 .body(materialResponse);
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public void addGrade(MaterialAddGradeRequest body, @PathVariable Long materialId) {
+        materialService.addGrade(body, materialId);
     }
 }
