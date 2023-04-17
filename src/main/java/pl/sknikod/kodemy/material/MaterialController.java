@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.rest.request.MaterialAddGradeRequest;
 import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
 import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
+import pl.sknikod.kodemy.rest.response.MaterialShowGradesResponse;
 
 import java.net.URI;
 
@@ -29,5 +30,12 @@ public class MaterialController implements MaterialControllerDefinition {
     @PreAuthorize("isAuthenticated()")
     public void addGrade(MaterialAddGradeRequest body, @PathVariable Long materialId) {
         materialService.addGrade(body, materialId);
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<MaterialShowGradesResponse> showGrades(@PathVariable Long materialId) {
+        var gradesResponse = materialService.showGrades(materialId);
+        return ResponseEntity.ok().body(gradesResponse);
     }
 }
