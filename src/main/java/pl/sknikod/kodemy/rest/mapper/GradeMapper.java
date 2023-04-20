@@ -28,10 +28,8 @@ public abstract class GradeMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "grade", source = "grade"),
             @Mapping(target = "user", expression = "java(userMapper.mapUserFromContext())"),
             @Mapping(target = "material", ignore = true)
     })
     public abstract Grade map(MaterialAddGradeRequest body);
-
 }

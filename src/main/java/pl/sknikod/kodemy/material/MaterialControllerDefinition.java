@@ -4,11 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.rest.request.MaterialAddGradeRequest;
 import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
 import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
-import pl.sknikod.kodemy.rest.response.MaterialShowGradesResponse;
+import pl.sknikod.kodemy.rest.response.SingleGradeResponse;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;
@@ -32,7 +31,7 @@ public interface MaterialControllerDefinition {
 
     @Operation(summary = "Show all Material's grades")
     @SwaggerResponse.AuthRequest
-    @SwaggerResponse.CreateRequest
+    @SwaggerResponse.ReadRequest
     @GetMapping("/{materialId}/grades")
-    ResponseEntity<MaterialShowGradesResponse> showGrades(@PathVariable Long materialId);
+    ResponseEntity<Set<SingleGradeResponse>> showGrades(@PathVariable Long materialId);
 }

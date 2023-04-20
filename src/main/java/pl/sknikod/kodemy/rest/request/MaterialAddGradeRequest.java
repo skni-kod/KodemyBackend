@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class MaterialAddGradeRequest {
     @NotNull
-    @Pattern(regexp = "^(1|1\\.5|2|2\\.5|3|3\\.5|4|4\\.5|5)$")
+    @Pattern(regexp = "^[0-5](\\.[05])?$")
     private String grade;
 
 }
