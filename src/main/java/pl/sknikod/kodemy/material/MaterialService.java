@@ -17,9 +17,7 @@ import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
 import pl.sknikod.kodemy.rest.response.SingleGradeResponse;
 import pl.sknikod.kodemy.user.UserPrincipal;
 
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
