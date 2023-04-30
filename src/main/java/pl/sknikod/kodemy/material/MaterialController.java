@@ -35,7 +35,6 @@ public class MaterialController implements MaterialControllerDefinition {
     @Override
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Set<SingleGradeResponse>> showGrades(Long materialId) {
-        var gradesResponse = materialService.showGrades(materialId);
-        return ResponseEntity.ok().body(gradesResponse);
+        return ResponseEntity.ok().body( materialService.showGrades(materialId));
     }
 }

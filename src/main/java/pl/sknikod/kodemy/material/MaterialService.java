@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.general.GeneralRuntimeException;
+import pl.sknikod.kodemy.exception.general.NotFoundException;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.grade.GradeRepository;
 import pl.sknikod.kodemy.notification.NotificationService;
@@ -39,16 +40,13 @@ public class MaterialService {
     }
 
     public void addGrade(MaterialAddGradeRequest body, Long materialId) {
-        Optional<Material> material = Option.of(materialRepository.findById(materialId))
+        Material material = Option.ofOptional(materialRepository.findById(materialId))
                 .getOrElseThrow(() -> new GeneralRuntimeException("Not Found"));
         Grade grade = Option.of(body)
                 .map(gradeMapper::map)
                 .getOrElseThrow(() -> new GeneralRuntimeException("Failed to processing"));
 
-        material.ifPresent(materialObj -> {
-            grade.setMaterial(materialObj);
-            gradeRepository.save(grade);
-        });
+        grade.setMaterial(material);
     }
 
     private Material checkApproval(Material material) {
@@ -61,11 +59,11 @@ public class MaterialService {
     }
 
     public Set<SingleGradeResponse> showGrades(Long materialId) {
-        Optional<Material> material = Option.of(materialRepository.findById(materialId))
-                .getOrElseThrow(() -> new GeneralRuntimeException("Not Found"));
-        Optional<Set<Grade>> grades = Optional.of(Option.of(material.get().getGrades())
-                .getOrElseThrow(() -> new GeneralRuntimeException("Not Found")));
-
-        return grades.get().stream().map(SingleGradeResponse::new).collect(Collectors.toSet());
+        return Option.of(Option.
+                        ofOptional(materialRepository.findById(materialId))
+                        .getOrElseThrow(() -> new NotFoundException("Material Not Found")))
+                .map(Material::getGrades)
+                .map(gradeMapper::map)
+                .getOrElseThrow(() -> new GeneralRuntimeException("Failed to processing"));
     }
 }
