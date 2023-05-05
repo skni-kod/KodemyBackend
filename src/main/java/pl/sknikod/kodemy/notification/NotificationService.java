@@ -5,13 +5,16 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.config.RabbitMQConfig;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
+import pl.sknikod.kodemy.role.RoleName;
 import pl.sknikod.kodemy.user.UserPrincipal;
 import pl.sknikod.kodemy.user.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -42,7 +45,12 @@ public class NotificationService {
 
     public void sendNotificationToAdmins(String title, String message) {
         userRepository
-                .findUsersByRoleAdmin()
+                .findUsersByRoleAdmin(
+                        Set.of(
+                                RoleName.ROLE_SUPERADMIN.name(),
+                                RoleName.ROLE_ADMIN.name()
+                        )
+                )
                 .forEach(user -> rabbitTemplate.convertAndSend(
                                 RabbitMQConfig.NOTIFICATION_EXCHANGE_NAME,
                                 RabbitMQConfig.NOTIFICATION_ADMIN_KEY,
@@ -66,6 +74,20 @@ public class NotificationService {
                     return notificationRepository.save(notification);
                 })
                 .orElseThrow(() -> new NotFoundException("Notification not found"));
+    }
+
+    @Component
+    public static class NotificationExecutor {
+        @Autowired
+        private NotificationRepository notificationRepository;
+
+        @RabbitListener(queues = {
+                RabbitMQConfig.NOTIFICATION_USER_QUEUE_NAME,
+                "q.notification.admin"
+        })
+        private void receiveNotification(@Payload Notification notification) {
+            log.debug("Notification saved: " + notificationRepository.saveAndFlush(notification));
+        }
     }
 }
 

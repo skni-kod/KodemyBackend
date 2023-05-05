@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -14,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findUserByPrincipalIdAndAuthProvider(String principalId, UserProviderType providerType);
 
     @Query(
-            value = "select r.users from Role r where r.name in ('ROLE_ADMIN', 'ROLE_SUPERADMIN')"
+            value = "select u from User u where u.role.name in (:roles) and u.isEnabled = true and u.isLocked = false and u.isCredentialsExpired = false and u.isExpired = false"
     )
-    HashSet<User> findUsersByRoleAdmin();
+    HashSet<User> findUsersByRoleAdmin(Set<String> roles);
 }

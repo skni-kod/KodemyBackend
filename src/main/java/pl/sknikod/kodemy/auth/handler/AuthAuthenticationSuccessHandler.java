@@ -21,7 +21,7 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     @Autowired
     private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
 
-    @Value("${springdoc.swagger-ui.path}")
+    @Value("${springdoc.swagger-ui.path:#{T(org.springdoc.core.Constants).DEFAULT_SWAGGER_UI_PATH}}")
     private String springdocSwaggerUiPAth;
 
     @Override

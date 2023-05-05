@@ -8,9 +8,7 @@ services:
       - test
     restart: unless-stopped
     ports:
-      - "${SPRING_PORT}:8080"
-    env_file:
-      - .env
+      - 8181:8080
     networks:
       - lan
     depends_on:
@@ -21,10 +19,12 @@ services:
     image: postgres:14.1-alpine
     container_name: kodemy_postgres_dev
     restart: always
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: kodemy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - 5432:5432
     volumes:
       - postgres_dev:/var/lib/postgresql/data
       - ./sql:/sql
@@ -35,11 +35,12 @@ services:
     image: rabbitmq:3.8-management-alpine
     container_name: kodemy_rabbitmq_dev
     restart: always
-    env_file:
-      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: password
     ports:
-      - "${RABBITMQ_PORT}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+      - 5672:5672
+      - 15672:15672
     volumes:
       - rabbitmq_dev:/var/lib/rabbitmq
     networks:

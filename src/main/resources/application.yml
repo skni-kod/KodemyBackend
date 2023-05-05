@@ -2,21 +2,27 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: kodemy-backend
   banner:
     location: classpath:banner.txt
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${spring.datasource.host-port}/kodemy?currentSchema=public&useUnicode=true&serverTimezone=UTC
+    host-port: postgres
+    username: postgres
+    password: password
   jpa:
-    hibernate:
-      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
     contexts: prod
+    enabled: true
   security:
     oauth2:
       client:
@@ -29,10 +35,10 @@ spring:
               - user:email
               - read:user
   rabbitmq:
-    host: ${RABBITMQ_HOST}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-    port: ${RABBITMQ_PORT}
+    host: rabbitmq
+    username: rabbitmq
+    password: password
+    port: 5672
 
 management:
   endpoints:
