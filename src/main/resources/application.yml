@@ -34,6 +34,16 @@ spring:
     password: ${RABBITMQ_PASSWORD}
     port: ${RABBITMQ_PORT}
 
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: always
+      roles: SUPERADMIN
+
 springdoc:
   api-docs:
     path: /api/docs
@@ -70,4 +80,4 @@ kodemy:
           - CAN_GET_USERS
           - CAN_BANNING_USERS
           - CAN_ASSIGN_ROLES
-          - CAN_REFRESH_CONFIG
+          - CAN_USE_ACTUATOR

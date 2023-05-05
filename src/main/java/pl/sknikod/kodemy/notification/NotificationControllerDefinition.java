@@ -14,19 +14,19 @@ import java.util.List;
 @Tag(name = "Notification")
 @SwaggerResponse
 @SwaggerResponse.SuccessCode
+@SwaggerResponse.AuthRequest
 public interface NotificationControllerDefinition {
     @GetMapping("/{id}")
     @Operation(summary = "Get notification by ID")
-    @SwaggerResponse.AuthRequest
+    @SwaggerResponse.ReadRequest
     Notification getNotificationById(@PathVariable Long id);
 
     @GetMapping
     @Operation(summary = "Get all notification")
-    @SwaggerResponse.AuthRequest
     List<Notification> getNotifications();
 
     @PutMapping("/{id}")
+    @SwaggerResponse.NotFoundCode
     @Operation(summary = "Mark notification as read")
-    @SwaggerResponse.AuthRequest
     void markAsRead(@PathVariable Long id);
 }

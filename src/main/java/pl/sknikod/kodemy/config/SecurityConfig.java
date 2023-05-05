@@ -43,7 +43,9 @@ public class SecurityConfig {
         http
                 .cors().and().csrf().disable()
                 .addFilterBefore(refreshUserPrincipalFilter, FilterSecurityInterceptor.class)
-                .authorizeRequests(autz -> autz.anyRequest().permitAll())
+                .authorizeHttpRequests(autz -> autz
+                        .anyRequest().permitAll()
+                )
                 .formLogin().disable()
                 .oauth2Login(login -> login
                         .authorizationEndpoint()

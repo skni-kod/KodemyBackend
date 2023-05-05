@@ -1,21 +1,23 @@
 package pl.sknikod.kodemy.notification;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemy.config.RabbitMQConfig;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
 import pl.sknikod.kodemy.user.UserPrincipal;
 import pl.sknikod.kodemy.user.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static pl.sknikod.kodemy.config.RabbitMQConfig.NotificationQueue;
-
 @Service
+@Slf4j
 public class NotificationService {
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private AmqpTemplate rabbitTemplate;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -23,11 +25,18 @@ public class NotificationService {
     @Autowired
     private UserRepository userRepository;
 
+    @RabbitListener(queues = {
+            RabbitMQConfig.NOTIFICATION_USER_QUEUE_NAME, RabbitMQConfig.NOTIFICATION_USER_QUEUE_NAME
+    })
+    private void receiveNotification(@Payload Notification notification) {
+        log.debug("Notification saved: " + notificationRepository.save(notification));
+    }
+
     public void sendNotification(String title, String message, Long recipientId) {
         rabbitTemplate.convertAndSend(
-                NotificationQueue.EXCHANGE_NAME,
-                NotificationQueue.ROUTING_KEY,
-                new Notification(null, title, message, LocalDateTime.now(), false, recipientId)
+                RabbitMQConfig.NOTIFICATION_EXCHANGE_NAME,
+                RabbitMQConfig.NOTIFICATION_USER_KEY,
+                new Notification(title, message, recipientId)
         );
     }
 
@@ -35,12 +44,9 @@ public class NotificationService {
         userRepository
                 .findUsersByRoleAdmin()
                 .forEach(user -> rabbitTemplate.convertAndSend(
-                                NotificationQueue.EXCHANGE_NAME,
-                                NotificationQueue.ROUTING_KEY,
-                                new Notification(
-                                        null, title, message,
-                                        LocalDateTime.now(), false, user.getId()
-                                )
+                                RabbitMQConfig.NOTIFICATION_EXCHANGE_NAME,
+                                RabbitMQConfig.NOTIFICATION_ADMIN_KEY,
+                                new Notification(title, message, user.getId())
                         )
                 );
     }
@@ -59,7 +65,7 @@ public class NotificationService {
                     notification.setRead(true);
                     return notificationRepository.save(notification);
                 })
-                .orElseThrow(() -> new NotFoundException("Invalid notification id: " + id));
+                .orElseThrow(() -> new NotFoundException("Notification not found"));
     }
 }
 

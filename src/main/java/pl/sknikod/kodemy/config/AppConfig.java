@@ -3,10 +3,10 @@ package pl.sknikod.kodemy.config;
 import io.vavr.control.Option;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
         RabbitMQConfig.class
 })
 public class AppConfig {
-    @Component
+    @Configuration
     @Data
     @ConfigurationProperties(prefix = "kodemy.security.auth")
     public static class SecurityAuthProperties {
@@ -27,8 +27,9 @@ public class AppConfig {
         private String logoutUri;
     }
 
-    @Component
+    @Configuration
     @Data
+    @RefreshScope
     @ConfigurationProperties(prefix = "kodemy.security.role")
     public static class SecurityRoleProperties {
         private String defaultRole;

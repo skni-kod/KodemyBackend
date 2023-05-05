@@ -28,10 +28,10 @@ public class MaterialService {
     }
 
     private Material checkApproval(Material material) {
-        if(!UserPrincipal.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL"))
+        if (!UserPrincipal.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL"))
             notificationService.sendNotificationToAdmins(
                     NotificationTitle.MATERIAL_APPROVAL_REQUEST.getDesc(),
-                    material.getId().toString()
+                    String.format("{\"id\":%d, \"title\":\"%s\"}", material.getId(), material.getTitle())
             );
         return material;
     }

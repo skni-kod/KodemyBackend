@@ -1,24 +1,22 @@
-package pl.sknikod.kodemy.config.actuate;
+package pl.sknikod.kodemy.util.actuator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemy.util.SwaggerResponse;
 
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("${management.endpoints.web.base-path}")
+@PreAuthorize("isAuthenticated() and hasAuthority('CAN_USE_ACTUATOR')")
 @Tag(name = "Actuator")
-@AllArgsConstructor
-@SwaggerResponse
-@SwaggerResponse.AuthRequest
 public class ActuatorController {
-    private ConfigurableApplicationContext context;
+    private final ConfigurableApplicationContext context;
 
-    @PostMapping("api/actuator/refresh")
-    @SwaggerResponse.BadRequestCode
-    @PreAuthorize("isAuthenticated() and hasAuthority('CAN_REFRESH_CONFIG')")
+    @PostMapping("/refresh")
     public void refresh() {
         context.refresh();
     }
