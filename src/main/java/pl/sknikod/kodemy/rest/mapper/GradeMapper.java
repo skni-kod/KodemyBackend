@@ -13,7 +13,7 @@ import java.util.Set;
 @Component
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.FIELD,
         uses = {
-                GradeMapper.class, UserMapper.class
+                UserMapper.class
         }
 )
 public abstract class GradeMapper {
@@ -23,7 +23,11 @@ public abstract class GradeMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user", expression = "java(userMapper.mapUserFromContext())"),
-            @Mapping(target = "material", ignore = true)
+            @Mapping(target = "material", ignore = true),
+            @Mapping(target = "createdBy", ignore = true),
+            @Mapping(target = "createdDate", ignore = true),
+            @Mapping(target = "lastModifiedBy", ignore = true),
+            @Mapping(target = "lastModifiedDate", ignore = true)
     })
     public abstract Grade map(MaterialAddGradeRequest body);
 

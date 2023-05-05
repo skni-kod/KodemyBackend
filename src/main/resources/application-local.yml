@@ -1,0 +1,15 @@
+server:
+  port: 8181
+
+spring:
+  datasource:
+    host-port: localhost:5432
+  liquibase:
+    contexts: local
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+logging:
+  level:
+    org.springframework.security: DEBUG

@@ -27,16 +27,23 @@ dependencies {
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'io.vavr:vavr:0.10.4'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.4'
     implementation 'org.springframework.cloud:spring-cloud-context:4.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+    testImplementation 'org.codehaus.groovy:groovy:3.0.16'
+    testImplementation 'org.codehaus.groovy:groovy-json:3.0.16'
+    testImplementation 'io.zonky.test:embedded-database-spring-test:2.2.0'
+    testImplementation 'io.zonky.test:embedded-postgres:2.0.3'
 
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
