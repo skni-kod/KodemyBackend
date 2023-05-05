@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
+import pl.sknikod.kodemy.material.Material;
 import pl.sknikod.kodemy.user.UserPrincipal;
 import pl.sknikod.kodemy.user.UserRepository;
 
@@ -59,7 +60,7 @@ public class NotificationService {
                     notification.setRead(true);
                     return notificationRepository.save(notification);
                 })
-                .orElseThrow(() -> new NotFoundException("Invalid notification id: " + id));
+                .orElseThrow(() -> new NotFoundException(NotFoundException.NotFoundFormat.entityId, Notification.class,id));
     }
 }
 
