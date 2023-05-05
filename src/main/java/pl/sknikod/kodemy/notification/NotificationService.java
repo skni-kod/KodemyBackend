@@ -1,26 +1,21 @@
 package pl.sknikod.kodemy.notification;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemy.config.RabbitMQConfig;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
-import pl.sknikod.kodemy.role.RoleName;
 import pl.sknikod.kodemy.user.UserPrincipal;
 import pl.sknikod.kodemy.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
+import static pl.sknikod.kodemy.config.RabbitMQConfig.NotificationQueue;
 
 @Service
-@Slf4j
 public class NotificationService {
     @Autowired
-    private AmqpTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -73,7 +68,7 @@ public class NotificationService {
                     notification.setRead(true);
                     return notificationRepository.save(notification);
                 })
-                .orElseThrow(() -> new NotFoundException("Notification not found"));
+                .orElseThrow(() -> new NotFoundException(NotFoundException.NotFoundFormat.entityId, Notification.class,id));
     }
 
     @Component

@@ -10,6 +10,10 @@ public class GeneralRuntimeException extends RuntimeException implements General
         super(message);
     }
 
+    public <T> GeneralRuntimeException(GeneralRuntimeFormat runtimeFormat, Class<T> className) {
+        super(String.format(runtimeFormat.format, className.getSimpleName()));
+    }
+
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.INTERNAL_SERVER_ERROR;
@@ -18,5 +22,14 @@ public class GeneralRuntimeException extends RuntimeException implements General
     @Override
     public ExceptionRestGenericMessage getBody() {
         return new ExceptionRestGenericMessage(this.getHttpStatus(), this.getMessage());
+    }
+
+    public enum GeneralRuntimeFormat {
+        processFailed("Failed to process %s");
+        private final String format;
+
+        GeneralRuntimeFormat(String format) {
+            this.format = format;
+        }
     }
 }
