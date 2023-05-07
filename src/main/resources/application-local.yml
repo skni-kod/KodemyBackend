@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    host-port: localhost:5432
+    host-port: localhost:5435
   liquibase:
     contexts: local
   rabbitmq:

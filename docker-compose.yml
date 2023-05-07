@@ -8,7 +8,7 @@ services:
       - test
     restart: unless-stopped
     ports:
-      - 8181:8080
+      - "8181:8080"
     networks:
       - lan
     depends_on:
@@ -16,15 +16,15 @@ services:
       - rabbitmq
 
   postgres:
-    image: postgres:14.1-alpine
     container_name: kodemy_postgres_dev
-    restart: always
+    image: postgres:14.1-alpine
     environment:
-      POSTGRES_DB: kodemy
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: kodemy
     ports:
-      - 5432:5432
+      - "5435:5432"
+    restart: always
     volumes:
       - postgres_dev:/var/lib/postgresql/data
       - ./sql:/sql
@@ -39,12 +39,13 @@ services:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: password
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_dev:/var/lib/rabbitmq
     networks:
       - lan
+
 
 networks:
   lan:
