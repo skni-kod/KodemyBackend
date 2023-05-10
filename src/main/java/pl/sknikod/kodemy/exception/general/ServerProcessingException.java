@@ -2,15 +2,15 @@ package pl.sknikod.kodemy.exception.general;
 
 import org.springframework.http.HttpStatus;
 import pl.sknikod.kodemy.util.ExceptionRestGenericMessage;
-import pl.sknikod.kodemy.util.GeneralExceptionStructure;
+import pl.sknikod.kodemy.util.ExceptionStructure;
 
-public class GeneralRuntimeException extends RuntimeException implements GeneralExceptionStructure {
+public class ServerProcessingException extends RuntimeException implements ExceptionStructure {
 
-    public GeneralRuntimeException(String message) {
+    public ServerProcessingException(String message) {
         super(message);
     }
 
-    public <T> GeneralRuntimeException(GeneralRuntimeFormat runtimeFormat, Class<T> className) {
+    public <T> ServerProcessingException(Format runtimeFormat, Class<T> className) {
         super(String.format(runtimeFormat.format, className.getSimpleName()));
     }
 
@@ -24,11 +24,11 @@ public class GeneralRuntimeException extends RuntimeException implements General
         return new ExceptionRestGenericMessage(this.getHttpStatus(), this.getMessage());
     }
 
-    public enum GeneralRuntimeFormat {
+    public enum Format {
         processFailed("Failed to process %s");
         private final String format;
 
-        GeneralRuntimeFormat(String format) {
+        Format(String format) {
             this.format = format;
         }
     }

@@ -2,7 +2,7 @@ package pl.sknikod.kodemy.exception.general;
 
 import org.springframework.http.HttpStatus;
 
-public class AlreadyExistsException extends GeneralRuntimeException {
+public class AlreadyExistsException extends ServerProcessingException {
     public AlreadyExistsException(String message) {
         super(message);
     }

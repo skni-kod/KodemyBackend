@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.sknikod.kodemy.exception.general.GeneralRuntimeException;
+import pl.sknikod.kodemy.exception.general.ServerProcessingException;
 
 import javax.validation.constraints.NotNull;
 
@@ -42,8 +42,8 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(ex, null, headers, status, request);
     }
 
-    @ExceptionHandler(GeneralRuntimeException.class)
-    public ResponseEntity<Object> handleGeneralException(GeneralRuntimeException ex, WebRequest request) {
+    @ExceptionHandler(ServerProcessingException.class)
+    public ResponseEntity<Object> handleGeneralException(ServerProcessingException ex, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
         return this.handleExceptionInternal(ex, null, headers, ex.getHttpStatus(), request);
     }
