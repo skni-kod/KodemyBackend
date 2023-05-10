@@ -8,65 +8,65 @@
     <changeSet id="0002-1" author="KartVen">
         <addColumn tableName="categories">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="grades">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="materials">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="providers">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="sections">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="technologies">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="types">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="users">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
         <addColumn tableName="roles">
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created_date" type="TIMESTAMP"/>
+            <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
-            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
     </changeSet>
 

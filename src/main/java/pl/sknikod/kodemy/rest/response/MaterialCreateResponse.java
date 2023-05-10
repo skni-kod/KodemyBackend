@@ -1,10 +1,10 @@
 package pl.sknikod.kodemy.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import io.swagger.v3.oas.annotations.Hidden;
+import lombok.*;
 import pl.sknikod.kodemy.material.MaterialStatus;
-import pl.sknikod.kodemy.rest.BaseDetails;
+import pl.sknikod.kodemy.rest.UserDetails;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -50,11 +50,13 @@ public class MaterialCreateResponse {
         }
     }
 
-    @Value
-    @EqualsAndHashCode(callSuper = true)
-    public static class UserDetails extends BaseDetails {
-        public UserDetails(Long id, String name) {
-            super(id, name);
-        }
+    @Getter
+    @AllArgsConstructor
+    @ToString
+    @EqualsAndHashCode
+    @Hidden
+    private static class BaseDetails {
+        Long id;
+        String name;
     }
 }

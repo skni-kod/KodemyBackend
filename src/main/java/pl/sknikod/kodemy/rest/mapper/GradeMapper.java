@@ -1,12 +1,14 @@
 package pl.sknikod.kodemy.rest.mapper;
 
-import org.mapstruct.*;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.rest.request.MaterialAddGradeRequest;
 import pl.sknikod.kodemy.rest.response.SingleGradeResponse;
-import pl.sknikod.kodemy.user.User;
 
 import java.util.Set;
 
@@ -35,7 +37,4 @@ public abstract class GradeMapper {
 
     @Mapping(target = "createdBy", source = "user")
     public abstract SingleGradeResponse map(Grade grade);
-
-    @Mapping(target = "name", source = "username")
-    protected abstract SingleGradeResponse.UserDeatails mapUserToCreatedBy(User user);
 }

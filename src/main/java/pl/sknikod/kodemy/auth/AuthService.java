@@ -4,6 +4,8 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,7 +20,6 @@ import pl.sknikod.kodemy.config.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
 import pl.sknikod.kodemy.provider.Provider;
 import pl.sknikod.kodemy.provider.ProviderRepository;
-import pl.sknikod.kodemy.rest.mapper.UserMapper;
 import pl.sknikod.kodemy.rest.response.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.role.RoleRepository;
 import pl.sknikod.kodemy.user.User;
@@ -33,7 +34,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final AuthMapper authMapper;
     private final UserPrincipalUseCase userPrincipalUseCase;
 
     @Override
@@ -53,19 +54,19 @@ public class AuthService extends DefaultOAuth2UserService {
                 .map(UserPrincipal::getId)
                 .map(userRepository::findById)
                 .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
-                .map(userMapper::map)
+                .map(authMapper::map)
                 .getOrNull();
     }
 
     @Component
     @AllArgsConstructor
-    private static class UserPrincipalUseCase{
+    private static class UserPrincipalUseCase {
         private RoleRepository roleRepository;
         private AppConfig.SecurityRoleProperties roleProperties;
         private final UserRepository userRepository;
         private final ProviderRepository providerRepository;
 
-        public UserPrincipal execute(OAuth2User oAuth2User, String registrationId){
+        public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
             UserProviderType providerType = Option.of(registrationId)
                     .map(UserProviderType::valueOf)
                     .getOrNull();
@@ -79,13 +80,14 @@ public class AuthService extends DefaultOAuth2UserService {
                     .getOrElse(() -> this.create(authUserInfo, providerType));
         }
 
-        public UserPrincipal create(User user, Map<String, Object> attributes){
+        public UserPrincipal create(User user, Map<String, Object> attributes) {
             return Option
                     .of(user.getRole().getName())
                     .map(roleProperties::getPrivileges)
                     .map(authorities -> UserPrincipal.create(user, authorities, attributes))
                     .getOrElse(() -> UserPrincipal.create(user, new HashSet<>(), attributes));
         }
+
         public UserPrincipal create(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
             return Try.of(roleProperties::getDefaultRole)
                     .map(roleRepository::findByName)
@@ -110,5 +112,10 @@ public class AuthService extends DefaultOAuth2UserService {
                             () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")
                     );
         }
+    }
+
+    @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.FIELD)
+    public abstract static class AuthMapper {
+        public abstract UserOAuth2MeResponse map(User user);
     }
 }

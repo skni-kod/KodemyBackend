@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
-import pl.sknikod.kodemy.rest.response.UserOAuth2MeResponse;
+import pl.sknikod.kodemy.rest.UserDetails;
 import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserPrincipal;
 import pl.sknikod.kodemy.user.UserRepository;
@@ -21,7 +21,7 @@ public abstract class UserMapper {
     @Autowired
     private UserRepository userRepository;
 
-    public abstract UserOAuth2MeResponse map(User user);
+    public abstract UserDetails map(User user);
 
     protected User mapUserFromContext() {
         return Option.of(UserPrincipal.getCurrentSessionUser())

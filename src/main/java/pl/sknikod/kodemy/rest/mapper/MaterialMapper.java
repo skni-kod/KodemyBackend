@@ -8,7 +8,6 @@ import pl.sknikod.kodemy.material.MaterialStatus;
 import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
 import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
 import pl.sknikod.kodemy.technology.Technology;
-import pl.sknikod.kodemy.user.User;
 import pl.sknikod.kodemy.user.UserPrincipal;
 
 import java.util.List;
@@ -40,23 +39,10 @@ public abstract class MaterialMapper {
     })
     public abstract Material map(MaterialCreateRequest body);
 
-    @Mapping(target = "createdBy", source = "user", qualifiedByName = "mapUserToCreatedBy")
+    @Mapping(target = "createdBy", source = "user")
     public abstract MaterialCreateResponse map(Material material);
 
-    @Named("mapTechnologiesSetToList")
-    protected List<MaterialCreateResponse.TechnologyDetails> mapTechnologiesSetToList(Set<Technology> technologies) {
-        return technologies
-                .stream()
-                .map(technology -> new MaterialCreateResponse.TechnologyDetails(
-                                technology.getId(), technology.getName()
-                        )
-                )
-                .toList();
-    }
-
-    @Named("mapUserToCreatedBy")
-    @Mapping(target = "name", source = "username")
-    public abstract MaterialCreateResponse.UserDetails map(User user);
+    public abstract List<MaterialCreateResponse.TechnologyDetails> map(Set<Technology> technologies);
 
     protected MaterialStatus getNewMaterialStatus() {
         return UserPrincipal.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL") ?

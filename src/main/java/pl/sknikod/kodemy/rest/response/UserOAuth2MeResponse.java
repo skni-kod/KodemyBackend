@@ -1,9 +1,7 @@
 package pl.sknikod.kodemy.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
-import pl.sknikod.kodemy.rest.BaseDetails;
 
 import java.util.Date;
 
@@ -18,10 +16,8 @@ public class UserOAuth2MeResponse {
     RoleDetails role;
 
     @Value
-    @EqualsAndHashCode(callSuper = true)
-    public static class RoleDetails extends BaseDetails {
-        public RoleDetails(Long id, String name){
-            super(id,name);
-        }
+    public static class RoleDetails {
+        Long id;
+        String name;
     }
 }

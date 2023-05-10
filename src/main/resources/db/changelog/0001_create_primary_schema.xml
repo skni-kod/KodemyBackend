@@ -126,11 +126,11 @@
 
     <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
         <sql>
-            insert into ROLES (name)
-            values ('ROLE_USER'),
-                   ('ROLE_MODERATOR'),
-                   ('ROLE_ADMIN'),
-                   ('ROLE_SUPERADMIN');
+            insert into ROLES (id, name)
+            values (1, 'ROLE_USER'),
+                   (2, 'ROLE_MODERATOR'),
+                   (3, 'ROLE_ADMIN'),
+                   (4, 'ROLE_SUPERADMIN');
         </sql>
     </changeSet>
 
