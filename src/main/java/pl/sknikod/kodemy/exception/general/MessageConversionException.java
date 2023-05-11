@@ -2,7 +2,7 @@ package pl.sknikod.kodemy.exception.general;
 
 import org.springframework.http.HttpStatus;
 
-public class MessageConversionException extends GeneralRuntimeException {
+public class MessageConversionException extends ServerProcessingException {
     public MessageConversionException(String message) {
         super(message);
     }

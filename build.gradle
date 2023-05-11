@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'groovy'
 }
 
 java {
@@ -43,9 +44,14 @@ dependencies {
     testImplementation 'io.zonky.test:embedded-database-spring-test:2.2.0'
     testImplementation 'io.zonky.test:embedded-postgres:2.0.3'
 
+    testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+    }
 }

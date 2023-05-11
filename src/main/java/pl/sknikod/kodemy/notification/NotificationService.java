@@ -66,7 +66,7 @@ public class NotificationService {
                     notification.setRead(true);
                     return notificationRepository.save(notification);
                 })
-                .orElseThrow(() -> new NotFoundException(NotFoundException.NotFoundFormat.entityId, Notification.class, id));
+                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Notification.class, id));
     }
 
     @Component

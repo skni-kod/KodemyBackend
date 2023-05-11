@@ -1,0 +1,9 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-test.xml
+    contexts: test
+    enabled: true
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: test

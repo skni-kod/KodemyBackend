@@ -21,7 +21,7 @@ public abstract class TechnologyMapper {
         return technologiesIds
                 .stream()
                 .map(id -> technologyRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("Technology not found"))
+                        .orElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Technology.class, id))
                 )
                 .collect(Collectors.toSet());
     }

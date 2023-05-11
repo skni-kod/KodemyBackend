@@ -3,7 +3,7 @@ package pl.sknikod.kodemy.material;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemy.exception.general.GeneralRuntimeException;
+import pl.sknikod.kodemy.exception.general.ServerProcessingException;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
 import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.notification.NotificationService;
@@ -31,15 +31,15 @@ public class MaterialService {
                 .map(materialRepository::save)
                 .map(this::checkApproval)
                 .map(materialMapper::map)
-                .getOrElseThrow(() -> new GeneralRuntimeException(GeneralRuntimeException.GeneralRuntimeFormat.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
     }
 
     public void addGrade(MaterialAddGradeRequest body, Long materialId) {
         Material material = Option.ofOptional(materialRepository.findById(materialId))
-                .getOrElseThrow(() -> new NotFoundException(NotFoundException.NotFoundFormat.entityId, Material.class,materialId));
+                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Material.class,materialId));
         Grade grade = Option.of(body)
                 .map(gradeMapper::map)
-                .getOrElseThrow(() -> new GeneralRuntimeException(GeneralRuntimeException.GeneralRuntimeFormat.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
 
         grade.setMaterial(material);
     }
@@ -56,9 +56,9 @@ public class MaterialService {
     public Set<SingleGradeResponse> showGrades(Long materialId) {
         return Option.of(Option.
                         ofOptional(materialRepository.findById(materialId))
-                        .getOrElseThrow(() -> new NotFoundException(NotFoundException.NotFoundFormat.entityId, Material.class,materialId)))
+                        .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Material.class,materialId)))
                 .map(Material::getGrades)
                 .map(gradeMapper::map)
-                .getOrElseThrow(() -> new GeneralRuntimeException(GeneralRuntimeException.GeneralRuntimeFormat.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
     }
 }
