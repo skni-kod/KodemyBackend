@@ -25,11 +25,11 @@ public interface AuthControllerDefinition {
     void logout(@RequestParam String redirect_uri);
 
     @GetMapping("/providers")
-    @Operation(summary = "Get all OAuth2 providers")
+    @Operation(summary = "Show all OAuth2 providers")
     ResponseEntity<UserProviderType[]> getProvidersList();
 
     @GetMapping("/me")
-    @Operation(summary = "Get information about logged user")
+    @Operation(summary = "Show information about logged user")
     @SwaggerResponse.AuthRequest
     ResponseEntity<UserOAuth2MeResponse> getUserInfo();
 }
