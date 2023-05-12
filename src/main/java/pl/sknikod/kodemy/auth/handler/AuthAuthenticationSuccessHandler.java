@@ -7,19 +7,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
+import pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemy.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
+import static pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
 
 @Component
 public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
-    private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
+    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
 
     @Value("${springdoc.swagger-ui.path:#{T(org.springdoc.core.Constants).DEFAULT_SWAGGER_UI_PATH}}")
     private String springdocSwaggerUiPAth;
@@ -45,6 +45,6 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
     private void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        authCookieAuthorizationRequestRepository.removeAuthorizationSession(request, response);
+        authorizationRequestRepository.removeAuthorizationSession(request, response);
     }
 }

@@ -6,19 +6,19 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
+import pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemy.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
+import static pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
 
 @Component
 public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     @Autowired
-    private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
+    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
@@ -39,6 +39,6 @@ public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
     }
 
     protected final void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
-        authCookieAuthorizationRequestRepository.removeAuthorizationSession(request, response);
+        authorizationRequestRepository.removeAuthorizationSession(request, response);
     }
 }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static pl.sknikod.kodemy.auth.AuthController.REDIRECT_URI_PARAMETER;
-import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.REDIRECT_URI_COOKIE_NAME;
+import static pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
 
 @Component
 @AllArgsConstructor

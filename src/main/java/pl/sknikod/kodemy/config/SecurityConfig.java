@@ -7,17 +7,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository;
-import pl.sknikod.kodemy.auth.AuthEntryPoint;
 import pl.sknikod.kodemy.auth.AuthService;
+import pl.sknikod.kodemy.auth.AuthenticationEntryPointImpl;
+import pl.sknikod.kodemy.auth.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemy.auth.handler.*;
 import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
-
-import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME;
 
 @Configuration
 @EnableWebSecurity
@@ -28,11 +25,11 @@ import static pl.sknikod.kodemy.auth.AuthCookieAuthorizationRequestRepository.AU
 )
 @AllArgsConstructor
 public class SecurityConfig {
-    private AuthCookieAuthorizationRequestRepository authCookieAuthorizationRequestRepository;
+    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
     private AuthService authService;
     private AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
     private AuthAuthenticationFailureHandler authAuthenticationFailureHandler;
-    private AuthEntryPoint authEntryPoint;
+    private AuthenticationEntryPointImpl authEntryPoint;
     private AuthAccessDeniedHandler authAccessDeniedHandler;
     private AuthLogoutHandler authLogoutHandler;
     private AuthLogoutSuccessHandler authLogoutSuccessHandler;
@@ -42,16 +39,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and().csrf(AbstractHttpConfigurer::disable)
+                .cors().and().csrf().disable()
                 .addFilterBefore(refreshUserPrincipalFilter, FilterSecurityInterceptor.class)
                 .authorizeHttpRequests(autz -> autz
                         .anyRequest().permitAll()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin().disable()
                 .oauth2Login(login -> login
                         .authorizationEndpoint()
                         .baseUri(authProperties.getLoginUri())
-                        .authorizationRequestRepository(authCookieAuthorizationRequestRepository)
+                        .authorizationRequestRepository(authorizationRequestRepository)
                         .and()
                         .redirectionEndpoint()
                         .baseUri(authProperties.getCallbackUri())
@@ -74,8 +71,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler(authLogoutSuccessHandler)
                         .invalidateHttpSession(false)
                         .deleteCookies(
-                                "JSESSIONID",
-                                AUTHORIZATION_REQUEST_COOKIE_NAME
+                                "JSESSIONID"
                         )
                 );
         return http.build();
