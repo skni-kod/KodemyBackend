@@ -9,7 +9,7 @@ import pl.sknikod.kodemy.grade.Grade;
 import pl.sknikod.kodemy.notification.NotificationService;
 import pl.sknikod.kodemy.notification.NotificationTitle;
 import pl.sknikod.kodemy.rest.mapper.GradeMapper;
-import pl.sknikod.kodemy.rest.mapper.MaterialMapper;
+import pl.sknikod.kodemy.rest.mapper.MaterialCreationMapper;
 import pl.sknikod.kodemy.rest.request.MaterialCreateRequest;
 import pl.sknikod.kodemy.rest.request.MaterialAddGradeRequest;
 import pl.sknikod.kodemy.rest.response.MaterialCreateResponse;
@@ -22,15 +22,15 @@ import java.util.Set;
 @AllArgsConstructor
 public class MaterialService {
     private final MaterialRepository materialRepository;
-    private final MaterialMapper materialMapper;
+    private final MaterialCreationMapper materialCreationMapper;
     private final NotificationService notificationService;
     private final GradeMapper gradeMapper;
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         return Option.of(body)
-                .map(materialMapper::map)
+                .map(materialCreationMapper::map)
                 .map(materialRepository::save)
                 .map(this::checkApproval)
-                .map(materialMapper::map)
+                .map(materialCreationMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
     }
 

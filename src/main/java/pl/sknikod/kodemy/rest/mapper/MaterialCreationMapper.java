@@ -19,7 +19,7 @@ import java.util.Set;
                 TypeMapper.class, CategoryMapper.class, TechnologyMapper.class, UserMapper.class
         }
 )
-public abstract class MaterialMapper {
+public abstract class MaterialCreationMapper {
     @Autowired
     protected UserMapper userMapper;
 
