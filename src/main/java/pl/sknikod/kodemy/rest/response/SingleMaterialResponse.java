@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 import pl.sknikod.kodemy.material.MaterialStatus;
 import pl.sknikod.kodemy.rest.UserDetails;
-import pl.sknikod.kodemy.type.Type;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,7 +19,7 @@ public class SingleMaterialResponse {
     String link;
     @Enumerated(EnumType.STRING)
     MaterialStatus status;
-    Type type;
+    TypeDetails type;
     List<TechnologyDetails> technologies;
     Double averageGrade;
     UserResponse createdBy;
@@ -39,6 +38,14 @@ public class SingleMaterialResponse {
     @EqualsAndHashCode(callSuper = true)
     public static class TechnologyDetails extends BaseDetails {
         public TechnologyDetails(Long id, String name) {
+            super(id, name);
+        }
+    }
+
+    @Value
+    @EqualsAndHashCode(callSuper = true)
+    public static class TypeDetails extends BaseDetails {
+        public TypeDetails(Long id, String name) {
             super(id, name);
         }
     }

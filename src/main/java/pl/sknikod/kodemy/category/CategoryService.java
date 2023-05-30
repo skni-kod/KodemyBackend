@@ -3,6 +3,7 @@ package pl.sknikod.kodemy.category;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.sknikod.kodemy.exception.general.NotFoundException;
 import pl.sknikod.kodemy.exception.general.ServerProcessingException;
 import pl.sknikod.kodemy.rest.mapper.CategoryMaterialMapper;
@@ -17,6 +18,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMaterialMapper materialMapper;
 
+    @Transactional
     public Set<SingleMaterialResponse> showMaterials(Long categoryId) {
         return Option.of(
                         Option.ofOptional(categoryRepository.findById(categoryId))
