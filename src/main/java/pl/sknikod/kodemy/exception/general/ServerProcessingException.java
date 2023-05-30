@@ -1,8 +1,8 @@
 package pl.sknikod.kodemy.exception.general;
 
 import org.springframework.http.HttpStatus;
-import pl.sknikod.kodemy.util.ExceptionRestGenericMessage;
-import pl.sknikod.kodemy.util.ExceptionStructure;
+import pl.sknikod.kodemy.exception.ExceptionRestGenericMessage;
+import pl.sknikod.kodemy.exception.ExceptionStructure;
 
 public class ServerProcessingException extends RuntimeException implements ExceptionStructure {
 

@@ -9,9 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.sknikod.kodemy.config.AppConfig;
-import pl.sknikod.kodemy.user.UserPrincipal;
-import pl.sknikod.kodemy.user.UserRepository;
+import pl.sknikod.kodemy.configuration.AppConfig;
+import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
+import pl.sknikod.kodemy.infrastructure.model.user.UserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -32,8 +32,7 @@ public class RefreshUserPrincipalFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         SecurityContext context = SecurityContextHolder.getContext();
-        if (context.getAuthentication() instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) context.getAuthentication();
+        if (context.getAuthentication() instanceof OAuth2AuthenticationToken authentication) {
             Option.of(authentication)
                     .map(Authentication::getPrincipal)
                     .filter(principal -> principal instanceof UserPrincipal)
