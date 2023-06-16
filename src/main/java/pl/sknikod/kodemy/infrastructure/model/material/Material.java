@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.sknikod.kodemy.infrastructure.model.category.Category;
 import pl.sknikod.kodemy.infrastructure.model.grade.Grade;
+import pl.sknikod.kodemy.infrastructure.model.technology.Technology;
 import pl.sknikod.kodemy.infrastructure.model.type.Type;
 import pl.sknikod.kodemy.infrastructure.model.user.User;
-import pl.sknikod.kodemy.infrastructure.model.technology.Technology;
 import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "materials")
-public class Material extends Auditable<String>{
+public class Material extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

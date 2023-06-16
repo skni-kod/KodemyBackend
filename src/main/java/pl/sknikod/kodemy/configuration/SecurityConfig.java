@@ -10,10 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.sknikod.kodemy.infrastructure.auth.handler.*;
-import pl.sknikod.kodemy.infrastructure.rest.AuthService;
 import pl.sknikod.kodemy.infrastructure.auth.AuthenticationEntryPointImpl;
 import pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl;
+import pl.sknikod.kodemy.infrastructure.auth.handler.*;
+import pl.sknikod.kodemy.infrastructure.rest.AuthService;
 import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
 
 @Configuration

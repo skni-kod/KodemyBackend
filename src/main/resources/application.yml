@@ -87,3 +87,7 @@ kodemy:
           - CAN_BANNING_USERS
           - CAN_ASSIGN_ROLES
           - CAN_USE_ACTUATOR
+
+opensearch:
+  hosts:
+    - "http://localhost:9200"

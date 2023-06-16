@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,20 +26,20 @@ import java.time.LocalDateTime;
 @EnableRabbit
 @AllArgsConstructor
 public class RabbitMQConfig {
-    private final CachingConnectionFactory cachingConnectionFactory;
     public static final String NOTIFICATION_USER_QUEUE_NAME = "q.notification.user";
     public static final String NOTIFICATION_ADMIN_QUEUE_NAME = "q.notification.admin";
     public static final String NOTIFICATION_EXCHANGE_NAME = "notification-exchange";
     public static final String NOTIFICATION_USER_KEY = "user";
     public static final String NOTIFICATION_ADMIN_KEY = "admin";
+    private final CachingConnectionFactory cachingConnectionFactory;
 
     @Bean
-    public Jackson2JsonMessageConverter messageConverter(){
+    public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(Jackson2JsonMessageConverter messageConverter){
+    public RabbitTemplate rabbitTemplate(Jackson2JsonMessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;

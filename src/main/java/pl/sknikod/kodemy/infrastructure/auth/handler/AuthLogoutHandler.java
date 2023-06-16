@@ -10,8 +10,8 @@ import pl.sknikod.kodemy.util.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static pl.sknikod.kodemy.infrastructure.rest.AuthController.REDIRECT_URI_PARAMETER;
 import static pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
+import static pl.sknikod.kodemy.infrastructure.rest.AuthController.REDIRECT_URI_PARAMETER;
 
 @Component
 @AllArgsConstructor

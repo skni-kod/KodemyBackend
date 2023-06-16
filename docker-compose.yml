@@ -46,11 +46,38 @@ services:
     networks:
       - lan
 
+  opensearch:
+    image: opensearchproject/opensearch:2.8.0
+    container_name: kodemy_opensearch_dev
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - cluster.name=kodemy-cluster
+      - "DISABLE_SECURITY_PLUGIN=true"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - opensearch_dev:/usr/share/opensearch/data
+    networks:
+      - lan
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.8.0
+    container_name: kodemy_opensearch_dashboards_dev
+    restart: always
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
+    ports:
+      - "5601:5601"
+    networks:
+      - lan
 
 networks:
   lan:
-    driver: bridge
 
 volumes:
   postgres_dev:
   rabbitmq_dev:
+  opensearch_dev:

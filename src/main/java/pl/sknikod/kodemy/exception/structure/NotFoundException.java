@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.exception.general;
+package pl.sknikod.kodemy.exception.structure;
 
 import org.springframework.http.HttpStatus;
 
@@ -7,9 +7,10 @@ public class NotFoundException extends ServerProcessingException {
         super(message);
     }
 
-    public <T> NotFoundException(Format notFoundFormat, Class<T> className, Long id){
-        super(String.format(notFoundFormat.format, className.getSimpleName(),id));
+    public <T> NotFoundException(Format notFoundFormat, Class<T> className, Long id) {
+        super(String.format(notFoundFormat.format, className.getSimpleName(), id));
     }
+
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
@@ -18,7 +19,8 @@ public class NotFoundException extends ServerProcessingException {
     public enum Format {
         entityId("%s not found with id: %d");
         private final String format;
-        Format(String format){
+
+        Format(String format) {
             this.format = format;
         }
     }

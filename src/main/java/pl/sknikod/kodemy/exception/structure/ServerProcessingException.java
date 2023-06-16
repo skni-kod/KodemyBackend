@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.exception.general;
+package pl.sknikod.kodemy.exception.structure;
 
 import org.springframework.http.HttpStatus;
 import pl.sknikod.kodemy.exception.ExceptionRestGenericMessage;
@@ -8,6 +8,10 @@ public class ServerProcessingException extends RuntimeException implements Excep
 
     public ServerProcessingException(String message) {
         super(message);
+    }
+
+    public ServerProcessingException() {
+        super("Internal error");
     }
 
     public <T> ServerProcessingException(Format runtimeFormat, Class<T> className) {

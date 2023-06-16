@@ -31,7 +31,7 @@ public class ExceptionRestGenericMessage {
         this.message = message;
     }
 
-    public ExceptionRestGenericMessage(HttpStatus status, Exception ex){
+    public ExceptionRestGenericMessage(HttpStatus status, Exception ex) {
         this(status.value(), status.getReasonPhrase(), ex.getMessage());
     }
 

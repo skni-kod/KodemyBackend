@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.infrastructure.rest.model.request;
+package pl.sknikod.kodemy.infrastructure.rest.model;
 
 import lombok.Data;
 
