@@ -1,6 +1,5 @@
 package pl.sknikod.kodemy.util;
 
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;

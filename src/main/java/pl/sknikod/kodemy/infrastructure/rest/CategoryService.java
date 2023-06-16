@@ -1,32 +1,29 @@
 package pl.sknikod.kodemy.infrastructure.rest;
 
-import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.search.SearchHit;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import pl.sknikod.kodemy.exception.general.NotFoundException;
-import pl.sknikod.kodemy.exception.general.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.model.category.Category;
-import pl.sknikod.kodemy.infrastructure.model.category.CategoryRepository;
-import pl.sknikod.kodemy.infrastructure.rest.mapper.CategoryMaterialMapper;
-import pl.sknikod.kodemy.infrastructure.rest.model.response.SingleMaterialResponse;
+import pl.sknikod.kodemy.infrastructure.rest.mapper.MaterialOpenSearchMapper;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialOpenSearch;
 
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class CategoryService {
+    private final OpenSearchService openSearchService;
+    private final MaterialOpenSearchMapper materialOpenSearchMapper;
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryMaterialMapper materialMapper;
-
-    @Transactional
-    public Set<SingleMaterialResponse> showMaterials(Long categoryId) {
-        return Option.of(
-                        Option.ofOptional(categoryRepository.findById(categoryId))
-                                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Category.class, categoryId)))
-                .map(Category::getMaterials)
-                .map(materialMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Category.class));
+    public List<MaterialOpenSearch> showMaterials(Long categoryId, Integer limit) {
+        SearchHit[] searchHits = openSearchService.search(
+                OpenSearchService.Info.MATERIAL,
+                QueryBuilders.termQuery("categoryId", categoryId),
+                limit
+        );
+        return Arrays.stream(searchHits)
+                .map(materialOpenSearchMapper::map)
+                .toList();
     }
 }

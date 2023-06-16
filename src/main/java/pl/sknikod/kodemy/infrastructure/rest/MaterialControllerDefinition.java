@@ -4,10 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.sknikod.kodemy.infrastructure.rest.model.request.MaterialAddGradeRequest;
-import pl.sknikod.kodemy.infrastructure.rest.model.request.MaterialCreateRequest;
-import pl.sknikod.kodemy.infrastructure.rest.model.response.MaterialCreateResponse;
-import pl.sknikod.kodemy.infrastructure.rest.model.response.SingleGradeResponse;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialAddGradeRequest;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialCreateRequest;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialCreateResponse;
+import pl.sknikod.kodemy.infrastructure.rest.model.SingleGradeResponse;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;

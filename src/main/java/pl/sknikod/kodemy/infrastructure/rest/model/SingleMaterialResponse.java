@@ -1,10 +1,9 @@
-package pl.sknikod.kodemy.infrastructure.rest.model.response;
+package pl.sknikod.kodemy.infrastructure.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 import pl.sknikod.kodemy.infrastructure.model.material.MaterialStatus;
-import pl.sknikod.kodemy.infrastructure.rest.model.UserDetails;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,7 +21,7 @@ public class SingleMaterialResponse {
     TypeDetails type;
     List<TechnologyDetails> technologies;
     Double averageGrade;
-    UserResponse createdBy;
+    UserResponse creator;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Warsaw")
     Date createdDate;
 

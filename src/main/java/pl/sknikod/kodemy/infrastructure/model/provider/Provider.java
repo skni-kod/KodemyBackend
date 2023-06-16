@@ -54,7 +54,7 @@ public class Provider extends Auditable<String> {
     }
 
     @Override
-    public String   toString() {
+    public String toString() {
         return "Provider{" +
                 "id=" + id +
                 ", principalId='" + principalId + '\'' +

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.exception.general;
+package pl.sknikod.kodemy.exception.structure;
 
 import org.springframework.http.HttpStatus;
 

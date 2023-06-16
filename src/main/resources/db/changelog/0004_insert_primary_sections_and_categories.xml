@@ -1,6 +1,6 @@
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
@@ -15,6 +15,30 @@
         </sql>
     </changeSet>
 
-    <changeSet id="0004-2" author="KartVen" labels="primary_category_records"/>
+    <changeSet id="0004-2" author="KartVen" labels="primary_category_records">
+        <sql>
+            insert into categories (id, name, section_id)
+            values (1, 'Frontend Dev', 1),
+                   (2, 'Backend Dev', 1),
+                   (3, 'Mobile Dev', 1),
+                   (4, 'Silnik gier', 2),
+                   (5, 'Grafika w grze', 2),
+                   (6, 'Komputer vintage', 3),
+                   (7, 'Robotyka', 3),
+                   (8, 'Struktura danych', 4),
+                   (9, 'Algorytm', 4),
+                   (10, 'Uczenie maszynowe', 5),
+                   (11, 'Sztuczna inteligencja', 5),
+                   (12, 'Cyberbezpieczeństwo', 5),
+                   (13, 'Zarządzanie bazą danych', 5),
+                   (14, 'Programowanie sieciowe', 5),
+                   (15, 'Programowanie wbudowane', 3),
+                   (16, 'Projektowanie Web', 1),
+                   (17, 'Grafika komputerowa', 1),
+                   (18, 'Test', 2),
+                   (19, 'Język assemblera', 4),
+                   (20, 'Konfiguracja', 4);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

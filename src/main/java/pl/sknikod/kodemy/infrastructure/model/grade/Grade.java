@@ -3,8 +3,8 @@ package pl.sknikod.kodemy.infrastructure.model.grade;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.sknikod.kodemy.infrastructure.model.user.User;
 import pl.sknikod.kodemy.infrastructure.model.material.Material;
+import pl.sknikod.kodemy.infrastructure.model.user.User;
 import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;

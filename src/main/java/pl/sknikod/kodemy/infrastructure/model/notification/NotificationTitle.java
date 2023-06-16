@@ -8,7 +8,9 @@ public enum NotificationTitle {
     MATERIAL_BANNED("Twój materiał został zbanowany"),
     MATERIAL_APPROVAL_REQUEST("Nowy/editowy materiał wymaga zatwierdzenia");
 
-    @Getter private final String desc;
+    @Getter
+    private final String desc;
+
     NotificationTitle(String desc) {
         this.desc = desc;
     }

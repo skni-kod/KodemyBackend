@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.4'
     implementation 'org.springframework.cloud:spring-cloud-context:4.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
+    implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.8.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'

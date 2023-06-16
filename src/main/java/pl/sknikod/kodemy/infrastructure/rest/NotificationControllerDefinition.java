@@ -17,17 +17,17 @@ import java.util.List;
 @SwaggerResponse.SuccessCode
 @SwaggerResponse.AuthRequest
 public interface NotificationControllerDefinition {
-    @GetMapping("/{id}")
-     @Operation(summary = "Show Notification by ID")
+    @GetMapping("/{notificationId}")
+    @Operation(summary = "Show Notification by ID")
     @SwaggerResponse.ReadRequest
-    Notification getNotificationById(@PathVariable Long id);
+    Notification getNotificationById(@PathVariable Long notificationId);
 
     @GetMapping
     @Operation(summary = "Show all Notifications")
     List<Notification> getNotifications();
 
-    @PutMapping("/{id}")
+    @PutMapping("/{notificationId}")
     @SwaggerResponse.NotFoundCode
     @Operation(summary = "Mark Notification as read")
-    void markAsRead(@PathVariable Long id);
+    void markAsRead(@PathVariable Long notificationId);
 }

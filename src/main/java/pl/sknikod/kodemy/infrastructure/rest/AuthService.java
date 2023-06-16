@@ -4,8 +4,6 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,18 +12,19 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
-import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
 import pl.sknikod.kodemy.configuration.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
+import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
+import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
 import pl.sknikod.kodemy.infrastructure.model.provider.Provider;
 import pl.sknikod.kodemy.infrastructure.model.provider.ProviderRepository;
-import pl.sknikod.kodemy.infrastructure.rest.model.response.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.infrastructure.model.role.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.user.User;
 import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
 import pl.sknikod.kodemy.infrastructure.model.user.UserProviderType;
 import pl.sknikod.kodemy.infrastructure.model.user.UserRepository;
+import pl.sknikod.kodemy.infrastructure.rest.mapper.AuthMapper;
+import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -61,10 +60,10 @@ public class AuthService extends DefaultOAuth2UserService {
     @Component
     @AllArgsConstructor
     private static class UserPrincipalUseCase {
-        private RoleRepository roleRepository;
-        private AppConfig.SecurityRoleProperties roleProperties;
         private final UserRepository userRepository;
         private final ProviderRepository providerRepository;
+        private RoleRepository roleRepository;
+        private AppConfig.SecurityRoleProperties roleProperties;
 
         public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
             UserProviderType providerType = Option.of(registrationId)
@@ -112,10 +111,5 @@ public class AuthService extends DefaultOAuth2UserService {
                             () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")
                     );
         }
-    }
-
-    @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.FIELD)
-    public abstract static class AuthMapper {
-        public abstract UserOAuth2MeResponse map(User user);
     }
 }

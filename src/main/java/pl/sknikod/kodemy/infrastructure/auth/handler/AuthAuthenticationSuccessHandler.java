@@ -1,7 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.auth.handler;
 
 import io.vavr.control.Option;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -17,9 +17,9 @@ import java.io.IOException;
 import static pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
 
 @Component
+@RequiredArgsConstructor
 public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Autowired
-    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
+    private final AuthorizationRequestRepositoryImpl authorizationRequestRepository;
 
     @Value("${springdoc.swagger-ui.path:#{T(org.springdoc.core.Constants).DEFAULT_SWAGGER_UI_PATH}}")
     private String springdocSwaggerUiPAth;

@@ -1,20 +1,20 @@
 package pl.sknikod.kodemy.infrastructure.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemy.infrastructure.rest.model.response.SingleMaterialResponse;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialOpenSearch;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
 public class CategoryController implements CategoryControllerDefinition {
     private final CategoryService categoryService;
 
-    @Override
-    public ResponseEntity<Set<SingleMaterialResponse>> showMaterials(Long categoryId){
-        return ResponseEntity.ok().body(categoryService.showMaterials(categoryId));
+    public ResponseEntity<List<MaterialOpenSearch>> getMaterialsByCategory(Long categoryId, Integer limit) {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.showMaterials(categoryId, limit));
     }
 
 }

@@ -1,14 +1,14 @@
 package pl.sknikod.kodemy.infrastructure.rest;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.configuration.RabbitMQConfig;
-import pl.sknikod.kodemy.exception.general.NotFoundException;
+import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.infrastructure.model.notification.Notification;
 import pl.sknikod.kodemy.infrastructure.model.notification.NotificationRepository;
 import pl.sknikod.kodemy.infrastructure.model.role.RoleName;
@@ -20,15 +20,11 @@ import java.util.Set;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationService {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
     public void sendNotification(String title, String message, Long recipientId) {
         rabbitTemplate.convertAndSend(
@@ -72,9 +68,9 @@ public class NotificationService {
     }
 
     @Component
+    @RequiredArgsConstructor
     public static class NotificationExecutor {
-        @Autowired
-        private NotificationRepository notificationRepository;
+        private final NotificationRepository notificationRepository;
 
         @RabbitListener(queues = {
                 RabbitMQConfig.NOTIFICATION_USER_QUEUE_NAME,

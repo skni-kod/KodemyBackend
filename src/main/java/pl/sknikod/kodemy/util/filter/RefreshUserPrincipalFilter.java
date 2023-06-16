@@ -2,7 +2,7 @@ package pl.sknikod.kodemy.util.filter;
 
 import io.vavr.control.Option;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,13 +21,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class RefreshUserPrincipalFilter extends OncePerRequestFilter {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AppConfig.SecurityRoleProperties roleProperties;
+    private final UserRepository userRepository;
+    private final AppConfig.SecurityRoleProperties roleProperties;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {

@@ -1,7 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.auth.handler;
 
 import io.vavr.control.Option;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -16,9 +16,9 @@ import java.io.IOException;
 import static pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
 
 @Component
+@RequiredArgsConstructor
 public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    @Autowired
-    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
+    private final AuthorizationRequestRepositoryImpl authorizationRequestRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
