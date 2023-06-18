@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -24,14 +25,13 @@ import java.time.LocalDateTime;
 
 @Configuration
 @EnableRabbit
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RabbitMQConfig {
     public static final String NOTIFICATION_USER_QUEUE_NAME = "q.notification.user";
     public static final String NOTIFICATION_ADMIN_QUEUE_NAME = "q.notification.admin";
     public static final String NOTIFICATION_EXCHANGE_NAME = "notification-exchange";
     public static final String NOTIFICATION_USER_KEY = "user";
     public static final String NOTIFICATION_ADMIN_KEY = "admin";
-    private final CachingConnectionFactory cachingConnectionFactory;
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
@@ -39,7 +39,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(Jackson2JsonMessageConverter messageConverter) {
+    public RabbitTemplate rabbitTemplate(CachingConnectionFactory cachingConnectionFactory, Jackson2JsonMessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;

@@ -1,8 +1,12 @@
 package pl.sknikod.kodemy.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Cookie {
 
     public static void addCookie(HttpServletResponse response, String name, String value, int expireTime) {

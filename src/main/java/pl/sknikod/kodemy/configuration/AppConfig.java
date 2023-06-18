@@ -1,7 +1,9 @@
 package pl.sknikod.kodemy.configuration;
 
 import io.vavr.control.Option;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,9 @@ import java.util.stream.Collectors;
         AuditConfig.class,
         RabbitMQConfig.class
 })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppConfig {
+
     @Configuration
     @Data
     @ConfigurationProperties(prefix = "kodemy.security.auth")

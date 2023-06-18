@@ -20,7 +20,7 @@ public abstract class GradeMapper {
     @Autowired
     protected UserService userService;
 
-    @Mappings({
+    @Mappings(value = {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user", source = "request", qualifiedByName = "mapUser"),
             @Mapping(target = "material", ignore = true),

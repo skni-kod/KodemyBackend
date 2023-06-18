@@ -29,7 +29,7 @@ public abstract class CategoryMaterialMapper {
     protected Double mapAvgGrade(Material material) {
         return gradeRepository.findAllByMaterialId(material.getId())
                 .stream()
-                .mapToDouble(Grade::getGrade)
+                .mapToDouble(Grade::getValue)
                 .average()
                 .orElse(0.0);
     }

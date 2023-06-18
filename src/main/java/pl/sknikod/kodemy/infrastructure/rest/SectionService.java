@@ -20,6 +20,6 @@ public class SectionService {
     public List<SingleSectionResponse> getAllSections() {
         return Option.of(sectionRepository.findAllWithFetchCategories())
                 .map(sectionMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Section.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Section.class));
     }
 }

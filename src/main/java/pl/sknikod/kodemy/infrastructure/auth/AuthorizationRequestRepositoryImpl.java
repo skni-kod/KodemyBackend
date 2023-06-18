@@ -28,16 +28,11 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
                 .map(cookie -> Base64.getUrlDecoder().decode(cookie))
                 .map(authReq -> (OAuth2AuthorizationRequest) SerializationUtils.deserialize(authReq))
                 .orElse(null);
-        /*return Optional.ofNullable(Cookie.getCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME))
-                .map(cookie -> Base64.getUrlDecoder().decode(cookie))
-                .map(authReq -> (OAuth2AuthorizationRequest) SerializationUtils.deserialize(authReq))
-                .orElse(null);*/
     }
 
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
-            /*Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);*/
             Option.of(request.getSession()).map(sessionObj -> {
                 sessionObj.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME);
                 return null;
@@ -47,8 +42,6 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
         }
 
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
-        //Cookie.addCookie(response, AUTHORIZATION_REQUEST_COOKIE_NAME, authRequestEncoded, 5 * 60);
-
         Option.of(request.getSession()).map(sessionObj -> {
             String authRequestEncoded = Base64.getUrlEncoder().encodeToString(
                     SerializationUtils.serialize(authorizationRequest)
@@ -68,7 +61,6 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
     }
 
     public void removeAuthorizationSession(HttpServletRequest request, HttpServletResponse response) {
-        //Cookie.deleteCookie(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);
         Option.of(request.getSession()).map(session -> {
             session.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME);
             return null;

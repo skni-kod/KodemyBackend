@@ -7,8 +7,8 @@ import pl.sknikod.kodemy.infrastructure.rest.model.SingleSectionResponse;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class SectionMapper {
-    public abstract List<SingleSectionResponse> map(List<Section> sections);
+public interface SectionMapper {
+    List<SingleSectionResponse> map(List<Section> sections);
 
-    public abstract SingleSectionResponse map(Section section);
+    SingleSectionResponse map(Section section);
 }

@@ -1,7 +1,8 @@
 package pl.sknikod.kodemy.configuration;
 
+import lombok.AccessLevel;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.http.HttpHost;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
@@ -15,12 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenSearchConfig {
-    private final OpenSearchProperties openSearchProperties;
-
     @Bean
-    public RestHighLevelClient restHighLevelClient() {
+    public RestHighLevelClient restHighLevelClient(OpenSearchProperties openSearchProperties) {
         HttpHost[] hosts = openSearchProperties.getHosts().stream().map(HttpHost::create).toArray(HttpHost[]::new);
         return new RestHighLevelClient(RestClient.builder(hosts));
     }

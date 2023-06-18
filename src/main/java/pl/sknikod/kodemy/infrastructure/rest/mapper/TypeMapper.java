@@ -16,7 +16,7 @@ public abstract class TypeMapper {
 
     public Type map(Long id) {
         return typeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Type.class, id));
+                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Type.class, id));
     }
 
     public abstract List<SingleTypeResponse> map(List<Type> types);

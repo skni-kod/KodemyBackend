@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.exception.structure;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import pl.sknikod.kodemy.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemy.exception.ExceptionStructure;
@@ -15,7 +16,7 @@ public class ServerProcessingException extends RuntimeException implements Excep
     }
 
     public <T> ServerProcessingException(Format runtimeFormat, Class<T> className) {
-        super(String.format(runtimeFormat.format, className.getSimpleName()));
+        super(String.format(runtimeFormat.message, className.getSimpleName()));
     }
 
     @Override
@@ -28,12 +29,9 @@ public class ServerProcessingException extends RuntimeException implements Excep
         return new ExceptionRestGenericMessage(this.getHttpStatus(), this.getMessage());
     }
 
+    @AllArgsConstructor
     public enum Format {
-        processFailed("Failed to process %s");
-        private final String format;
-
-        Format(String format) {
-            this.format = format;
-        }
+        PROCESS_FAILED("Failed to process %s");
+        private final String message;
     }
 }

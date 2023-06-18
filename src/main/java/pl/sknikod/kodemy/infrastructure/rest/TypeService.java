@@ -21,6 +21,6 @@ public class TypeService {
     public List<SingleTypeResponse> getAllTypes() {
         return Option.of(typeRepository.findAll())
                 .map(typeMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Type.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Type.class));
     }
 }

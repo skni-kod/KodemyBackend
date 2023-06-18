@@ -25,7 +25,7 @@ public abstract class MaterialCreateMapper {
     @Autowired
     protected CategoryRepository categoryRepository;
 
-    @Mappings({
+    @Mappings(value = {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "active", constant = "true"),
             @Mapping(target = "status", source = "body", qualifiedByName = "mapStatus"),
@@ -48,7 +48,7 @@ public abstract class MaterialCreateMapper {
 
     @Named(value = "mapCategory")
     protected Category mapCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Category.class, categoryId));
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId));
     }
 
     @Named(value = "mapUser")

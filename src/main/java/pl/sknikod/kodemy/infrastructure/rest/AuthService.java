@@ -75,7 +75,7 @@ public class AuthService extends DefaultOAuth2UserService {
             return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
                             authUserInfo.getPrincipalId(), providerType
                     ))
-                    .map(user -> this.create(user, authUserInfo.attributes))
+                    .map(user -> this.create(user, authUserInfo.getAttributes()))
                     .getOrElse(() -> this.create(authUserInfo, providerType));
         }
 
@@ -106,7 +106,7 @@ public class AuthService extends DefaultOAuth2UserService {
                                 user));
                         return user;
                     })
-                    .map(user -> this.create(user, authUserInfo.attributes))
+                    .map(user -> this.create(user, authUserInfo.getAttributes()))
                     .getOrElseThrow(
                             () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")
                     );
