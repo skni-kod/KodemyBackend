@@ -28,8 +28,6 @@ public class MaterialService {
     private final MaterialCreateMapper createMaterialMapper;
     private final NotificationService notificationService;
     private final GradeMapper gradeMapper;
-    private final RestHighLevelClient restHighLevelClient;
-    private final RequestOptions requestOptions;
     private final OpenSearchService openSearchService;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
@@ -42,15 +40,15 @@ public class MaterialService {
                 })
                 .map(this::checkApproval)
                 .map(createMaterialMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
     public void addGrade(MaterialAddGradeRequest body, Long materialId) {
         Material material = Option.ofOptional(materialRepository.findById(materialId))
-                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Material.class, materialId));
+                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId));
         Grade grade = Option.of(body)
                 .map(gradeMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
 
         grade.setMaterial(material);
     }
@@ -67,9 +65,9 @@ public class MaterialService {
     public Set<SingleGradeResponse> showGrades(Long materialId) {
         return Option.of(Option.
                         ofOptional(materialRepository.findById(materialId))
-                        .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.entityId, Material.class, materialId)))
+                        .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
                 .map(Material::getGrades)
                 .map(gradeMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.processFailed, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }

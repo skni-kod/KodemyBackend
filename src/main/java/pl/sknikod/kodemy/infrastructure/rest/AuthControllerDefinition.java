@@ -18,11 +18,16 @@ import pl.sknikod.kodemy.util.SwaggerResponse;
 public interface AuthControllerDefinition {
     @GetMapping("/authorize/{provider}")
     @Operation(summary = "Sign in via OAuth2 (ONLY WORK OUTSIDE SWAGGER)")
-    void authorize(@PathVariable UserProviderType provider, @RequestParam String redirect_uri);
+    void authorize(
+            @PathVariable UserProviderType provider,
+            @RequestParam(name = "redirect_uri", defaultValue = "https://") String redirectUri
+    );
 
     @GetMapping("/logout")
     @Operation(summary = "Logout (ONLY WORK OUTSIDE SWAGGER)")
-    void logout(@RequestParam String redirect_uri);
+    void logout(
+            @RequestParam(name = "redirect_uri", defaultValue = "https://") String redirectUri
+    );
 
     @GetMapping("/providers")
     @Operation(summary = "Show all OAuth2 providers")

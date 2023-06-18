@@ -32,8 +32,8 @@ public class RefreshUserPrincipalFilter extends OncePerRequestFilter {
         if (context.getAuthentication() instanceof OAuth2AuthenticationToken authentication) {
             Option.of(authentication)
                     .map(Authentication::getPrincipal)
-                    .filter(principal -> principal instanceof UserPrincipal)
-                    .map(principal -> (UserPrincipal) principal)
+                    .filter(UserPrincipal.class::isInstance)
+                    .map(UserPrincipal.class::cast)
                     .map(userPrincipal -> getoAuth2AuthenticationToken(authentication, userPrincipal))
                     .map(oAuth2AuthenticationToken -> {
                         context.setAuthentication(oAuth2AuthenticationToken);
@@ -53,13 +53,10 @@ public class RefreshUserPrincipalFilter extends OncePerRequestFilter {
                         userPrincipal.getRole() != null && !roleName.equals(userPrincipal.getRole().getName())
                 )
                 .map(roleProperties::getPrivileges)
-                .map(privileges -> {
-                    userPrincipal.setAuthorities(privileges);
-                    return new OAuth2AuthenticationToken(
-                            userPrincipal, privileges,
-                            authentication.getAuthorizedClientRegistrationId()
-                    );
-                })
+                .map(privileges -> new OAuth2AuthenticationToken(
+                        UserPrincipal.create(userPrincipal, privileges), privileges,
+                        authentication.getAuthorizedClientRegistrationId()
+                ))
                 .getOrElse(authentication);
     }
 }

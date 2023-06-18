@@ -27,19 +27,14 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, restGenericMessage, headers, status, request);
     }
 
-    @ExceptionHandler({
-            InsufficientAuthenticationException.class,
-            AuthenticationException.class,
-    })
-    public ResponseEntity<Object> handleAuthException(Exception ex, WebRequest request) throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        HttpStatus status;
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
 
-        if (ex instanceof InsufficientAuthenticationException) status = HttpStatus.UNAUTHORIZED;
-        else if (ex instanceof AccessDeniedException) status = HttpStatus.FORBIDDEN;
-        else throw ex;
-
-        return this.handleExceptionInternal(ex, null, headers, status, request);
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    public ResponseEntity<Object> handleInsufficientAuthenticationException(InsufficientAuthenticationException ex, WebRequest request) {
+        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
     @ExceptionHandler(ServerProcessingException.class)

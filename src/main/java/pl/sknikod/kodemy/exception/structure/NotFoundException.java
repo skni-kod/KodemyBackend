@@ -1,5 +1,6 @@
 package pl.sknikod.kodemy.exception.structure;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends ServerProcessingException {
@@ -7,8 +8,8 @@ public class NotFoundException extends ServerProcessingException {
         super(message);
     }
 
-    public <T> NotFoundException(Format notFoundFormat, Class<T> className, Long id) {
-        super(String.format(notFoundFormat.format, className.getSimpleName(), id));
+    public <T> NotFoundException(Format runtimeFormat, Class<T> className, Long id) {
+        super(String.format(runtimeFormat.message, className.getSimpleName(), id));
     }
 
     @Override
@@ -16,12 +17,9 @@ public class NotFoundException extends ServerProcessingException {
         return HttpStatus.NOT_FOUND;
     }
 
+    @AllArgsConstructor
     public enum Format {
-        entityId("%s not found with id: %d");
-        private final String format;
-
-        Format(String format) {
-            this.format = format;
-        }
+        ENTITY_ID("%s not found with id: %d");
+        private final String message;
     }
 }

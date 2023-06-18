@@ -1,14 +1,15 @@
 package pl.sknikod.kodemy.infrastructure.model.user;
 
 import io.vavr.control.Option;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.sknikod.kodemy.infrastructure.model.role.Role;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -18,27 +19,21 @@ import java.util.Set;
 public class UserPrincipal implements UserDetails, OAuth2User {
 
     private final Long id;
-    private final String password = null;
+    private final String password;
     private final String username;
     private final String email;
-    private final Role role;
-    private final Boolean isExpired;
-    private final Boolean isLocked;
-    private final Boolean isCredentialsExpired;
-    private final Boolean isEnabled;
-    @Setter
-    private Set<SimpleGrantedAuthority> authorities;
-    private final Map<String, Object> attributes;
+    private final transient Role role;
+    private final AccountStatus status;
+    private final Set<SimpleGrantedAuthority> authorities;
+    private final transient Map<String, Object> attributes;
 
-    public UserPrincipal(Long id, String username, String email, Role role, Boolean isExpired, Boolean isLocked, Boolean isCredentialsExpired, Boolean isEnabled, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
+    private UserPrincipal(Long id, String username, String email, Role role, AccountStatus status, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
         this.id = id;
         this.username = username;
+        this.password = "";
         this.email = email;
         this.role = role;
-        this.isExpired = isExpired;
-        this.isLocked = isLocked;
-        this.isCredentialsExpired = isCredentialsExpired;
-        this.isEnabled = isEnabled;
+        this.status = status;
         this.authorities = authorities;
         this.attributes = attributes;
     }
@@ -46,8 +41,18 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     public static UserPrincipal create(User user, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
         return new UserPrincipal(
                 user.getId(), user.getUsername(), user.getEmail(), user.getRole(),
-                user.getIsExpired(), user.getIsLocked(), user.getIsCredentialsExpired(), user.getIsEnabled(),
+                new AccountStatus(user.getIsExpired(), user.getIsLocked(), user.getIsCredentialsExpired(), user.getIsEnabled()),
                 authorities, attributes
+        );
+    }
+
+    public static UserPrincipal create(UserPrincipal userPrincipal, Set<SimpleGrantedAuthority> authorities) {
+        return new UserPrincipal(
+                userPrincipal.getId(), userPrincipal.getUsername(), userPrincipal.email, userPrincipal.getRole(),
+                new AccountStatus(
+                        userPrincipal.status.isExpired, userPrincipal.status.isLocked,
+                        userPrincipal.status.isCredentialsExpired, userPrincipal.status.isEnabled),
+                authorities, userPrincipal.attributes
         );
     }
 
@@ -67,26 +72,35 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isExpired;
+        return !status.isExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isLocked;
+        return !status.isLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !isCredentialsExpired;
+        return !status.isCredentialsExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return status.isEnabled;
     }
 
     @Override
     public String getName() {
         return String.valueOf(id);
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class AccountStatus implements Serializable {
+        private final Boolean isExpired;
+        private final Boolean isLocked;
+        private final Boolean isCredentialsExpired;
+        private final Boolean isEnabled;
     }
 }

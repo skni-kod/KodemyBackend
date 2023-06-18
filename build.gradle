@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'io.vavr:vavr:0.10.4'
-    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.4'
     implementation 'org.springframework.cloud:spring-cloud-context:4.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'

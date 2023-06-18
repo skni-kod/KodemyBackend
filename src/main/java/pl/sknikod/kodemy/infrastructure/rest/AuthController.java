@@ -14,11 +14,13 @@ public class AuthController implements AuthControllerDefinition {
     private final AuthService authService;
 
     @Override
-    public void authorize(UserProviderType provider, String redirect_uri) {
+    public void authorize(UserProviderType provider, String redirectUri) {
+        /* DOCUMENTARY METHOD */
     }
 
     @Override
-    public void logout(String redirect_uri) {
+    public void logout(String redirectUri) {
+        /* DOCUMENTARY METHOD */
     }
 
     @Override

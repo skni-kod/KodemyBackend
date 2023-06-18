@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 public class SingleGradeResponse {
     Long id;
-    Double grade;
+    Double value;
     UserDetails creator;
 }

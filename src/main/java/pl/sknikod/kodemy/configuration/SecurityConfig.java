@@ -25,16 +25,16 @@ import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
 )
 @AllArgsConstructor
 public class SecurityConfig {
-    private AuthorizationRequestRepositoryImpl authorizationRequestRepository;
-    private AuthService authService;
-    private AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
-    private AuthAuthenticationFailureHandler authAuthenticationFailureHandler;
-    private AuthenticationEntryPointImpl authEntryPoint;
-    private AuthAccessDeniedHandler authAccessDeniedHandler;
-    private AuthLogoutHandler authLogoutHandler;
-    private AuthLogoutSuccessHandler authLogoutSuccessHandler;
-    private AppConfig.SecurityAuthProperties authProperties;
-    private RefreshUserPrincipalFilter refreshUserPrincipalFilter;
+    private final AuthorizationRequestRepositoryImpl authorizationRequestRepository;
+    private final AuthService authService;
+    private final AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
+    private final AuthAuthenticationFailureHandler authAuthenticationFailureHandler;
+    private final AuthenticationEntryPointImpl authEntryPoint;
+    private final AuthAccessDeniedHandler authAccessDeniedHandler;
+    private final AuthLogoutHandler authLogoutHandler;
+    private final AuthLogoutSuccessHandler authLogoutSuccessHandler;
+    private final AppConfig.SecurityAuthProperties authProperties;
+    private final RefreshUserPrincipalFilter refreshUserPrincipalFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
