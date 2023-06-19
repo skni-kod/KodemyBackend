@@ -23,6 +23,7 @@ public abstract class GradeMapper {
     @Mappings(value = {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user", source = "request", qualifiedByName = "mapUser"),
+            @Mapping(target = "value", source = "grade"),
             @Mapping(target = "material", ignore = true),
             @Mapping(target = "createdBy", ignore = true),
             @Mapping(target = "createdDate", ignore = true),

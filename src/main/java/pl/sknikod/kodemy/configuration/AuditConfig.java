@@ -9,7 +9,7 @@ import pl.sknikod.kodemy.util.EntityAuditorAware;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuditConfig {
     @Bean
     public org.springframework.data.domain.AuditorAware<String> auditorAware() {

@@ -17,7 +17,6 @@ import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingExceptio
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
 import pl.sknikod.kodemy.infrastructure.model.provider.Provider;
-import pl.sknikod.kodemy.infrastructure.model.provider.ProviderRepository;
 import pl.sknikod.kodemy.infrastructure.model.role.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.user.User;
 import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
@@ -28,6 +27,7 @@ import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -61,12 +61,12 @@ public class AuthService extends DefaultOAuth2UserService {
     @AllArgsConstructor
     private static class UserPrincipalUseCase {
         private final UserRepository userRepository;
-        private final ProviderRepository providerRepository;
         private RoleRepository roleRepository;
         private AppConfig.SecurityRoleProperties roleProperties;
 
         public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
             UserProviderType providerType = Option.of(registrationId)
+                    .map(String::toUpperCase)
                     .map(UserProviderType::valueOf)
                     .getOrNull();
             OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
@@ -91,21 +91,14 @@ public class AuthService extends DefaultOAuth2UserService {
             return Try.of(roleProperties::getDefaultRole)
                     .map(roleRepository::findByName)
                     .map(role -> new User(
-                            authUserInfo.getUsername(),
-                            authUserInfo.getEmail(),
-                            authUserInfo.getPhoto(),
-                            role
+                            authUserInfo.getUsername(), authUserInfo.getEmail(),
+                            authUserInfo.getPhoto(), role
                     ))
+                    .peek(user -> user.setProviders(Set.of(new Provider(
+                            authUserInfo.getPrincipalId(), providerType,
+                            authUserInfo.getEmail(), authUserInfo.getPhoto(), user
+                    ))))
                     .map(userRepository::save)
-                    .map(user -> {
-                        providerRepository.save(new Provider(
-                                authUserInfo.getPrincipalId(),
-                                providerType,
-                                authUserInfo.getEmail(),
-                                authUserInfo.getPhoto(),
-                                user));
-                        return user;
-                    })
                     .map(user -> this.create(user, authUserInfo.getAttributes()))
                     .getOrElseThrow(
                             () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")

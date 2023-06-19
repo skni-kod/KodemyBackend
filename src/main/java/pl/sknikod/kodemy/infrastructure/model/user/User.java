@@ -33,7 +33,7 @@ public class User extends Auditable<String> {
     private Boolean isLocked;
     private Boolean isCredentialsExpired;
     private Boolean isEnabled;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Set<Provider> providers = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")

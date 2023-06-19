@@ -19,7 +19,7 @@ public class GithubOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getEmail() {
-        return String.valueOf(getAttributes().get("login"));
+        return null;
     }
 
     @Override
