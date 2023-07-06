@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OpenSearchConfig {
     @Bean
     public RestHighLevelClient restHighLevelClient(OpenSearchProperties openSearchProperties) {

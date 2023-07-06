@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemy.infrastructure.model.notification.Notification;
+import pl.sknikod.kodemy.infrastructure.model.entity.Notification;
 
 import java.util.List;
 

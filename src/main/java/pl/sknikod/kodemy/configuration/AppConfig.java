@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
         AuditConfig.class,
         RabbitMQConfig.class
 })
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppConfig {
 
     @Configuration

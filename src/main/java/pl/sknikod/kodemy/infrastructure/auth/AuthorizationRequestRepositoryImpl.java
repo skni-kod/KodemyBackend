@@ -33,21 +33,16 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
-            Option.of(request.getSession()).map(sessionObj -> {
-                sessionObj.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME);
-                return null;
-            });
-            Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
+            removeAuthorizationRequest(request, response);
             return;
         }
 
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
-        Option.of(request.getSession()).map(sessionObj -> {
+        Option.of(request.getSession()).peek(sessionObj -> {
             String authRequestEncoded = Base64.getUrlEncoder().encodeToString(
                     SerializationUtils.serialize(authorizationRequest)
             );
             sessionObj.setAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME, authRequestEncoded);
-            return null;
         });
 
         if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
@@ -56,15 +51,20 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        return this.loadAuthorizationRequest(request);
+        return removeAuthorizationRequest(request, null);
+    }
+
+    @Override
+    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
+        OAuth2AuthorizationRequest removedRequest = loadAuthorizationRequest(request);
+        removeAuthorizationSession(request, response);
+        return removedRequest;
     }
 
     public void removeAuthorizationSession(HttpServletRequest request, HttpServletResponse response) {
-        Option.of(request.getSession()).map(session -> {
-            session.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME);
-            return null;
-        });
+        Option.of(request.getSession()).peek(session -> session.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME));
         Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
     }
 }

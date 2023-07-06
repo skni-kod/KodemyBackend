@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 
 @Configuration
 @EnableRabbit
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RabbitMQConfig {
     public static final String NOTIFICATION_USER_QUEUE_NAME = "q.notification.user";
     public static final String NOTIFICATION_ADMIN_QUEUE_NAME = "q.notification.admin";

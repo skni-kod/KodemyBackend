@@ -1,7 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.rest.model;
 
 import lombok.Value;
-import pl.sknikod.kodemy.infrastructure.model.material.MaterialStatus;
+import pl.sknikod.kodemy.infrastructure.model.entity.MaterialStatus;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

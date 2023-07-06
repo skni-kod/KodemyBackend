@@ -19,7 +19,7 @@ import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.model.material.Material;
+import pl.sknikod.kodemy.infrastructure.model.entity.Material;
 import pl.sknikod.kodemy.infrastructure.rest.mapper.MaterialOpenSearchMapper;
 
 @Service

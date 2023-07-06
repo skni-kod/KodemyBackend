@@ -3,8 +3,8 @@ package pl.sknikod.kodemy.infrastructure.rest.mapper;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
-import pl.sknikod.kodemy.infrastructure.model.type.Type;
-import pl.sknikod.kodemy.infrastructure.model.type.TypeRepository;
+import pl.sknikod.kodemy.infrastructure.model.entity.Type;
+import pl.sknikod.kodemy.infrastructure.model.repository.TypeRepository;
 import pl.sknikod.kodemy.infrastructure.rest.model.SingleTypeResponse;
 
 import java.util.List;

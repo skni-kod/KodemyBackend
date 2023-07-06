@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.sknikod.kodemy.infrastructure.model.material.MaterialStatus;
+import pl.sknikod.kodemy.infrastructure.model.entity.MaterialStatus;
 
 import java.util.Date;
 

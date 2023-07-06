@@ -10,8 +10,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.sknikod.kodemy.configuration.AppConfig;
-import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
-import pl.sknikod.kodemy.infrastructure.model.user.UserRepository;
+import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
+import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

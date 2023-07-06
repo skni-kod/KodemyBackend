@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.sknikod.kodemy.infrastructure.model.notification.Notification;
+import pl.sknikod.kodemy.infrastructure.model.entity.Notification;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import java.util.List;

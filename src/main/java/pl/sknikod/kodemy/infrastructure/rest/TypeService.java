@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.model.type.Type;
-import pl.sknikod.kodemy.infrastructure.model.type.TypeRepository;
+import pl.sknikod.kodemy.infrastructure.model.entity.Type;
+import pl.sknikod.kodemy.infrastructure.model.repository.TypeRepository;
 import pl.sknikod.kodemy.infrastructure.rest.mapper.TypeMapper;
 import pl.sknikod.kodemy.infrastructure.rest.model.SingleTypeResponse;
 
