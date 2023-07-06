@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.configuration.RabbitMQConfig;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
-import pl.sknikod.kodemy.infrastructure.model.notification.Notification;
-import pl.sknikod.kodemy.infrastructure.model.notification.NotificationRepository;
-import pl.sknikod.kodemy.infrastructure.model.role.RoleName;
-import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
-import pl.sknikod.kodemy.infrastructure.model.user.UserRepository;
+import pl.sknikod.kodemy.infrastructure.model.entity.Notification;
+import pl.sknikod.kodemy.infrastructure.model.entity.RoleName;
+import pl.sknikod.kodemy.infrastructure.model.repository.NotificationRepository;
+import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class NotificationService {
     }
 
     public List<Notification> getNotifications() {
-        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(UserPrincipal.getCurrentSessionUser().getId());
+        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(UserService.getContextUserPrincipal().getId());
     }
 
     public void markAsRead(Long id) {

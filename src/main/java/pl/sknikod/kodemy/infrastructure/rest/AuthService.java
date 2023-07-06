@@ -16,12 +16,12 @@ import pl.sknikod.kodemy.configuration.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
-import pl.sknikod.kodemy.infrastructure.model.provider.Provider;
-import pl.sknikod.kodemy.infrastructure.model.role.RoleRepository;
-import pl.sknikod.kodemy.infrastructure.model.user.User;
-import pl.sknikod.kodemy.infrastructure.model.user.UserPrincipal;
-import pl.sknikod.kodemy.infrastructure.model.user.UserProviderType;
-import pl.sknikod.kodemy.infrastructure.model.user.UserRepository;
+import pl.sknikod.kodemy.infrastructure.model.entity.Provider;
+import pl.sknikod.kodemy.infrastructure.model.entity.User;
+import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
+import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
+import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
+import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 import pl.sknikod.kodemy.infrastructure.rest.mapper.AuthMapper;
 import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
@@ -49,7 +49,7 @@ public class AuthService extends DefaultOAuth2UserService {
 
     public UserOAuth2MeResponse getUserInfo() {
         return Option
-                .of(UserPrincipal.getCurrentSessionUser())
+                .of(UserService.getContextUserPrincipal())
                 .map(UserPrincipal::getId)
                 .map(userRepository::findById)
                 .map(userOptional -> Option.ofOptional(userOptional).getOrNull())

@@ -6,7 +6,7 @@ import org.mapstruct.*;
 import org.opensearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.model.material.Material;
+import pl.sknikod.kodemy.infrastructure.model.entity.Material;
 import pl.sknikod.kodemy.infrastructure.rest.model.MaterialOpenSearch;
 
 import java.util.Map;

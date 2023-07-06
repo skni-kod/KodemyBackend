@@ -3,7 +3,7 @@ package pl.sknikod.kodemy.infrastructure.rest.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
-import pl.sknikod.kodemy.infrastructure.model.material.MaterialStatus;
+import pl.sknikod.kodemy.infrastructure.model.entity.MaterialStatus;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

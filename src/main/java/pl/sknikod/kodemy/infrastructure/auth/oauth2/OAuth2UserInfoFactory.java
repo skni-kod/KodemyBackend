@@ -3,7 +3,7 @@ package pl.sknikod.kodemy.infrastructure.auth.oauth2;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
-import pl.sknikod.kodemy.infrastructure.model.user.UserProviderType;
+import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
 
 import java.util.Map;
 
