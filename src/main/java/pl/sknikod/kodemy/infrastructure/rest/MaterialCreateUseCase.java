@@ -31,34 +31,29 @@ public class MaterialCreateUseCase {
     private final NotificationService notificationService;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body){
-
         return Option.of(body)
                 .map(createMaterialMapper::map)
-                .map(material -> attachDetails(body, material))
+                .map(material -> initializeMissingMaterialProperties(body, material))
                 .map(materialRepository::save)
-                .peek(material -> {
-                    openSearchService.createIndexIfNotExists(OpenSearchService.Info.MATERIAL);
-                    openSearchService.indexMaterial(material);
-                })
-                .map(this::checkApproval)
+                .peek(this::updateOpenSearchIndex)
+                .peek(this::performApprovalCheck)
                 .map(createMaterialMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
-
     }
 
-    private Material attachDetails(MaterialCreateRequest body, Material material) {
+    private Material initializeMissingMaterialProperties(MaterialCreateRequest body, Material material) {
         material.setUser(userService.getContextUser());
         material.setCategory(categoryRepository.findById(body.getCategoryId()).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, body.getCategoryId())
         ));
-        material.setTechnologies(mapTechnologies(body.getTechnologiesIds()));
+        material.setTechnologies(fetchTechnologies(body.getTechnologiesIds()));
         material.setType(typeRepository.findById(body.getTypeId()).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Type.class, body.getTypeId())
         ));
         return material;
     }
 
-    private Set<Technology> mapTechnologies(Set<Long> technologiesIds) {
+    private Set<Technology> fetchTechnologies(Set<Long> technologiesIds) {
         return technologiesIds
                 .stream()
                 .map(id -> technologyRepository.findById(id)
@@ -67,13 +62,17 @@ public class MaterialCreateUseCase {
                 .collect(Collectors.toSet());
     }
 
-    private Material checkApproval(Material material) {
+    private void updateOpenSearchIndex(Material material) {
+        openSearchService.createIndexIfNotExists(OpenSearchService.Info.MATERIAL);
+        openSearchService.indexMaterial(material);
+    }
+
+    private void performApprovalCheck(Material material) {
         if (!UserService.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL"))
             notificationService.sendNotificationToAdmins(
                     NotificationTitle.MATERIAL_APPROVAL_REQUEST.getDesc(),
                     String.format("{\"id\":%d, \"title\":\"%s\"}", material.getId(), material.getTitle())
             );
-        return material;
     }
 
 }
