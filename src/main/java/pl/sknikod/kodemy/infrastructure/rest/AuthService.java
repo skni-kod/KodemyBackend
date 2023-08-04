@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.configuration.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
+import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
 import pl.sknikod.kodemy.infrastructure.model.entity.Provider;
@@ -92,7 +93,7 @@ public class AuthService extends DefaultOAuth2UserService {
                     .map(roleRepository::findByName)
                     .map(role -> new User(
                             authUserInfo.getUsername(), authUserInfo.getEmail(),
-                            authUserInfo.getPhoto(), role
+                            authUserInfo.getPhoto(), role.orElseThrow()
                     ))
                     .peek(user -> user.setProviders(Set.of(new Provider(
                             authUserInfo.getPrincipalId(), providerType,

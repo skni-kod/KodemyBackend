@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.model.entity.Role;
+import pl.sknikod.kodemy.infrastructure.model.entity.RoleName;
 import pl.sknikod.kodemy.infrastructure.model.entity.User;
 import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
@@ -46,21 +47,21 @@ public class UserService {
                 .orElse(null);
     }
 
-    public void changeRoles(Long id, Long roleId){
-        Role role = roleRepository.findById(roleId).orElseThrow(()->new NotFoundException("Role not found"));
+    public void changeRoles(Long userId, RoleName roleName) {
+        Role role = roleRepository.findByName(roleName.toString()).orElseThrow(()->new NotFoundException("Role not found."));
         Role contextUserRole = getContextUser().getRole();
-        if(contextUserRole.getName().equals(ROLE_USER)){
+        if (contextUserRole.getName().equals(ROLE_USER)) {
             throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class); //?
         }
-        User user = userRepository.findById(id).orElseThrow(()-> new NotFoundException("User not found."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found."));
         user.setRole(role);
         userRepository.save(user);
     }
 
-    public Role getUserRole(Long id){
+    public Role getUserRole(Long userId) {
         User user = userRepository
-                .findById(id)
-                .orElseThrow(()->
+                .findById(userId)
+                .orElseThrow(() ->
                         new NotFoundException("User not found.") //?
                 );
         return user.getRole();

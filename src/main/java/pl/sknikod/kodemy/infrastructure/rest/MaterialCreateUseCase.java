@@ -30,7 +30,7 @@ public class MaterialCreateUseCase {
     private final TechnologyRepository technologyRepository;
     private final NotificationService notificationService;
 
-    public MaterialCreateResponse execute(MaterialCreateRequest body){
+    public MaterialCreateResponse execute(MaterialCreateRequest body) {
         return Option.of(body)
                 .map(createMaterialMapper::map)
                 .map(material -> initializeMissingMaterialProperties(body, material))

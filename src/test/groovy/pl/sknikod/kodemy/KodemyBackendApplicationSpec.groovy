@@ -10,8 +10,8 @@ import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider.ZO
 @SpringBootTest
 class KodemyBackendApplicationSpec extends Specification {
 
-	def "should load context"() {
-		expect:
-		true
-	}
+    def "should load context"() {
+        expect:
+        true
+    }
 }
