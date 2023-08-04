@@ -21,7 +21,8 @@ public class Role extends Auditable<String> {
     @Column(nullable = false)
     private Long id;
     @Column(unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleName name;
     @OneToMany(mappedBy = "role")
     private Set<User> users = new HashSet<>();
 
