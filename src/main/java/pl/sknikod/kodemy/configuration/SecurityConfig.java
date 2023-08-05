@@ -3,6 +3,7 @@ package pl.sknikod.kodemy.configuration;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,7 @@ import pl.sknikod.kodemy.infrastructure.auth.AuthenticationEntryPointImpl;
 import pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemy.infrastructure.auth.handler.*;
 import pl.sknikod.kodemy.infrastructure.rest.AuthService;
+import pl.sknikod.kodemy.util.EntityAuditorAware;
 import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
 
 @Configuration
@@ -23,6 +25,7 @@ import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
         jsr250Enabled = true,
         prePostEnabled = true
 )
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @AllArgsConstructor
 public class SecurityConfig {
     private final AuthorizationRequestRepositoryImpl authorizationRequestRepository;
@@ -75,5 +78,10 @@ public class SecurityConfig {
                         )
                 );
         return http.build();
+    }
+
+    @Bean
+    public org.springframework.data.domain.AuditorAware<String> auditorAware() {
+        return new EntityAuditorAware();
     }
 }

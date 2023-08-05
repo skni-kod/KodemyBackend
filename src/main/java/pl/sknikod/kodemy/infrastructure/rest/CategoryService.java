@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemy.infrastructure.rest.mapper.MaterialOpenSearchMapper;
 import pl.sknikod.kodemy.infrastructure.rest.model.MaterialOpenSearch;
 
 import java.util.Arrays;
@@ -14,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryService {
     private final OpenSearchService openSearchService;
-    private final MaterialOpenSearchMapper materialOpenSearchMapper;
+    private final OpenSearchService.MaterialOpenSearchMapper materialOpenSearchMapper;
 
     public List<MaterialOpenSearch> showMaterials(Long categoryId, Integer limit) {
         SearchHit[] searchHits = openSearchService.search(

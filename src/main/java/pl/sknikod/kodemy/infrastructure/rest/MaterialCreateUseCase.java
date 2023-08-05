@@ -2,6 +2,10 @@ package pl.sknikod.kodemy.infrastructure.rest;
 
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
@@ -10,7 +14,6 @@ import pl.sknikod.kodemy.infrastructure.model.repository.CategoryRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.MaterialRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.TechnologyRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.TypeRepository;
-import pl.sknikod.kodemy.infrastructure.rest.mapper.MaterialCreateMapper;
 import pl.sknikod.kodemy.infrastructure.rest.model.MaterialCreateRequest;
 import pl.sknikod.kodemy.infrastructure.rest.model.MaterialCreateResponse;
 
@@ -30,7 +33,7 @@ public class MaterialCreateUseCase {
     private final TechnologyRepository technologyRepository;
     private final NotificationService notificationService;
 
-    public MaterialCreateResponse execute(MaterialCreateRequest body){
+    public MaterialCreateResponse execute(MaterialCreateRequest body) {
         return Option.of(body)
                 .map(createMaterialMapper::map)
                 .map(material -> initializeMissingMaterialProperties(body, material))
@@ -74,5 +77,32 @@ public class MaterialCreateUseCase {
                     String.format("{\"id\":%d, \"title\":\"%s\"}", material.getId(), material.getTitle())
             );
     }
+
+    @Mapper(componentModel = "spring")
+    public static abstract class MaterialCreateMapper {
+        @Mappings(value = {
+                @Mapping(target = "id", ignore = true),
+                @Mapping(target = "active", constant = "true"),
+                @Mapping(target = "status", source = "body", qualifiedByName = "mapStatus"),
+                @Mapping(target = "type", ignore = true),
+                @Mapping(target = "category", ignore = true),
+                @Mapping(target = "technologies", ignore = true),
+                @Mapping(target = "user", ignore = true),
+                @Mapping(target = "grades", ignore = true),
+                @Mapping(target = "createdBy", ignore = true),
+                @Mapping(target = "createdDate", ignore = true),
+                @Mapping(target = "lastModifiedBy", ignore = true),
+                @Mapping(target = "lastModifiedDate", ignore = true)
+        })
+        public abstract Material map(MaterialCreateRequest body);
+
+        @Named(value = "mapStatus")
+        protected MaterialStatus mapStatus(MaterialCreateRequest body) {
+            return UserService.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL") ? MaterialStatus.APPROVED : MaterialStatus.PENDING;
+        }
+
+        public abstract MaterialCreateResponse map(Material material);
+    }
+
 
 }

@@ -19,7 +19,7 @@ Before you can run the project, you will need the following applications:
    ```bash
    docker-compose up -d
    ```
-   b. To run the project with the `test` profile and skip steps _5_, _6_, use the following command:
+   b. To run the project with the `test` profile and skip steps _3_, _4_, use the following command:
    ```bash
    docker-compose --profile=test up -d
    ```

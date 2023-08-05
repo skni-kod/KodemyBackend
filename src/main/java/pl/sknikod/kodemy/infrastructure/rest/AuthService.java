@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,7 +23,6 @@ import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
 import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
-import pl.sknikod.kodemy.infrastructure.rest.mapper.AuthMapper;
 import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
 import java.util.HashSet;
@@ -104,5 +104,10 @@ public class AuthService extends DefaultOAuth2UserService {
                             () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")
                     );
         }
+    }
+
+    @Mapper(componentModel = "spring")
+    public interface AuthMapper {
+        UserOAuth2MeResponse map(User user);
     }
 }
