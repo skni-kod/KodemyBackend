@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
+import org.mapstruct.*;
 import org.opensearch.action.admin.indices.alias.Alias;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.index.IndexResponse;
@@ -17,10 +18,13 @@ import org.opensearch.common.xcontent.XContentType;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.model.entity.Material;
-import pl.sknikod.kodemy.infrastructure.rest.mapper.MaterialOpenSearchMapper;
+import pl.sknikod.kodemy.infrastructure.rest.model.MaterialOpenSearch;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -90,4 +94,33 @@ public class OpenSearchService {
         }
     }
 
+    @Mapper(componentModel = "spring")
+    public static abstract class MaterialOpenSearchMapper {
+        @Autowired
+        private ObjectMapper objectMapper;
+
+        @Mappings(value = {
+                @Mapping(target = "user", source = "user.username"),
+                @Mapping(target = "active", source = "active"),
+                @Mapping(target = "categoryId", source = "category.id")
+        })
+        public abstract MaterialOpenSearch map(Material material);
+
+        public MaterialOpenSearch map(SearchHit hit) {
+            return map(hit.getSourceAsMap(), MaterialOpenSearch.class);
+        }
+
+        @ObjectFactory
+        protected <T> T map(Map<String, Object> map, @TargetType Class<T> targetType) {
+            return objectMapper.convertValue(map, targetType);
+        }
+
+        protected String map(Object object) {
+            return Try.of(() -> objectMapper.writeValueAsString(object))
+                    .onFailure(ex -> {
+                        throw new ServerProcessingException(ex.getMessage());
+                    })
+                    .get();
+        }
+    }
 }

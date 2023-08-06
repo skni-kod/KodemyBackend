@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Configuration
 @Import({
         SecurityConfig.class,
-        AuditConfig.class,
         RabbitMQConfig.class
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
