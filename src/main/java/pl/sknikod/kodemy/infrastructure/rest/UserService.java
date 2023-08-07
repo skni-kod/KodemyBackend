@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public void changeRoles(Long userId, RoleName roleName) {
-        Role role = roleRepository.findByName(roleName.toString()).orElseThrow(()->new NotFoundException("Role not found."));
+        Role role = roleRepository.findByName(roleName).orElseThrow(()->new NotFoundException("Role not found."));
         Role contextUserRole = getContextUser().getRole();
         if (contextUserRole.getName().equals(ROLE_USER)) {
             throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class); //?

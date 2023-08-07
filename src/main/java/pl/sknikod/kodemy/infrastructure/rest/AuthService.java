@@ -17,10 +17,7 @@ import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingExceptio
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
-import pl.sknikod.kodemy.infrastructure.model.entity.Provider;
-import pl.sknikod.kodemy.infrastructure.model.entity.User;
-import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
-import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
+import pl.sknikod.kodemy.infrastructure.model.entity.*;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 import pl.sknikod.kodemy.infrastructure.rest.mapper.AuthMapper;
@@ -28,6 +25,7 @@ import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -90,10 +88,12 @@ public class AuthService extends DefaultOAuth2UserService {
 
         public UserPrincipal create(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
             return Try.of(roleProperties::getDefaultRole)
+                    .map(RoleName::valueOf)
                     .map(roleRepository::findByName)
+                    .map(Optional::get)
                     .map(role -> new User(
                             authUserInfo.getUsername(), authUserInfo.getEmail(),
-                            authUserInfo.getPhoto(), role.orElseThrow()
+                            authUserInfo.getPhoto(), role
                     ))
                     .peek(user -> user.setProviders(Set.of(new Provider(
                             authUserInfo.getPrincipalId(), providerType,
