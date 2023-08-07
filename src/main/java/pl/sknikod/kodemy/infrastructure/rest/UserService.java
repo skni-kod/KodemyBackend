@@ -48,21 +48,35 @@ public class UserService {
     }
 
     public void changeRoles(Long userId, RoleName roleName) {
-        Role role = roleRepository.findByName(roleName).orElseThrow(()->new NotFoundException("Role not found."));
-        Role contextUserRole = getContextUser().getRole();
-        if (contextUserRole.getName().equals(ROLE_USER)) {
-            throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class); //?
-        }
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found."));
-        user.setRole(role);
-        userRepository.save(user);
+//        Role role = roleRepository.findByName(roleName).orElseThrow(()->new NotFoundException("Role not found."));
+//        Role contextUserRole = getContextUser().getRole();
+//        if (contextUserRole.getName().equals(ROLE_USER)) {
+//            throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class);
+//        }
+//        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found."));
+//        user.setRole(role);
+//        userRepository.save(user);
+        Role requestedRole = roleRepository
+                .findByName(roleName)
+                .orElseThrow(()->new NotFoundException("Role not found."));
+        Optional.of(getContextUser().getRole())
+                .filter(role -> role.getName().equals(ROLE_USER))
+                .ifPresent(role -> {
+                    throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class);
+                });
+        Option.of(userId)
+                .map(userRepository::findById)
+                .map(Optional::get)
+                .peek(user->user.setRole(requestedRole))
+                .map(userRepository::save)
+                .getOrElseThrow(()->new ServerProcessingException("Failed to change role."));
     }
 
     public Role getUserRole(Long userId) {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() ->
-                        new NotFoundException("User not found.") //?
+                        new NotFoundException("User not found.")
                 );
         return user.getRole();
     }
