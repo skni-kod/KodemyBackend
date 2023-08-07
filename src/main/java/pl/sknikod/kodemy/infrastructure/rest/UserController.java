@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.infrastructure.model.entity.RoleName;
-import pl.sknikod.kodemy.infrastructure.rest.model.UserRoleChangeResponse;
 
 @RestController
 @AllArgsConstructor
@@ -16,8 +15,8 @@ public class UserController implements UserControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<RoleName> updateRoles(UserRoleChangeResponse roleResponse) {
-        userService.changeRoles(roleResponse.getUserId(), roleResponse.getRoleName());
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRole(roleResponse.getUserId()).getName());
+    public ResponseEntity<RoleName> updateRoles(Long userId, RoleName roleName) {
+        userService.changeRoles(userId, roleName);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRole(userId).getName());
     }
 }
