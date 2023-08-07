@@ -75,7 +75,9 @@ public class UserService {
     public Role getUserRole(Long userId) {
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId));
+                .orElseThrow(() ->
+                        new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
+                );
         return user.getRole();
     }
 
