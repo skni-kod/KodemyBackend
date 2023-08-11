@@ -17,8 +17,6 @@ import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static pl.sknikod.kodemy.infrastructure.model.entity.RoleName.ROLE_USER;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -48,37 +46,22 @@ public class UserService {
     }
 
     public void changeRoles(Long userId, RoleName roleName) {
-//        Role role = roleRepository.findByName(roleName).orElseThrow(()->new NotFoundException("Role not found."));
-//        Role contextUserRole = getContextUser().getRole();
-//        if (contextUserRole.getName().equals(ROLE_USER)) {
-//            throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class);
-//        }
-//        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found."));
-//        user.setRole(role);
-//        userRepository.save(user);
-        Role requestedRole = roleRepository
-                .findByName(roleName)
-                .orElseThrow(()->new NotFoundException("Role not found."));
-        Optional.of(getContextUser().getRole())
-                .filter(role -> role.getName().equals(ROLE_USER))
-                .ifPresent(role -> {
+        User user = Option.ofOptional(userRepository.findById(userId))
+                .getOrElseThrow(()->
+                    new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
+                );
+        Option.ofOptional(roleRepository.findByName(roleName))
+                .onEmpty(()->{
+                        throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Role.class);
+                })
+                .map(role -> {
+                    user.setRole(role);
+                    return user;
+                })
+                .map(userRepository::save)
+                .onEmpty(()->{
                     throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class);
                 });
-        Option.of(userId)
-                .map(userRepository::findById)
-                .map(Optional::get)
-                .peek(user->user.setRole(requestedRole))
-                .map(userRepository::save)
-                .getOrElseThrow(()->new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class));
-    }
-
-    public Role getUserRole(Long userId) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() ->
-                        new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
-                );
-        return user.getRole();
     }
 
 }
