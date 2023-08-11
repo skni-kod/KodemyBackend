@@ -15,18 +15,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.configuration.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
+import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
-import pl.sknikod.kodemy.infrastructure.model.entity.Provider;
-import pl.sknikod.kodemy.infrastructure.model.entity.User;
-import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
-import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
+import pl.sknikod.kodemy.infrastructure.model.entity.*;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
 import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -89,7 +88,9 @@ public class AuthService extends DefaultOAuth2UserService {
 
         public UserPrincipal create(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
             return Try.of(roleProperties::getDefaultRole)
+                    .map(RoleName::valueOf)
                     .map(roleRepository::findByName)
+                    .map(Optional::get)
                     .map(role -> new User(
                             authUserInfo.getUsername(), authUserInfo.getEmail(),
                             authUserInfo.getPhoto(), role

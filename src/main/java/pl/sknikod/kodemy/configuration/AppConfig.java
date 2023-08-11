@@ -9,6 +9,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import pl.sknikod.kodemy.infrastructure.model.entity.RoleName;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,9 +39,9 @@ public class AppConfig {
         private String defaultRole;
         private Map<String, Set<String>> privileges = new LinkedHashMap<>();
 
-        public Set<SimpleGrantedAuthority> getPrivileges(String role) {
+        public Set<SimpleGrantedAuthority> getPrivileges(RoleName role) {
             return Option
-                    .of(privileges.get(role))
+                    .of(privileges.get(role.toString()))
                     .map(Collection::stream)
                     .map(stream -> stream.map(SimpleGrantedAuthority::new).collect(Collectors.toSet()))
                     .getOrElse(Collections::emptySet);
