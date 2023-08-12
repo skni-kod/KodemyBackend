@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.sknikod.kodemy.infrastructure.model.entity.UserProviderType;
-import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 @RequestMapping("/api/oauth2")
@@ -33,8 +32,4 @@ public interface AuthControllerDefinition {
     @Operation(summary = "Show all OAuth2 providers")
     ResponseEntity<UserProviderType[]> getProvidersList();
 
-    @GetMapping("/me")
-    @Operation(summary = "Show information about logged user")
-    @SwaggerResponse.AuthRequest
-    ResponseEntity<UserOAuth2MeResponse> getUserInfo();
 }
