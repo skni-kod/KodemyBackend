@@ -15,13 +15,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.configuration.AppConfig;
 import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
-import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
 import pl.sknikod.kodemy.infrastructure.model.entity.*;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
-import pl.sknikod.kodemy.infrastructure.rest.model.UserOAuth2MeResponse;
+import pl.sknikod.kodemy.infrastructure.rest.model.UserInfoResponse;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -31,8 +30,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class AuthService extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
-    private final AuthMapper authMapper;
     private final UserPrincipalUseCase userPrincipalUseCase;
 
     @Override
@@ -44,16 +41,6 @@ public class AuthService extends DefaultOAuth2UserService {
         } catch (Exception ex) {
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
-    }
-
-    public UserOAuth2MeResponse getUserInfo() {
-        return Option
-                .of(UserService.getContextUserPrincipal())
-                .map(UserPrincipal::getId)
-                .map(userRepository::findById)
-                .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
-                .map(authMapper::map)
-                .getOrNull();
     }
 
     @Component
@@ -109,6 +96,6 @@ public class AuthService extends DefaultOAuth2UserService {
 
     @Mapper(componentModel = "spring")
     public interface AuthMapper {
-        UserOAuth2MeResponse map(User user);
+        UserInfoResponse map(User user);
     }
 }

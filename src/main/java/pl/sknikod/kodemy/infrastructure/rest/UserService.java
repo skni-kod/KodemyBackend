@@ -13,7 +13,10 @@ import pl.sknikod.kodemy.infrastructure.model.entity.User;
 import pl.sknikod.kodemy.infrastructure.model.entity.UserPrincipal;
 import pl.sknikod.kodemy.infrastructure.model.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.model.repository.UserRepository;
+import pl.sknikod.kodemy.infrastructure.rest.mapper.UserMapper;
+import pl.sknikod.kodemy.infrastructure.rest.model.UserInfoResponse;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
+    private final AuthService.AuthMapper authMapper;
 
     public User getContextUser() {
         return Option.of(UserService.getContextUserPrincipal())
@@ -47,21 +52,39 @@ public class UserService {
 
     public void changeRoles(Long userId, RoleName roleName) {
         User user = Option.ofOptional(userRepository.findById(userId))
-                .getOrElseThrow(()->
-                    new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
+                .getOrElseThrow(() ->
+                        new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
                 );
         Option.ofOptional(roleRepository.findByName(roleName))
-                .onEmpty(()->{
-                        throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Role.class);
+                .onEmpty(() -> {
+                    throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Role.class);
                 })
                 .map(role -> {
                     user.setRole(role);
                     return user;
                 })
                 .map(userRepository::save)
-                .onEmpty(()->{
+                .onEmpty(() -> {
                     throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, User.class);
                 });
     }
 
+    @Transactional
+    public UserInfoResponse getUserInfo(Long userId) {
+        return Option.ofOptional(userRepository.findById(userId))
+                .map(userMapper::infoMap)
+                .getOrElseThrow(() ->
+                        new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
+                );
+    }
+
+    public UserInfoResponse getCurrentUserInfo() {
+        return Option
+                .of(UserService.getContextUserPrincipal())
+                .map(UserPrincipal::getId)
+                .map(userRepository::findById)
+                .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
+                .map(authMapper::map)
+                .getOrNull();
+    }
 }

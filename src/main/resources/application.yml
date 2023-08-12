@@ -72,6 +72,7 @@ kodemy:
         ROLE_MODERATOR:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
+          - CAN_GET_USER_INFO
         ROLE_ADMIN:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
@@ -79,6 +80,7 @@ kodemy:
           - CAN_GET_USERS
           - CAN_BANNING_USERS
           - CAN_ASSIGN_ROLES
+          - CAN_GET_USER_INFO
         ROLE_SUPERADMIN:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
@@ -87,6 +89,7 @@ kodemy:
           - CAN_BANNING_USERS
           - CAN_ASSIGN_ROLES
           - CAN_USE_ACTUATOR
+          - CAN_GET_USER_INFO
 
 opensearch:
   hosts:

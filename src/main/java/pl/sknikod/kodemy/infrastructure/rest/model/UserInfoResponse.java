@@ -6,7 +6,7 @@ import lombok.Value;
 import java.util.Date;
 
 @Value
-public class UserOAuth2MeResponse {
+public class UserInfoResponse {
     Long id;
     String username;
     String email;

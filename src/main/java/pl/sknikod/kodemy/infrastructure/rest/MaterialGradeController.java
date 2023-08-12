@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,6 @@ public class MaterialGradeController implements MaterialGradeControllerDefinitio
     @Override
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Set<SingleGradeResponse>> showGrades(Long materialId) {
-        return ResponseEntity.ok().body(materialService.showGrades(materialId));
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.showGrades(materialId));
     }
 }
