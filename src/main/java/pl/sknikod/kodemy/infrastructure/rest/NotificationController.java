@@ -18,7 +18,7 @@ public class NotificationController implements NotificationControllerDefinition 
         return notificationService.getNotification(notificationId);
     }
 
-    @PreAuthorize("hasRole('SUPERADMIN')")
+    @PreAuthorize("hasAuthority('CAN_READ_NOTIFICATIONS')")
     public List<Notification> getNotifications() {
         return notificationService.getNotifications();
     }

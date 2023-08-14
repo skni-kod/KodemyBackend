@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.rest.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 public class MaterialCreateRequest {
     @NotNull
     @Size(min = 8)

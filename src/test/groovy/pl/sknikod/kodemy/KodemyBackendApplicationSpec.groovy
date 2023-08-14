@@ -1,16 +1,18 @@
 package pl.sknikod.kodemy
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase
-import org.springframework.boot.test.context.SpringBootTest
+
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.spock.Testcontainers
+import spock.lang.Shared
 import spock.lang.Specification
 
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY
-
-@AutoConfigureEmbeddedDatabase(beanName = "dataSource", provider = ZONKY)
-@SpringBootTest
+@Testcontainers
 class KodemyBackendApplicationSpec extends Specification {
 
-    def "should load context"() {
+    @Shared
+    PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.1-alpine")
+
+    def "should load app context"() {
         expect:
         true
     }

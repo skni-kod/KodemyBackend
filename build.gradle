@@ -1,8 +1,8 @@
 plugins {
     id 'java'
+    id 'groovy'
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id 'groovy'
 }
 
 java {
@@ -33,27 +33,31 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
     implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.8.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    testImplementation 'junit:junit:4.13.1'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.spockframework:spock-spring:2.3-groovy-4.0'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
-    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
-    testImplementation 'org.codehaus.groovy:groovy:3.0.16'
-    testImplementation 'org.codehaus.groovy:groovy-json:3.0.16'
-    testImplementation 'io.zonky.test:embedded-database-spring-test:2.2.0'
-    testImplementation 'io.zonky.test:embedded-postgres:2.0.3'
+    testImplementation 'org.testcontainers:spock'
+    testImplementation 'org.testcontainers:postgresql'
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-
-    testLogging {
-        events "PASSED", "SKIPPED", "FAILED"
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:1.18.3"
     }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties = [
+            'spring.config.location': 'classpath:/application.yml,classpath:/application-test.yml'
+    ]
 }
