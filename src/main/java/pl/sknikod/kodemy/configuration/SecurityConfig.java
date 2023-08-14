@@ -1,22 +1,25 @@
 package pl.sknikod.kodemy.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.sknikod.kodemy.infrastructure.auth.AuthenticationEntryPointImpl;
+import pl.sknikod.kodemy.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl;
-import pl.sknikod.kodemy.infrastructure.auth.handler.*;
+import pl.sknikod.kodemy.infrastructure.auth.handler.AuthAuthenticationFailureHandler;
+import pl.sknikod.kodemy.infrastructure.auth.handler.AuthAuthenticationSuccessHandler;
+import pl.sknikod.kodemy.infrastructure.auth.handler.AuthLogoutHandler;
+import pl.sknikod.kodemy.infrastructure.auth.handler.AuthLogoutSuccessHandler;
 import pl.sknikod.kodemy.infrastructure.rest.AuthService;
 import pl.sknikod.kodemy.util.EntityAuditorAware;
-import pl.sknikod.kodemy.util.filter.RefreshUserPrincipalFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -32,18 +35,15 @@ public class SecurityConfig {
     private final AuthService authService;
     private final AuthAuthenticationSuccessHandler authAuthenticationSuccessHandler;
     private final AuthAuthenticationFailureHandler authAuthenticationFailureHandler;
-    private final AuthenticationEntryPointImpl authEntryPoint;
-    private final AuthAccessDeniedHandler authAccessDeniedHandler;
     private final AuthLogoutHandler authLogoutHandler;
     private final AuthLogoutSuccessHandler authLogoutSuccessHandler;
     private final AppConfig.SecurityAuthProperties authProperties;
-    private final RefreshUserPrincipalFilter refreshUserPrincipalFilter;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and().csrf().disable()
-                .addFilterBefore(refreshUserPrincipalFilter, FilterSecurityInterceptor.class)
                 .authorizeHttpRequests(autz -> autz
                         .anyRequest().permitAll()
                 )
@@ -63,8 +63,12 @@ public class SecurityConfig {
                         .failureHandler(authAuthenticationFailureHandler)
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(authEntryPoint)
-                        .accessDeniedHandler(authAccessDeniedHandler)
+                        .authenticationEntryPoint((req, res, e) ->
+                                ExceptionRestGenericMessage.writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.UNAUTHORIZED)
+                        )
+                        .accessDeniedHandler((req, res, e) ->
+                                ExceptionRestGenericMessage.writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.FORBIDDEN)
+                        )
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(

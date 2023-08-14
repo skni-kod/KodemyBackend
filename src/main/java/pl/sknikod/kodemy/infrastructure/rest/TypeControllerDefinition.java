@@ -10,7 +10,7 @@ import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import java.util.List;
 
-@RequestMapping("api/types")
+@RequestMapping("/api/types")
 @SwaggerResponse
 @Tag(name = "Type")
 public interface TypeControllerDefinition {
