@@ -72,7 +72,7 @@ public class UserService {
     @Transactional
     public UserInfoResponse getUserInfo(Long userId) {
         return Option.ofOptional(userRepository.findById(userId))
-                .map(userMapper::infoMap)
+                .map(userMapper::map)
                 .getOrElseThrow(() ->
                         new NotFoundException(NotFoundException.Format.ENTITY_ID, User.class, userId)
                 );
