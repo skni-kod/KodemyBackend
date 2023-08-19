@@ -21,7 +21,7 @@ public class TechnologyService {
         technologyRepository
                 .findByName(tech.getName())
                 .ifPresent(found -> {
-                    throw new AlreadyExistsException("Technology '" + found.getName() + "' already exists.");
+                    throw new AlreadyExistsException(AlreadyExistsException.Format.FIELD, Technology.class, tech.getName());
                 });
         return Option.of(tech)
                 .map(technologyMapper::map)

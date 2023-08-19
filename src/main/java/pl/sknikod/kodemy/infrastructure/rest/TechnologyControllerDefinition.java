@@ -19,5 +19,5 @@ public interface TechnologyControllerDefinition {
     @PostMapping
     @Operation(summary = "Add new technology")
     @SwaggerResponse.CreateRequest
-    ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody TechnologyAddRequest tech);
+    ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody TechnologyAddRequest body);
 }
