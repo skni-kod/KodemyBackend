@@ -11,12 +11,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
+import pl.sknikod.kodemy.configuration.AppConfig
 import pl.sknikod.kodemy.exception.ExceptionRestHandler
+import pl.sknikod.kodemy.infrastructure.rest.AuthService
+import pl.sknikod.kodemy.infrastructure.rest.CategoryService
+import pl.sknikod.kodemy.infrastructure.rest.MaterialCreateUseCase
+import pl.sknikod.kodemy.infrastructure.rest.MaterialService
+import pl.sknikod.kodemy.infrastructure.rest.OpenSearchService
+import pl.sknikod.kodemy.infrastructure.rest.SectionService
+import pl.sknikod.kodemy.infrastructure.rest.TypeService
+import pl.sknikod.kodemy.infrastructure.rest.UserPrincipalUseCase
 import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
-@Import([TestSecurityConfig, BeanConfig])
+@Import([TestSecurityConfig, BeanConfig, AppConfig.SecurityAuthProperties])
 @WebMvcTest(ExceptionRestHandler)
 abstract class MvcIntegrationSpec extends Specification {
 
@@ -27,6 +36,45 @@ abstract class MvcIntegrationSpec extends Specification {
     static class BeanConfig {
         def detachedMockFactory = new DetachedMockFactory()
 
+        @Bean
+        TypeService typeService(){
+            return detachedMockFactory.Mock(TypeService)
+        }
+
+        @Bean
+        SectionService sectionService(){
+            return detachedMockFactory.Mock(SectionService)
+        }
+
+        @Bean
+        AuthService authService() {
+            return detachedMockFactory.Mock(AuthService)
+        }
+
+        @Bean
+        MaterialService materialService() {
+            return detachedMockFactory.Mock(MaterialService)
+        }
+
+        @Bean
+        UserPrincipalUseCase userPrincipalUseCase(){
+            return detachedMockFactory.Mock(UserPrincipalUseCase)
+        }
+
+        @Bean
+        CategoryService categoryService() {
+            return detachedMockFactory.Mock(CategoryService)
+        }
+
+        @Bean
+        OpenSearchService openSearchService(){
+            return detachedMockFactory.Mock(OpenSearchService)
+        }
+
+        @Bean
+        MaterialCreateUseCase materialCreateUseCase(){
+            return detachedMockFactory.Mock(MaterialCreateUseCase)
+          
         @Bean
         TechnologyService technologyService() {
             return detachedMockFactory.Mock(TechnologyService)
