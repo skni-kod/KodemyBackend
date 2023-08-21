@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import pl.sknikod.kodemy.exception.ExceptionRestHandler
+import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
@@ -25,6 +26,11 @@ abstract class MvcIntegrationSpec extends Specification {
     @TestConfiguration
     static class BeanConfig {
         def detachedMockFactory = new DetachedMockFactory()
+
+        @Bean
+        TechnologyService technologyService() {
+            return detachedMockFactory.Mock(TechnologyService)
+        }
     }
 
     @TestConfiguration
