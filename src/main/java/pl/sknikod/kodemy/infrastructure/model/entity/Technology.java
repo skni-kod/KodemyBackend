@@ -20,6 +20,7 @@ public class Technology extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+    @Column(unique = true)
     private String name;
     @ManyToMany
     @JoinTable(

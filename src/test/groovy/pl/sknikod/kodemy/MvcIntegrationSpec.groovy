@@ -21,6 +21,7 @@ import pl.sknikod.kodemy.infrastructure.rest.OpenSearchService
 import pl.sknikod.kodemy.infrastructure.rest.SectionService
 import pl.sknikod.kodemy.infrastructure.rest.TypeService
 import pl.sknikod.kodemy.infrastructure.rest.UserPrincipalUseCase
+import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
@@ -73,6 +74,10 @@ abstract class MvcIntegrationSpec extends Specification {
         @Bean
         MaterialCreateUseCase materialCreateUseCase(){
             return detachedMockFactory.Mock(MaterialCreateUseCase)
+          
+        @Bean
+        TechnologyService technologyService() {
+            return detachedMockFactory.Mock(TechnologyService)
         }
     }
 
