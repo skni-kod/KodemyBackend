@@ -13,12 +13,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.sknikod.kodemy.exception.ExceptionRestGenericMessage;
+import pl.sknikod.kodemy.infrastructure.auth.AuthService;
 import pl.sknikod.kodemy.infrastructure.auth.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemy.infrastructure.auth.handler.AuthAuthenticationFailureHandler;
 import pl.sknikod.kodemy.infrastructure.auth.handler.AuthAuthenticationSuccessHandler;
 import pl.sknikod.kodemy.infrastructure.auth.handler.AuthLogoutHandler;
 import pl.sknikod.kodemy.infrastructure.auth.handler.AuthLogoutSuccessHandler;
-import pl.sknikod.kodemy.infrastructure.rest.AuthService;
 import pl.sknikod.kodemy.util.EntityAuditorAware;
 
 @Configuration
