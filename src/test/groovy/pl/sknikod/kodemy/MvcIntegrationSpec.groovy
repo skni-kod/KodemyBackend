@@ -13,15 +13,15 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import pl.sknikod.kodemy.configuration.AppConfig
 import pl.sknikod.kodemy.exception.ExceptionRestHandler
-import pl.sknikod.kodemy.infrastructure.rest.AuthService
-import pl.sknikod.kodemy.infrastructure.rest.CategoryService
-import pl.sknikod.kodemy.infrastructure.rest.MaterialCreateUseCase
-import pl.sknikod.kodemy.infrastructure.rest.MaterialService
-import pl.sknikod.kodemy.infrastructure.rest.OpenSearchService
-import pl.sknikod.kodemy.infrastructure.rest.SectionService
-import pl.sknikod.kodemy.infrastructure.rest.TypeService
-import pl.sknikod.kodemy.infrastructure.rest.UserPrincipalUseCase
-import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
+import pl.sknikod.kodemy.infrastructure.auth.AuthService
+import pl.sknikod.kodemy.infrastructure.category.CategoryService
+import pl.sknikod.kodemy.infrastructure.material.MaterialCreateUseCase
+import pl.sknikod.kodemy.infrastructure.material.MaterialService
+import pl.sknikod.kodemy.infrastructure.search.OpenSearchService
+import pl.sknikod.kodemy.infrastructure.section.SectionService
+import pl.sknikod.kodemy.infrastructure.technology.TechnologyService
+import pl.sknikod.kodemy.infrastructure.type.TypeService
+import pl.sknikod.kodemy.infrastructure.user.UserPrincipalUseCase
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
@@ -37,12 +37,12 @@ abstract class MvcIntegrationSpec extends Specification {
         def detachedMockFactory = new DetachedMockFactory()
 
         @Bean
-        TypeService typeService(){
+        TypeService typeService() {
             return detachedMockFactory.Mock(TypeService)
         }
 
         @Bean
-        SectionService sectionService(){
+        SectionService sectionService() {
             return detachedMockFactory.Mock(SectionService)
         }
 
@@ -57,7 +57,7 @@ abstract class MvcIntegrationSpec extends Specification {
         }
 
         @Bean
-        UserPrincipalUseCase userPrincipalUseCase(){
+        UserPrincipalUseCase userPrincipalUseCase() {
             return detachedMockFactory.Mock(UserPrincipalUseCase)
         }
 
@@ -67,14 +67,15 @@ abstract class MvcIntegrationSpec extends Specification {
         }
 
         @Bean
-        OpenSearchService openSearchService(){
+        OpenSearchService openSearchService() {
             return detachedMockFactory.Mock(OpenSearchService)
         }
 
         @Bean
-        MaterialCreateUseCase materialCreateUseCase(){
+        MaterialCreateUseCase materialCreateUseCase() {
             return detachedMockFactory.Mock(MaterialCreateUseCase)
-          
+        }
+
         @Bean
         TechnologyService technologyService() {
             return detachedMockFactory.Mock(TechnologyService)

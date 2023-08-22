@@ -3,7 +3,7 @@ package pl.sknikod.kodemy
 import org.springframework.core.annotation.AliasFor
 import org.springframework.security.test.context.support.TestExecutionEvent
 import org.springframework.security.test.context.support.WithSecurityContext
-import pl.sknikod.kodemy.infrastructure.model.entity.RoleName
+import pl.sknikod.kodemy.infrastructure.common.entity.RoleName
 
 import java.lang.annotation.*
 
