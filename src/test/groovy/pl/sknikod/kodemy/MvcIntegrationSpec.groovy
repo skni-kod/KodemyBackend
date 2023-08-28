@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import pl.sknikod.kodemy.exception.ExceptionRestHandler
+import pl.sknikod.kodemy.infrastructure.rest.RoleService
 import pl.sknikod.kodemy.infrastructure.rest.SectionService
 import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
 import spock.lang.Specification
@@ -35,6 +36,10 @@ abstract class MvcIntegrationSpec extends Specification {
         @Bean
         SectionService sectionService(){
             return detachedMockFactory.Mock(SectionService)
+        }
+        @Bean
+        RoleService roleService(){
+            return detachedMockFactory.Mock(RoleService)
         }
     }
 
