@@ -26,7 +26,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
-    private final AuthService.AuthMapper authMapper;
 
     public User getContextUser() {
         return Option.of(UserService.getContextUserPrincipal())
@@ -84,7 +83,7 @@ public class UserService {
                 .map(UserPrincipal::getId)
                 .map(userRepository::findById)
                 .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
-                .map(authMapper::map)
+                .map(userMapper::map)
                 .getOrNull();
     }
 }
