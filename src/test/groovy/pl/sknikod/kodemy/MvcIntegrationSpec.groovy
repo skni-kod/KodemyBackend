@@ -15,6 +15,7 @@ import pl.sknikod.kodemy.exception.ExceptionRestHandler
 import pl.sknikod.kodemy.infrastructure.rest.RoleService
 import pl.sknikod.kodemy.infrastructure.rest.SectionService
 import pl.sknikod.kodemy.infrastructure.rest.TechnologyService
+import pl.sknikod.kodemy.infrastructure.rest.UserService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
@@ -40,6 +41,10 @@ abstract class MvcIntegrationSpec extends Specification {
         @Bean
         RoleService roleService(){
             return detachedMockFactory.Mock(RoleService)
+        }
+        @Bean
+        UserService userService(){
+            return detachedMockFactory.Mock(UserService)
         }
     }
 
