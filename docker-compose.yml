@@ -6,7 +6,6 @@ services:
     container_name: kodemy_api_dev
     profiles:
       - test
-    restart: unless-stopped
     ports:
       - "8181:8080"
     networks:
@@ -20,11 +19,10 @@ services:
     image: postgres:14.1-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: kodemy
     ports:
       - "5435:5432"
-    restart: always
     volumes:
       - postgres_dev:/var/lib/postgresql/data
       - ./sql:/sql
@@ -34,10 +32,9 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     container_name: kodemy_rabbitmq_dev
-    restart: always
     environment:
       RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_PASS: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -49,7 +46,6 @@ services:
   opensearch:
     image: opensearchproject/opensearch:2.8.0
     container_name: kodemy_opensearch_dev
-    restart: always
     environment:
       - discovery.type=single-node
       - cluster.name=kodemy-cluster
@@ -65,7 +61,6 @@ services:
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.8.0
     container_name: kodemy_opensearch_dashboards_dev
-    restart: always
     environment:
       - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"

@@ -67,6 +67,7 @@ sonarqube {
         property "sonar.exclusions", "build/generated-sources/**"
         property "sonar.test.exclusions", "build/generated-test-sources/**"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.jacoco.reportPath", "$buildDir/jacoco/test.exec"
     }
 }
 
@@ -74,8 +75,8 @@ jacocoTestReport {
     reports {
         xml.required = true
     }
+    executionData.from = fileTree(buildDir).include("/jacoco/*.exec")
 }
-
 
 test {
     useJUnitPlatform()

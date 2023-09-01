@@ -7,6 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.opensearch.action.admin.indices.alias.Alias;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.search.SearchRequest;
+import org.opensearch.action.update.UpdateRequest;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.client.indices.CreateIndexRequest;
@@ -18,30 +19,43 @@ import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.common.entity.Material;
+import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 
 @Service
 @RequiredArgsConstructor
-public class OpenSearchService {
+public class SearchService {
     private final RestHighLevelClient restHighLevelClient;
-    private final RequestOptions requestOptions;
-    private final MaterialSearchMapper materialOpenSearchMapper;
+    private final MaterialSearchMapper materialSearchMapper;
     private final ObjectMapper objectMapper;
+    private final RequestOptions requestOptions = RequestOptions.DEFAULT;
 
-    public void indexMaterial(Material material) {
-        String indexJSONObject = Try.of(() -> objectMapper.writeValueAsString(materialOpenSearchMapper.map(material)))
+    public void indexMaterial(MaterialSearchObject material) {
+        createIndexIfNotExists(SearchConfig.MATERIAL_INDEX);
+        String indexJSONObject = Try.of(() -> objectMapper.writeValueAsString(material))
                 .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
 
-        IndexRequest request = new IndexRequest(Info.MATERIAL.index)
+        IndexRequest request = new IndexRequest(SearchConfig.MATERIAL_INDEX)
                 .source(indexJSONObject, XContentType.JSON);
         Try.of(() -> restHighLevelClient.index(request, requestOptions))
                 .onFailure(ex -> {
-                    throw new ServerProcessingException();
+                    throw new ServerProcessingException(ex.getMessage());
                 });
     }
 
-    public SearchHit[] search(Info.Details details, QueryBuilder queryBuilder, Integer limit) {
-        SearchRequest searchRequest = createSearchRequest(details, queryBuilder, limit);
+    public void reindexMaterial(String documentId, MaterialSearchObject material) {
+        String indexJSONObject = Try.of(() -> objectMapper.writeValueAsString(materialSearchMapper.map(material)))
+                .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
+
+        UpdateRequest request = new UpdateRequest(SearchConfig.MATERIAL_INDEX, documentId)
+                .doc(indexJSONObject, XContentType.JSON);
+        Try.of(() -> restHighLevelClient.update(request, requestOptions))
+                .onFailure(ex -> {
+                    throw new ServerProcessingException(ex.getMessage());
+                });
+    }
+
+    public SearchHit[] search(String index, QueryBuilder queryBuilder, Integer limit) {
+        SearchRequest searchRequest = createSearchRequest(index, queryBuilder, limit);
         return Try.of(() -> restHighLevelClient.search(searchRequest, requestOptions))
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
@@ -50,9 +64,9 @@ public class OpenSearchService {
                 .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
     }
 
-    private SearchRequest createSearchRequest(Info.Details details, QueryBuilder queryBuilder, Integer limit) {
-        createIndexIfNotExists(details);
-        SearchRequest searchRequest = new SearchRequest(details.index);
+    private SearchRequest createSearchRequest(String index, QueryBuilder queryBuilder, Integer limit) {
+        createIndexIfNotExists(index);
+        SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(queryBuilder);
         if (limit != null) searchSourceBuilder.size(limit);
@@ -60,8 +74,8 @@ public class OpenSearchService {
         return searchRequest;
     }
 
-    public void createIndexIfNotExists(Info.Details details) {
-        indexExists(details.index).map(isExists -> createIndex(details));
+    public void createIndexIfNotExists(String index) {
+        indexExists(index).map(isExists -> createIndex(index));
     }
 
     private Try<Boolean> indexExists(String indexName) {
@@ -72,19 +86,12 @@ public class OpenSearchService {
                 .filter(BooleanUtils::isFalse);
     }
 
-    private Try<CreateIndexResponse> createIndex(Info.Details details) {
-        CreateIndexRequest request = new CreateIndexRequest(details.index)
-                .alias(new Alias(details.alias));
+    private Try<CreateIndexResponse> createIndex(String index) {
+        CreateIndexRequest request = new CreateIndexRequest(index)
+                .alias(new Alias(index + SearchConfig.ALIAS_SUFFIX));
         return Try.of(() -> restHighLevelClient.indices().create(request, requestOptions))
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
                 });
-    }
-
-    public static class Info {
-        public static final Details MATERIAL = new Details("materials", "materials-alias");
-
-        public record Details(String index, String alias) {
-        }
     }
 }

@@ -11,7 +11,7 @@ spring:
     url: jdbc:postgresql://${spring.datasource.host-port}/kodemy?currentSchema=public&useUnicode=true&serverTimezone=UTC
     host-port: postgres
     username: postgres
-    password: password
+    password: postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
@@ -37,7 +37,7 @@ spring:
   rabbitmq:
     host: rabbitmq
     username: rabbitmq
-    password: password
+    password: rabbitmq
     port: 5672
 
 management:
@@ -92,6 +92,6 @@ kodemy:
           - CAN_USE_ACTUATOR
           - CAN_GET_USER_INFO
           - CAN_READ_NOTIFICATIONS
-opensearch:
-  hosts:
-    - "http://localhost:9200"
+  opensearch:
+    hosts:
+      - "http://localhost:9200"
