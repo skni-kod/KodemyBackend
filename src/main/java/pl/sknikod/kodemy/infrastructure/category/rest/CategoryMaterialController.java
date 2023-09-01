@@ -14,8 +14,10 @@ import java.util.List;
 public class CategoryMaterialController implements CategoryMaterialControllerDefinition {
     private final CategoryService categoryService;
 
-    public ResponseEntity<List<MaterialSearchObject>> getMaterialsByCategory(Long categoryId, Integer size) {
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.showMaterials(categoryId, size));
+    public ResponseEntity<List<MaterialSearchObject>> getMaterialsByCategory(Long categoryId, int size, int page) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                categoryService.showMaterials(categoryId, size, page)
+        );
     }
 
 }

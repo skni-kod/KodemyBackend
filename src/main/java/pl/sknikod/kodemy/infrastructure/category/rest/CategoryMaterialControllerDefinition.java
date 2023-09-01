@@ -22,6 +22,7 @@ public interface CategoryMaterialControllerDefinition {
     @GetMapping("/{categoryId}/materials")
     ResponseEntity<List<MaterialSearchObject>> getMaterialsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(required = false, defaultValue = "20") Integer size
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page
     );
 }

@@ -14,12 +14,14 @@ import org.opensearch.client.indices.CreateIndexRequest;
 import org.opensearch.client.indices.CreateIndexResponse;
 import org.opensearch.client.indices.GetIndexRequest;
 import org.opensearch.common.xcontent.XContentType;
-import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +56,16 @@ public class SearchService {
                 });
     }
 
-    public SearchHit[] search(String index, QueryBuilder queryBuilder, Integer limit) {
-        SearchRequest searchRequest = createSearchRequest(index, queryBuilder, limit);
+    public SearchHit[] search(String index, PageRequest pageRequest, Consumer<SearchSourceBuilder> sourceBuilderConsumery) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.size(pageRequest.getPageSize());
+
+        int from = pageRequest.getPageNumber() * pageRequest.getPageSize();
+        searchSourceBuilder.from(from);
+
+        sourceBuilderConsumery.accept(searchSourceBuilder);
+
+        SearchRequest searchRequest = createSearchRequest(index, searchSourceBuilder);
         return Try.of(() -> restHighLevelClient.search(searchRequest, requestOptions))
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
@@ -64,13 +74,10 @@ public class SearchService {
                 .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
     }
 
-    private SearchRequest createSearchRequest(String index, QueryBuilder queryBuilder, Integer limit) {
+    private SearchRequest createSearchRequest(String index, SearchSourceBuilder sourceBuilder) {
         createIndexIfNotExists(index);
         SearchRequest searchRequest = new SearchRequest(index);
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(queryBuilder);
-        if (limit != null) searchSourceBuilder.size(limit);
-        searchRequest.source(searchSourceBuilder);
+        searchRequest.source(sourceBuilder);
         return searchRequest;
     }
 
