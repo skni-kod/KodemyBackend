@@ -12,8 +12,7 @@ import pl.sknikod.kodemy.infrastructure.common.repository.TechnologyRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.TypeRepository;
 import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateRequest;
 import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateResponse;
-import pl.sknikod.kodemy.infrastructure.notification.NotificationService;
-import pl.sknikod.kodemy.infrastructure.search.OpenSearchService;
+import pl.sknikod.kodemy.infrastructure.notification.NotificationAsyncService;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
 import java.util.Set;
@@ -25,19 +24,19 @@ public class MaterialCreateUseCase {
 
     private final MaterialRepository materialRepository;
     private final MaterialCreateMapper createMaterialMapper;
-    private final OpenSearchService openSearchService;
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
     private final TechnologyRepository technologyRepository;
-    private final NotificationService notificationService;
+    private final MaterialAsyncService materialAsyncService;
+    private final NotificationAsyncService notificationAsyncService;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body) {
         return Option.of(body)
                 .map(createMaterialMapper::map)
                 .map(material -> initializeMissingMaterialProperties(body, material))
                 .map(materialRepository::save)
-                .peek(this::updateOpenSearchIndex)
+                .peek(this::openSearchIndex)
                 .peek(this::performApprovalCheck)
                 .map(createMaterialMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
@@ -64,14 +63,13 @@ public class MaterialCreateUseCase {
                 .collect(Collectors.toSet());
     }
 
-    private void updateOpenSearchIndex(Material material) {
-        openSearchService.createIndexIfNotExists(OpenSearchService.Info.MATERIAL);
-        openSearchService.indexMaterial(material);
+    private void openSearchIndex(Material material) {
+        materialAsyncService.sendToIndex(material);
     }
 
     private void performApprovalCheck(Material material) {
         if (!UserService.checkPrivilege("CAN_AUTO_APPROVED_MATERIAL"))
-            notificationService.sendNotificationToAdmins(
+            notificationAsyncService.sendToAdmins(
                     NotificationTitle.MATERIAL_APPROVAL_REQUEST.getDesc(),
                     String.format("{\"id\":%d, \"title\":\"%s\"}", material.getId(), material.getTitle())
             );

@@ -3,10 +3,12 @@ package pl.sknikod.kodemy.infrastructure.category;
 import lombok.AllArgsConstructor;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.infrastructure.search.MaterialSearchMapper;
-import pl.sknikod.kodemy.infrastructure.search.OpenSearchService;
-import pl.sknikod.kodemy.infrastructure.search.rest.MaterialOpenSearch;
+import pl.sknikod.kodemy.infrastructure.search.SearchConfig;
+import pl.sknikod.kodemy.infrastructure.search.SearchService;
+import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,17 +16,17 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CategoryService {
-    private final OpenSearchService openSearchService;
-    private final MaterialSearchMapper materialOpenSearchMapper;
+    private final SearchService searchService;
+    private final MaterialSearchMapper materialSearchMapper;
 
-    public List<MaterialOpenSearch> showMaterials(Long categoryId, Integer limit) {
-        SearchHit[] searchHits = openSearchService.search(
-                OpenSearchService.Info.MATERIAL,
-                QueryBuilders.termQuery("categoryId", categoryId),
-                limit
+    public List<MaterialSearchObject> showMaterials(Long categoryId, int size, int page) {
+        SearchHit[] searchHits = searchService.search(
+                SearchConfig.MATERIAL_INDEX,
+                PageRequest.of(page, size),
+                sourceBuilder -> sourceBuilder.query(QueryBuilders.termQuery("categoryId", categoryId))
         );
         return Arrays.stream(searchHits)
-                .map(materialOpenSearchMapper::map)
+                .map(materialSearchMapper::map)
                 .toList();
     }
 }

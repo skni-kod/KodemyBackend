@@ -17,7 +17,7 @@ import pl.sknikod.kodemy.infrastructure.auth.AuthService
 import pl.sknikod.kodemy.infrastructure.category.CategoryService
 import pl.sknikod.kodemy.infrastructure.material.MaterialCreateUseCase
 import pl.sknikod.kodemy.infrastructure.material.MaterialService
-import pl.sknikod.kodemy.infrastructure.search.OpenSearchService
+import pl.sknikod.kodemy.infrastructure.search.SearchService
 import pl.sknikod.kodemy.infrastructure.section.SectionService
 import pl.sknikod.kodemy.infrastructure.technology.TechnologyService
 import pl.sknikod.kodemy.infrastructure.type.TypeService
@@ -67,8 +67,8 @@ abstract class MvcIntegrationSpec extends Specification {
         }
 
         @Bean
-        OpenSearchService openSearchService() {
-            return detachedMockFactory.Mock(OpenSearchService)
+        SearchService searchService() {
+            return detachedMockFactory.Mock(SearchService)
         }
 
         @Bean

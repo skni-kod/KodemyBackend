@@ -1,9 +1,6 @@
 package pl.sknikod.kodemy.infrastructure.search.rest;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import pl.sknikod.kodemy.infrastructure.common.entity.MaterialStatus;
 
 import java.util.Date;
@@ -12,7 +9,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MaterialOpenSearch {
+@Builder
+public class MaterialSearchObject {
     private Long id;
     private String title;
     private String description;

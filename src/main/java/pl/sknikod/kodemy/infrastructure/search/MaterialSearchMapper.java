@@ -6,7 +6,7 @@ import org.mapstruct.*;
 import org.opensearch.search.SearchHit;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
-import pl.sknikod.kodemy.infrastructure.search.rest.MaterialOpenSearch;
+import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 
 import java.util.Map;
 
@@ -16,13 +16,13 @@ public interface MaterialSearchMapper {
 
     @Mappings(value = {
             @Mapping(target = "user", source = "user.username"),
-            @Mapping(target = "active", source = "active"),
+            @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "categoryId", source = "category.id")
     })
-    MaterialOpenSearch map(Material material);
+    MaterialSearchObject map(Material material);
 
-    default MaterialOpenSearch map(SearchHit hit) {
-        return map(hit.getSourceAsMap(), MaterialOpenSearch.class);
+    default MaterialSearchObject map(SearchHit hit) {
+        return map(hit.getSourceAsMap(), MaterialSearchObject.class);
     }
 
     @ObjectFactory
