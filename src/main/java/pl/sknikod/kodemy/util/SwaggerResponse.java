@@ -30,6 +30,12 @@ public @interface SwaggerResponse {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
+    @ApiResponse(responseCode = "202", description = "Accepted", useReturnTypeSchema = true)
+    @interface AcceptedCode {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "400", description = "Bad Request",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
