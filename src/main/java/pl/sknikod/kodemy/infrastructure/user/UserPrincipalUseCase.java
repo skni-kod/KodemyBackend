@@ -6,10 +6,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.configuration.AppConfig;
-import pl.sknikod.kodemy.exception.origin.OAuth2AuthenticationProcessingException;
+import pl.sknikod.kodemy.exception.structure.OAuth2Exception;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemy.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
-import pl.sknikod.kodemy.infrastructure.common.entity.*;
+import pl.sknikod.kodemy.infrastructure.common.entity.Provider;
+import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
+import pl.sknikod.kodemy.infrastructure.common.entity.User;
+import pl.sknikod.kodemy.infrastructure.common.entity.UserPrincipal;
 import pl.sknikod.kodemy.infrastructure.common.repository.RoleRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.UserRepository;
 
@@ -26,18 +29,14 @@ public class UserPrincipalUseCase {
     private AppConfig.SecurityRoleProperties roleProperties;
 
     public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
-        UserProviderType providerType = Option.of(registrationId)
-                .map(String::toUpperCase)
-                .map(UserProviderType::valueOf)
-                .getOrNull();
         OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
-                providerType, oAuth2User.getAttributes()
+                registrationId, oAuth2User.getAttributes()
         );
         return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
-                        authUserInfo.getPrincipalId(), providerType
+                        authUserInfo.getPrincipalId(), authUserInfo.getProvider()
                 ))
-                .map(user -> this.create(user, authUserInfo.getAttributes()))
-                .getOrElse(() -> this.create(authUserInfo, providerType));
+                .fold(() -> this.create(authUserInfo),
+                        user -> this.create(user, authUserInfo.getAttributes()));
     }
 
     public UserPrincipal create(User user, Map<String, Object> attributes) {
@@ -48,7 +47,7 @@ public class UserPrincipalUseCase {
                 .getOrElse(() -> UserPrincipal.create(user, new HashSet<>(), attributes));
     }
 
-    public UserPrincipal create(OAuth2UserInfo authUserInfo, UserProviderType providerType) {
+    public UserPrincipal create(OAuth2UserInfo authUserInfo) {
         return Try.of(roleProperties::getDefaultRole)
                 .map(RoleName::valueOf)
                 .map(roleRepository::findByName)
@@ -58,13 +57,13 @@ public class UserPrincipalUseCase {
                         authUserInfo.getPhoto(), role
                 ))
                 .peek(user -> user.setProviders(Set.of(new Provider(
-                        authUserInfo.getPrincipalId(), providerType,
+                        authUserInfo.getPrincipalId(), authUserInfo.getProvider(),
                         authUserInfo.getEmail(), authUserInfo.getPhoto(), user
                 ))))
                 .map(userRepository::save)
                 .map(user -> this.create(user, authUserInfo.getAttributes()))
                 .getOrElseThrow(
-                        () -> new OAuth2AuthenticationProcessingException("Failed to user principal processing")
+                        () -> new OAuth2Exception("Failed to user principal processing")
                 );
     }
 }
