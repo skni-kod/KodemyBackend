@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.http.HttpHost;
-import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,13 +23,8 @@ public class OpenSearchConfig {
         return new RestHighLevelClient(RestClient.builder(hosts));
     }
 
-    @Bean
-    public RequestOptions requestOptions() {
-        return RequestOptions.DEFAULT;
-    }
-
     @Component
-    @ConfigurationProperties(prefix = "opensearch")
+    @ConfigurationProperties(prefix = "kodemy.opensearch")
     @Data
     static class OpenSearchProperties {
         private List<String> hosts = new ArrayList<>();

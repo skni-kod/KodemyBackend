@@ -3,12 +3,16 @@ plugins {
     id 'groovy'
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
+    id "org.sonarqube" version "4.0.0.2929"
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+springBoot.buildInfo()
 
 repositories {
     mavenCentral()
@@ -41,6 +45,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.spockframework:spock-spring:2.3-groovy-4.0'
+    testImplementation 'org.apache.groovy:groovy-json:4.0.4'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.testcontainers:spock'
     testImplementation 'org.testcontainers:postgresql'
@@ -55,9 +60,29 @@ dependencyManagement {
     }
 }
 
+sonarqube {
+    properties {
+        property "sonar.sources", "src/main/java/"
+        property "sonar.tests", "src/test/groovy/"
+        property "sonar.exclusions", "build/generated-sources/**"
+        property "sonar.test.exclusions", "build/generated-test-sources/**"
+        property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.jacoco.reportPath", "$buildDir/jacoco/test.exec"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+    executionData.from = fileTree(buildDir).include("/jacoco/*.exec")
+}
+
 test {
     useJUnitPlatform()
     systemProperties = [
             'spring.config.location': 'classpath:/application.yml,classpath:/application-test.yml'
     ]
+
+    finalizedBy jacocoTestReport
 }
