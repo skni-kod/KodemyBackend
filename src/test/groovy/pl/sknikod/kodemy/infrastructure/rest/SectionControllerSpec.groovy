@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 import pl.sknikod.kodemy.MvcIntegrationSpec
-import pl.sknikod.kodemy.infrastructure.model.entity.Section
-import pl.sknikod.kodemy.infrastructure.rest.model.SingleSectionResponse
+import pl.sknikod.kodemy.infrastructure.common.entity.Section
+import pl.sknikod.kodemy.infrastructure.section.SectionService
+import pl.sknikod.kodemy.infrastructure.section.rest.SectionController
+import pl.sknikod.kodemy.infrastructure.section.rest.SingleSectionResponse
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content

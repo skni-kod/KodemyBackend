@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
+import pl.sknikod.kodemy.configuration.AppConfig
 import pl.sknikod.kodemy.exception.ExceptionRestHandler
 import pl.sknikod.kodemy.infrastructure.auth.AuthService
 import pl.sknikod.kodemy.infrastructure.category.CategoryService
@@ -26,7 +27,7 @@ import pl.sknikod.kodemy.infrastructure.user.UserService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
-@Import([TestSecurityConfig, BeanConfig])
+@Import([TestSecurityConfig, BeanConfig, AppConfig.SecurityAuthProperties])
 @WebMvcTest(ExceptionRestHandler)
 abstract class MvcIntegrationSpec extends Specification {
 
