@@ -21,7 +21,9 @@ import pl.sknikod.kodemy.infrastructure.search.SearchService
 import pl.sknikod.kodemy.infrastructure.section.SectionService
 import pl.sknikod.kodemy.infrastructure.technology.TechnologyService
 import pl.sknikod.kodemy.infrastructure.type.TypeService
+import pl.sknikod.kodemy.infrastructure.user.RoleService
 import pl.sknikod.kodemy.infrastructure.user.UserPrincipalUseCase
+import pl.sknikod.kodemy.infrastructure.user.UserService
 import spock.lang.Specification
 import spock.mock.DetachedMockFactory
 
@@ -39,11 +41,6 @@ abstract class MvcIntegrationSpec extends Specification {
         @Bean
         TypeService typeService() {
             return detachedMockFactory.Mock(TypeService)
-        }
-
-        @Bean
-        SectionService sectionService() {
-            return detachedMockFactory.Mock(SectionService)
         }
 
         @Bean
@@ -79,6 +76,18 @@ abstract class MvcIntegrationSpec extends Specification {
         @Bean
         TechnologyService technologyService() {
             return detachedMockFactory.Mock(TechnologyService)
+        }
+        @Bean
+        SectionService sectionService(){
+            return detachedMockFactory.Mock(SectionService)
+        }
+        @Bean
+        RoleService roleService(){
+            return detachedMockFactory.Mock(RoleService)
+        }
+        @Bean
+        UserService userService(){
+            return detachedMockFactory.Mock(UserService)
         }
     }
 
