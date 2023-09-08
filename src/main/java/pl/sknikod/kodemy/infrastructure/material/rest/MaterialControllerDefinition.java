@@ -16,13 +16,16 @@ import java.util.Date;
 @Tag(name = "Material")
 public interface MaterialControllerDefinition {
     @Operation(summary = "Create a new material")
-    @SwaggerResponse.AuthRequest
-    @SwaggerResponse.CreateRequest
+    @SwaggerResponse.UnauthorizedCode
+    @SwaggerResponse.ForbiddenCode
+    @SwaggerResponse.CreatedCode
+    @SwaggerResponse.BadRequestCode
     @PostMapping
     ResponseEntity<MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateRequest body);
 
     @Operation(summary = "Reindex material")
-    @SwaggerResponse.AuthRequest
+    @SwaggerResponse.UnauthorizedCode
+    @SwaggerResponse.ForbiddenCode
     @SwaggerResponse.AcceptedCode
     @PatchMapping("/reindex")
     ResponseEntity<SearchService.ReindexResult> reindex(

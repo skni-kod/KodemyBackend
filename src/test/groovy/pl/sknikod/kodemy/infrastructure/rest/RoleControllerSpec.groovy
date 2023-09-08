@@ -6,8 +6,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 import pl.sknikod.kodemy.MvcIntegrationSpec
 import pl.sknikod.kodemy.WithKodemyMockUser
-import pl.sknikod.kodemy.infrastructure.user.RoleService
 import pl.sknikod.kodemy.infrastructure.common.entity.RoleName
+import pl.sknikod.kodemy.infrastructure.user.RoleService
 import pl.sknikod.kodemy.infrastructure.user.rest.RoleController
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content

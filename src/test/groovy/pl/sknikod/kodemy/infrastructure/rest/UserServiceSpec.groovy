@@ -20,7 +20,7 @@ class UserServiceSpec extends MvcIntegrationSpec {
 
     def userService = new UserService(userRepository, roleRepository, userMapper)
 
-    def setup(){
+    def setup() {
         Role role = new Role()
         role.setId(1L)
         role.setName(RoleName.ROLE_ADMIN)
@@ -32,7 +32,7 @@ class UserServiceSpec extends MvcIntegrationSpec {
         user.setRole(role)
         userRepository.save(_ as User) >> user
 
-        UserInfoResponse userInfo = new UserInfoResponse(1L, "Name", "email@com.pl","photo", new Date(), new UserInfoResponse.RoleDetails(1L, "Name"))
+        UserInfoResponse userInfo = new UserInfoResponse(1L, "Name", "email@com.pl", "photo", new Date(), new UserInfoResponse.RoleDetails(1L, "Name"))
         userMapper.map(_ as User) >> userInfo
         userService.getUserInfo(_ as Long) >> userInfo
         userService.getUserInfo(_ as Long) >> userInfo
@@ -57,7 +57,7 @@ class UserServiceSpec extends MvcIntegrationSpec {
         result == null
     }
 
-    def "should throw NotFoundException when user does not exists"(){
+    def "should throw NotFoundException when user does not exists"() {
         given:
         userRepository.findById(_ as Long) >> Optional.empty()
 
@@ -77,7 +77,7 @@ class UserServiceSpec extends MvcIntegrationSpec {
 //        result.getUsername() == "Name"
 //    }
 
-    def "should throw NotFoundException when user does not exists in user info"(){
+    def "should throw NotFoundException when user does not exists in user info"() {
         given:
         userRepository.findById(_ as Long) >> Optional.empty()
 

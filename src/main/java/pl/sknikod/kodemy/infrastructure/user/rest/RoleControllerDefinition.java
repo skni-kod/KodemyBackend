@@ -9,14 +9,17 @@ import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 @RequestMapping("/api/roles")
+@SwaggerResponse
 @SwaggerResponse.SuccessCode
-@SwaggerResponse.AuthRequest
+@SwaggerResponse.UnauthorizedCode
+@SwaggerResponse.ForbiddenCode
 @Tag(name = "Role")
 public interface RoleControllerDefinition {
 
     @GetMapping
     @Operation(summary = "Show available roles")
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     ResponseEntity<RoleName[]> getRoles();
 
 }

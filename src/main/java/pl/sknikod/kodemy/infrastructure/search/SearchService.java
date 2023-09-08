@@ -103,7 +103,7 @@ public class SearchService {
                         });
                 reindexTasksCounter.decrementAndGet();
             });
-            while(reindexTasksCounter.get() > MAX_CONCURRENT_TASKS); //wait
+            while (reindexTasksCounter.get() > MAX_CONCURRENT_TASKS) ; //wait
             pageable = pageable.next();
         } while (materialPage.hasNext());
 

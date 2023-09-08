@@ -7,7 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.auth.AuthService;
 import pl.sknikod.kodemy.infrastructure.common.entity.Role;
 import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
 import pl.sknikod.kodemy.infrastructure.common.entity.User;

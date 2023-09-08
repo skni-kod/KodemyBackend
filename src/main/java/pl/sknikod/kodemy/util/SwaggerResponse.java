@@ -44,45 +44,26 @@ public @interface SwaggerResponse {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+    )
+    @interface UnauthorizedCode {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @ApiResponse(responseCode = "403", description = "Forbidden",
+            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+    )
+    @interface ForbiddenCode {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "404", description = "Not Found",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
     @interface NotFoundCode {
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE, ElementType.METHOD})
-    @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class)))
-    @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class)))
-    @interface AuthRequest {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    @SwaggerResponse.CreatedCode
-    @SwaggerResponse.BadRequestCode
-    @interface CreateRequest {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
-    @interface ReadRequest {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    @SwaggerResponse.BadRequestCode
-    @SwaggerResponse.NotFoundCode
-    @interface UpdateRequest {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    @SwaggerResponse.NotFoundCode
-    @interface DeleteRequest {
-    }
 }

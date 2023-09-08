@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 @RequestMapping("/api/technologies")
+@SwaggerResponse
 @SwaggerResponse.SuccessCode
-@SwaggerResponse.AuthRequest
+@SwaggerResponse.UnauthorizedCode
+@SwaggerResponse.ForbiddenCode
 @Tag(name = "Technology")
 public interface TechnologyControllerDefinition {
 
     @PostMapping
     @Operation(summary = "Add new technology")
-    @SwaggerResponse.CreateRequest
+    @SwaggerResponse.CreatedCode
+    @SwaggerResponse.BadRequestCode
     ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody TechnologyAddRequest body);
 }

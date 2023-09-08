@@ -18,7 +18,8 @@ import java.util.List;
 public interface CategoryMaterialControllerDefinition {
 
     @Operation(summary = "Show all Category's materials")
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     @GetMapping("/{categoryId}/materials")
     ResponseEntity<List<MaterialSearchObject>> getMaterialsByCategory(
             @PathVariable Long categoryId,
