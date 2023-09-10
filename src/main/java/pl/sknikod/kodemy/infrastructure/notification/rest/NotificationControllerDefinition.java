@@ -15,11 +15,13 @@ import java.util.List;
 @Tag(name = "Notification")
 @SwaggerResponse
 @SwaggerResponse.SuccessCode
-@SwaggerResponse.AuthRequest
+@SwaggerResponse.UnauthorizedCode
+@SwaggerResponse.ForbiddenCode
 public interface NotificationControllerDefinition {
     @GetMapping("/{notificationId}")
     @Operation(summary = "Show Notification by ID")
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     Notification getNotificationById(@PathVariable Long notificationId);
 
     @GetMapping

@@ -16,6 +16,7 @@ public interface SectionControllerDefinition {
 
     @Operation(summary = "Show all Sections with Categories")
     @GetMapping
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     ResponseEntity<List<SingleSectionResponse>> getAll();
 }

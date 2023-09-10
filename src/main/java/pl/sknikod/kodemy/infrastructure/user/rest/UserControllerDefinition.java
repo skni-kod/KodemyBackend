@@ -10,24 +10,29 @@ import pl.sknikod.kodemy.util.SwaggerResponse;
 import javax.validation.Valid;
 
 @RequestMapping("/api/users")
+@SwaggerResponse
 @SwaggerResponse.SuccessCode
-@SwaggerResponse.AuthRequest
+@SwaggerResponse.UnauthorizedCode
+@SwaggerResponse.ForbiddenCode
 @Tag(name = "User")
 public interface UserControllerDefinition {
 
     @PatchMapping("/{userId}/roles")
     @Operation(summary = "Change user's roles")
-    @SwaggerResponse.UpdateRequest
+    @SwaggerResponse.BadRequestCode
+    @SwaggerResponse.NotFoundCode
     void updateRoles(@PathVariable Long userId, @RequestBody @Valid RoleName roleName);
 
     @GetMapping("/{userId}")
     @Operation(summary = "Show information about user")
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     ResponseEntity<UserInfoResponse> getUserInfo(@PathVariable Long userId);
 
     @GetMapping("/me")
     @Operation(summary = "Show information about logged user")
-    @SwaggerResponse.ReadRequest
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     ResponseEntity<UserInfoResponse> getCurrentUserInfo();
 
 }

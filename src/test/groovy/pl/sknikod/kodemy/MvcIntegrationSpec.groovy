@@ -77,16 +77,19 @@ abstract class MvcIntegrationSpec extends Specification {
         TechnologyService technologyService() {
             return detachedMockFactory.Mock(TechnologyService)
         }
+
         @Bean
-        SectionService sectionService(){
+        SectionService sectionService() {
             return detachedMockFactory.Mock(SectionService)
         }
+
         @Bean
-        RoleService roleService(){
+        RoleService roleService() {
             return detachedMockFactory.Mock(RoleService)
         }
+
         @Bean
-        UserService userService(){
+        UserService userService() {
             return detachedMockFactory.Mock(UserService)
         }
     }

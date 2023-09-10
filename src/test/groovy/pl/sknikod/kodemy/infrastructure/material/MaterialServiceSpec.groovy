@@ -1,9 +1,6 @@
 package pl.sknikod.kodemy.infrastructure.material
 
 import pl.sknikod.kodemy.MvcIntegrationSpec
-import pl.sknikod.kodemy.infrastructure.common.entity.MaterialStatus
-import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateRequest
-import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateResponse
 
 class MaterialServiceSpec extends MvcIntegrationSpec {
 //
