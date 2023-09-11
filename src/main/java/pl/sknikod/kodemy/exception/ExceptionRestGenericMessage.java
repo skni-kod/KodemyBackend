@@ -12,20 +12,20 @@ import org.springframework.http.MediaType;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class ExceptionRestGenericMessage {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Europe/Warsaw")
-    private LocalDateTime timeStamp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddTHH:mm:ss")
+    private Date timeStamp;
     private int status;
     private String error;
     private String message;
 
     public ExceptionRestGenericMessage(int status, String error, String message) {
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = new Date();
         this.status = status;
         this.error = error;
         this.message = message;
