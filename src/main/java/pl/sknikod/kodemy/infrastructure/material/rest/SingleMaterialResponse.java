@@ -23,7 +23,7 @@ public class SingleMaterialResponse {
     List<TechnologyDetails> technologies;
     Double averageGrade;
     UserResponse creator;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Warsaw")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddTHH:mm:ss")
     Date createdDate;
 
     @EqualsAndHashCode(callSuper = true)
