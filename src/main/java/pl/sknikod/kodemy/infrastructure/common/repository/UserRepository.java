@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemy.infrastructure.common.entity.User;
 import pl.sknikod.kodemy.infrastructure.common.entity.UserProviderType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             value = "select u from User u where u.role.name in (:roles) and u.isEnabled = true and u.isLocked = false and u.isCredentialsExpired = false and u.isExpired = false"
     )
     HashSet<User> findUsersByRoleAdmin(Set<String> roles);
+
+    ArrayList<User> findByUsernameContainingOrEmailContaining(String userName, String email);
 }

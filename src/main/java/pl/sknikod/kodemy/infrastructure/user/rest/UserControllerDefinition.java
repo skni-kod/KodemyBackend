@@ -8,6 +8,7 @@ import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/users")
 @SwaggerResponse
@@ -34,5 +35,11 @@ public interface UserControllerDefinition {
     @SwaggerResponse.SuccessCode
     @SwaggerResponse.NotFoundCode
     ResponseEntity<UserInfoResponse> getCurrentUserInfo();
+
+    @GetMapping("/find")
+    @Operation(summary = "Show list of users based on phrase")
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
+    ResponseEntity<List<UserInfoResponse>> searchForUser(@RequestParam String phrase);
 
 }
