@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class UserController implements UserControllerDefinition {
@@ -30,6 +32,11 @@ public class UserController implements UserControllerDefinition {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserInfoResponse> getCurrentUserInfo() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserInfo());
+    }
+
+    @Override
+    public ResponseEntity<List<UserInfoResponse>> searchForUser(String phrase) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.searchForUser(phrase));
     }
 
 }
