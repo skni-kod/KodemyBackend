@@ -20,6 +20,7 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.ForbiddenCode
     @SwaggerResponse.CreatedCode
     @SwaggerResponse.BadRequestCode
+    @SwaggerResponse.NotFoundCode
     @PostMapping
     ResponseEntity<MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateRequest body);
 
@@ -28,6 +29,7 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.UnauthorizedCode
     @SwaggerResponse.ForbiddenCode
     @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
     @PutMapping("/{materialId}")
     ResponseEntity<MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateRequest body);
 

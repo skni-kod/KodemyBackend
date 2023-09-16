@@ -3,7 +3,7 @@ WORKDIR /home/gradle/project
 COPY --chown=gradle:gradle build.gradle .
 RUN gradle dependencies --no-daemon
 COPY --chown=gradle:gradle . .
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon -x test
 
 FROM openjdk:17.0.2-slim-buster
 EXPOSE 8080

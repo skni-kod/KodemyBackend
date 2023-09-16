@@ -18,7 +18,7 @@ import java.util.Date;
 @Setter
 @RequiredArgsConstructor
 public class ExceptionRestGenericMessage {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddTHH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date timeStamp;
     private int status;
     private String error;

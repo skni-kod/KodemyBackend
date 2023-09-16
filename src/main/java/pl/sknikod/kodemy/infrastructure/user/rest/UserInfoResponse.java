@@ -11,7 +11,7 @@ public class UserInfoResponse {
     String username;
     String email;
     String photo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddTHH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     Date createdDate;
     RoleDetails role;
 
