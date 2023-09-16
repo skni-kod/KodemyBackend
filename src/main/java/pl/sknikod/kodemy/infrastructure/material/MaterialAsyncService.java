@@ -1,6 +1,8 @@
 package pl.sknikod.kodemy.infrastructure.material;
 
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.configuration.RabbitConfig;
@@ -11,24 +13,28 @@ import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 @AllArgsConstructor
 public class MaterialAsyncService {
     private final RabbitTemplate rabbitTemplate;
+    private final OpenSearchMapper openSearchMapper;
 
     public void sendToIndex(Material material) {
-        var materialOpenSearch = MaterialSearchObject.builder()
-                .id(material.getId())
-                .title(material.getTitle())
-                .description(material.getDescription())
-                .link(material.getLink())
-                .status(material.getStatus())
-                .isActive(material.isActive())
-                .user(material.getUser().getUsername())
-                .createdDate(material.getCreatedDate())
-                .categoryId(material.getCategory().getId())
-                .build();
-
         rabbitTemplate.convertAndSend(
                 MaterialConfig.NAME_CREATED + RabbitConfig.EXCHANGE_SUFFIX,
                 "",
-                materialOpenSearch
+                openSearchMapper.map(material)
         );
+    }
+
+    public void sendToReindex(Material material) {
+        rabbitTemplate.convertAndSend(
+                MaterialConfig.NAME_UPDATED + RabbitConfig.EXCHANGE_SUFFIX,
+                "",
+                openSearchMapper.map(material)
+        );
+    }
+
+    @Mapper(componentModel = "spring")
+    public interface OpenSearchMapper{
+        @Mapping(target = "user", source = "user.username")
+        @Mapping(target = "categoryId", source = "category.id")
+        MaterialSearchObject map(Material material);
     }
 }

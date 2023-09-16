@@ -11,7 +11,7 @@ spring:
     url: jdbc:postgresql://${spring.datasource.host-port}/kodemy?currentSchema=public&useUnicode=true&serverTimezone=UTC
     host-port: postgres
     username: postgres
-    password: password
+    password: postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql

@@ -23,6 +23,14 @@ public interface MaterialControllerDefinition {
     @PostMapping
     ResponseEntity<MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateRequest body);
 
+    @Operation(summary = "Update material")
+    @SwaggerResponse.BadRequestCode
+    @SwaggerResponse.UnauthorizedCode
+    @SwaggerResponse.ForbiddenCode
+    @SwaggerResponse.SuccessCode
+    @PutMapping("/{materialId}")
+    ResponseEntity<MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateRequest body);
+
     @Operation(summary = "Reindex material")
     @SwaggerResponse.UnauthorizedCode
     @SwaggerResponse.ForbiddenCode
