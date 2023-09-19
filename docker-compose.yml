@@ -28,7 +28,6 @@ services:
       - ./sql:/sql
     networks:
       - lan
-    restart: always
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -43,7 +42,6 @@ services:
       - rabbitmq_dev:/var/lib/rabbitmq
     networks:
       - lan
-    restart: always
 
   opensearch:
     image: opensearchproject/opensearch:2.8.0
@@ -59,7 +57,6 @@ services:
       - opensearch_dev:/usr/share/opensearch/data
     networks:
       - lan
-    restart: always
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.8.0
@@ -71,7 +68,6 @@ services:
       - "5601:5601"
     networks:
       - lan
-    restart: always
 
 networks:
   lan:
