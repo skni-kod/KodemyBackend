@@ -18,6 +18,7 @@ import pl.sknikod.kodemy.infrastructure.user.rest.UserInfoResponse;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -85,5 +86,13 @@ public class UserService {
                 .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
                 .map(userMapper::map)
                 .getOrNull();
+    }
+
+    public List<UserInfoResponse> searchForUser(String phrase) {
+        return userRepository
+                .findByUsernameContainingOrEmailContaining(phrase, phrase)
+                .parallelStream()
+                .map(userMapper::map)
+                .toList();
     }
 }
