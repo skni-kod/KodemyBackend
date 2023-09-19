@@ -26,6 +26,14 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<MaterialUpdateResponse> update(Long materialId, MaterialUpdateRequest body) {
+        var materialResponse = materialService.update(materialId, body);
+        return ResponseEntity
+                .ok().body(materialResponse);
+    }
+
+    @Override
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_INDEX')")
     public ResponseEntity<SearchService.ReindexResult> reindex(Date from, Date to) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(materialService.reindexMaterial(from, to));

@@ -27,7 +27,10 @@ public class SearchConfig {
 
         @RabbitListener(queues = MaterialConfig.NAME_UPDATED)
         private void reindex(@Payload MaterialSearchObject material) {
-            // TODO reindex material
+            searchService.reindexMaterial(
+                    material.getId().toString(),
+                    material
+            );
         }
     }
 }

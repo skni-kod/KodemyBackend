@@ -9,10 +9,7 @@ import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemy.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.MaterialRepository;
-import pl.sknikod.kodemy.infrastructure.material.rest.MaterialAddGradeRequest;
-import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateRequest;
-import pl.sknikod.kodemy.infrastructure.material.rest.MaterialCreateResponse;
-import pl.sknikod.kodemy.infrastructure.material.rest.SingleGradeResponse;
+import pl.sknikod.kodemy.infrastructure.material.rest.*;
 import pl.sknikod.kodemy.infrastructure.search.SearchService;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
@@ -27,10 +24,15 @@ public class MaterialService {
     private final GradeRepository gradeRepository;
     private final UserService userService;
     private final MaterialCreateUseCase materialCreateUseCase;
+    private final MaterialUpdateUseCase materialUpdateUseCase;
     private final SearchService searchService;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         return materialCreateUseCase.execute(body);
+    }
+
+    public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
+        return materialUpdateUseCase.execute(materialId, body);
     }
 
     public SearchService.ReindexResult reindexMaterial(Date from, Date to) {

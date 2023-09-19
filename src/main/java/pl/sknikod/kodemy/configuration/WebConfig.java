@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public static class StringToDateConverter implements Converter<String, Date> {
         @Override
         public Date convert(@NonNull String source) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             return Try.of(() -> dateFormat.parse(source))
                     .getOrElseThrow(() -> new ValidationException("Nieprawidłowy format daty: " + source));
         }
