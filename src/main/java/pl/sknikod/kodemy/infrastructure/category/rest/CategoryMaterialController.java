@@ -20,4 +20,10 @@ public class CategoryMaterialController implements CategoryMaterialControllerDef
         );
     }
 
+    public ResponseEntity<SingleCategoryResponse> getCategoryDetails(Long categoryId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                categoryService.showCategoryInfo(categoryId)
+        );
+    }
+
 }
