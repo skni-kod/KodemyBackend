@@ -8,7 +8,6 @@ import java.util.List;
 public class SingleSectionResponse {
     Long id;
     String name;
-
     List<CategoryDetails> categories;
 
     @Value
