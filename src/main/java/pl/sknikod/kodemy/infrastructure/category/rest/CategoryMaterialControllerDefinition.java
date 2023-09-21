@@ -26,4 +26,10 @@ public interface CategoryMaterialControllerDefinition {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page
     );
+
+    @Operation(summary = "Show Category's details")
+    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.NotFoundCode
+    @GetMapping("{categoryId}")
+    ResponseEntity<SingleCategoryResponse> getCategoryDetails(@PathVariable Long categoryId);
 }
