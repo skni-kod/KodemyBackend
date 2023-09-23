@@ -1,22 +1,24 @@
 package pl.sknikod.kodemy.infrastructure.category.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.infrastructure.category.CategoryService;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 
-import java.util.List;
-
 @RestController
 @AllArgsConstructor
 public class CategoryMaterialController implements CategoryMaterialControllerDefinition {
     private final CategoryService categoryService;
 
-    public ResponseEntity<List<MaterialSearchObject>> getMaterialsByCategory(Long categoryId, int size, int page) {
+    public ResponseEntity<Page<MaterialSearchObject>> getMaterialsByCategory(
+            Long categoryId, int size, int page, String sort, Sort.Direction sortDirection
+    ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.showMaterials(categoryId, size, page)
+                categoryService.showMaterials(categoryId, size, page, sort, sortDirection)
         );
     }
 
@@ -25,5 +27,4 @@ public class CategoryMaterialController implements CategoryMaterialControllerDef
                 categoryService.showCategoryInfo(categoryId)
         );
     }
-
 }

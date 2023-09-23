@@ -17,11 +17,9 @@ import org.opensearch.client.indices.CreateIndexRequest;
 import org.opensearch.client.indices.CreateIndexResponse;
 import org.opensearch.client.indices.GetIndexRequest;
 import org.opensearch.common.xcontent.XContentType;
-import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
-import org.opensearch.search.sort.FieldSortBuilder;
-import org.opensearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,13 +27,12 @@ import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +65,7 @@ public class SearchService {
     }
 
     public void reindexMaterial(String materialId, MaterialSearchObject material) {
-        Map<String, Object> mapObject = objectMapper.convertValue(material, new TypeReference<Map<String, Object>>() {
+        Map<String, Object> mapObject = objectMapper.convertValue(material, new TypeReference<>() {
         });
 
         UpdateRequest request = new UpdateRequest(SearchConfig.MATERIAL_INDEX, materialId)
@@ -117,33 +114,6 @@ public class SearchService {
         long reindexed;
     }
 
-    public SearchHit[] search(String index, PageRequest pageRequest, Consumer<SearchSourceBuilder> sourceBuilderConsumer) {
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.size(pageRequest.getPageSize());
-
-        int from = pageRequest.getPageNumber() * pageRequest.getPageSize();
-        searchSourceBuilder.from(from);
-
-        searchSourceBuilder.sort(new FieldSortBuilder("createdDate").order(SortOrder.DESC));
-
-        sourceBuilderConsumer.accept(searchSourceBuilder);
-
-        SearchRequest searchRequest = createSearchRequest(index, searchSourceBuilder);
-        return Try.of(() -> restHighLevelClient.search(searchRequest, requestOptions))
-                .onFailure(ex -> {
-                    throw new ServerProcessingException(ex.getMessage());
-                })
-                .map(searchResponse -> searchResponse.getHits().getHits())
-                .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
-    }
-
-    private SearchRequest createSearchRequest(String index, SearchSourceBuilder sourceBuilder) {
-        createIndexIfNotExists(index);
-        SearchRequest searchRequest = new SearchRequest(index);
-        searchRequest.source(sourceBuilder);
-        return searchRequest;
-    }
-
     public void createIndexIfNotExists(String index) {
         indexExists(index).map(isExists -> createIndex(index));
     }
@@ -164,5 +134,73 @@ public class SearchService {
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
                 });
+    }
+
+    private SearchRequest createSearchRequest(String index, SearchSourceBuilder sourceBuilder) {
+        createIndexIfNotExists(index);
+        return new SearchRequest(index).source(sourceBuilder);
+    }
+
+    public Page<MaterialSearchObject> searchMaterials(SearchFields searchFields, Pageable page) {
+        SearchSourceBuilder searchSourceBuilder = new SearchBuilder(mapCriteria(searchFields, page))
+                .toSearchSourceBuilder();
+        return Try.of(() -> restHighLevelClient.search(
+                        createSearchRequest(SearchConfig.MATERIAL_INDEX, searchSourceBuilder), requestOptions
+                ))
+                .onFailure(ex -> {
+                    throw new ServerProcessingException(ex.getMessage());
+                })
+                .map(searchResponse -> {
+                    var hits = searchResponse.getHits();
+                    return new PageImpl<>(
+                            materialSearchMapper.map(hits),
+                            page,
+                            hits.getTotalHits().value
+                    );
+                })
+                .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
+    }
+
+    private SearchCriteria mapCriteria(SearchFields searchFields, Pageable page) {
+        List<SearchCriteria.PhraseField> phraseFields = new ArrayList<>();
+        List<SearchCriteria.RangeField<?>> rangeFields = new ArrayList<>();
+        var contentField = new SearchCriteria.ContentField(searchFields.getPhrase());
+
+        if (Objects.nonNull(searchFields.getTitle()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "id", searchFields.getId().toString(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getTitle()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "title", searchFields.getTitle(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getStatus()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "status", searchFields.getStatus(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getCreatedBy()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "createdBy", searchFields.getCreatedBy(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getCreatedDateFrom()) || Objects.nonNull(searchFields.getCreatedDateTo()))
+            rangeFields.add(new SearchCriteria.RangeField<>(
+                    "createdDate",
+                    searchFields.getCreatedDateFrom(),
+                    searchFields.getCreatedDateTo()
+            ));
+        if (Objects.nonNull(searchFields.getCategoryId()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "categoryId", searchFields.getCategoryId().toString(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getCategoryName()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "categoryName", searchFields.getCategoryName(), false, false
+            ));
+        if (Objects.nonNull(searchFields.getSectionName()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "sectionName", searchFields.getSectionName(), false, false
+            ));
+
+        return new SearchCriteria(contentField, phraseFields, rangeFields, page);
     }
 }
