@@ -67,9 +67,7 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Page<MaterialSearchObject> search(String phrase, int size, int page, String sort, Sort.Direction sortDirection) {
-        SearchFields searchFields = new SearchFields();
-        searchFields.setPhrase(phrase);
+    public Page<MaterialSearchObject> search(SearchFields searchFields, int size, int page, String sort, Sort.Direction sortDirection) {
         return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sort));
     }
 }

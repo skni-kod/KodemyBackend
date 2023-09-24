@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemy.infrastructure.search.SearchService;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;
@@ -50,12 +51,12 @@ public interface MaterialControllerDefinition {
 
     @Operation(summary = "Search for material")
     @SwaggerResponse.SuccessCode
-    @GetMapping("/{phrase}")
+    @GetMapping
     ResponseEntity<Page<MaterialSearchObject>> search(
-            @PathVariable String phrase,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
-            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection
+            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @RequestParam(value = "search_fields") SearchFields searchFields
     );
 }

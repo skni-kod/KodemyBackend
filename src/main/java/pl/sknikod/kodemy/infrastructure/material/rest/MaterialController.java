@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.infrastructure.material.MaterialService;
 import pl.sknikod.kodemy.infrastructure.search.SearchService;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 
 import java.net.URI;
 import java.util.Date;
@@ -43,8 +44,8 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<Page<MaterialSearchObject>> search(String phrase, int size, int page, String sort, Sort.Direction sortDirection) {
-        return ResponseEntity.status(HttpStatus.OK).body(materialService.search(phrase, size, page, sort, sortDirection));
+    public ResponseEntity<Page<MaterialSearchObject>> search(int size, int page, String sort, Sort.Direction sortDirection, SearchFields searchFields) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.search(searchFields, size, page, sort, sortDirection));
     }
 
 }
