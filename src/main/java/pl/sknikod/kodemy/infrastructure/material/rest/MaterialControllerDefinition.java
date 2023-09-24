@@ -49,6 +49,12 @@ public interface MaterialControllerDefinition {
             @RequestParam(value = "to") Date to
     );
 
+    @Operation(summary = "Show material details")
+    @SwaggerResponse.UnauthorizedCode
+    @SwaggerResponse.SuccessCode
+    @GetMapping("/{materialId}")
+    ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
+
     @Operation(summary = "Search for material")
     @SwaggerResponse.SuccessCode
     @GetMapping

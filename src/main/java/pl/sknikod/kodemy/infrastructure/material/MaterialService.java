@@ -10,6 +10,7 @@ import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.mapper.GradeMapper;
+import pl.sknikod.kodemy.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemy.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemy.infrastructure.material.rest.*;
@@ -31,6 +32,7 @@ public class MaterialService {
     private final MaterialCreateUseCase materialCreateUseCase;
     private final MaterialUpdateUseCase materialUpdateUseCase;
     private final SearchService searchService;
+    private final MaterialMapper materialMapper;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         return materialCreateUseCase.execute(body);
@@ -69,5 +71,13 @@ public class MaterialService {
 
     public Page<MaterialSearchObject> search(SearchFields searchFields, int size, int page, String sort, Sort.Direction sortDirection) {
         return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sort));
+    }
+
+    public SingleMaterialResponse showDetails(Long materialId) {
+        return Option.of(materialRepository.findById(materialId).orElseThrow(() ->
+                        new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
+                .peek(System.out::println)
+                .map(materialMapper::map)
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }

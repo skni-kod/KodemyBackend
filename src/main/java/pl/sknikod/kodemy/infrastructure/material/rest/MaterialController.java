@@ -48,4 +48,10 @@ public class MaterialController implements MaterialControllerDefinition {
         return ResponseEntity.status(HttpStatus.OK).body(materialService.search(searchFields, size, page, sort, sortDirection));
     }
 
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
+    }
 }

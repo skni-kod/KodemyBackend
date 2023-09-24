@@ -27,8 +27,8 @@ public class NotificationAsyncService {
     public void sendToAdmins(String title, String message) {
         userRepository
                 .findUsersByRoleAdmin(Set.of(
-                        RoleName.ROLE_SUPERADMIN.name(),
-                        RoleName.ROLE_ADMIN.name()
+                        RoleName.ROLE_SUPERADMIN,
+                        RoleName.ROLE_ADMIN
                 ))
                 .forEach(user -> send(title, message, user.getId()));
     }

@@ -11,6 +11,9 @@ import pl.sknikod.kodemy.infrastructure.common.repository.TechnologyRepository;
 import pl.sknikod.kodemy.infrastructure.technology.rest.TechnologyAddRequest;
 import pl.sknikod.kodemy.infrastructure.technology.rest.TechnologyAddResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class TechnologyService {
@@ -28,5 +31,13 @@ public class TechnologyService {
                 .peek(technologyRepository::save)
                 .map(technologyMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Technology.class));
+    }
+
+    public List<TechnologyAddResponse> showTechnologies() {
+        return technologyRepository
+                .findAll()
+                .parallelStream()
+                .map(technologyMapper::map)
+                .collect(Collectors.toList());
     }
 }
