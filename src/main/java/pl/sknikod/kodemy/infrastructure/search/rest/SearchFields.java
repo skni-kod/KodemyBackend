@@ -2,7 +2,10 @@ package pl.sknikod.kodemy.infrastructure.search.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.exception.structure.ValidationException;

@@ -12,9 +12,9 @@ import pl.sknikod.kodemy.infrastructure.category.rest.SingleCategoryResponse;
 import pl.sknikod.kodemy.infrastructure.common.entity.Category;
 import pl.sknikod.kodemy.infrastructure.common.mapper.CategoryMapper;
 import pl.sknikod.kodemy.infrastructure.common.repository.CategoryRepository;
-import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.infrastructure.search.SearchService;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 
 import javax.transaction.Transactional;
 
