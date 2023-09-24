@@ -3,6 +3,7 @@ package pl.sknikod.kodemy.infrastructure.common.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
 import pl.sknikod.kodemy.infrastructure.common.entity.User;
 import pl.sknikod.kodemy.infrastructure.common.entity.UserProviderType;
 
@@ -20,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(
             value = "select u from User u where u.role.name in (:roles) and u.isEnabled = true and u.isLocked = false and u.isCredentialsExpired = false and u.isExpired = false"
     )
-    HashSet<User> findUsersByRoleAdmin(Set<String> roles);
+    HashSet<User> findUsersByRoleAdmin(Set<RoleName> roles);
 
     ArrayList<User> findByUsernameContainingOrEmailContaining(String userName, String email);
 }

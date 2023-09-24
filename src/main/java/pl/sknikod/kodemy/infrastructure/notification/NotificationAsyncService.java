@@ -3,11 +3,15 @@ package pl.sknikod.kodemy.infrastructure.notification;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+import org.webjars.NotFoundException;
 import pl.sknikod.kodemy.configuration.RabbitConfig;
+import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.entity.Notification;
 import pl.sknikod.kodemy.infrastructure.common.entity.RoleName;
+import pl.sknikod.kodemy.infrastructure.common.entity.User;
 import pl.sknikod.kodemy.infrastructure.common.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -27,8 +31,8 @@ public class NotificationAsyncService {
     public void sendToAdmins(String title, String message) {
         userRepository
                 .findUsersByRoleAdmin(Set.of(
-                        RoleName.ROLE_SUPERADMIN.name(),
-                        RoleName.ROLE_ADMIN.name()
+                        RoleName.ROLE_SUPERADMIN,
+                        RoleName.ROLE_ADMIN
                 ))
                 .forEach(user -> send(title, message, user.getId()));
     }
