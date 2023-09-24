@@ -38,4 +38,10 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<SearchService.ReindexResult> reindex(Date from, Date to) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(materialService.reindexMaterial(from, to));
     }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
+    }
 }

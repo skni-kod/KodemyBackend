@@ -44,4 +44,10 @@ public interface MaterialControllerDefinition {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @RequestParam(value = "to") Date to
     );
+
+    @Operation(summary = "Show material details")
+    @SwaggerResponse.UnauthorizedCode
+    @SwaggerResponse.SuccessCode
+    @GetMapping("/{materialId}")
+    ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 }

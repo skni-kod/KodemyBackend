@@ -32,7 +32,7 @@ public class Material extends Auditable<String> {
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
-    @ManyToMany(mappedBy = "materials")
+    @ManyToMany(mappedBy = "materials", fetch = FetchType.EAGER)
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
