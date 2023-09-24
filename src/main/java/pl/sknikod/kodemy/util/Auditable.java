@@ -32,14 +32,4 @@ public abstract class Auditable<U> {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     protected Date lastModifiedDate;
-
-    @Override
-    public String toString() {
-        return "{" +
-                "createdBy=" + createdBy +
-                ", createdDate=" + createdDate +
-                ", lastModifiedBy=" + lastModifiedBy +
-                ", lastModifiedDate=" + lastModifiedDate +
-                '}';
-    }
 }

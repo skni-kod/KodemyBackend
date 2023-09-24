@@ -21,13 +21,18 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String message;
 
     @JsonSerialize(using = RabbitConfig.LocalDateTimeSerializer.class)
     @JsonDeserialize(using = RabbitConfig.LocalDateTimeDeserializer.class)
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Column(nullable = false)
     private boolean read;
+    @Column(nullable = false)
     private Long recipientId;
 
     public Notification(String title, String message, Long recipientId) {
@@ -36,14 +41,5 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
         this.read = false;
         this.recipientId = recipientId;
-    }
-
-    @Override
-    public String toString() {
-        return "Notification{" +
-                ", title='" + title + '\'' +
-                ", message='" + message + '\'' +
-                ", recipientId=" + recipientId +
-                '}';
     }
 }

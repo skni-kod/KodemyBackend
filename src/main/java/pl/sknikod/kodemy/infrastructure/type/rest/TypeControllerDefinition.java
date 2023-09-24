@@ -14,8 +14,8 @@ import java.util.List;
 @Tag(name = "Type")
 public interface TypeControllerDefinition {
     @Operation(summary = "Show all Types")
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.NotFoundCode404
     @GetMapping
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
     ResponseEntity<List<SingleTypeResponse>> getAll();
 }

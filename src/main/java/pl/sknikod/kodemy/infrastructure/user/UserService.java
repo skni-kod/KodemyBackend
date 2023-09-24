@@ -83,14 +83,16 @@ public class UserService {
                 .of(UserService.getContextUserPrincipal())
                 .map(UserPrincipal::getId)
                 .map(userRepository::findById)
-                .map(userOptional -> Option.ofOptional(userOptional).getOrNull())
+                .map(Optional::get)
                 .map(userMapper::map)
-                .getOrNull();
+                .getOrElseThrow(() -> {
+                    throw new ServerProcessingException();
+                });
     }
 
     public List<UserInfoResponse> searchForUser(String phrase) {
         return userRepository
-                .findByUsernameContainingOrEmailContaining(phrase, phrase)
+                .findByUsernameContainingOrEmailContainingWithFetchRole(phrase, phrase)
                 .parallelStream()
                 .map(userMapper::map)
                 .toList();

@@ -20,7 +20,7 @@ public class Role extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleName name;
     @OneToMany(mappedBy = "role")
@@ -38,13 +38,4 @@ public class Role extends Auditable<String> {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                "} " + super.toString();
-    }
-
 }

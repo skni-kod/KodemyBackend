@@ -27,7 +27,7 @@ public class Provider extends Auditable<String> {
     private String email;
     private String photo;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Provider(String principalId, UserProviderType providerType, String email, String photo, User user) {
@@ -49,17 +49,5 @@ public class Provider extends Auditable<String> {
     @Override
     public int hashCode() {
         return Objects.hash(id, principalId, user);
-    }
-
-    @Override
-    public String toString() {
-        return "Provider{" +
-                "id=" + id +
-                ", principalId='" + principalId + '\'' +
-                ", providerType=" + providerType +
-                ", email='" + email + '\'' +
-                ", photo='" + photo + '\'' +
-                ", user=" + user +
-                "} " + super.toString();
     }
 }

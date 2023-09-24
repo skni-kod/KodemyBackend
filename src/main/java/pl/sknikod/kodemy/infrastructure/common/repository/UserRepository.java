@@ -14,14 +14,24 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query(
-            value = "SELECT u FROM User u INNER JOIN Provider up ON u = up.user WHERE up.principalId = :principalId AND up.providerType = :providerType"
+            value = "SELECT u FROM User u " +
+                    "INNER JOIN Provider up ON u = up.user " +
+                    "LEFT JOIN FETCH u.role " +
+                    "WHERE up.principalId = :principalId AND up.providerType = :providerType"
     )
-    User findUserByPrincipalIdAndAuthProvider(String principalId, UserProviderType providerType);
+    User findUserByPrincipalIdAndAuthProviderWithFetchRole(String principalId, UserProviderType providerType);
 
     @Query(
-            value = "select u from User u where u.role.name in (:roles) and u.isEnabled = true and u.isLocked = false and u.isCredentialsExpired = false and u.isExpired = false"
+            value = "select u from User u " +
+                    "where u.role.name in (:roles) and u.isEnabled = true and u.isLocked = false " +
+                    "and u.isCredentialsExpired = false and u.isExpired = false"
     )
     HashSet<User> findUsersByRoleAdmin(Set<RoleName> roles);
 
-    ArrayList<User> findByUsernameContainingOrEmailContaining(String userName, String email);
+    @Query(
+            value = "SELECT DISTINCT u FROM User u " +
+                    "LEFT JOIN FETCH u.role " +
+                    "WHERE u.username LIKE %:userName% OR u.email LIKE %:email%"
+    )
+    ArrayList<User> findByUsernameContainingOrEmailContainingWithFetchRole(String userName, String email);
 }

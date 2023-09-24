@@ -15,6 +15,7 @@ import java.util.Set;
 public class NotificationAsyncService {
     private final RabbitTemplate rabbitTemplate;
     private final UserRepository userRepository;
+    private final static Set<RoleName> ADMIN_ROLES = Set.of(RoleName.ROLE_SUPERADMIN, RoleName.ROLE_ADMIN);
 
     public void send(String title, String message, Long recipientId) {
         rabbitTemplate.convertAndSend(
@@ -26,10 +27,7 @@ public class NotificationAsyncService {
 
     public void sendToAdmins(String title, String message) {
         userRepository
-                .findUsersByRoleAdmin(Set.of(
-                        RoleName.ROLE_SUPERADMIN,
-                        RoleName.ROLE_ADMIN
-                ))
+                .findUsersByRoleAdmin(ADMIN_ROLES)
                 .forEach(user -> send(title, message, user.getId()));
     }
 }

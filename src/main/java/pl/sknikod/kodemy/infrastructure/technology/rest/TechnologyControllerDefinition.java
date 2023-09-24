@@ -13,20 +13,20 @@ import java.util.List;
 
 @RequestMapping("/api/technologies")
 @SwaggerResponse
-@SwaggerResponse.SuccessCode
-@SwaggerResponse.UnauthorizedCode
-@SwaggerResponse.ForbiddenCode
+@SwaggerResponse.SuccessCode200
+@SwaggerResponse.UnauthorizedCode401
+@SwaggerResponse.ForbiddenCode403
 @Tag(name = "Technology")
 public interface TechnologyControllerDefinition {
 
     @PostMapping
     @Operation(summary = "Add new technology")
-    @SwaggerResponse.CreatedCode
-    @SwaggerResponse.BadRequestCode
+    @SwaggerResponse.CreatedCode201
+    @SwaggerResponse.BadRequestCode400
     ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody TechnologyAddRequest body);
 
     @GetMapping
     @Operation(summary = "Show all technologies")
-    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.SuccessCode200
     ResponseEntity<List<TechnologyAddResponse>> showTechnologies();
 }

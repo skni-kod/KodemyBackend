@@ -20,9 +20,10 @@ public class Category extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String name;
     @ManyToOne
-    @JoinColumn(name = "section_id")
+    @JoinColumn(name = "section_id", nullable = false)
     private Section section;
     @OneToMany(mappedBy = "category")
     private Set<Material> materials = new HashSet<>();
@@ -33,16 +34,6 @@ public class Category extends Auditable<String> {
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
         return Objects.equals(id, category.id) && Objects.equals(name, category.name) && Objects.equals(section, category.section);
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", section=" + section +
-                ", materials=" + materials +
-                "} " + super.toString();
     }
 
     @Override

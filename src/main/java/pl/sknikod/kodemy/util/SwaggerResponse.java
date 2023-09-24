@@ -19,19 +19,19 @@ public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "200", description = "Success", useReturnTypeSchema = true)
-    @interface SuccessCode {
+    @interface SuccessCode200 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "201", description = "Created", useReturnTypeSchema = true)
-    @interface CreatedCode {
+    @interface CreatedCode201 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "202", description = "Accepted", useReturnTypeSchema = true)
-    @interface AcceptedCode {
+    @interface AcceptedCode202 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -39,7 +39,7 @@ public @interface SwaggerResponse {
     @ApiResponse(responseCode = "400", description = "Bad Request",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
-    @interface BadRequestCode {
+    @interface BadRequestCode400 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -47,7 +47,7 @@ public @interface SwaggerResponse {
     @ApiResponse(responseCode = "401", description = "Unauthorized",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
-    @interface UnauthorizedCode {
+    @interface UnauthorizedCode401 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -55,7 +55,7 @@ public @interface SwaggerResponse {
     @ApiResponse(responseCode = "403", description = "Forbidden",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
-    @interface ForbiddenCode {
+    @interface ForbiddenCode403 {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -63,7 +63,13 @@ public @interface SwaggerResponse {
     @ApiResponse(responseCode = "404", description = "Not Found",
             content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
     )
-    @interface NotFoundCode {
+    @interface NotFoundCode404 {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @ApiResponse(responseCode = "409", description = "Accepted", useReturnTypeSchema = true)
+    @interface ConflictCode409 {
     }
 
 }

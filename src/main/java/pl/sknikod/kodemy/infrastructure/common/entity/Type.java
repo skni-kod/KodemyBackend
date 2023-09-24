@@ -20,6 +20,7 @@ public class Type extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String name;
     @OneToMany(mappedBy = "type")
     private Set<Material> materials = new HashSet<>();
@@ -35,13 +36,5 @@ public class Type extends Auditable<String> {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "Type{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                "} " + super.toString();
     }
 }

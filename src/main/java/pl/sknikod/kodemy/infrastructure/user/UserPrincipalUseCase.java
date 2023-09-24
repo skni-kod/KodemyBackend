@@ -32,7 +32,7 @@ public class UserPrincipalUseCase {
         OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
                 registrationId, oAuth2User.getAttributes()
         );
-        return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
+        return Option.of(userRepository.findUserByPrincipalIdAndAuthProviderWithFetchRole(
                         authUserInfo.getPrincipalId(), authUserInfo.getProvider()
                 ))
                 .fold(() -> this.create(authUserInfo),

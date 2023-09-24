@@ -20,14 +20,9 @@ public class Technology extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
-    @ManyToMany
-    @JoinTable(
-            name = "technologies_materials",
-            joinColumns = @JoinColumn(name = "technology_id"),
-            inverseJoinColumns = @JoinColumn(name = "material_id")
-    )
+    @ManyToMany(mappedBy = "technologies")
     private Set<Material> materials = new HashSet<>();
 
     @Override
@@ -41,13 +36,5 @@ public class Technology extends Auditable<String> {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "Technology{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                "} " + super.toString();
     }
 }

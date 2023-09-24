@@ -21,10 +21,10 @@ public class Grade extends Auditable<String> {
     @Column(name = "grade", precision = 3, scale = 2)
     private Double value;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "material_id")
+    @JoinColumn(name = "material_id", nullable = false)
     private Material material;
 
     @Override
@@ -37,13 +37,5 @@ public class Grade extends Auditable<String> {
     @Override
     public int hashCode() {
         return Objects.hash(id, value);
-    }
-
-    @Override
-    public String toString() {
-        return "Grade{" +
-                "id=" + id +
-                ", grade=" + value +
-                "} " + super.toString();
     }
 }
