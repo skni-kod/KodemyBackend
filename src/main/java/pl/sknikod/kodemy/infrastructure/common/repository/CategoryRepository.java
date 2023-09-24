@@ -6,5 +6,4 @@ import pl.sknikod.kodemy.infrastructure.common.entity.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
 }

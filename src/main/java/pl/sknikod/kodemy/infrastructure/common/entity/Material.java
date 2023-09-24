@@ -25,19 +25,25 @@ public class Material extends Auditable<String> {
     private String link;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
+    @Column(nullable = false)
     private boolean isActive;
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @ManyToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id", nullable = false)
     private Type type;
-    @ManyToMany(mappedBy = "materials", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "technologies_materials",
+            joinColumns = @JoinColumn(name = "material_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
+    )
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Override
@@ -52,16 +58,4 @@ public class Material extends Auditable<String> {
     public int hashCode() {
         return Objects.hash(id, title, description, status, isActive);
     }
-
-    @Override
-    public String toString() {
-        return "Material{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", isActive=" + isActive +
-                "} " + super.toString();
-    }
-
 }

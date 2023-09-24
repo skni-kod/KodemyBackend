@@ -14,18 +14,18 @@ import java.util.Set;
 @Tag(name = "Material")
 public interface MaterialGradeControllerDefinition {
     @Operation(summary = "Add a new grade to the Material")
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.ForbiddenCode
-    @SwaggerResponse.CreatedCode
-    @SwaggerResponse.BadRequestCode
+    @SwaggerResponse.CreatedCode201
+    @SwaggerResponse.BadRequestCode400
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
     @PostMapping("/{materialId}/grades")
     void addGrade(@RequestBody @Valid MaterialAddGradeRequest body, @PathVariable Long materialId);
 
     @Operation(summary = "Show all Material's grades")
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.ForbiddenCode
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
     @GetMapping("/{materialId}/grades")
     ResponseEntity<Set<SingleGradeResponse>> showGrades(@PathVariable Long materialId);
 }

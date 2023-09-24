@@ -18,8 +18,8 @@ import pl.sknikod.kodemy.util.SwaggerResponse;
 public interface CategoryMaterialControllerDefinition {
 
     @Operation(summary = "Show all Category's materials")
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.NotFoundCode404
     @GetMapping("/{categoryId}/materials")
     ResponseEntity<Page<MaterialSearchObject>> getMaterialsByCategory(
             @PathVariable Long categoryId,
@@ -30,8 +30,8 @@ public interface CategoryMaterialControllerDefinition {
     );
 
     @Operation(summary = "Show Category's details")
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.NotFoundCode404
     @GetMapping("{categoryId}")
     ResponseEntity<SingleCategoryResponse> getCategoryDetails(@PathVariable Long categoryId);
 }

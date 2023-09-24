@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/oauth2")
 @Tag(name = "OAuth2")
 @SwaggerResponse
-@SwaggerResponse.SuccessCode
+@SwaggerResponse.SuccessCode200
 public interface AuthControllerDefinition {
     @GetMapping(value = "/link-for-authorize-{provider}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Operation(summary = "Get URL for AUTHORIZE via OAUTH2")

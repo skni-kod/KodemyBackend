@@ -3,6 +3,7 @@ package pl.sknikod.kodemy.infrastructure.material.rest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import pl.sknikod.kodemy.infrastructure.common.entity.MaterialStatus;
 import pl.sknikod.kodemy.infrastructure.common.rest.UserDetails;
 
@@ -11,20 +12,23 @@ import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.List;
 
-@Value
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@Getter
 public class SingleMaterialResponse {
-    Long id;
-    String title;
-    String description;
-    String link;
+    final Long id;
+    final String title;
+    final String description;
+    final String link;
     @Enumerated(EnumType.STRING)
-    MaterialStatus status;
-    TypeDetails type;
-    List<TechnologyDetails> technologies;
+    final MaterialStatus status;
+    final TypeDetails type;
+    final List<TechnologyDetails> technologies;
+    @Setter
     Double averageGrade;
-    UserResponse creator;
+    final UserResponse creator;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    Date createdDate;
+    final Date createdDate;
 
     @EqualsAndHashCode(callSuper = true)
     @Value

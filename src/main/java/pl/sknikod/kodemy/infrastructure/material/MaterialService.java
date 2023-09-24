@@ -46,15 +46,16 @@ public class MaterialService {
         return searchService.reindexMaterialsAsync(from, to);
     }
 
-    public void addGrade(MaterialAddGradeRequest body, Long materialId) {
+    public void addGrade(Long materialId, MaterialAddGradeRequest body) {
         Material material = materialRepository.findById(materialId).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)
         );
         Option.of(body)
                 .map(gradeMapper::map)
-                .peek(grade -> {
+                .map(grade -> {
                     grade.setUser(userService.getContextUser());
                     grade.setMaterial(material);
+                    return grade;
                 })
                 .map(gradeRepository::save)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
@@ -78,6 +79,10 @@ public class MaterialService {
                         new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
                 .peek(System.out::println)
                 .map(materialMapper::map)
+                .map(materialResponse -> {
+                    materialResponse.setAverageGrade(gradeRepository.findAverageGradeByMaterialId(materialId));
+                    return materialResponse;
+                })
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }

@@ -14,14 +14,14 @@ import java.util.List;
 @RequestMapping("/api/notification")
 @Tag(name = "Notification")
 @SwaggerResponse
-@SwaggerResponse.SuccessCode
-@SwaggerResponse.UnauthorizedCode
-@SwaggerResponse.ForbiddenCode
+@SwaggerResponse.SuccessCode200
+@SwaggerResponse.UnauthorizedCode401
+@SwaggerResponse.ForbiddenCode403
 public interface NotificationControllerDefinition {
     @GetMapping("/{notificationId}")
     @Operation(summary = "Show Notification by ID")
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.NotFoundCode404
     Notification getNotificationById(@PathVariable Long notificationId);
 
     @GetMapping
@@ -29,7 +29,7 @@ public interface NotificationControllerDefinition {
     List<Notification> getNotifications();
 
     @PutMapping("/{notificationId}")
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.NotFoundCode404
     @Operation(summary = "Mark Notification as read")
     void markAsRead(@PathVariable Long notificationId);
 }

@@ -20,27 +20,28 @@ import java.util.Date;
 @Tag(name = "Material")
 public interface MaterialControllerDefinition {
     @Operation(summary = "Create a new material")
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.ForbiddenCode
-    @SwaggerResponse.CreatedCode
-    @SwaggerResponse.BadRequestCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.CreatedCode201
+    @SwaggerResponse.BadRequestCode400
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
+    @SwaggerResponse.ConflictCode409
     @PostMapping
     ResponseEntity<MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateRequest body);
 
     @Operation(summary = "Update material")
-    @SwaggerResponse.BadRequestCode
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.ForbiddenCode
-    @SwaggerResponse.SuccessCode
-    @SwaggerResponse.NotFoundCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.BadRequestCode400
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
     @PutMapping("/{materialId}")
     ResponseEntity<MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateRequest body);
 
     @Operation(summary = "Reindex material")
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.ForbiddenCode
-    @SwaggerResponse.AcceptedCode
+    @SwaggerResponse.AcceptedCode202
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
     @PatchMapping("/reindex")
     ResponseEntity<SearchService.ReindexResult> reindex(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -50,13 +51,13 @@ public interface MaterialControllerDefinition {
     );
 
     @Operation(summary = "Show material details")
-    @SwaggerResponse.UnauthorizedCode
-    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.UnauthorizedCode401
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 
     @Operation(summary = "Search for material")
-    @SwaggerResponse.SuccessCode
+    @SwaggerResponse.SuccessCode200
     @GetMapping
     ResponseEntity<Page<MaterialSearchObject>> search(
             @RequestParam(defaultValue = "20") int size,

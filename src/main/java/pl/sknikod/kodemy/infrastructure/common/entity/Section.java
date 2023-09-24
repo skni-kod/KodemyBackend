@@ -20,6 +20,7 @@ public class Section extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String name;
     @OneToMany(mappedBy = "section")
     private Set<Category> categories = new HashSet<>();
@@ -36,13 +37,4 @@ public class Section extends Auditable<String> {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", name=" + name +
-                "} " + super.toString();
-    }
-
 }

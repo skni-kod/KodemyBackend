@@ -9,13 +9,21 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notifications"/>
             </column>
-            <column name="title" type="VARCHAR(255)"/>
-            <column name="message" type="VARCHAR(1023)"/>
-            <column name="created_at" type="DATETIME"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
             <column name="read" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="recipient_id" type="BIGINT"/>
+            <column name="recipient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

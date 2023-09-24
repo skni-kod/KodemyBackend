@@ -17,7 +17,7 @@ public class MaterialGradeController implements MaterialGradeControllerDefinitio
     @Override
     @PreAuthorize("isAuthenticated()")
     public void addGrade(MaterialAddGradeRequest body, Long materialId) {
-        materialService.addGrade(body, materialId);
+        materialService.addGrade(materialId, body);
     }
 
     @Override

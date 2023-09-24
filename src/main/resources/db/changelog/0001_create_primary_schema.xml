@@ -10,22 +10,51 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_roles_name" tableName="roles"/>
 
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
             </column>
-            <column name="username" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="email" type="VARCHAR(255)"/>
             <column name="photo" type="VARCHAR(255)"/>
-            <column name="is_expired" type="BOOLEAN"/>
-            <column name="is_locked" type="BOOLEAN"/>
-            <column name="is_credentials_expired" type="BOOLEAN"/>
-            <column name="is_enabled" type="BOOLEAN"/>
+            <column name="is_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_credentials_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
             <column name="role_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_users_role" references="roles(id)"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
+
+        <createTable tableName="providers">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_providers"/>
+            </column>
+            <column name="principal_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_type" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_providers_user" references="users(id)"/>
             </column>
         </createTable>
 
@@ -33,33 +62,42 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sections"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_sections_name" tableName="sections"/>
 
         <createTable tableName="categories">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="section_id" type="BIGINT">
-                <constraints foreignKeyName="fk_categories_section" references="sections(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_categories_section" references="sections(id)"/>
             </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_categories_name" tableName="categories"/>
 
         <createTable tableName="types">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_types_name" tableName="types"/>
 
         <createTable tableName="materials">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_materials"/>
             </column>
             <column name="title" type="VARCHAR(255)"/>
-            <column name="link" type="VARCHAR(1020)"/>
             <column name="description" type="VARCHAR(255)"/>
+            <column name="link" type="VARCHAR(255)"/>
             <column name="status" type="VARCHAR(255)"/>
             <column name="is_active" type="BOOLEAN">
                 <constraints nullable="false"/>
@@ -79,16 +117,19 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_technologies_name" tableName="technologies"/>
 
         <createTable tableName="technologies_materials">
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material_fk"
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material"
                              references="materials(id)"/>
             </column>
             <column name="technology_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology_fk"
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology"
                              references="technologies(id)"/>
             </column>
         </createTable>
@@ -97,29 +138,12 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
             </column>
-            <column name="grade" type="DOUBLE PRECISION"/>
+            <column name="grade" type="DOUBLE"/>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_grades_user" references="users(id)"/>
             </column>
             <column name="material_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="providers">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_providers"/>
-            </column>
-            <column name="principal_id" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="provider_type" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="email" type="VARCHAR(255)"/>
-            <column name="photo" type="VARCHAR(255)"/>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_providers_user" references="users(id)"/>
             </column>
         </createTable>
     </changeSet>
