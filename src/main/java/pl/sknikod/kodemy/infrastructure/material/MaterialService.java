@@ -2,6 +2,9 @@ package pl.sknikod.kodemy.infrastructure.material;
 
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
@@ -12,6 +15,8 @@ import pl.sknikod.kodemy.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemy.infrastructure.material.rest.*;
 import pl.sknikod.kodemy.infrastructure.search.SearchService;
+import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
 import java.util.Date;
@@ -64,11 +69,15 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public SingleMaterialResponse showDetails(Long materialId){
-        return Option.of(materialRepository.findById(materialId).orElseThrow(()->
-                new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
+    public Page<MaterialSearchObject> search(SearchFields searchFields, int size, int page, String sort, Sort.Direction sortDirection) {
+        return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sort));
+    }
+
+    public SingleMaterialResponse showDetails(Long materialId) {
+        return Option.of(materialRepository.findById(materialId).orElseThrow(() ->
+                        new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
                 .peek(System.out::println)
                 .map(materialMapper::map)
-                .getOrElseThrow(()->new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }

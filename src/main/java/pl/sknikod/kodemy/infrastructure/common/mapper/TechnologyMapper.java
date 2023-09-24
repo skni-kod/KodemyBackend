@@ -18,5 +18,6 @@ public interface TechnologyMapper {
             @Mapping(target = "lastModifiedDate", ignore = true)
     })
     Technology map(TechnologyAddRequest tech);
+
     TechnologyAddResponse map(Technology tech);
 }
