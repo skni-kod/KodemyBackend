@@ -40,7 +40,7 @@ public class Material extends Auditable<String> {
             inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
     private Set<Technology> technologies = new HashSet<>();
-    @OneToMany(mappedBy = "material")
+    @OneToMany(mappedBy = "material", fetch = FetchType.EAGER)
     private Set<Grade> grades = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
