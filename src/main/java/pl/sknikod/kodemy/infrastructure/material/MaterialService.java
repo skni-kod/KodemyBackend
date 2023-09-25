@@ -3,6 +3,7 @@ package pl.sknikod.kodemy.infrastructure.material;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,9 @@ import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -61,14 +63,13 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Set<SingleGradeResponse> showGrades(Long materialId) {
-        return Option.of(materialRepository.findById(materialId).orElseThrow(() ->
-                        new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId))
-                )
-                .map(Material::getGrades)
-                .map(gradeMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+    public Page<SingleGradeResponse> showGrades(int size, int page, String sort, Sort.Direction sortDirection, Long materialId) {
+        Material material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId));
+        List<SingleGradeResponse> singleGradeList = new ArrayList<>(gradeMapper.map(material.getGrades()));
+        return new PageImpl<>(singleGradeList, PageRequest.of(page, size, sortDirection, sort), singleGradeList.size());
     }
+
 
     public Page<MaterialSearchObject> search(SearchFields searchFields, int size, int page, String sort, Sort.Direction sortDirection) {
         return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sort));

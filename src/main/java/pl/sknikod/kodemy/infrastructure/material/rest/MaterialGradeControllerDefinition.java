@@ -2,12 +2,13 @@ package pl.sknikod.kodemy.infrastructure.material.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -27,5 +28,11 @@ public interface MaterialGradeControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @SwaggerResponse.NotFoundCode404
     @GetMapping("/{materialId}/grades")
-    ResponseEntity<Set<SingleGradeResponse>> showGrades(@PathVariable Long materialId);
+    ResponseEntity<Page<SingleGradeResponse>> showGrades(
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
+            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @PathVariable Long materialId
+    );
 }
