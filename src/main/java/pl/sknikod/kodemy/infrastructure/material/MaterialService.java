@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.NotFoundException;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemy.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemy.infrastructure.common.mapper.MaterialMapper;
@@ -20,7 +21,6 @@ import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.infrastructure.user.UserService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,11 +63,12 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Page<SingleGradeResponse> showGrades(int size, int page, String sort, Sort.Direction sortDirection, Long materialId) {
-        Material material = materialRepository.findById(materialId)
-                .orElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId));
-        List<SingleGradeResponse> singleGradeList = new ArrayList<>(gradeMapper.map(material.getGrades()));
-        return new PageImpl<>(singleGradeList, PageRequest.of(page, size, sortDirection, sort), singleGradeList.size());
+    public Page<SingleGradeResponse> showGrades(Long materialId, Date from, Date to, int page, int size) {
+        Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRangeWithPage(materialId, from, to, PageRequest.of(page, size));
+        List<SingleGradeResponse> singleGradeResponses = gradesPage.getContent().stream()
+                .map(gradeMapper::map)
+                .toList();
+        return new PageImpl<>(singleGradeResponses, gradesPage.getPageable(), gradesPage.getTotalElements());
     }
 
 

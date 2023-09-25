@@ -3,12 +3,13 @@ package pl.sknikod.kodemy.infrastructure.material.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -29,10 +30,12 @@ public interface MaterialGradeControllerDefinition {
     @SwaggerResponse.NotFoundCode404
     @GetMapping("/{materialId}/grades")
     ResponseEntity<Page<SingleGradeResponse>> showGrades(
+            @PathVariable Long materialId,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @RequestParam(value = "from") Date from,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @RequestParam(value = "to") Date to,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
-            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @PathVariable Long materialId
+            @RequestParam(defaultValue = "0") int page
     );
 }
