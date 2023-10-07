@@ -65,6 +65,9 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="prefix" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addUniqueConstraint columnNames="name" constraintName="uc_sections_name" tableName="sections"/>
 

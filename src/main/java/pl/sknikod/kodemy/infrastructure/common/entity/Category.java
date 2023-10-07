@@ -20,7 +20,7 @@ public class Category extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
