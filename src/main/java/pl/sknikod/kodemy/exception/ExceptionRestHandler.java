@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 
 @RestControllerAdvice
@@ -25,6 +26,12 @@ public final class ExceptionRestHandler extends ResponseEntityExceptionHandler {
     ) {
         var restGenericMessage = body == null ? new ExceptionRestGenericMessage(status, ex) : body;
         return super.handleExceptionInternal(ex, restGenericMessage, headers, status, request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(
+            ConstraintViolationException ex, WebRequest request) {
+        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(AuthenticationException.class)
