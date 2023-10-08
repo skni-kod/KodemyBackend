@@ -11,7 +11,7 @@ import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 
 @RestController
 @AllArgsConstructor
-public class CategoryMaterialController implements CategoryMaterialControllerDefinition {
+public class CategoryController implements CategoryControllerDefinition {
     private final CategoryService categoryService;
 
     public ResponseEntity<Page<MaterialSearchObject>> getMaterialsByCategory(

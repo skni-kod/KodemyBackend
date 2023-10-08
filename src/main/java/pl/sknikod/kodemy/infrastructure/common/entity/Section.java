@@ -22,6 +22,8 @@ public class Section extends Auditable<String> {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
+    @Column(unique = true, nullable = false)
+    private String prefix;
     @OneToMany(mappedBy = "section")
     private Set<Category> categories = new HashSet<>();
 

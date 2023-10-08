@@ -15,7 +15,7 @@ import pl.sknikod.kodemy.util.SwaggerResponse;
 @RequestMapping("/api/categories")
 @SwaggerResponse
 @Tag(name = "Category")
-public interface CategoryMaterialControllerDefinition {
+public interface CategoryControllerDefinition {
 
     @Operation(summary = "Show all Category's materials")
     @SwaggerResponse.SuccessCode200

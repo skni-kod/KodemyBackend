@@ -6,38 +6,38 @@
 
     <changeSet id="0004-1" author="KartVen" labels="primary_section_records">
         <sql>
-            insert into sections (id, name)
-            values (1, 'Aplikacje webowe'),
-                   (2, 'GameDev'),
-                   (3, 'Elektronika/Retro'),
-                   (4, 'Języki programowania'),
-                   (5, 'Inne');
+            insert into sections (id, name, prefix)
+            values (1, 'Aplikacje webowe', 'AW'),
+                   (2, 'GameDev', 'GD'),
+                   (3, 'Elektronika/Retro', 'ER'),
+                   (4, 'Programowanie', 'PR'),
+                   (5, 'Inne', 'IN');
         </sql>
     </changeSet>
 
     <changeSet id="0004-2" author="KartVen" labels="primary_category_records">
         <sql>
-            insert into categories (id, name, section_id)
-            values (1, 'Frontend Dev', 1),
-                   (2, 'Backend Dev', 1),
-                   (3, 'Mobile Dev', 1),
-                   (4, 'Silnik gier', 2),
-                   (5, 'Grafika w grze', 2),
-                   (6, 'Komputer vintage', 3),
-                   (7, 'Robotyka', 3),
-                   (8, 'Struktura danych', 4),
-                   (9, 'Algorytm', 4),
-                   (10, 'Uczenie maszynowe', 5),
-                   (11, 'Sztuczna inteligencja', 5),
-                   (12, 'Cyberbezpieczeństwo', 5),
-                   (13, 'Zarządzanie bazą danych', 5),
-                   (14, 'Programowanie sieciowe', 5),
-                   (15, 'Programowanie wbudowane', 3),
-                   (16, 'Projektowanie Web', 1),
-                   (17, 'Grafika komputerowa', 1),
-                   (18, 'Test', 2),
-                   (19, 'Język assemblera', 4),
-                   (20, 'Konfiguracja', 4);
+            insert into categories (id, signature, name, section_id)
+            values (1, 'AW_Frontend Dev', 'Frontend Dev', 1),
+                   (2, 'AW_Backend Dev', 'Backend Dev', 1),
+                   (3, 'AW_DevOps', 'DevOps', 1),
+                   (4, 'AW_Inne', 'Inne', 1),
+                   (5, 'GD_Silnik gier', 'Silnik gier', 2),
+                   (6, 'GD_Grafika 2D', 'Grafika 2D', 2),
+                   (7, 'GD_Grafika 3D', 'Grafika 3D', 2),
+                   (8, 'GD_Inne', 'Inne', 2),
+                   (9, 'ER_Układ programowalny', 'Układ programowalny', 3),
+                   (10, 'ER_Robotyka', 'Robotyka', 3),
+                   (11, 'ER_Druk 3D', 'Druk 3D', 3),
+                   (12, 'ER_Inne', 'Inne', 3),
+                   (13, 'PR_Język programowania', 'Język programowania', 4),
+                   (14, 'PR_Kompilator', 'Kompilator', 4),
+                   (15, 'PR_Inne', 'Inne', 4),
+                   (16, 'IN_Sztuczna inteligencja', 'Sztuczna inteligencja', 5),
+                   (17, 'IN_Baza danych', 'Baza danych', 5),
+                   (18, 'IN_Cyberbezpieczeństwo', 'Cyberbezpieczeństwo', 5),
+                   (19, 'IN_Konfiguracja', 'Konfiguracja', 5),
+                   (20, 'IN_Inne', 'Inne', 5);
         </sql>
     </changeSet>
 
