@@ -6,6 +6,8 @@ import lombok.Setter;
 import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +23,8 @@ public class Technology extends Auditable<String> {
     @Column(nullable = false)
     private Long id;
     @Column(unique = true, nullable = false)
+    @NotEmpty(message = "Name may not be empty")
+    @Size(min = 2, max = 32, message = "Name must be between 2 and 32 characters long")
     private String name;
     @ManyToMany(mappedBy = "technologies")
     private Set<Material> materials = new HashSet<>();

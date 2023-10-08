@@ -6,6 +6,8 @@ import lombok.Setter;
 import pl.sknikod.kodemy.util.Auditable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +22,10 @@ public class Material extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+    @NotEmpty(message = "Title may not be empty")
+    @Size(min = 2, max = 32, message = "Title must be between 2 and 32 characters long")
     private String title;
+    @NotEmpty(message = "Description may not be empty")
     private String description;
     private String link;
     @Enumerated(EnumType.STRING)
