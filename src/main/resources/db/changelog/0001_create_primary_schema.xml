@@ -70,10 +70,14 @@
             </column>
         </createTable>
         <addUniqueConstraint columnNames="name" constraintName="uc_sections_name" tableName="sections"/>
+        <addUniqueConstraint columnNames="prefix" constraintName="uc_sections_prefix" tableName="sections"/>
 
         <createTable tableName="categories">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
+            </column>
+            <column name="signature" type="VARCHAR(255)">
+                <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -82,7 +86,7 @@
                 <constraints nullable="false" foreignKeyName="fk_categories_section" references="sections(id)"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="name" constraintName="uc_categories_name" tableName="categories"/>
+        <addUniqueConstraint columnNames="signature" constraintName="uc_categories_signature" tableName="categories"/>
 
         <createTable tableName="types">
             <column autoIncrement="true" name="id" type="BIGINT">
