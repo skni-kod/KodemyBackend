@@ -55,7 +55,6 @@ public interface MaterialControllerDefinition {
 
     @Operation(summary = "Show material details")
     @SwaggerResponse.SuccessCode200
-    @SwaggerResponse.UnauthorizedCode401
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 

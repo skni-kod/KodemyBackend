@@ -50,7 +50,6 @@ public class MaterialController implements MaterialControllerDefinition {
 
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
     }
