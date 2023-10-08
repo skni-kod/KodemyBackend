@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensearch.action.admin.indices.alias.Alias;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.search.SearchRequest;
@@ -166,7 +167,7 @@ public class SearchService {
         List<SearchCriteria.RangeField<?>> rangeFields = new ArrayList<>();
         var contentField = new SearchCriteria.ContentField(searchFields.getPhrase());
 
-        if (Objects.nonNull(searchFields.getTitle()))
+        if (Objects.nonNull(searchFields.getId()))
             phraseFields.add(new SearchCriteria.PhraseField(
                     "id", searchFields.getId().toString(), false, false
             ));
@@ -188,18 +189,22 @@ public class SearchService {
                     searchFields.getCreatedDateFrom(),
                     searchFields.getCreatedDateTo()
             ));
+        if (Objects.nonNull(searchFields.getSectionId()))
+            phraseFields.add(new SearchCriteria.PhraseField(
+                    "sectionId", searchFields.getSectionId().toString(), false, false
+            ));
         if (Objects.nonNull(searchFields.getCategoryId()))
             phraseFields.add(new SearchCriteria.PhraseField(
                     "categoryId", searchFields.getCategoryId().toString(), false, false
             ));
-        if (Objects.nonNull(searchFields.getCategoryName()))
+        if (Objects.nonNull(searchFields.getTechnologyIds()) && !searchFields.getTechnologyIds().isEmpty()) {
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "categoryName", searchFields.getCategoryName(), false, false
+                    "technologyIds",
+                    StringUtils.join(searchFields.getTechnologyIds(), " "),
+                    false,
+                    false
             ));
-        if (Objects.nonNull(searchFields.getSectionName()))
-            phraseFields.add(new SearchCriteria.PhraseField(
-                    "sectionName", searchFields.getSectionName(), false, false
-            ));
+        }
 
         return new SearchCriteria(contentField, phraseFields, rangeFields, page);
     }

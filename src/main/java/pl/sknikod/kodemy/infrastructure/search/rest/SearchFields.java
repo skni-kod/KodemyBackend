@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemy.exception.structure.ValidationException;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,9 +23,9 @@ public class SearchFields {
     String createdBy;
     Date createdDateFrom;
     Date createdDateTo;
+    Long sectionId;
     Long categoryId;
-    String categoryName;
-    String sectionName;
+    List<Long> technologyIds;
 
     @Component
     @RequiredArgsConstructor
