@@ -10,25 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
 @RequestMapping("/api/categories")
 @SwaggerResponse
 @Tag(name = "Category")
 public interface CategoryControllerDefinition {
-
-    @Operation(summary = "Show all Category's materials")
-    @SwaggerResponse.SuccessCode200
-    @SwaggerResponse.NotFoundCode404
-    @GetMapping("/{categoryId}/materials")
-    ResponseEntity<Page<MaterialSearchObject>> getMaterialsByCategory(
-            @PathVariable Long categoryId,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
-            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection
-    );
-
     @Operation(summary = "Show Category's details")
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.NotFoundCode404

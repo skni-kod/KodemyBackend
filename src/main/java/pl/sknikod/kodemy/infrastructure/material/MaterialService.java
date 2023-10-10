@@ -23,6 +23,7 @@ import pl.sknikod.kodemy.infrastructure.user.UserService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -73,7 +74,10 @@ public class MaterialService {
 
 
     public Page<MaterialSearchObject> search(SearchFields searchFields, int size, int page, String sort, Sort.Direction sortDirection) {
-        return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sort));
+        return searchService.searchMaterials(
+                Objects.isNull(searchFields) ? new SearchFields() : searchFields,
+                PageRequest.of(page, size, sortDirection, sort)
+        );
     }
 
     public SingleMaterialResponse showDetails(Long materialId) {

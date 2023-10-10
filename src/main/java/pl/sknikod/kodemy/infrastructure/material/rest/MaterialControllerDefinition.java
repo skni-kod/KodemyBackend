@@ -58,7 +58,7 @@ public interface MaterialControllerDefinition {
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 
-    @Operation(summary = "Search for material")
+    @Operation(summary = "Show all materials")
     @SwaggerResponse.SuccessCode200
     @GetMapping
     ResponseEntity<Page<MaterialSearchObject>> search(
@@ -66,6 +66,6 @@ public interface MaterialControllerDefinition {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @RequestParam(value = "search_fields") SearchFields searchFields
+            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
 }
