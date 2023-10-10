@@ -8,19 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.infrastructure.category.CategoryService;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
+import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 
 @RestController
 @AllArgsConstructor
 public class CategoryController implements CategoryControllerDefinition {
     private final CategoryService categoryService;
-
-    public ResponseEntity<Page<MaterialSearchObject>> getMaterialsByCategory(
-            Long categoryId, int size, int page, String sort, Sort.Direction sortDirection
-    ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.showMaterials(categoryId, size, page, sort, sortDirection)
-        );
-    }
 
     public ResponseEntity<SingleCategoryResponse> getCategoryDetails(Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK).body(
