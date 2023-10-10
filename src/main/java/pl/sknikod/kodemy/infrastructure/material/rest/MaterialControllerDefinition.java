@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.material.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -45,18 +46,19 @@ public interface MaterialControllerDefinition {
     @PatchMapping("/reindex")
     ResponseEntity<SearchService.ReindexResult> reindex(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
             @RequestParam(value = "from") Date from,
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @RequestParam(value = "to") Date to
     );
 
     @Operation(summary = "Show material details")
     @SwaggerResponse.SuccessCode200
-    @SwaggerResponse.UnauthorizedCode401
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 
-    @Operation(summary = "Search for material")
+    @Operation(summary = "Show all materials")
     @SwaggerResponse.SuccessCode200
     @GetMapping
     ResponseEntity<Page<MaterialSearchObject>> search(
@@ -64,6 +66,6 @@ public interface MaterialControllerDefinition {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @RequestParam(value = "search_fields") SearchFields searchFields
+            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
 }

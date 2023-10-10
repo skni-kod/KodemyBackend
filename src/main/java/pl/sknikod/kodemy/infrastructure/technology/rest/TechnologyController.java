@@ -16,7 +16,7 @@ public class TechnologyController implements TechnologyControllerDefinition {
     private TechnologyService technologyService;
 
     @Override
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('CAN_MODIFY_TECHNOLOGIES')")
     public ResponseEntity<TechnologyAddResponse> addTechnology(TechnologyAddRequest tech) {
         var technologyResponse = technologyService.addTechnology(tech);
         return ResponseEntity

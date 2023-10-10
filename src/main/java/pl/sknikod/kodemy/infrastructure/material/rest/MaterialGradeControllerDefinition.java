@@ -1,6 +1,7 @@
 package pl.sknikod.kodemy.infrastructure.material.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,7 +33,9 @@ public interface MaterialGradeControllerDefinition {
     ResponseEntity<Page<SingleGradeResponse>> showGrades(
             @PathVariable Long materialId,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
             @RequestParam(value = "from") Date from,
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @RequestParam(value = "to") Date to,
             @RequestParam(defaultValue = "20") int size,

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sknikod.kodemy.util.SwaggerResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/technologies")
@@ -23,7 +24,7 @@ public interface TechnologyControllerDefinition {
     @Operation(summary = "Add new technology")
     @SwaggerResponse.CreatedCode201
     @SwaggerResponse.BadRequestCode400
-    ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody TechnologyAddRequest body);
+    ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody @Valid TechnologyAddRequest body);
 
     @GetMapping
     @Operation(summary = "Show all technologies")

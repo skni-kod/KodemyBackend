@@ -20,7 +20,9 @@ public class Category extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
+    private String signature;
+    @Column(nullable = false)
     private String name;
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
@@ -33,11 +35,11 @@ public class Category extends Auditable<String> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return Objects.equals(id, category.id) && Objects.equals(name, category.name) && Objects.equals(section, category.section);
+        return Objects.equals(id, category.id) && Objects.equals(signature, category.signature) && Objects.equals(name, category.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, section);
+        return Objects.hash(id, signature, name);
     }
 }

@@ -17,6 +17,7 @@ import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -25,10 +26,10 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
 
-    public Page<MaterialSearchObject> showMaterials(Long categoryId, int size, int page, String sortField, Sort.Direction sortDirection) {
-        SearchFields searchFields = new SearchFields();
-        searchFields.setCategoryId(categoryId);
-        return searchService.searchMaterials(searchFields, PageRequest.of(page, size, sortDirection, sortField));
+    public Page<MaterialSearchObject> showMaterials(Long categoryId, int size, int page, String sortField, Sort.Direction sortDirection, SearchFields searchFields) {
+        var searchFieldsObj = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        searchFieldsObj.setCategoryId(categoryId);
+        return searchService.searchMaterials(searchFieldsObj, PageRequest.of(page, size, sortDirection, sortField));
     }
 
     @Transactional
