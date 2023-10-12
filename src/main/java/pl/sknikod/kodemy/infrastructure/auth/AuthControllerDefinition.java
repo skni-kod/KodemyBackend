@@ -39,4 +39,8 @@ public interface AuthControllerDefinition {
     @GetMapping("/providers")
     @Operation(summary = "Show all OAuth2 providers")
     ResponseEntity<UserProviderType[]> getProvidersList();
+
+    @GetMapping
+    @Operation(summary = "Check if user is authenticated")
+    ResponseEntity<Boolean> isAuthenticated();
 }

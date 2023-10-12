@@ -2,15 +2,9 @@ package pl.sknikod.kodemy.infrastructure.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.index.FieldInfo;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.util.BytesRef;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.Named;
-import org.opensearch.index.mapper.KeywordFieldMapper;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
@@ -50,7 +44,7 @@ public interface MaterialSearchMapper {
                 .get();
     }
 
-    default List<Long> map(Set<Technology> technologies){
+    default List<Long> map(Set<Technology> technologies) {
         return technologies.stream().map(Technology::getId).toList();
     }
 }
