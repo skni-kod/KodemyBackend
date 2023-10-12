@@ -34,4 +34,9 @@ public class AuthController implements AuthControllerDefinition {
     public ResponseEntity<UserProviderType[]> getProvidersList() {
         return ResponseEntity.status(HttpStatus.OK).body(authService.getProvidersList());
     }
+
+    @Override
+    public ResponseEntity<Boolean> isAuthenticated() {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.isAuthenticated());
+    }
 }
