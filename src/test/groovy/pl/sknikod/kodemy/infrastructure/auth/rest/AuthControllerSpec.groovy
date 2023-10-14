@@ -9,7 +9,6 @@ import org.springframework.web.util.UriComponentsBuilder
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 import pl.sknikod.kodemy.MvcIntegrationSpec
 import pl.sknikod.kodemy.configuration.AppConfig
-import pl.sknikod.kodemy.infrastructure.auth.AuthController
 import pl.sknikod.kodemy.infrastructure.auth.AuthService
 import pl.sknikod.kodemy.infrastructure.common.entity.UserProviderType
 

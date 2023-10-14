@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.sknikod.kodemy.infrastructure.auth.rest.AuthInfo;
 import pl.sknikod.kodemy.infrastructure.common.entity.User;
 import pl.sknikod.kodemy.infrastructure.common.entity.UserProviderType;
 import pl.sknikod.kodemy.infrastructure.user.UserPrincipalUseCase;
@@ -19,7 +20,7 @@ import pl.sknikod.kodemy.infrastructure.user.rest.UserInfoResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.util.function.Consumer;
 
-import static pl.sknikod.kodemy.infrastructure.auth.AuthController.REDIRECT_URI_PARAMETER;
+import static pl.sknikod.kodemy.infrastructure.auth.rest.AuthController.REDIRECT_URI_PARAMETER;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +57,13 @@ public class AuthService extends DefaultOAuth2UserService {
         UserInfoResponse map(User user);
     }
 
-    public Boolean isAuthenticated() {
-        return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser");
+    public AuthInfo isAuthenticated() {
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setAuth(!SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .equals("anonymousUser")
+        );
+        return authInfo;
     }
 }

@@ -1,10 +1,11 @@
-package pl.sknikod.kodemy.infrastructure.auth;
+package pl.sknikod.kodemy.infrastructure.auth.rest;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemy.configuration.AppConfig;
+import pl.sknikod.kodemy.infrastructure.auth.AuthService;
 import pl.sknikod.kodemy.infrastructure.common.entity.UserProviderType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +37,7 @@ public class AuthController implements AuthControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<Boolean> isAuthenticated() {
+    public ResponseEntity<AuthInfo> isAuthenticated() {
         return ResponseEntity.status(HttpStatus.OK).body(authService.isAuthenticated());
     }
 }

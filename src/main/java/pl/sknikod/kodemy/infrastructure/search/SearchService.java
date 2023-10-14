@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
+import pl.sknikod.kodemy.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemy.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
 import pl.sknikod.kodemy.infrastructure.search.rest.SearchFields;
@@ -34,11 +35,13 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SearchService {
+    private final GradeRepository gradeRepository;
     private final RestHighLevelClient restHighLevelClient;
     private final MaterialSearchMapper materialSearchMapper;
     private final ObjectMapper objectMapper;
@@ -88,6 +91,14 @@ public class SearchService {
         do {
             materialPage = materialRepository.findMaterialsInDateRangeWithPage(from, to, pageable);
             var materialsToIndex = materialPage.getContent();
+            var gradesMap = gradeRepository.findAverageGradeByMaterialsIds(
+                            materialsToIndex.stream().map(Material::getId).toList()
+                    )
+                    .stream()
+                    .collect(Collectors.toMap(
+                            result -> (Long) result[0],
+                            result -> (Double) result[1]
+                    ));
 
             reindexObjectsCounter.addAndGet(materialsToIndex.size());
             reindexMaterials.addAndGet(materialsToIndex.size());
@@ -96,7 +107,11 @@ public class SearchService {
                 reindexTasksCounter.incrementAndGet();
                 materialsToIndex
                         .forEach(material -> {
-                            reindexMaterial(material.getId().toString(), materialSearchMapper.map(material));
+                            var searchObj = materialSearchMapper.map(
+                                    material,
+                                    gradesMap.getOrDefault(material.getId(), 0.00)
+                            );
+                            reindexMaterial(material.getId().toString(), searchObj);
                             reindexObjectsCounter.decrementAndGet();
                         });
                 reindexTasksCounter.decrementAndGet();
@@ -112,7 +127,7 @@ public class SearchService {
 
     @Value
     public static class ReindexResult {
-        long reindexed;
+        long value;
     }
 
     public void createIndexIfNotExists(String index) {

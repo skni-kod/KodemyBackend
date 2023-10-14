@@ -1,4 +1,4 @@
-package pl.sknikod.kodemy.infrastructure.auth;
+package pl.sknikod.kodemy.infrastructure.auth.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,5 +42,5 @@ public interface AuthControllerDefinition {
 
     @GetMapping
     @Operation(summary = "Check if user is authenticated")
-    ResponseEntity<Boolean> isAuthenticated();
+    ResponseEntity<AuthInfo> isAuthenticated();
 }
