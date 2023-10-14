@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
-import static pl.sknikod.kodemy.infrastructure.auth.AuthController.REDIRECT_URI_PARAMETER;
+import static pl.sknikod.kodemy.infrastructure.auth.rest.AuthController.REDIRECT_URI_PARAMETER;
 
 @Repository
 public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {

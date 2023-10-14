@@ -18,6 +18,7 @@ public class MaterialSearchObject {
     private String link;
     private MaterialStatus status;
     private boolean isActive;
+    private double avgGrade;
     private String user;
     private Date createdDate;
     private Long sectionId;

@@ -8,6 +8,7 @@ import org.mapstruct.Mappings;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemy.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.entity.Technology;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
@@ -25,9 +26,16 @@ public interface MaterialSearchMapper {
             @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "sectionId", source = "category.section.id"),
             @Mapping(target = "categoryId", source = "category.id"),
-            @Mapping(target = "technologyIds", source = "technologies")
+            @Mapping(target = "technologyIds", source = "technologies"),
+            @Mapping(target = "avgGrade", constant = "0"),
     })
     MaterialSearchObject map(Material material);
+
+    default MaterialSearchObject map(Material material, double grade) {
+        MaterialSearchObject materialSearchObject = map(material);
+        materialSearchObject.setAvgGrade(grade);
+        return materialSearchObject;
+    }
 
     default List<MaterialSearchObject> map(SearchHits hits) {
         return StreamSupport.stream(hits.spliterator(), false)

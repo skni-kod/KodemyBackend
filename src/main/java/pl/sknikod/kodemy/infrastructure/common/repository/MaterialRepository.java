@@ -11,6 +11,8 @@ import java.util.Date;
 
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
-    @Query("SELECT m FROM Material m WHERE m.createdDate BETWEEN :from AND :to")
+    @Query(
+            value = "SELECT m FROM Material m LEFT JOIN FETCH m.technologies WHERE m.createdDate BETWEEN :from AND :to",
+            countQuery = "SELECT COUNT(m) FROM Material m WHERE m.createdDate BETWEEN :from AND :to")
     Page<Material> findMaterialsInDateRangeWithPage(Date from, Date to, Pageable pageable);
 }
