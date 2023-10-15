@@ -46,7 +46,6 @@ public class SearchService {
     private final MaterialSearchMapper materialSearchMapper;
     private final ObjectMapper objectMapper;
     private final MaterialRepository materialRepository;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private final RequestOptions requestOptions = RequestOptions.DEFAULT;
     private final AtomicInteger reindexTasksCounter = new AtomicInteger(0);
     private final AtomicInteger reindexObjectsCounter = new AtomicInteger(0);
@@ -56,31 +55,31 @@ public class SearchService {
 
     public void indexMaterial(MaterialSearchObject material) {
         createIndexIfNotExists(SearchConfig.MATERIAL_INDEX);
-        String indexJSONObject = Try.of(() -> objectMapper.writeValueAsString(material))
-                .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
-
-        IndexRequest request = new IndexRequest(SearchConfig.MATERIAL_INDEX)
-                .id(material.getId().toString())
-                .source(indexJSONObject, XContentType.JSON);
-        Try.of(() -> restHighLevelClient.index(request, requestOptions))
-                .onFailure(ex -> {
-                    throw new ServerProcessingException(ex.getMessage());
-                });
+        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map>() {
+        }))
+                .map(jsonObject -> new IndexRequest(SearchConfig.MATERIAL_INDEX)
+                        .id(material.getId().toString())
+                        .source(jsonObject)
+                )
+                .onSuccess(request -> Try.of(() -> restHighLevelClient.index(request, requestOptions))
+                        .onFailure(ex -> log.error(ex.getMessage()))
+                );
     }
 
     public void reindexMaterial(String materialId, MaterialSearchObject material) {
-        Map<String, Object> mapObject = objectMapper.convertValue(material, new TypeReference<>() {
-        });
-
-        UpdateRequest request = new UpdateRequest(SearchConfig.MATERIAL_INDEX, materialId)
-                .doc(mapObject)
-                .docAsUpsert(true);
-
-        Try.of(() -> restHighLevelClient.update(request, requestOptions))
-                .onFailure(ex -> log.error(ex.getMessage()));
+        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map>() {
+                }))
+                .map(jsonObject -> new UpdateRequest(SearchConfig.MATERIAL_INDEX, materialId)
+                        .doc(jsonObject)
+                        .docAsUpsert(true)
+                )
+                .onSuccess(request -> Try.of(() -> restHighLevelClient.update(request, requestOptions))
+                        .onFailure(ex -> log.error(ex.getMessage()))
+                );
     }
 
     public ReindexResult reindexMaterialsAsync(Date from, Date to) {
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         reindexTasksCounter.set(0);
         reindexObjectsCounter.set(0);
         reindexMaterials.set(0);
