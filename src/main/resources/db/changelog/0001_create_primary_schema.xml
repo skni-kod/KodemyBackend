@@ -131,13 +131,13 @@
         <addUniqueConstraint columnNames="name" constraintName="uc_technologies_name" tableName="technologies"/>
 
         <createTable tableName="technologies_materials">
-            <column name="material_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material"
-                             references="materials(id)"/>
-            </column>
             <column name="technology_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_technologies_materials_technology"
                              references="technologies(id)"/>
+            </column>
+            <column name="material_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_technologies_materials_material"
+                             references="materials(id)"/>
             </column>
         </createTable>
 

@@ -8,7 +8,6 @@ import org.mapstruct.Mappings;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import pl.sknikod.kodemy.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemy.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemy.infrastructure.common.entity.Material;
 import pl.sknikod.kodemy.infrastructure.common.entity.Technology;
 import pl.sknikod.kodemy.infrastructure.search.rest.MaterialSearchObject;
