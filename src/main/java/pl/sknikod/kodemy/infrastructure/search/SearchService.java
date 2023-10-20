@@ -55,7 +55,7 @@ public class SearchService {
 
     public void indexMaterial(MaterialSearchObject material) {
         createIndexIfNotExists(SearchConfig.MATERIAL_INDEX);
-        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map>() {
+        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, ?>>() {
         }))
                 .map(jsonObject -> new IndexRequest(SearchConfig.MATERIAL_INDEX)
                         .id(material.getId().toString())
@@ -67,7 +67,7 @@ public class SearchService {
     }
 
     public void reindexMaterial(String materialId, MaterialSearchObject material) {
-        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map>() {
+        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, ?>>() {
                 }))
                 .map(jsonObject -> new UpdateRequest(SearchConfig.MATERIAL_INDEX, materialId)
                         .doc(jsonObject)

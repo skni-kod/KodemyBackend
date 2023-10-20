@@ -23,5 +23,15 @@ public class MaterialSearchObject {
     private Date createdDate;
     private Long sectionId;
     private Long categoryId;
-    private List<Long> technologyIds;
+    private List<Technology> technologies;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Technology {
+        private Long id;
+        private String name;
+    }
 }

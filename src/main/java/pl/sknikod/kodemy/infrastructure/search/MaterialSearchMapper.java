@@ -25,8 +25,7 @@ public interface MaterialSearchMapper {
             @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "sectionId", source = "category.section.id"),
             @Mapping(target = "categoryId", source = "category.id"),
-            @Mapping(target = "technologyIds", source = "technologies"),
-            @Mapping(target = "avgGrade", constant = "0"),
+            @Mapping(target = "avgGrade", constant = "0.00"),
     })
     MaterialSearchObject map(Material material);
 
@@ -49,9 +48,5 @@ public interface MaterialSearchMapper {
                     throw new ServerProcessingException(ex.getMessage());
                 })
                 .get();
-    }
-
-    default List<Long> map(Set<Technology> technologies) {
-        return technologies.stream().map(Technology::getId).toList();
     }
 }
