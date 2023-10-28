@@ -1,0 +1,21 @@
+server.port: 8083
+
+spring:
+  application.name: kodemy-search
+  banner.location: classpath:banner.txt
+  rabbitmq:
+    host: rabbitmq
+    username: rabbitmq
+    password: rabbitmq
+    port: 5672
+
+kodemy:
+  opensearch:
+    host: opensearch
+    index:
+      name: materials
+      alias: materials-alias
+  rabbit:
+    queues:
+    - material.created
+    - material.updated

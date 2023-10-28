@@ -1,0 +1,74 @@
+server.port: 8081
+
+spring:
+  application.name: kodemy-auth
+  banner.location: classpath:banner.txt
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-auth
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    hibernate.ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-root.xml
+    contexts: prod
+    enabled: true
+  security.oauth2.client.registration:
+    github:
+      clientId: 6fbe33527fc7bce1820f
+      clientSecret: 95ba6be1aacccd5547b19248d77b28bf492bde71
+      redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+      scope:
+        - user:email
+        - read:user
+
+kodemy:
+  opensearch:
+    host: opensearch
+    index:
+      name: materials
+      alias: materials-alias
+  security:
+    jwt:
+      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+    auth:
+      loginUri: /api/oauth2/authorize
+      callbackUri: /api/oauth2/callback/**
+      logoutUri: /api/oauth2/logout
+    cors:
+      allowedUris:
+        - localhost:${server.port}
+    role:
+      defaultRole: ROLE_USER
+      privileges:
+        ROLE_USER:
+        ROLE_MODERATOR:
+          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_APPROVED_MATERIAL
+          - CAN_GET_USER_INFO
+        ROLE_ADMIN:
+          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_APPROVED_MATERIAL
+          - CAN_AUTO_APPROVED_MATERIAL
+          - CAN_GET_USERS
+          - CAN_BANNING_USERS
+          - CAN_ASSIGN_ROLES
+          - CAN_GET_USER_INFO
+          - CAN_READ_NOTIFICATIONS
+          - CAN_INDEX
+        ROLE_SUPERADMIN:
+          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_APPROVED_MATERIAL
+          - CAN_AUTO_APPROVED_MATERIAL
+          - CAN_GET_USERS
+          - CAN_BANNING_USERS
+          - CAN_ASSIGN_ROLES
+          - CAN_USE_ACTUATOR
+          - CAN_GET_USER_INFO
+          - CAN_READ_NOTIFICATIONS
+          - CAN_INDEX

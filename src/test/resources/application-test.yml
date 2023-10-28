@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-test.xml
-    contexts: test
-    enabled: true
-  main:
-    allow-bean-definition-overriding: true

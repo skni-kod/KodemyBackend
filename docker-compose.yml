@@ -1,19 +1,6 @@
 version: '3.7'
 
 services:
-  api:
-    build: .
-    container_name: kodemy_api_dev
-    profiles:
-      - test
-    ports:
-      - "8181:8080"
-    networks:
-      - lan
-    depends_on:
-      - postgres
-      - rabbitmq
-
   postgres:
     container_name: kodemy_postgres_dev
     image: postgres:14.1-alpine
@@ -25,7 +12,6 @@ services:
       - "5435:5432"
     volumes:
       - postgres_dev:/var/lib/postgresql/data
-      - ./sql:/sql
     networks:
       - lan
 

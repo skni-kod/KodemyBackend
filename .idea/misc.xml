@@ -1,0 +1,14 @@
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/kodemy-auth" />
+    <file type="web" url="file://$PROJECT_DIR$/kodemy-backend" />
+    <file type="web" url="file://$PROJECT_DIR$/kodemy-eureka" />
+    <file type="web" url="file://$PROJECT_DIR$/kodemy-gateway" />
+    <file type="web" url="file://$PROJECT_DIR$/kodemy-search" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="corretto-17" project-jdk-type="JavaSDK" />
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
+</project>
