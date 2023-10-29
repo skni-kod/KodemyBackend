@@ -33,7 +33,10 @@ public class AuthFilter extends AbstractGatewayFilterFactory<Object> {
         return ((exchange, chain) -> {
             var reqMutate = exchange.getRequest().mutate();
 
-            String bearer = Try.of(() -> restTemplate.getForObject(authGetTokenUrl, AuthResponse.class))
+            var bearer = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            if (Objects.nonNull(bearer)) return chain.filter(exchange);
+
+            bearer = Try.of(() -> restTemplate.getForObject(authGetTokenUrl, AuthResponse.class))
                     .map(AuthResponse::getBearer)
                     .getOrNull();
 

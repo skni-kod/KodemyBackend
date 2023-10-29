@@ -44,8 +44,8 @@ public class Material extends Auditable<String> {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "technologies_materials",
-            joinColumns = @JoinColumn(name = "technology_id"),
-            inverseJoinColumns = @JoinColumn(name = "material_id")
+            joinColumns = @JoinColumn(name = "material_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
