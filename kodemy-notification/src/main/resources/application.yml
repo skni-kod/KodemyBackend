@@ -25,3 +25,15 @@ spring:
     username: rabbitmq
     password: rabbitmq
     port: 5672
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /api/actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: CAN_USE_ACTUATOR
+      show-components: always
