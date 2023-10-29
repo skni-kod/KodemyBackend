@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -26,10 +26,14 @@ public class JwtUtil {
     private String secretKey;
 
     public Output generateToken(Input input) {
+        final var authorities = input.getAuthorities()
+                .stream()
+                .map(SimpleGrantedAuthority::getAuthority)
+                .toList();
         final var claims = Map.of(
                 "id", input.id,
                 "username", input.username,
-                "authorities", input.authorities
+                "authorities", authorities
         );
         return createToken(input.username, claims);
     }
@@ -85,7 +89,7 @@ public class JwtUtil {
         return new Output.Deserialize(
                 claims.get("id", Long.class),
                 claims.get("username", String.class),
-                claims.get("authorities", HashSet.class)
+                claims.get("authorities", List.class)
         );
     }
 
@@ -105,7 +109,7 @@ public class JwtUtil {
         public static class Deserialize {
             Long id;
             String username;
-            Set<String> authorities;
+            List<String> authorities;
         }
     }
 }

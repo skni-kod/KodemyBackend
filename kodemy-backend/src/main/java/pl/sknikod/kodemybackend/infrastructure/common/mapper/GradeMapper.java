@@ -13,7 +13,7 @@ import java.util.Set;
 public interface GradeMapper {
     @Mappings(value = {
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "author", ignore = true),
             @Mapping(target = "value", source = "grade"),
             @Mapping(target = "material", ignore = true),
             @Mapping(target = "createdBy", ignore = true),
@@ -23,7 +23,8 @@ public interface GradeMapper {
     })
     Grade map(MaterialAddGradeRequest request);
 
-    @Mapping(target = "creator", source = "user")
+    @Mapping(target = "creator.id", source = "author.id")
+    @Mapping(target = "creator.username", source = "author.name")
     SingleGradeResponse map(Grade grade);
 
     Set<SingleGradeResponse> map(Set<Grade> grades);

@@ -72,7 +72,7 @@
             <column name="type_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
             </column>
-            <column name="user" type="jsonb"/>
+            <column name="author" type="jsonb"/>
         </createTable>
 
         <createTable tableName="technologies_materials">
@@ -89,7 +89,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
             </column>
             <column name="grade" type="DOUBLE"/>
-            <column name="user" type="jsonb"/>
+            <column name="author" type="jsonb"/>
             <column name="material_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
             </column>

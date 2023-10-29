@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.configuration;
+package pl.sknikod.kodemysearch.configuration;
 
 import io.vavr.control.Try;
 import lombok.NonNull;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import pl.sknikod.kodemybackend.exception.structure.ValidationException;
+import pl.sknikod.kodemysearch.exception.structure.ValidationException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

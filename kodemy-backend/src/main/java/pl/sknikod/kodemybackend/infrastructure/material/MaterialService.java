@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
@@ -42,10 +44,13 @@ public class MaterialService {
         Material material = materialRepository.findById(materialId).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)
         );
+        var principal = (SecurityConfig.JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Option.of(body)
                 .map(gradeMapper::map)
                 .map(grade -> {
-                    grade.setUser(new UserJsonB(null, null));
+                    grade.setAuthor(
+                            new UserJsonB(principal.getId(), principal.getUsername())
+                    );
                     grade.setMaterial(material);
                     return grade;
                 })

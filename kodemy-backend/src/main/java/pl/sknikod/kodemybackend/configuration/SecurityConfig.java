@@ -5,14 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemybackend.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemybackend.util.filter.JwtAuthorizationFilter;
 
-import java.security.Principal;
-import java.util.Optional;
 import java.util.Set;
 
 @Configuration
@@ -31,7 +26,6 @@ import java.util.Set;
         jsr250Enabled = true,
         prePostEnabled = true
 )
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @AllArgsConstructor
 public class SecurityConfig {
     private final ObjectMapper objectMapper;
@@ -53,12 +47,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .map(Principal::getName);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.util;
+package pl.sknikod.kodemysearch.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

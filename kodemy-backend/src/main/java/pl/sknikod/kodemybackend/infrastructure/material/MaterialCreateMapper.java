@@ -16,7 +16,7 @@ public interface MaterialCreateMapper {
             @Mapping(target = "type", ignore = true),
             @Mapping(target = "category", ignore = true),
             @Mapping(target = "technologies", ignore = true),
-            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "author", ignore = true),
             @Mapping(target = "grades", ignore = true),
             @Mapping(target = "createdBy", ignore = true),
             @Mapping(target = "createdDate", ignore = true),

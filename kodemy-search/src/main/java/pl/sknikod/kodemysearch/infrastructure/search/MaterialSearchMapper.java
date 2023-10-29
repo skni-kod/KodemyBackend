@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.infrastructure.search.rest.MaterialResponse;
+import pl.sknikod.kodemysearch.infrastructure.search.rest.MaterialSingleResponse;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -15,17 +15,17 @@ import java.util.stream.StreamSupport;
 public interface MaterialSearchMapper {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    MaterialResponse map(QueueConsumer.MaterialEvent event);
+    MaterialSingleResponse map(QueueConsumer.MaterialEvent event);
 
-    default List<MaterialResponse> map(SearchHits hits) {
+    default List<MaterialSingleResponse> map(SearchHits hits) {
         return StreamSupport.stream(hits.spliterator(), false)
                 .map(SearchHit::getSourceAsString)
                 .map(this::map)
                 .toList();
     }
 
-    private MaterialResponse map(String source) {
-        return Try.of(() -> objectMapper.readValue(source, MaterialResponse.class))
+    private MaterialSingleResponse map(String source) {
+        return Try.of(() -> objectMapper.readValue(source, MaterialSingleResponse.class))
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
                 })

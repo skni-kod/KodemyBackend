@@ -1,7 +1,9 @@
 package pl.sknikod.kodemybackend.infrastructure.material;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class MaterialCreateUseCase {
 
     private final MaterialRepository materialRepository;
@@ -31,6 +34,7 @@ public class MaterialCreateUseCase {
     private final RabbitConfig.QueueProperties queueProperties;
     private final MaterialRabbitMapper rabbitMapper;
     private final GradeRepository gradeRepository;
+    private final ObjectMapper objectMapper;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body) {
         return Option.of(body)
@@ -44,7 +48,8 @@ public class MaterialCreateUseCase {
     }
 
     private Material initializeMissingMaterialProperties(MaterialCreateRequest body, Material material) {
-        material.setUser(new UserJsonB(null, null));
+        var principal = (SecurityConfig.JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        material.setAuthor(new UserJsonB(principal.getId(), principal.getUsername()));
         material.setCategory(categoryRepository.findById(body.getCategoryId()).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, body.getCategoryId())
         ));

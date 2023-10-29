@@ -25,7 +25,7 @@ public class Grade extends Auditable<String> {
     private Double value;
     @org.hibernate.annotations.Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private UserJsonB user;
+    private UserJsonB author;
     @ManyToOne
     @JoinColumn(name = "material_id", nullable = false)
     private Material material;

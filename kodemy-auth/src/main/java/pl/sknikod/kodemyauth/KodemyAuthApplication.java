@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(
-        title = "KodemyBackend API - kodemy-auth", version = "", description = "SKNI Kod Kodemy"
+        title = "KodemyBackend API - kodemy-auth",
+        version = "",
+        description = "SKNI Kod Kodemy"
 ))
 public class KodemyAuthApplication {
 

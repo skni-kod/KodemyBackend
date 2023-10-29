@@ -14,8 +14,8 @@ import java.util.Set;
 public class UserPrincipal implements UserDetails, OAuth2User {
 
     private final Long id;
-    private final String password;
     private final String username;
+    private final String password = null;
     private final String email;
     private final transient Role role;
     private final AccountStatus status;
@@ -25,7 +25,6 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     private UserPrincipal(Long id, String username, String email, Role role, AccountStatus status, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
         this.id = id;
         this.username = username;
-        this.password = "";
         this.email = email;
         this.role = role;
         this.status = status;
@@ -36,7 +35,9 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     public static UserPrincipal create(User user, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
         return new UserPrincipal(
                 user.getId(), user.getUsername(), user.getEmail(), user.getRole(),
-                new AccountStatus(user.getIsExpired(), user.getIsLocked(), user.getIsCredentialsExpired(), user.getIsEnabled()),
+                new AccountStatus(
+                        user.getIsExpired(), user.getIsLocked(), user.getIsCredentialsExpired(), user.getIsEnabled()
+                ),
                 authorities, attributes
         );
     }

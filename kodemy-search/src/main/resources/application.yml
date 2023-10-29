@@ -17,5 +17,12 @@ kodemy:
       alias: materials-alias
   rabbit:
     queues:
-    - material.created
-    - material.updated
+      m-created:
+        name: material.created
+        exchange: direct
+      m-updated:
+        name: material.updated
+        exchange: direct
+  security:
+    jwt:
+      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6

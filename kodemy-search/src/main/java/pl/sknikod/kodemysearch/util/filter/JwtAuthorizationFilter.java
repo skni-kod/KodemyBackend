@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.util.filter;
+package pl.sknikod.kodemysearch.util.filter;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +10,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
-import pl.sknikod.kodemybackend.util.JwtUtil;
+import pl.sknikod.kodemysearch.configuration.SecurityConfig;
+import pl.sknikod.kodemysearch.util.JwtUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

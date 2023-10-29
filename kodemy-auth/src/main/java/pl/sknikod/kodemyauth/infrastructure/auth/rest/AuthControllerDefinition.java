@@ -45,12 +45,11 @@ public interface AuthControllerDefinition {
     @Operation(summary = "Check if user is authenticated")
     ResponseEntity<AuthInfo> isAuthenticated();
 
-
-    @Hidden
     @GetMapping("/token")
+    @Operation(summary = "Get authentication token")
     ResponseEntity<AuthResponse> getToken();
 
     @Hidden
-    @GetMapping("/validate")
+    @GetMapping("/validateToken")
     ResponseEntity<TokenInfo> validateToken(@RequestParam String bearer);
 }

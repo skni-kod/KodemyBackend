@@ -52,7 +52,7 @@ public class Material extends Auditable<String> {
     private Set<Grade> grades = new HashSet<>();
     @org.hibernate.annotations.Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private UserJsonB user;
+    private UserJsonB author;
 
     @Override
     public boolean equals(Object o) {

@@ -21,7 +21,7 @@ public class AuthController implements AuthControllerDefinition {
 
     @Override
     public ResponseEntity<String> authorize(Provider.ProviderType provider, String redirectUri, HttpServletRequest request) {
-        var link = authService.getLink(request, uriComponentsBuilder -> uriComponentsBuilder
+        var link = authService.getLink(request, uriBuilder -> uriBuilder
                 .path(authProperties.getLoginUri())
                 .path("/" + provider), redirectUri
         );
@@ -31,7 +31,7 @@ public class AuthController implements AuthControllerDefinition {
 
     @Override
     public ResponseEntity<String> logout(String redirectUri, HttpServletRequest request) {
-        String link = authService.getLink(request, uriComponentsBuilder -> uriComponentsBuilder
+        String link = authService.getLink(request, uriBuilder -> uriBuilder
                 .path(authProperties.getLogoutUri()), redirectUri);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(link);

@@ -33,19 +33,22 @@ public class AuthService extends DefaultOAuth2UserService {
     private final JwtUtil jwtUtil;
 
     public String getLink(HttpServletRequest request, Consumer<UriComponentsBuilder> uriBuilderConsumer, String redirectUri) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance()
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance()
                 .scheme(request.getScheme())
                 .host(request.getServerName())
                 .port(request.getServerPort())
                 .queryParam(REDIRECT_URI_PARAMETER, redirectUri.length() > 8 ? redirectUri : "");
-        uriBuilderConsumer.accept(uriComponentsBuilder);
-        return uriComponentsBuilder.toUriString().toLowerCase();
+        uriBuilderConsumer.accept(uriBuilder);
+        return uriBuilder.toUriString().toLowerCase();
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         try {
-            return userPrincipalUseCase.execute(super.loadUser(userRequest), userRequest.getClientRegistration().getRegistrationId());
+            return userPrincipalUseCase.execute(
+                    super.loadUser(userRequest),
+                    userRequest.getClientRegistration().getRegistrationId()
+            );
         } catch (AuthenticationException ex) {
             throw ex;
         } catch (Exception ex) {
