@@ -5,6 +5,10 @@ spring:
 kodemy:
   opensearch:
     host: http://localhost:9200
+  security:
+    cors:
+      allowed-uris:
+        - http://localhost:3000
 
 logging.level:
   org.springframework.security: DEBUG

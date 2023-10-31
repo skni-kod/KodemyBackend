@@ -1,10 +1,11 @@
 package pl.sknikod.kodemysearch.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.*;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemysearch.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemysearch.util.filter.JwtAuthorizationFilter;
 
@@ -28,9 +31,11 @@ import java.util.Set;
         prePostEnabled = true
 )
 @AllArgsConstructor
+@DependsOn("securityConfig.SecurityProperties")
 public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final SecurityProperties securityProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,12 +54,26 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
+                )
+                .cors();
         return http.build();
     }
 
     @Bean
-    public RestTemplate restTemplate(){
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry
+                        .addMapping("/**")
+                        .allowedOrigins(securityProperties.getCors().getAllowedUris())
+                        .allowCredentials(true);
+            }
+        };
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
@@ -68,5 +87,18 @@ public class SecurityConfig {
         boolean isAccountNonLocked = true;
         boolean isCredentialsNonExpired = true;
         boolean isEnabled = true;
+    }
+
+    @Configuration
+    @Data
+    @ConfigurationProperties(prefix = "kodemy.security")
+    public static class SecurityProperties {
+        private CorsProperties cors;
+
+        @Getter
+        @Setter
+        public static class CorsProperties {
+            private String[] allowedUris;
+        }
     }
 }
