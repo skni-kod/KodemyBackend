@@ -5,7 +5,7 @@ import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.configuration.AppConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.exception.structure.OAuth2Exception;
 import pl.sknikod.kodemyauth.infrastructure.auth.oauth2.OAuth2UserInfo;
 import pl.sknikod.kodemyauth.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
@@ -26,7 +26,7 @@ import java.util.Set;
 public class UserPrincipalUseCase {
     private final UserRepository userRepository;
     private RoleRepository roleRepository;
-    private AppConfig.RoleProperties roleProperties;
+    private SecurityConfig.SecurityProperties securityProperties;
 
     public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
         OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
@@ -42,13 +42,13 @@ public class UserPrincipalUseCase {
     public UserPrincipal create(User user, Map<String, Object> attributes) {
         return Option
                 .of(user.getRole().getName())
-                .map(roleProperties::getPrivileges)
+                .map(securityProperties.getRole()::getPrivileges)
                 .map(authorities -> UserPrincipal.create(user, authorities, attributes))
                 .getOrElse(() -> UserPrincipal.create(user, new HashSet<>(), attributes));
     }
 
     public UserPrincipal create(OAuth2UserInfo authUserInfo) {
-        return Try.of(roleProperties::getDefaultRole)
+        return Try.of(securityProperties.getRole()::getDefaultRole)
                 .map(Role.RoleName::valueOf)
                 .map(roleRepository::findByName)
                 .map(Optional::get)

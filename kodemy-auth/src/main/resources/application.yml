@@ -52,9 +52,6 @@ kodemy:
       loginUri: /api/oauth2/authorize
       callbackUri: /api/oauth2/callback/**
       logoutUri: /api/oauth2/logout
-    cors:
-      allowedUris:
-        - localhost:${server.port}
     role:
       defaultRole: ROLE_USER
       privileges:

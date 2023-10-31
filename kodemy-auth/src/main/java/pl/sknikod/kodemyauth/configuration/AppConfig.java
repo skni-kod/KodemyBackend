@@ -1,47 +1,26 @@
 package pl.sknikod.kodemyauth.configuration;
 
-import io.vavr.control.Option;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.security.Principal;
+import java.util.Optional;
 
 @Configuration
 @Import({
         SecurityConfig.class,
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class AppConfig {
-
-    @Configuration
-    @Data
-    @ConfigurationProperties(prefix = "kodemy.security.auth")
-    public static class AuthProperties {
-        private String loginUri;
-        private String callbackUri;
-        private String logoutUri;
-    }
-
-    @Configuration
-    @Data
-    @ConfigurationProperties(prefix = "kodemy.security.role")
-    public static class RoleProperties {
-        private String defaultRole;
-        private Map<String, Set<String>> privileges = new LinkedHashMap<>();
-
-        public Set<SimpleGrantedAuthority> getPrivileges(Role.RoleName role) {
-            return Option
-                    .of(privileges.get(role.toString()))
-                    .map(Collection::stream)
-                    .map(stream -> stream.map(SimpleGrantedAuthority::new).collect(Collectors.toSet()))
-                    .getOrElse(Collections::emptySet);
-        }
+    @Bean
+    public org.springframework.data.domain.AuditorAware<String> auditorAware() {
+        return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Principal::getName);
     }
 }
