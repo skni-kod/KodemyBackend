@@ -2,6 +2,7 @@ package pl.sknikod.kodemyauth.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -13,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemyauth.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemyauth.infrastructure.auth.AuthService;
 import pl.sknikod.kodemyauth.infrastructure.auth.AuthorizationRequestRepositoryImpl;
@@ -86,6 +89,18 @@ public class SecurityConfig {
                 )
                 .cors();
         return http.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins(
+                        "http://localhost:3000"
+                ).allowCredentials(true);
+            }
+        };
     }
 
     @Bean
