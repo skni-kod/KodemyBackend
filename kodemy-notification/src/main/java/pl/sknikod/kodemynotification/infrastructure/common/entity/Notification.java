@@ -2,8 +2,8 @@ package pl.sknikod.kodemynotification.infrastructure.common.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
-
 import org.hibernate.annotations.TypeDef;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Notification {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private LocalDateTime createdAt;
     private boolean isRead;

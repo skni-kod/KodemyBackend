@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class QueueConsumer {
     private final NotificationService notificationService;
 
-    @RabbitListener(queues = "notification.role_change")
-    private void roleChange(@Payload NotificationEvent notification) {
-        notificationService.roleChange(notification);
+    @RabbitListener(queues = "notification")
+    private void materialCreated(@Payload NotificationEvent notification) {
+        notificationService.materialCreated(notification);
     }
 
     @Getter
@@ -43,6 +43,7 @@ public class QueueConsumer {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class NotificationDataJsonB {
         Long authorId;
         Long materialId;

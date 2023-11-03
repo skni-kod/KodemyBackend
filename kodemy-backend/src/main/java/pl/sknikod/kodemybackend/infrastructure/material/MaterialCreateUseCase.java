@@ -70,11 +70,15 @@ public class MaterialCreateUseCase {
     }
 
     private void executeNotificationStatus(Material material) {
-        Option.of(SecurityContextHolder.getContext().getAuthentication())
+        var user = Option.of(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(principal -> principal instanceof SecurityConfig.JwtUserDetails)
-                .map(principal -> (SecurityConfig.JwtUserDetails) principal);
-        // TODO notification
+                .map(principal -> (SecurityConfig.JwtUserDetails) principal).
+                getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+        rabbitTemplate.convertAndSend(
+                queueProperties.get("notification").getName(),
+                rabbitMapper.map(material, user.getId())
+        );
     }
 
     private void executeOpenSearchIndex(Material material) {

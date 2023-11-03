@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,15 @@ public interface MaterialRabbitMapper {
     default MaterialEvent map(Material material, double grade) {
         var event = map(material);
         event.setAvgGrade(grade);
+        return event;
+    }
+
+    default NotificationEvent map(Material material, Long recipientId) {
+        var event = new NotificationEvent();
+        event.setType(NotificationEvent.NotificationType.MATERIAL_STATUS_CHANGE);
+        event.setRecipientId(recipientId);
+        var additionalData = new NotificationDataJsonB(recipientId, material.getId(), material.getStatus().toString(), "e", "e");
+        event.setAdditionalData(additionalData);
         return event;
     }
 
@@ -54,5 +64,38 @@ public interface MaterialRabbitMapper {
             private Long id;
             private String name;
         }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class NotificationEvent {
+        private Long id;
+        private LocalDateTime createdAt;
+        private boolean isRead;
+        private Long recipientId;
+        private NotificationType type;
+        private NotificationDataJsonB additionalData;
+
+        public enum NotificationType {
+            MATERIAL_STATUS_CHANGE,
+            MATERIAL_APPROVAL_REQUEST,
+            ROLE_CHANGE,
+            VERSION_CHANGE,
+        }
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    class NotificationDataJsonB {
+        Long authorId;
+        Long materialId;
+        String status;
+        String role;
+        String version;
     }
 }
