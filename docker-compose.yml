@@ -6,33 +6,73 @@ services:
     container_name: kodemy_api_dev
     profiles:
       - test
-    restart: unless-stopped
     ports:
-      - "${SPRING_PORT}:8080"
-    env_file:
-      - .env
+      - "8181:8080"
     networks:
       - lan
     depends_on:
       - postgres
+      - rabbitmq
 
   postgres:
-    image: postgres:14.1-alpine
     container_name: kodemy_postgres_dev
-    restart: always
-    env_file:
-      - .env
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kodemy
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5435:5432"
     volumes:
       - postgres_dev:/var/lib/postgresql/data
       - ./sql:/sql
     networks:
       - lan
 
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: kodemy_rabbitmq_dev
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_dev:/var/lib/rabbitmq
+    networks:
+      - lan
+
+  opensearch:
+    image: opensearchproject/opensearch:2.8.0
+    container_name: kodemy_opensearch_dev
+    environment:
+      - discovery.type=single-node
+      - cluster.name=kodemy-cluster
+      - "DISABLE_SECURITY_PLUGIN=true"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - opensearch_dev:/usr/share/opensearch/data
+    networks:
+      - lan
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.8.0
+    container_name: kodemy_opensearch_dashboards_dev
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
+    ports:
+      - "5601:5601"
+    networks:
+      - lan
+
 networks:
   lan:
-    driver: bridge
 
 volumes:
   postgres_dev:
+  rabbitmq_dev:
+  opensearch_dev:

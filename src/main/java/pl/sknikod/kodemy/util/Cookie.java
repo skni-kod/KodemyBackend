@@ -1,13 +1,18 @@
 package pl.sknikod.kodemy.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Cookie {
 
     public static void addCookie(HttpServletResponse response, String name, String value, int expireTime) {
         var cookie = new javax.servlet.http.Cookie(name, value);
         cookie.setPath("/");
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(expireTime);
         response.addCookie(cookie);
@@ -47,6 +52,8 @@ public class Cookie {
         for (var cookie : req.getCookies()) {
             String cookieName = cookie.getName();
             var cookieToDelete = new javax.servlet.http.Cookie(cookieName, null);
+            cookieToDelete.setSecure(true);
+            cookie.setHttpOnly(true);
             cookieToDelete.setMaxAge(0);
             res.addCookie(cookieToDelete);
         }
