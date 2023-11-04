@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
@@ -57,6 +59,9 @@ public class MaterialCreateUseCase {
         material.setType(typeRepository.findById(body.getTypeId()).orElseThrow(() ->
                 new NotFoundException(NotFoundException.Format.ENTITY_ID, Type.class, body.getTypeId())
         ));
+        if (principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))){
+            material.setStatus(Material.MaterialStatus.APPROVED);
+        }
         return material;
     }
 
