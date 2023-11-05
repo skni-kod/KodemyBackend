@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -62,8 +61,8 @@ public class MaterialCreateUseCase {
         material.setStatus(
                 Option.of(principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL")))
                         .filter(pr -> pr)
-                        .map(status->Material.MaterialStatus.APPROVED)
-                        .getOrElse(()-> Material.MaterialStatus.PENDING)
+                        .map(status -> Material.MaterialStatus.APPROVED)
+                        .getOrElse(() -> Material.MaterialStatus.PENDING)
         );
         return material;
     }

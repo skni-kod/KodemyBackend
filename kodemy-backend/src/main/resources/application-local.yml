@@ -6,9 +6,11 @@ spring:
     host: localhost
 
 logging.level:
-    org.springframework.security: DEBUG
+  org.springframework.security: DEBUG
 
 kodemy:
+  jwt:
+    expiration-mins: 60
   security:
     cors:
       allowedUris:

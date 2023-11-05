@@ -77,10 +77,13 @@
 
         <createTable tableName="technologies_materials">
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials" foreignKeyName="fk_technologies_materials_material" references="materials(id)"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
+                             foreignKeyName="fk_technologies_materials_material" references="materials(id)"/>
             </column>
             <column name="technology_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials" foreignKeyName="fk_technologies_materials_material_technology" references="technologies(id)"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
+                             foreignKeyName="fk_technologies_materials_material_technology"
+                             references="technologies(id)"/>
             </column>
         </createTable>
 

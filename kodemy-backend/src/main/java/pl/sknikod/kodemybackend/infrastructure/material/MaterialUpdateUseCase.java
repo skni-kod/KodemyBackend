@@ -19,7 +19,6 @@ import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialUpdateRequest;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialUpdateResponse;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,8 +64,8 @@ public class MaterialUpdateUseCase {
         existingMaterial.setStatus(
                 Option.of(principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL")))
                         .filter(pr -> pr)
-                        .map(status->Material.MaterialStatus.APPROVED)
-                        .getOrElse(()-> Material.MaterialStatus.PENDING)
+                        .map(status -> Material.MaterialStatus.APPROVED)
+                        .getOrElse(() -> Material.MaterialStatus.PENDING)
         );
         return existingMaterial;
     }

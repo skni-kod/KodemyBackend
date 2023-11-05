@@ -10,20 +10,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(
-		title = "KodemyBackend API - kodemy-backend",
-		version = "",
-		description = "SKNI Kod Kodemy"
+        title = "KodemyBackend API - kodemy-backend",
+        version = "",
+        description = "SKNI Kod Kodemy"
 ), security = @SecurityRequirement(name = "Bearer Authentication"))
 @SecurityScheme(
-		name = "Bearer Authentication",
-		type = SecuritySchemeType.HTTP,
-		bearerFormat = "JWT",
-		scheme = "bearer"
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
 )
 public class KodemyBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KodemyBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KodemyBackendApplication.class, args);
+    }
 
 }
