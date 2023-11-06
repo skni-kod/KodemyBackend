@@ -21,6 +21,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 @Service
 @AllArgsConstructor
@@ -75,6 +76,17 @@ public class MaterialService {
                     materialResponse.setAverageGrade(gradeRepository.findAverageGradeByMaterialId(materialId));
                     return materialResponse;
                 })
+                .map(materialResponse-> setGradeStats(materialId, materialResponse))
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+    }
+
+    private SingleMaterialResponse setGradeStats(Long materialId, SingleMaterialResponse materialResponse) {
+        var gradeStats = new TreeMap<Double, Long>();
+        for(double i=1.0; i<=5.0; i+=0.5){
+            Long amount = gradeRepository.countAllByMaterialIdAndValue(materialId, i);
+            gradeStats.put(i, amount);
+        }
+        materialResponse.setGradeStats(gradeStats);
+        return materialResponse;
     }
 }

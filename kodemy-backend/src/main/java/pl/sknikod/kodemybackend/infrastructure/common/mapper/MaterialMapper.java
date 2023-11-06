@@ -11,6 +11,7 @@ public interface MaterialMapper {
 
     @Mappings(value = {
             @Mapping(target = "averageGrade", ignore = true),
+            @Mapping(target = "gradeStats", ignore = true),
             @Mapping(target = "creator.id", source = "author.id"),
             @Mapping(target = "creator.username", source = "author.name")
     })
