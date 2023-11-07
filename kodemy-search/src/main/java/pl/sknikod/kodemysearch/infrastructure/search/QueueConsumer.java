@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemysearch.infrastructure.search.rest.SingleMaterialResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ public class QueueConsumer {
     @RabbitListener(queues = "material.created")
     private void index(@Payload MaterialEvent material) {
         searchService.indexMaterial(material);
+        searchService.reindexMaterial(String.valueOf(material.getId()), material);
     }
 
     @RabbitListener(queues = "material.updated")
@@ -37,7 +39,7 @@ public class QueueConsumer {
         private MaterialStatus status;
         private boolean isActive;
         private double avgGrade;
-        private String author;
+        private SingleMaterialResponse.UserResponse creator;
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
