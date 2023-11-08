@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemysearch.configuration.OpenSearchConfig;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.infrastructure.search.rest.SingleMaterialResponse;
+import pl.sknikod.kodemysearch.infrastructure.search.rest.MaterialSingleResponse;
 import pl.sknikod.kodemysearch.infrastructure.search.rest.SearchFields;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class SearchService {
                 .source(sourceBuilder);
     }
 
-    public Page<SingleMaterialResponse> searchMaterials(SearchFields searchFields, Pageable page) {
+    public Page<MaterialSingleResponse> searchMaterials(SearchFields searchFields, Pageable page) {
         SearchSourceBuilder searchSourceBuilder = new SearchBuilder(map(searchFields, page))
                 .toSearchSourceBuilder();
         return Try.of(() -> restHighLevelClient.search(
@@ -102,9 +102,9 @@ public class SearchService {
             phraseFields.add(new SearchCriteria.PhraseField(
                     "status", searchFields.getStatus(), false, false
             ));
-        if (Objects.nonNull(searchFields.getCreator()))
+        if (Objects.nonNull(searchFields.getCreatedBy()))
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "author", searchFields.getCreator().getUsername(), false, false
+                    "createdBy", searchFields.getCreatedBy(), false, false
             ));
         if (Objects.nonNull(searchFields.getSectionId()))
             phraseFields.add(new SearchCriteria.PhraseField(

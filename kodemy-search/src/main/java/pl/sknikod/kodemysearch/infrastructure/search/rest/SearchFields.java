@@ -20,7 +20,7 @@ public class SearchFields {
     Long id;
     String title;
     String status;
-    SingleMaterialResponse.UserResponse creator;
+    String createdBy;
     Date createdDateFrom;
     Date createdDateTo;
     Long sectionId;
