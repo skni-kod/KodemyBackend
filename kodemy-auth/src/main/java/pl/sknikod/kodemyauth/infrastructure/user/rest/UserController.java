@@ -1,14 +1,15 @@
 package pl.sknikod.kodemyauth.infrastructure.user.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.user.UserService;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -35,8 +36,12 @@ public class UserController implements UserControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<List<UserInfoResponse>> searchForUser(String phrase) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.searchForUser(phrase));
+    public ResponseEntity<Page<UserInfoResponse>> searchForUser(
+            int size, int page, String sort, Sort.Direction sortDirection,
+            String username, String email, Role.RoleName role, String phrase
+    ) {
+        var pageRequest = PageRequest.of(page, size, sortDirection, sort);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.searchForUser(pageRequest, username, email, role, phrase));
     }
 
 }

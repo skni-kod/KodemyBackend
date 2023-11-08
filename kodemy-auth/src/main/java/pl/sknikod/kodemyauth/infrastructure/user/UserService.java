@@ -2,6 +2,9 @@ package pl.sknikod.kodemyauth.infrastructure.user;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -89,11 +92,19 @@ public class UserService {
                 });
     }
 
-    public List<UserInfoResponse> searchForUser(String phrase) {
-        return userRepository
-                .findByUsernameContainingOrEmailContainingWithFetchRole(phrase, phrase)
-                .parallelStream()
-                .map(userMapper::map)
-                .toList();
+    public Page<UserInfoResponse> searchForUser(PageRequest pageRequest, String username, String email, Role.RoleName roleName, String phrase) {
+        Role role = Option.ofOptional(roleRepository.findByName(roleName))
+                .getOrElse(() -> null);
+        List<User> listSearch = userRepository.findByUsernameContainingOrEmailContaining(phrase, phrase);
+        List<User> users = userRepository.findByUsernameOrEmailOrRole(username, email, role);
+        if (phrase != null) {
+            users = users.stream()
+                    .filter(listSearch::contains)
+                    .toList();
+        }
+        return new PageImpl<>(
+                users.parallelStream().map(userMapper::map).toList(),
+                pageRequest,
+                users.size());
     }
 }

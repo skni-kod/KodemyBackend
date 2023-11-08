@@ -2,13 +2,14 @@ package pl.sknikod.kodemyauth.infrastructure.user.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.util.SwaggerResponse;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/users")
 @SwaggerResponse
@@ -37,9 +38,18 @@ public interface UserControllerDefinition {
     ResponseEntity<UserInfoResponse> getCurrentUserInfo();
 
     @GetMapping
-    @Operation(summary = "Show list of users based on phrase")
+    @Operation(summary = "Search users")
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.NotFoundCode404
-    ResponseEntity<List<UserInfoResponse>> searchForUser(@RequestParam String phrase);
+    ResponseEntity<Page<UserInfoResponse>> searchForUser(
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
+            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Role.RoleName role,
+            @RequestParam(required = false) String phrase
+    );
 
 }

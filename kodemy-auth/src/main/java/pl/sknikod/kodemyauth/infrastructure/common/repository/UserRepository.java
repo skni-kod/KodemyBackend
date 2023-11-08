@@ -2,6 +2,7 @@ package pl.sknikod.kodemyauth.infrastructure.common.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
@@ -9,6 +10,7 @@ import pl.sknikod.kodemyauth.infrastructure.common.entity.User;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -28,10 +30,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     HashSet<User> findUsersByRoleAdmin(Set<Role.RoleName> roles);
 
-    @Query(
-            value = "SELECT DISTINCT u FROM User u " +
-                    "LEFT JOIN FETCH u.role " +
-                    "WHERE u.username LIKE %:userName% OR u.email LIKE %:email%"
-    )
-    ArrayList<User> findByUsernameContainingOrEmailContainingWithFetchRole(String userName, String email);
+    ArrayList<User> findByUsernameContainingOrEmailContaining(String username, String email);
+
+    @Query("SELECT u FROM User u " +
+            "WHERE (:username IS NULL OR u.username = :username) " +
+            "AND (:email IS NULL OR u.email = :email) " +
+            "AND (:role IS NULL OR u.role = :role) ")
+    List<User> findByUsernameOrEmailOrRole(
+            @Param("username") String username,
+            @Param("email") String email,
+            @Param("role") Role role
+    );
 }
