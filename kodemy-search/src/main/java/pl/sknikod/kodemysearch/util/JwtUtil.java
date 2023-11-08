@@ -21,8 +21,9 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private static final int EXPIRATION_TOKEN_TIME = 1000 * 60 * 15;
-    @Value("${kodemy.security.jwt.secret-key}")
+    @Value("${kodemy.jwt.expiration-mins:15}")
+    private int expirationMins;
+    @Value("${kodemy.jwt.secret-key}")
     private String secretKey;
 
     public Output generateToken(Input input) {
@@ -40,7 +41,7 @@ public class JwtUtil {
 
     private Output createToken(String subject, Map<String, ?> claims) {
         final Date createdDate = new Date(System.currentTimeMillis());
-        final Date expirationDate = new Date(createdDate.getTime() + EXPIRATION_TOKEN_TIME);
+        final Date expirationDate = new Date(createdDate.getTime() + 1000L * 60 * expirationMins);
         String bearer = Jwts.builder()
                 .setSubject(subject)
                 .setClaims(claims)

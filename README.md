@@ -19,7 +19,8 @@ Before you can run the project, you will need the following applications:
    ```bash
    docker-compose up -d
    ```
-3. To run the project in development mode, set the active profiles in IntelliJ to `local` in all Intellij configurations.
+3. To run the project in development mode, set the active profiles in IntelliJ to `local` in all Intellij
+   configurations.
 4. Run the project.
 5. Once the project is running, you can access the API documentation (OpenAPI v3) for almost all microservices:
 

@@ -17,8 +17,9 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-
-    @Value("kodemy.security.jwt.secret-key")
+    @Value("${kodemy.jwt.expiration-mins:15}")
+    private int expirationMins;
+    @Value("kodemy.jwt.secret-key")
     private String secretKey;
 
     public String generateToken(String userName) {
@@ -30,7 +31,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * expirationMins))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 

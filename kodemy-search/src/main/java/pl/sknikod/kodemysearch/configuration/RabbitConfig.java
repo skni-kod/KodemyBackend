@@ -49,8 +49,10 @@ public class RabbitConfig {
 
     private Exchange registerExchange(QueueProperties.Queue q) {
         var exchange = switch (q.exchange) {
-            case DIRECT: yield new DirectExchange(q.name);
-            case FANOUT: yield new FanoutExchange(q.name);
+            case DIRECT:
+                yield new DirectExchange(q.name);
+            case FANOUT:
+                yield new FanoutExchange(q.name);
         };
         applicationContext.getBeanFactory().registerSingleton(q.name + ".exchange", exchange);
         return exchange;
