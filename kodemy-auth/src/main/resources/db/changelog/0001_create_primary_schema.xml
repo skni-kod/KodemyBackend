@@ -4,7 +4,6 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
-
     <changeSet id="0001-1" author="KartVen">
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -67,6 +66,13 @@
                    (3, 'ROLE_ADMIN'),
                    (4, 'ROLE_SUPERADMIN');
         </sql>
+    </changeSet>
+
+    <changeSet id="0001-3" author="MarcinBator">
+        <createIndex tableName="users" indexName="userIndex">
+            <column name="username"/>
+            <column name="email"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>
