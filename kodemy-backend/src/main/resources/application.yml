@@ -50,6 +50,5 @@ kodemy:
       notification:
         name: notification
         exchange: fanout
-  security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+  jwt:
+    secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6

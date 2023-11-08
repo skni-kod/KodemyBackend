@@ -19,7 +19,7 @@ import java.util.Map;
 public class JwtUtil {
     @Value("${kodemy.jwt.expiration-mins:15}")
     private int expirationMins;
-    @Value("kodemy.security.jwt.secret-key")
+    @Value("kodemy.jwt.secret-key")
     private String secretKey;
 
     public String generateToken(String userName) {

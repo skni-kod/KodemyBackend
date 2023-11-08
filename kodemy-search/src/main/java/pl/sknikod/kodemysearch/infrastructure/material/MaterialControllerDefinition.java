@@ -1,6 +1,7 @@
 package pl.sknikod.kodemysearch.infrastructure.material;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -24,6 +25,7 @@ public interface MaterialControllerDefinition {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @Parameter(description = "{\"phrase\":\"phrase\",\"id\":0,\"title\":\"title\",\"status\":\"PENDING\",\"createdBy\":\"createdBy\",\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\",\"sectionId\":0,\"categoryId\":0,\"technologyIds\":[0]}")
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
 }

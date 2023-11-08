@@ -1,5 +1,7 @@
 package pl.sknikod.kodemyauth.infrastructure.common.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,10 +37,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u " +
             "WHERE (:username IS NULL OR u.username = :username) " +
             "AND (:email IS NULL OR u.email = :email) " +
-            "AND (:role IS NULL OR u.role = :role) ")
-    List<User> findByUsernameOrEmailOrRole(
-            @Param("username") String username,
-            @Param("email") String email,
-            @Param("role") Role role
+            "AND (:role IS NULL OR u.role = :role)")
+    Page<User> findByUsernameOrEmailOrRole(
+            String username,
+            String email,
+            Role role,
+            Pageable pageable
     );
 }

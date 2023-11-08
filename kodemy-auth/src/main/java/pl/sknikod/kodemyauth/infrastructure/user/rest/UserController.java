@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.user.UserService;
 
+import java.util.Objects;
+
 @RestController
 @AllArgsConstructor
 public class UserController implements UserControllerDefinition {
@@ -36,12 +38,18 @@ public class UserController implements UserControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<Page<UserInfoResponse>> searchForUser(
-            int size, int page, String sort, Sort.Direction sortDirection,
-            String username, String email, Role.RoleName role, String phrase
+    public ResponseEntity<Page<UserInfoResponse>> searchUsers(
+            int size,
+            int page,
+            String sort,
+            Sort.Direction sortDirection,
+            SearchFields searchFields
     ) {
         var pageRequest = PageRequest.of(page, size, sortDirection, sort);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.searchForUser(pageRequest, username, email, role, phrase));
+        var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        return ResponseEntity.status(HttpStatus.OK).body(
+                userService.searchUsers(pageRequest, searchFieldsParam)
+        );
     }
 
 }
