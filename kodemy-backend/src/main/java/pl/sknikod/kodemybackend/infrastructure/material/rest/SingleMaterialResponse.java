@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -26,6 +27,8 @@ public class SingleMaterialResponse {
     final List<TechnologyDetails> technologies;
     @Setter
     Double averageGrade;
+    @Setter
+    List<Long> gradeStats;
     final UserResponse creator;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     final Date createdDate;

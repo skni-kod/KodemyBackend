@@ -14,6 +14,7 @@ import java.util.Set;
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {
     List<Grade> findAllByMaterialId(Long id);
+    Long countAllByMaterialIdAndValue(Long id, Double value);
 
     @Query("SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g WHERE g.material.id = :materialId")
     Double findAverageGradeByMaterialId(Long materialId);
