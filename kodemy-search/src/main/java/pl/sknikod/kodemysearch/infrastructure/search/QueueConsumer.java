@@ -18,6 +18,7 @@ public class QueueConsumer {
     @RabbitListener(queues = "material.created")
     private void index(@Payload MaterialEvent material) {
         searchService.indexMaterial(material);
+        searchService.reindexMaterial(String.valueOf(material.getId()), material);
     }
 
     @RabbitListener(queues = "material.updated")

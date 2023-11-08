@@ -28,7 +28,7 @@ public class SingleMaterialResponse {
     @Setter
     Double averageGrade;
     @Setter
-    Map<Double, Long> gradeStats;
+    List<Long> gradeStats;
     final UserResponse creator;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     final Date createdDate;

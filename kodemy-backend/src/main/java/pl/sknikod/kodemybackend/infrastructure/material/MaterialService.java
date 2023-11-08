@@ -21,7 +21,10 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -81,11 +84,9 @@ public class MaterialService {
     }
 
     private SingleMaterialResponse setGradeStats(Long materialId, SingleMaterialResponse materialResponse) {
-        var gradeStats = new TreeMap<Double, Long>();
-        for(double i=1.0; i<=5.0; i+=0.5){
-            Long amount = gradeRepository.countAllByMaterialIdAndValue(materialId, i);
-            gradeStats.put(i, amount);
-        }
+        var gradeStats = Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
+                .map(i -> gradeRepository.countAllByMaterialIdAndValue(materialId, i))
+                .collect(Collectors.toList());
         materialResponse.setGradeStats(gradeStats);
         return materialResponse;
     }
