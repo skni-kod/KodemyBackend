@@ -20,11 +20,9 @@ public class CategoryService {
 
     @Transactional
     public SingleCategoryResponse showCategoryInfo(Long categoryId) {
-        var category = Option.ofOptional(categoryRepository.findById(categoryId))
-                .getOrElseThrow(
-                        () -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId)
-                );
-        return Option.of(categoryMapper.map(category))
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Category.class));
+        return Option.ofOptional(categoryRepository.findById(categoryId))
+                .onEmpty(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId))
+                .map(categoryMapper::map)
+                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId));
     }
 }
