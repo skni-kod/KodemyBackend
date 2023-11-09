@@ -3,6 +3,7 @@ package pl.sknikod.kodemybackend.infrastructure.common.entity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 import pl.sknikod.kodemybackend.util.Auditable;
@@ -23,9 +24,8 @@ public class Grade extends Auditable<String> {
     private Long id;
     @Column(name = "grade", precision = 3, scale = 2)
     private Double value;
-    @org.hibernate.annotations.Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private UserJsonB author;
+    @NonNull
+    private Long userId;
     @ManyToOne
     @JoinColumn(name = "material_id", nullable = false)
     private Material material;

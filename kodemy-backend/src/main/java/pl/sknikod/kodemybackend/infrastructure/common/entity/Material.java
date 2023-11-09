@@ -3,6 +3,7 @@ package pl.sknikod.kodemybackend.infrastructure.common.entity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 import pl.sknikod.kodemybackend.util.Auditable;
@@ -50,9 +51,8 @@ public class Material extends Auditable<String> {
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
-    @org.hibernate.annotations.Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private UserJsonB author;
+    @NonNull
+    private Long userId;
 
     @Override
     public boolean equals(Object o) {

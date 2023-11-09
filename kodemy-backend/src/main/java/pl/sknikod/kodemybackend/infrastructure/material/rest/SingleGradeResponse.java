@@ -7,5 +7,5 @@ import pl.sknikod.kodemybackend.infrastructure.common.rest.UserDetails;
 public class SingleGradeResponse {
     Long id;
     Double value;
-    UserDetails creator;
+    UserDetails author;
 }

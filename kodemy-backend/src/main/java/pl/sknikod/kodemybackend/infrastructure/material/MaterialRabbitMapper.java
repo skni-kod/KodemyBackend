@@ -1,5 +1,6 @@
 package pl.sknikod.kodemybackend.infrastructure.material;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +13,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MaterialRabbitMapper {
     @Mappings(value = {
-            @Mapping(target = "author", source = "author.name"),
             @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "sectionId", source = "category.section.id"),
             @Mapping(target = "categoryId", source = "category.id"),
@@ -35,11 +35,11 @@ public interface MaterialRabbitMapper {
         private Long id;
         private String title;
         private String description;
-        private String link;
         private Material.MaterialStatus status;
         private boolean isActive;
         private double avgGrade;
-        private String author;
+        private Author author;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
@@ -53,6 +53,16 @@ public interface MaterialRabbitMapper {
         public static class Technology {
             private Long id;
             private String name;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
+        public static class Author {
+            private Long id;
+            private String username;
         }
     }
 }

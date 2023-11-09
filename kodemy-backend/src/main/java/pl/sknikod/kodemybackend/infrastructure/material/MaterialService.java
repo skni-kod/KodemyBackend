@@ -5,36 +5,32 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
+import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.UserJsonB;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
-import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
 public class MaterialService {
-    private final MaterialRepository materialRepository;
     private final GradeMapper gradeMapper;
     private final GradeRepository gradeRepository;
     private final MaterialCreateUseCase materialCreateUseCase;
     private final MaterialUpdateUseCase materialUpdateUseCase;
     private final MaterialMapper materialMapper;
+    private final EntityDao entityDao;
+    private final AuthService authService;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         return materialCreateUseCase.execute(body);
@@ -45,19 +41,12 @@ public class MaterialService {
     }
 
     public void addGrade(Long materialId, MaterialAddGradeRequest body) {
-        Material material = materialRepository.findById(materialId).orElseThrow(() ->
-                new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)
-        );
-        var principal = (SecurityConfig.JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Option.of(body)
-                .map(gradeMapper::map)
-                .map(grade -> {
-                    grade.setAuthor(
-                            new UserJsonB(principal.getId(), principal.getUsername())
-                    );
-                    grade.setMaterial(material);
-                    return grade;
-                })
+                .map(request -> gradeMapper.map(
+                        request,
+                        entityDao.findMaterialById(materialId),
+                        authService.getPrincipal().getId())
+                )
                 .map(gradeRepository::save)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
@@ -71,23 +60,18 @@ public class MaterialService {
     }
 
     public SingleMaterialResponse showDetails(Long materialId) {
-        return Option.of(materialRepository.findById(materialId).orElseThrow(() ->
-                        new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId)))
-                .peek(System.out::println)
-                .map(materialMapper::map)
-                .map(materialResponse -> {
-                    materialResponse.setAverageGrade(gradeRepository.findAverageGradeByMaterialId(materialId));
-                    return materialResponse;
-                })
-                .map(materialResponse-> setGradeStats(materialId, materialResponse))
+        return Option.of(entityDao.findMaterialById(materialId))
+                .map(material -> materialMapper.map(
+                        material,
+                        gradeRepository.findAverageGradeByMaterialId(materialId),
+                        fetchGradeStats(materialId))
+                )
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    private SingleMaterialResponse setGradeStats(Long materialId, SingleMaterialResponse materialResponse) {
-        var gradeStats = Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
+    private List<Long> fetchGradeStats(Long materialId) {
+        return Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
                 .map(i -> gradeRepository.countAllByMaterialIdAndValue(materialId, i))
                 .collect(Collectors.toList());
-        materialResponse.setGradeStats(gradeStats);
-        return materialResponse;
     }
 }
