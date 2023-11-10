@@ -21,8 +21,8 @@ public class CategoryService {
     @Transactional
     public SingleCategoryResponse showCategoryInfo(Long categoryId) {
         return Option.ofOptional(categoryRepository.findById(categoryId))
-                .onEmpty(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId))
+                .onEmpty(() -> {throw new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId);})
                 .map(categoryMapper::map)
-                .getOrElseThrow(() -> new NotFoundException(NotFoundException.Format.ENTITY_ID, Category.class, categoryId));
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Category.class));
     }
 }
