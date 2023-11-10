@@ -16,7 +16,7 @@ public interface MaterialRabbitMapper {
             @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "sectionId", source = "category.section.id"),
             @Mapping(target = "categoryId", source = "category.id"),
-            @Mapping(target = "avgGrade", constant = "0.00"),
+            @Mapping(target = "avgGrade", constant = "0.00")
     })
     MaterialEvent map(Material material);
 

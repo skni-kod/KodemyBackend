@@ -45,15 +45,19 @@ public class MaterialService {
                 .map(request -> gradeMapper.map(
                         request,
                         entityDao.findMaterialById(materialId),
-                        authService.getPrincipal().getId())
-                )
+                        authService.getPrincipal()
+                ))
                 .map(gradeRepository::save)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
     public Page<SingleGradeResponse> showGrades(Long materialId, Date from, Date to, int page, int size) {
-        Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRangeWithPage(materialId, from, to, PageRequest.of(page, size));
-        List<SingleGradeResponse> singleGradeResponses = gradesPage.getContent().stream()
+        // TODO search format
+        Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRangeWithPage(
+                materialId, from, to, PageRequest.of(page, size)
+        );
+        List<SingleGradeResponse> singleGradeResponses = gradesPage.getContent()
+                .stream()
                 .map(gradeMapper::map)
                 .toList();
         return new PageImpl<>(singleGradeResponses, gradesPage.getPageable(), gradesPage.getTotalElements());

@@ -8,13 +8,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Category;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Technology;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Type;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.*;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialCreateRequest;
@@ -43,7 +41,7 @@ public class MaterialCreateUseCase {
         return Option.of(body)
                 .map(materialCreateRequest -> createMaterialMapper.map(
                         body,
-                        authService.getPrincipal().getId(),
+                        authService.getPrincipal(),
                         entityDao.findCategoryById(body.getCategoryId()),
                         entityDao.findTypeById(body.getTypeId()),
                         entityDao.findTechnologySetByIds(body.getTechnologiesIds())
@@ -82,7 +80,13 @@ public class MaterialCreateUseCase {
 
     @Mapper(componentModel = "spring")
     public interface MaterialCreateMapper {
-        default Material map(MaterialCreateRequest body, Long userId, Category category, Type type, Set<Technology> technologies) {
+        default Material map(
+                MaterialCreateRequest body,
+                SecurityConfig.JwtUserDetails author,
+                Category category,
+                Type type,
+                Set<Technology> technologies
+        ) {
             var material = new Material();
             material.setActive(true);
             material.setStatus(PENDING);
@@ -92,7 +96,7 @@ public class MaterialCreateUseCase {
             material.setCategory(category);
             material.setType(type);
             material.setTechnologies(technologies);
-            material.setUserId(userId);
+            material.setAuthor(Author.map(author));
             return material;
         }
 

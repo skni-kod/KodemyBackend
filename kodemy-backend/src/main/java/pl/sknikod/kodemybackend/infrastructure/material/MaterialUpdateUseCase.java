@@ -37,10 +37,11 @@ public class MaterialUpdateUseCase {
     private final AuthService authService;
 
     public MaterialUpdateResponse execute(Long materialId, MaterialUpdateRequest body) {
+        // TODO refactor
         Material existingMaterial = entityDao.findMaterialById(materialId);
         return Option.of(body)
                 .map(materialUpdateRequest -> updateMaterialMapper.map(
-                        existingMaterial.getId(),
+                        existingMaterial,
                         body,
                         entityDao.findCategoryById(body.getCategoryId()),
                         entityDao.findTypeById(body.getTypeId()),
@@ -69,7 +70,7 @@ public class MaterialUpdateUseCase {
 
     private void executeOpenSearchIndex(Material material) {
         rabbitTemplate.convertAndSend(
-                queueProperties.get("m-created").getName(),
+                queueProperties.get("m-update").getName(),
                 "",
                 rabbitMapper.map(
                         material,
@@ -80,18 +81,16 @@ public class MaterialUpdateUseCase {
 
     @Mapper(componentModel = "spring")
     public interface MaterialUpdateMapper {
-        default Material map(Long id, MaterialUpdateRequest body, Category category, Type type, Set<Technology> technologies) {
-            var material = new Material();
-            material.setActive(true);
-            material.setStatus(PENDING);
-            material.setId(id);
-            material.setTitle(body.getTitle());
-            material.setDescription(body.getDescription());
-            material.setLink(body.getLink());
-            material.setCategory(category);
-            material.setType(type);
-            material.setTechnologies(technologies);
-            return material;
+        default Material map(Material existingMaterial, MaterialUpdateRequest body, Category category, Type type, Set<Technology> technologies) {
+            existingMaterial.setActive(true);
+            existingMaterial.setStatus(PENDING);
+            existingMaterial.setTitle(body.getTitle());
+            existingMaterial.setDescription(body.getDescription());
+            existingMaterial.setLink(body.getLink());
+            existingMaterial.setCategory(category);
+            existingMaterial.setType(type);
+            existingMaterial.setTechnologies(technologies);
+            return existingMaterial;
         }
 
         MaterialUpdateResponse map(Material material);

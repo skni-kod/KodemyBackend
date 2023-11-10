@@ -3,12 +3,12 @@ package pl.sknikod.kodemybackend.infrastructure.common.entity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 import pl.sknikod.kodemybackend.util.Auditable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
@@ -24,8 +24,9 @@ public class Grade extends Auditable<String> {
     private Long id;
     @Column(name = "grade", precision = 3, scale = 2)
     private Double value;
-    @NonNull
-    private Long userId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "author_id")
+    private Author author;
     @ManyToOne
     @JoinColumn(name = "material_id", nullable = false)
     private Material material;

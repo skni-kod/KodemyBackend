@@ -6,19 +6,26 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="0001-1" author="KartVen">
+        <createTable tableName="authors">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_authors"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_authors_username"/>
+            </column>
+        </createTable>
+
         <createTable tableName="sections">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sections"/>
             </column>
             <column name="name" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_sections_name"/>
             </column>
             <column name="prefix" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_sections_name"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="name" constraintName="uc_sections_name" tableName="sections"/>
-        <addUniqueConstraint columnNames="prefix" constraintName="uc_sections_prefix" tableName="sections"/>
 
         <createTable tableName="categories">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -40,20 +47,18 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
             </column>
             <column name="name" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_types_name"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="name" constraintName="uc_types_name" tableName="types"/>
 
         <createTable tableName="technologies">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
             </column>
             <column name="name" type="VARCHAR(32)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_technologies_name"/>
             </column>
         </createTable>
-        <addUniqueConstraint columnNames="name" constraintName="uc_technologies_name" tableName="technologies"/>
 
         <createTable tableName="materials">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -72,8 +77,8 @@
             <column name="type_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
             </column>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_author" references="authors(id)"/>
             </column>
         </createTable>
 
@@ -94,13 +99,15 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
             </column>
             <column name="grade" type="DOUBLE"/>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_author" references="authors(id)"/>
             </column>
             <column name="material_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
             </column>
         </createTable>
+
+
     </changeSet>
 
 </databaseChangeLog>
