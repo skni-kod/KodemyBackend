@@ -6,14 +6,21 @@ import org.mapstruct.Mappings;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.SingleMaterialResponse;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface MaterialMapper {
 
     @Mappings(value = {
             @Mapping(target = "averageGrade", ignore = true),
             @Mapping(target = "gradeStats", ignore = true),
-            @Mapping(target = "creator.id", source = "author.id"),
-            @Mapping(target = "creator.username", source = "author.name")
     })
     SingleMaterialResponse map(Material material);
+
+    default SingleMaterialResponse map(Material material, Double averageGrade, List<Long> gradeStats){
+        var response = map(material);
+        response.setAverageGrade(averageGrade);
+        response.setGradeStats(gradeStats);
+        return response;
+    }
 }

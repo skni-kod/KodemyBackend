@@ -9,6 +9,7 @@ import pl.sknikod.kodemybackend.util.Auditable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
@@ -50,9 +51,9 @@ public class Material extends Auditable<String> {
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
-    @org.hibernate.annotations.Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private UserJsonB author;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "author_id")
+    private Author author;
 
     @Override
     public boolean equals(Object o) {

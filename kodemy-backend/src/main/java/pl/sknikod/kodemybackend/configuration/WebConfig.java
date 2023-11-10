@@ -26,4 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
                     .getOrElseThrow(() -> new ValidationException("Uncorrected date format: " + source));
         }
     }
+
+
 }

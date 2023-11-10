@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import pl.sknikod.kodemyauth.infrastructure.user.rest.UserInfoResponse;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

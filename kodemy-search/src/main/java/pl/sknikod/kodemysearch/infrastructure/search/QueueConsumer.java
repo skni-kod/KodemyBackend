@@ -1,5 +1,7 @@
 package pl.sknikod.kodemysearch.infrastructure.search;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
@@ -18,7 +20,6 @@ public class QueueConsumer {
     @RabbitListener(queues = "material.created")
     private void index(@Payload MaterialEvent material) {
         searchService.indexMaterial(material);
-        searchService.reindexMaterial(String.valueOf(material.getId()), material);
     }
 
     @RabbitListener(queues = "material.updated")
@@ -30,20 +31,20 @@ public class QueueConsumer {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MaterialEvent {
         private Long id;
         private String title;
         private String description;
-        private String link;
         private MaterialStatus status;
         private boolean isActive;
         private double avgGrade;
-        private String author;
+        private AuthorDetails author;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
-        private List<Technology> technologies;
-
+        private List<TechnologyDetails> technologies;
         public enum MaterialStatus {
             APPROVED, //CONFIRMED
             PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING
@@ -57,9 +58,19 @@ public class QueueConsumer {
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        public static class Technology {
+        public static class TechnologyDetails {
             private Long id;
             private String name;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
+        public static class AuthorDetails {
+            private Long id;
+            private String username;
         }
     }
 }

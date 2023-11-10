@@ -18,8 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemysearch.configuration.OpenSearchConfig;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.infrastructure.search.rest.MaterialSingleResponse;
 import pl.sknikod.kodemysearch.infrastructure.search.rest.SearchFields;
+import pl.sknikod.kodemysearch.infrastructure.search.rest.SingleMaterialResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +51,11 @@ public class SearchService {
     }
 
     public void reindexMaterial(String materialId, QueueConsumer.MaterialEvent material) {
+        var index = indexProperties.getIndex();
+        indexManager.createIndexIfNotExists(index);
         Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, ?>>() {
                 }))
-                .map(jsonObject -> new UpdateRequest(indexProperties.getIndex().getName(), materialId)
+                .map(jsonObject -> new UpdateRequest(index.getName(), materialId)
                         .doc(jsonObject)
                         .docAsUpsert(true)
                 )
@@ -67,7 +69,7 @@ public class SearchService {
                 .source(sourceBuilder);
     }
 
-    public Page<MaterialSingleResponse> searchMaterials(SearchFields searchFields, Pageable page) {
+    public Page<SingleMaterialResponse> searchMaterials(SearchFields searchFields, Pageable page) {
         SearchSourceBuilder searchSourceBuilder = new SearchBuilder(map(searchFields, page))
                 .toSearchSourceBuilder();
         return Try.of(() -> restHighLevelClient.search(
