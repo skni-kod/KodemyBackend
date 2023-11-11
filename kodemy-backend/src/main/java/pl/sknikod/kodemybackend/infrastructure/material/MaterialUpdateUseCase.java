@@ -70,7 +70,7 @@ public class MaterialUpdateUseCase {
 
     private void executeOpenSearchIndex(Material material) {
         rabbitTemplate.convertAndSend(
-                queueProperties.get("m-update").getName(),
+                queueProperties.get("m-updated").getName(),
                 "",
                 rabbitMapper.map(
                         material,
