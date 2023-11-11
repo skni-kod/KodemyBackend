@@ -37,7 +37,6 @@ public class MaterialUpdateUseCase {
     private final AuthService authService;
 
     public MaterialUpdateResponse execute(Long materialId, MaterialUpdateRequest body) {
-        // TODO refactor
         Material existingMaterial = entityDao.findMaterialById(materialId);
         return Option.of(body)
                 .map(materialUpdateRequest -> updateMaterialMapper.map(
