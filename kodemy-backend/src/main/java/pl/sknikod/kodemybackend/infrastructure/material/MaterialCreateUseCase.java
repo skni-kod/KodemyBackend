@@ -13,6 +13,7 @@ import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.*;
+import pl.sknikod.kodemybackend.infrastructure.common.repository.AuthorRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialCreateRequest;
@@ -36,12 +37,15 @@ public class MaterialCreateUseCase {
     private final GradeRepository gradeRepository;
     private final EntityDao entityDao;
     private final AuthService authService;
+    private final AuthorRepository authorRepository;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body) {
+        var authPrincipal = authService.getPrincipal();
         return Option.of(body)
                 .map(materialCreateRequest -> createMaterialMapper.map(
                         body,
-                        authService.getPrincipal(),
+                        authorRepository.findById(authPrincipal.getId())
+                                .orElseGet(() -> authorRepository.save(Author.map(authPrincipal))),
                         entityDao.findCategoryById(body.getCategoryId()),
                         entityDao.findTypeById(body.getTypeId()),
                         entityDao.findTechnologySetByIds(body.getTechnologiesIds())
@@ -82,7 +86,7 @@ public class MaterialCreateUseCase {
     public interface MaterialCreateMapper {
         default Material map(
                 MaterialCreateRequest body,
-                SecurityConfig.JwtUserDetails author,
+                Author author,
                 Category category,
                 Type type,
                 Set<Technology> technologies
@@ -96,7 +100,7 @@ public class MaterialCreateUseCase {
             material.setCategory(category);
             material.setType(type);
             material.setTechnologies(technologies);
-            material.setAuthor(Author.map(author));
+            material.setAuthor(author);
             return material;
         }
 
