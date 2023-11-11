@@ -13,6 +13,7 @@ import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.*;
+import pl.sknikod.kodemybackend.infrastructure.common.repository.AuthorRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialCreateRequest;
@@ -36,6 +37,7 @@ public class MaterialCreateUseCase {
     private final GradeRepository gradeRepository;
     private final EntityDao entityDao;
     private final AuthService authService;
+    private final AuthorRepository authorRepository;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body) {
         return Option.of(body)
@@ -47,11 +49,21 @@ public class MaterialCreateUseCase {
                         entityDao.findTechnologySetByIds(body.getTechnologiesIds())
                 ))
                 .map(this::updateStatus)
-                .map(materialRepository::save)
                 .peek(this::executeOpenSearchIndex)
                 .peek(this::executeNotificationStatus)
+                .peek(this::setAuthor)
+                .map(materialRepository::save)
                 .map(createMaterialMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+    }
+
+    private void setAuthor(Material m) {
+        SecurityConfig.JwtUserDetails author = authService.getPrincipal();
+        Author aut = new Author(author.getId(), author.getUsername());
+        Option.of(authorRepository.existsById(author.getId()))
+                .filter(ex->!ex)
+                .map((e)-> authorRepository.save(aut));
+        m.setAuthor(aut);
     }
 
     private Material updateStatus(Material material) {
@@ -96,7 +108,7 @@ public class MaterialCreateUseCase {
             material.setCategory(category);
             material.setType(type);
             material.setTechnologies(technologies);
-            material.setAuthor(Author.map(author));
+//            material.setAuthor(Author.map(author));
             return material;
         }
 
