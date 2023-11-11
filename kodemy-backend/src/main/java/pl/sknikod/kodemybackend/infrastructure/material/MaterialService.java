@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
@@ -14,6 +15,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
+import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
@@ -29,6 +31,7 @@ public class MaterialService {
     private final GradeRepository gradeRepository;
     private final MaterialCreateUseCase materialCreateUseCase;
     private final MaterialUpdateUseCase materialUpdateUseCase;
+    private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
     private final EntityDao entityDao;
     private final AuthService authService;
@@ -83,5 +86,16 @@ public class MaterialService {
         return Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
                 .map(i -> gradeRepository.countAllByMaterialIdAndValue(materialId, i))
                 .collect(Collectors.toList());
+    }
+
+    public SingleMaterialResponse changeStatus(Long materialId, Material.MaterialStatus status) {
+        return Option.ofOptional(materialRepository.findById(materialId))
+                .onEmpty(() -> {
+                    throw new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId);
+                })
+                .peek(material -> material.setStatus(status))
+                .map(materialRepository::save)
+                .map(materialMapper::map)
+                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }

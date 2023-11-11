@@ -17,7 +17,7 @@ public interface MaterialMapper {
     })
     SingleMaterialResponse map(Material material);
 
-    default SingleMaterialResponse map(Material material, Double averageGrade, List<Long> gradeStats){
+    default SingleMaterialResponse map(Material material, Double averageGrade, List<Long> gradeStats) {
         var response = map(material);
         response.setAverageGrade(averageGrade);
         response.setGradeStats(gradeStats);

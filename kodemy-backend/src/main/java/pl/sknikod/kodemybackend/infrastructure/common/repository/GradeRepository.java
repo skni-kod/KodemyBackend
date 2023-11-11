@@ -14,10 +14,11 @@ import java.util.Set;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {
-    Date DATE_MIN = java.sql.Date.valueOf(LocalDate.of(2023,1,1));
+    Date DATE_MIN = java.sql.Date.valueOf(LocalDate.of(2023, 1, 1));
     Date DATE_MAX = java.sql.Date.valueOf(LocalDate.of(9999, 12, 31));
 
     List<Grade> findAllByMaterialId(Long id);
+
     Long countAllByMaterialIdAndValue(Long id, Double value);
 
     @Query("SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g WHERE g.material.id = :materialId")
