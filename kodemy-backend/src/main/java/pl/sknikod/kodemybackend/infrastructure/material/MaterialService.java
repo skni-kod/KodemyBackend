@@ -51,10 +51,12 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Page<SingleGradeResponse> showGrades(Long materialId, Date from, Date to, int page, int size) {
-        // TODO search format
+    public Page<SingleGradeResponse> showGrades(PageRequest pageRequest, SearchFields searchFields) {
         Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRangeWithPage(
-                materialId, from, to, PageRequest.of(page, size)
+                searchFields.getMaterialId(),
+                searchFields.getCreatedDateFrom(),
+                searchFields.getCreatedDateTo(),
+                PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize())
         );
         List<SingleGradeResponse> singleGradeResponses = gradesPage.getContent()
                 .stream()
