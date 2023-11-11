@@ -18,6 +18,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,10 +53,13 @@ public class MaterialService {
     }
 
     public Page<SingleGradeResponse> showGrades(PageRequest pageRequest, SearchFields searchFields) {
-        Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRangeWithPage(
+        Date minDate = Objects.nonNull(searchFields.getCreatedDateFrom())
+                ? searchFields.getCreatedDateFrom() : GradeRepository.DATE_MIN;
+        Date maxDate = Objects.nonNull(searchFields.getCreatedDateTo())
+                ? searchFields.getCreatedDateTo() : GradeRepository.DATE_MAX;
+        Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRange(
                 searchFields.getMaterialId(),
-                searchFields.getCreatedDateFrom(),
-                searchFields.getCreatedDateTo(),
+                minDate, maxDate,
                 PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize())
         );
         List<SingleGradeResponse> singleGradeResponses = gradesPage.getContent()
