@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
 
 import java.net.URI;
@@ -34,5 +35,11 @@ public class MaterialController implements MaterialControllerDefinition {
     @Override
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('CAN_APPROVED_MATERIAL')")
+    public ResponseEntity<SingleMaterialResponse> changeStatus(Long materialId, Material.MaterialStatus status) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.changeStatus(materialId, status));
     }
 }

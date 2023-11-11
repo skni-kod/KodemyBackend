@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;

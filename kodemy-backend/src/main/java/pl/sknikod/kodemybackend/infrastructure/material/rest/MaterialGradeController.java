@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
 
-import java.util.Date;
 import java.util.Objects;
 
 @RestController

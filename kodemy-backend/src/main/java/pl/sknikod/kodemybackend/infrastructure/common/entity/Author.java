@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Getter
 @Setter
@@ -20,7 +22,7 @@ public class Author {
     @Column(nullable = false, unique = true)
     private String username;
 
-    public static Author map(SecurityConfig.JwtUserDetails userDetails){
+    public static Author map(SecurityConfig.JwtUserDetails userDetails) {
         return new Author(userDetails.getId(), userDetails.getUsername());
     }
 }

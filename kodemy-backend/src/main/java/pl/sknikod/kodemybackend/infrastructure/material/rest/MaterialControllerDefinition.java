@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
@@ -35,4 +36,12 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.SuccessCode200
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
+
+    @Operation(summary = "Change material's status")
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
+    @PatchMapping("/{materialId}/status")
+    ResponseEntity<SingleMaterialResponse> changeStatus(@PathVariable Long materialId, @RequestBody Material.MaterialStatus status);
 }

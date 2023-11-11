@@ -5,13 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse

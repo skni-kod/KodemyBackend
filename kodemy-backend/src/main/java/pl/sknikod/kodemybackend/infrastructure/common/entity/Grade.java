@@ -8,7 +8,6 @@ import org.hibernate.annotations.TypeDef;
 import pl.sknikod.kodemybackend.util.Auditable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
