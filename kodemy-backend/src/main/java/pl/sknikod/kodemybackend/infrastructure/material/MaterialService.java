@@ -18,9 +18,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -97,5 +95,19 @@ public class MaterialService {
                 .map(materialRepository::save)
                 .map(materialMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+    }
+
+    public List<Material.MaterialStatus> getPossibleStatuses(Long materialId) {
+        var statuses =  Option.ofOptional(materialRepository.findById(materialId))
+                .onEmpty(()->{throw new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId);})
+                .map(Material::getPossibleStatuses)
+                .getOrElseThrow(()->new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+        var possibleStatuses = new ArrayList<Material.MaterialStatus>();
+        statuses.forEach((status, authority)->{
+            Option.of(authService.getPrincipal().getAuthorities().contains(authority))
+                    .filter(a->a)
+                    .peek((s)->possibleStatuses.add(status));
+        });
+        return possibleStatuses;
     }
 }

@@ -80,9 +80,9 @@ public class Material extends Auditable<String> {
         DELETED
     }
 
-    public static Map<MaterialStatus, GrantedAuthority> getPossibleStatuses(MaterialStatus current) {
+    public Map<MaterialStatus, GrantedAuthority> getPossibleStatuses() {
         var possible = new HashMap<MaterialStatus, GrantedAuthority>();
-        switch (current) {
+        switch (this.status) {
             case APPROVED -> {
                 var authority = new SimpleGrantedAuthority("CAN_EDIT_MATERIAL");
                 possible.put(MaterialStatus.DRAFT, authority);

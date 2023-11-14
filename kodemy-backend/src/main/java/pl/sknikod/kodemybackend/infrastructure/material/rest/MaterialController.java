@@ -9,6 +9,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -35,6 +36,12 @@ public class MaterialController implements MaterialControllerDefinition {
     @Override
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Material.MaterialStatus>> getPossibleStatuses(Long materialId) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.getPossibleStatuses(materialId));
     }
 
     @Override

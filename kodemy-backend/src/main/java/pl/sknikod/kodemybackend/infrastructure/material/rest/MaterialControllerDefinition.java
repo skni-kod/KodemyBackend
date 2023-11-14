@@ -8,6 +8,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -36,6 +37,12 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.SuccessCode200
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
+
+    @Operation(summary = "Get possible statuses for material")
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.UnauthorizedCode401
+    @GetMapping("/{materialId}/statuses")
+    ResponseEntity<List<Material.MaterialStatus>> getPossibleStatuses(@PathVariable Long materialId);
 
     @Operation(summary = "Change material's status")
     @SwaggerResponse.SuccessCode200
