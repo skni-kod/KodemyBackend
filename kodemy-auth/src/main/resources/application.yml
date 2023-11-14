@@ -57,13 +57,17 @@ kodemy:
       defaultRole: ROLE_USER
       privileges:
         ROLE_USER:
+          - CAN_EDIT_MATERIAL
         ROLE_MODERATOR:
+          - CAN_EDIT_MATERIAL
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
           - CAN_GET_USER_INFO
         ROLE_ADMIN:
+          - CAN_EDIT_MATERIAL
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
+          - CAN_BAN_DEPRECATE_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS
           - CAN_BANNING_USERS
@@ -72,8 +76,11 @@ kodemy:
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
         ROLE_SUPERADMIN:
+          - CAN_EDIT_MATERIAL
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
+          - CAN_BAN_DEPRECATE_MATERIAL
+          - CAN_UNBAN_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS
           - CAN_BANNING_USERS

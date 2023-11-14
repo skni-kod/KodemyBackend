@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pl.sknikod.kodemybackend.util.Auditable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -68,10 +68,62 @@ public class Material extends Auditable<String> {
     }
 
     public enum MaterialStatus {
-        APPROVED, //CONFIRMED
-        PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING
+        APPROVED,
+        DRAFT,
+        PENDING,
         REJECTED,
-        EDITED, //CORRECTED
-        BANNED
+        EDITED,
+        BAN_REQUESTED,
+        BANNED,
+        DEPRECATION_REQUESTED,
+        DEPRECATED,
+        DELETED
+    }
+
+    public static Map<MaterialStatus, GrantedAuthority> getPossibleStatuses(MaterialStatus current) {
+        var possible = new HashMap<MaterialStatus, GrantedAuthority>();
+        switch (current) {
+            case APPROVED -> {
+                var authority = new SimpleGrantedAuthority("CAN_EDIT_MATERIAL");
+                possible.put(MaterialStatus.DRAFT, authority);
+                possible.put(MaterialStatus.DEPRECATION_REQUESTED, authority);
+                possible.put(MaterialStatus.DELETED, authority);
+                possible.put(MaterialStatus.PENDING, authority);
+            }
+            case DRAFT -> {
+                var authority = new SimpleGrantedAuthority("CAN_EDIT_MATERIAL");
+                possible.put(MaterialStatus.DELETED, authority);
+                possible.put(MaterialStatus.PENDING, authority);
+            }
+            case PENDING -> {
+                var authority = new SimpleGrantedAuthority("CAN_APPROVED_MATERIAL");
+                possible.put(MaterialStatus.APPROVED, authority);
+                possible.put(MaterialStatus.REJECTED, authority);
+                possible.put(MaterialStatus.BAN_REQUESTED, authority);
+            }
+            case REJECTED -> {
+                var authority = new SimpleGrantedAuthority("CAN_EDIT_MATERIAL");
+                possible.put(MaterialStatus.DRAFT, authority);
+                possible.put(MaterialStatus.PENDING, authority);
+            }
+            case BAN_REQUESTED -> {
+                var authority = new SimpleGrantedAuthority("CAN_BAN_DEPRECATE_MATERIAL");
+                possible.put(MaterialStatus.BANNED, authority);
+            }
+            case BANNED -> {
+                var authority = new SimpleGrantedAuthority("CAN_UNBAN_MATERIAL");
+                possible.put(MaterialStatus.REJECTED, authority);
+            }
+            case DEPRECATION_REQUESTED -> {
+                var authority = new SimpleGrantedAuthority("CAN_BAN_DEPRECATE_MATERIAL");
+                possible.put(MaterialStatus.APPROVED, authority);
+                possible.put(MaterialStatus.DEPRECATED, authority);
+            }
+            case DEPRECATED -> {
+                var authority = new SimpleGrantedAuthority("CAN_EDIT_MATERIAL");
+                possible.put(MaterialStatus.DELETED, authority);
+            }
+        }
+        return possible;
     }
 }
