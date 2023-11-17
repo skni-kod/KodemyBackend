@@ -1,6 +1,8 @@
 package pl.sknikod.kodemybackend.infrastructure.material.rest;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,6 +11,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
 
 import java.net.URI;
+import java.util.Date;
 
 @RestController
 @AllArgsConstructor
@@ -30,6 +33,12 @@ public class MaterialController implements MaterialControllerDefinition {
         var materialResponse = materialService.update(materialId, body);
         return ResponseEntity
                 .ok().body(materialResponse);
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated() and hasAuthority('CAN_INDEX')")
+    public ResponseEntity<MaterialService.ReindexResult> reindex(Date from, Date to) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(materialService.reindexMaterial(from, to));
     }
 
     @Override
