@@ -1,8 +1,6 @@
 package pl.sknikod.kodemybackend.infrastructure.material.rest;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

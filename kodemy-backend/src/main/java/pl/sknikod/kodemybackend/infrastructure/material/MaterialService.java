@@ -1,9 +1,6 @@
 package pl.sknikod.kodemybackend.infrastructure.material;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Option;
-import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,7 +23,6 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -119,10 +115,8 @@ public class MaterialService {
         reindexTasksCounter.set(0);
         reindexObjectsCounter.set(0);
         reindexMaterials.set(0);
-
         Pageable pageable = PageRequest.of(0, MAX_PAGE_SIZE_FOR_INDEX);
         Page<Material> materialPage;
-
         do {
             materialPage = materialRepository.findMaterialsInDateRangeWithPage(from, to, pageable);
             var materialsToIndex = materialPage.getContent();
@@ -134,10 +128,8 @@ public class MaterialService {
                             result -> (Long) result[0],
                             result -> (Double) result[1]
                     ));
-
             reindexObjectsCounter.addAndGet(materialsToIndex.size());
             reindexMaterials.addAndGet(materialsToIndex.size());
-
             executorService.submit(() -> {
                 reindexTasksCounter.incrementAndGet();
                 materialsToIndex
@@ -146,7 +138,6 @@ public class MaterialService {
                                     material,
                                     gradesMap.getOrDefault(material.getId(), 0.00)
                             );
-//                            reindexMaterial(material.getId().toString(), searchObj);
                             rabbitTemplate.convertAndSend(
                                     queueProperties.get("m-updated").getName(),
                                     "",
@@ -167,6 +158,7 @@ public class MaterialService {
         executorService.shutdown();
         return new ReindexResult(reindexMaterials.get());
     }
+
     @Value
     public static class ReindexResult {
         long value;

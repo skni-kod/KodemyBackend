@@ -53,16 +53,19 @@ public class SearchService {
     public void reindexMaterial(String materialId, QueueConsumer.MaterialEvent material) {
         var index = indexProperties.getIndex();
         indexManager.createIndexIfNotExists(index);
-        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, ?>>() {
+
+        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, Object>>() {
                 }))
-                .map(jsonObject -> new UpdateRequest(index.getName(), materialId)
-                        .doc(jsonObject)
-                        .docAsUpsert(true)
-                )
-                .onSuccess(request -> Try.of(() -> restHighLevelClient.update(request, OpenSearchConfig.REQUEST_OPTIONS))
-                        .onFailure(ex -> log.error(ex.getMessage()))
-                );
+                .onSuccess(jsonObject -> {
+                    UpdateRequest request = new UpdateRequest(index.getName(), materialId)
+                            .doc(jsonObject)
+                            .docAsUpsert(true);
+                    Try.of(() -> restHighLevelClient.update(request, OpenSearchConfig.REQUEST_OPTIONS))
+                            .onFailure(ex -> log.error(ex.getMessage()));
+                })
+                .onFailure(ex -> log.error(ex.getMessage()));
     }
+
 
     private SearchRequest createMaterialSearchRequest(SearchSourceBuilder sourceBuilder) {
         return new SearchRequest(indexProperties.getIndex().getName())

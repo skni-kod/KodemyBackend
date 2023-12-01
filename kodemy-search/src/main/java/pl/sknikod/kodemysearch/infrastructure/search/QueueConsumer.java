@@ -45,6 +45,7 @@ public class QueueConsumer {
         private Long sectionId;
         private Long categoryId;
         private List<TechnologyDetails> technologies;
+
         public enum MaterialStatus {
             APPROVED, //CONFIRMED
             PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING

@@ -1,6 +1,5 @@
 package pl.sknikod.kodemybackend.infrastructure.material.rest;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
