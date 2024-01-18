@@ -32,6 +32,7 @@ public class SingleMaterialResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     final Date createdDate;
 
+
     @EqualsAndHashCode(callSuper = true)
     @Value
     public static class AuthorDetails extends UserDetails {

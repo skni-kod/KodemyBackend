@@ -2,11 +2,14 @@ package pl.sknikod.kodemybackend.infrastructure.material;
 
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import lombok.Value;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
+import pl.sknikod.kodemybackend.configuration.RabbitConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
@@ -21,6 +24,9 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +41,14 @@ public class MaterialService {
     private final MaterialMapper materialMapper;
     private final EntityDao entityDao;
     private final AuthService authService;
+    private final RabbitTemplate rabbitTemplate;
+    private final RabbitConfig.QueueProperties queueProperties;
+    private final MaterialRabbitMapper rabbitMapper;
+    private final AtomicInteger reindexTasksCounter = new AtomicInteger(0);
+    private final AtomicInteger reindexObjectsCounter = new AtomicInteger(0);
+    private final AtomicInteger reindexMaterials = new AtomicInteger(0);
+    private final Integer MAX_PAGE_SIZE_FOR_INDEX = 2000;
+    private final Integer MAX_CONCURRENT_TASKS = 100;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         return materialCreateUseCase.execute(body);
@@ -89,13 +103,65 @@ public class MaterialService {
     }
 
     public SingleMaterialResponse changeStatus(Long materialId, Material.MaterialStatus status) {
-        return Option.ofOptional(materialRepository.findById(materialId))
-                .onEmpty(() -> {
-                    throw new NotFoundException(NotFoundException.Format.ENTITY_ID, Material.class, materialId);
-                })
+        return Option.of(entityDao.findMaterialById(materialId))
                 .peek(material -> material.setStatus(status))
                 .map(materialRepository::save)
                 .map(materialMapper::map)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
+
+    public ReindexResult reindexMaterial(Date from, Date to) {
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        reindexTasksCounter.set(0);
+        reindexObjectsCounter.set(0);
+        reindexMaterials.set(0);
+        Pageable pageable = PageRequest.of(0, MAX_PAGE_SIZE_FOR_INDEX);
+        Page<Material> materialPage;
+        do {
+            materialPage = materialRepository.findMaterialsInDateRangeWithPage(from, to, pageable);
+            var materialsToIndex = materialPage.getContent();
+            var gradesMap = gradeRepository.findAverageGradeByMaterialsIds(
+                            materialsToIndex.stream().map(Material::getId).toList()
+                    )
+                    .stream()
+                    .collect(Collectors.toMap(
+                            result -> (Long) result[0],
+                            result -> (Double) result[1]
+                    ));
+            reindexObjectsCounter.addAndGet(materialsToIndex.size());
+            reindexMaterials.addAndGet(materialsToIndex.size());
+            executorService.submit(() -> {
+                reindexTasksCounter.incrementAndGet();
+                materialsToIndex
+                        .forEach(material -> {
+                            var searchObj = materialMapper.map(
+                                    material,
+                                    gradesMap.getOrDefault(material.getId(), 0.00)
+                            );
+                            rabbitTemplate.convertAndSend(
+                                    queueProperties.get("m-updated").getName(),
+                                    "",
+                                    rabbitMapper.map(
+                                            material,
+                                            gradeRepository.findAverageGradeByMaterialId(material.getId())
+                                    )
+                            );
+                            reindexObjectsCounter.decrementAndGet();
+                        });
+                reindexTasksCounter.decrementAndGet();
+            });
+            while (reindexTasksCounter.get() > MAX_CONCURRENT_TASKS) ; //wait
+            pageable = pageable.next();
+        } while (materialPage.hasNext());
+
+        while (reindexObjectsCounter.get() > 0 || reindexTasksCounter.get() > 0) ; // wait
+        executorService.shutdown();
+        return new ReindexResult(reindexMaterials.get());
+    }
+
+    @Value
+    public static class ReindexResult {
+        long value;
+    }
+
 }
