@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.infrastructure.auth.AuthService;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 import pl.sknikod.kodemyauth.util.JwtUtil;
@@ -14,27 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @AllArgsConstructor
 public class AuthController implements AuthControllerDefinition {
-    public static final String REDIRECT_URI_PARAMETER = "redirect_uri";
     private final AuthService authService;
-    private final SecurityConfig.SecurityProperties securityProperties;
     private final JwtUtil jwtUtil;
 
     @Override
-    public ResponseEntity<String> authorize(Provider.ProviderType provider, String redirectUri, HttpServletRequest request) {
-        var link = authService.getLink(request, uriBuilder -> uriBuilder
-                .path(securityProperties.getAuth().getLoginUri())
-                .path("/" + provider), redirectUri
-        );
+    public ResponseEntity<OAuth2LinksResponse> getLinks(String redirectUri, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(link);
-    }
-
-    @Override
-    public ResponseEntity<String> logout(String redirectUri, HttpServletRequest request) {
-        String link = authService.getLink(request, uriBuilder -> uriBuilder
-                .path(securityProperties.getAuth().getLogoutUri()), redirectUri);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(link);
+                .body(authService.getLinks(redirectUri, request));
     }
 
     @Override

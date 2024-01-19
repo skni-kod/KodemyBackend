@@ -38,11 +38,4 @@ public class ExceptionRestGenericMessage {
     public ExceptionRestGenericMessage(HttpStatus status, String message) {
         this(status.value(), status.getReasonPhrase(), message);
     }
-
-    public static void writeBodyResponseForHandler(HttpServletResponse response, ObjectMapper objectMapper, Exception ex, HttpStatus status) throws IOException {
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.getWriter().write(objectMapper.writeValueAsString(new ExceptionRestGenericMessage(status, ex)));
-    }
 }

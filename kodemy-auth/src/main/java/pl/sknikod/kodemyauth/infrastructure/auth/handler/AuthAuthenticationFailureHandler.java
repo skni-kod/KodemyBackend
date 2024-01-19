@@ -2,29 +2,32 @@ package pl.sknikod.kodemyauth.infrastructure.auth.handler;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sknikod.kodemyauth.infrastructure.auth.AuthorizationRequestRepositoryImpl;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.util.Base64Util;
 import pl.sknikod.kodemyauth.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static pl.sknikod.kodemyauth.infrastructure.auth.AuthorizationRequestRepositoryImpl.REDIRECT_URI_COOKIE_NAME;
+import java.util.Base64;
 
 @Component
 @RequiredArgsConstructor
 public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    private final AuthorizationRequestRepositoryImpl authorizationRequestRepository;
+    private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         String redirectAfter = Option.of(request)
-                .flatMap(req -> Option.of(Cookie.getCookie(req, REDIRECT_URI_COOKIE_NAME))
-                        .orElse(Option.of(req.getHeader("Referer")))
+                .flatMap(req -> Option.of(Cookie.getCookie(req, authProperties.getKey().getRedirect()))
+                        .map(v -> (String) Base64Util.decode(v))
+                        .orElse(Option.of(req.getHeader(HttpHeaders.REFERER)))
                 )
                 .getOrElse("/");
 
@@ -39,6 +42,7 @@ public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
     }
 
     protected final void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
-        authorizationRequestRepository.removeAuthorizationSession(request, response);
+        Option.of(request.getSession()).peek(session -> session.removeAttribute(authProperties.getKey().getCurrentSession()));
+        Cookie.deleteCookie(request, response, authProperties.getKey().getRedirect());
     }
 }

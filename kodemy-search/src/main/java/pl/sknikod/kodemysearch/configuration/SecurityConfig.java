@@ -7,20 +7,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemysearch.exception.ExceptionRestGenericMessage;
 import pl.sknikod.kodemysearch.util.filter.JwtAuthorizationFilter;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 @Configuration
@@ -33,43 +36,40 @@ import java.util.Set;
 @AllArgsConstructor
 @DependsOn("securityConfig.SecurityProperties")
 public class SecurityConfig {
-    private final ObjectMapper objectMapper;
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final SecurityProperties securityProperties;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            ObjectMapper objectMapper,
+            JwtAuthorizationFilter jwtAuthorizationFilter
+    ) throws Exception {
         http
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable).cors()
+                .and()
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
-                .formLogin().disable()
+                .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((req, res, e) ->
-                                ExceptionRestGenericMessage.writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.UNAUTHORIZED)
-                        )
+                                writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.UNAUTHORIZED))
                         .accessDeniedHandler((req, res, e) ->
-                                ExceptionRestGenericMessage.writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.FORBIDDEN)
-                        )
+                                writeBodyResponseForHandler(res, objectMapper, e, HttpStatus.FORBIDDEN))
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .cors();
+                );
         return http.build();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry
-                        .addMapping("/**")
-                        .allowedOrigins(securityProperties.getCors().getAllowedUris())
-                        .allowCredentials(true);
-            }
-        };
+    private void writeBodyResponseForHandler(
+            HttpServletResponse response,
+            ObjectMapper objectMapper,
+            Exception ex,
+            HttpStatus status
+    ) throws IOException {
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        response.getWriter().write(objectMapper.writeValueAsString(new ExceptionRestGenericMessage(status, ex)));
     }
 
     @Bean
@@ -78,7 +78,7 @@ public class SecurityConfig {
     }
 
     @Value
-    public static class JwtUserDetails implements UserDetails {
+    public static class UserPrincipal implements UserDetails {
         Long id;
         String username;
         String password = null;
@@ -91,7 +91,7 @@ public class SecurityConfig {
 
     @Configuration
     @Data
-    @ConfigurationProperties(prefix = "kodemy.security")
+    @ConfigurationProperties(prefix = "app.security")
     public static class SecurityProperties {
         private CorsProperties cors;
 

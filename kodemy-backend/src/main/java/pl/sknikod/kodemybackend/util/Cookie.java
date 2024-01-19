@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Cookie {
 
+    public static void addCookie(HttpServletResponse response, String name, String value){
+        addCookie(response, name, value, 15778463);
+    }
+
     public static void addCookie(HttpServletResponse response, String name, String value, int expireTime) {
         var cookie = new javax.servlet.http.Cookie(name, value);
         cookie.setPath("/");
