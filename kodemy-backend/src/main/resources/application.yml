@@ -54,4 +54,7 @@ app:
       notification:
         name: notification
         exchange: fanout
-  security-auth-key-jwt: jwtsession
+  security:
+    auth:
+      key:
+        jwt: jwtsession

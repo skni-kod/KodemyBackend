@@ -2,16 +2,11 @@ package pl.sknikod.kodemyauth.infrastructure.auth.handler;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
-import pl.sknikod.kodemyauth.util.Base64Util;
-import pl.sknikod.kodemyauth.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

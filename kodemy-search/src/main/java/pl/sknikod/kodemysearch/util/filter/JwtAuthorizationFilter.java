@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
-    @Value("${app.security-auth-key-jwt}")
+    @Value("${app.security.auth.key.jwt}")
     private String jwtKey;
 
     @Override

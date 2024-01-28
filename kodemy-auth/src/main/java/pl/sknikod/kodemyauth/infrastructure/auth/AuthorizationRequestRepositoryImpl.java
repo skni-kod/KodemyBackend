@@ -1,6 +1,5 @@
 package pl.sknikod.kodemyauth.infrastructure.auth;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;

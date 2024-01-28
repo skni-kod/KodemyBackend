@@ -38,3 +38,7 @@ app:
       m-updated:
         name: material.updated
         exchange: direct
+  security:
+    auth:
+      key:
+        jwt: jwtsession

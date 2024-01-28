@@ -25,7 +25,7 @@ spring:
         - Path=/api/materials/{materialId}/**
         - Method=GET
       filters:
-        - AuthFilter
+        - GatewayAuthFilter
     -
       id: kodemy-backend-materials-post
       uri: ${app.service.backend}

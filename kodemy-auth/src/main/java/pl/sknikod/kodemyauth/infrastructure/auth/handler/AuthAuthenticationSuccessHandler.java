@@ -25,8 +25,11 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     private final JwtUtil jwtUtil;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) throws IOException {
         if (response.isCommitted()) return;
 
         String redirectUri = Option.of(request)

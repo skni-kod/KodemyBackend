@@ -19,7 +19,6 @@ public class SearchFields {
     Date createdDateFrom;
     Date createdDateTo;
 
-
     @Component
     @RequiredArgsConstructor
     public static class MaterialSearchFieldsConverter implements Converter<String, SearchFields> {

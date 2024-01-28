@@ -6,10 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.*;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.AuthorRepository;
@@ -35,16 +36,15 @@ public class MaterialCreateUseCase {
     private final MaterialRabbitMapper rabbitMapper;
     private final GradeRepository gradeRepository;
     private final EntityDao entityDao;
-    private final AuthService authService;
     private final AuthorRepository authorRepository;
 
     public MaterialCreateResponse execute(MaterialCreateRequest body) {
-        var authPrincipal = authService.getPrincipal();
+        var userPrincipal = getUserPrincipal();
         return Option.of(body)
                 .map(materialCreateRequest -> createMaterialMapper.map(
                         body,
-                        authorRepository.findById(authPrincipal.getId())
-                                .orElseGet(() -> authorRepository.save(Author.map(authPrincipal))),
+                        authorRepository.findById(userPrincipal.getId())
+                                .orElseGet(() -> authorRepository.save(Author.map(userPrincipal))),
                         entityDao.findCategoryById(body.getCategoryId()),
                         entityDao.findTypeById(body.getTypeId()),
                         entityDao.findTechnologySetByIds(body.getTechnologiesIds())
@@ -57,9 +57,16 @@ public class MaterialCreateUseCase {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
+    private static SecurityConfig.UserPrincipal getUserPrincipal() {
+        return (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
+
     private Material updateStatus(Material material) {
         material.setStatus(
-                authService.getPrincipal().getAuthorities()
+                getUserPrincipal().getAuthorities()
                         .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                         ? APPROVED : PENDING
         );
