@@ -61,6 +61,7 @@ kodemy:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
           - CAN_GET_USER_INFO
+          - CAN_VIEW_ALL_MATERIALS
         ROLE_ADMIN:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
@@ -71,6 +72,7 @@ kodemy:
           - CAN_GET_USER_INFO
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
+          - CAN_VIEW_ALL_MATERIALS
         ROLE_SUPERADMIN:
           - CAN_MODIFY_TECHNOLOGIES
           - CAN_APPROVED_MATERIAL
@@ -82,3 +84,4 @@ kodemy:
           - CAN_GET_USER_INFO
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
+          - CAN_VIEW_ALL_MATERIALS

@@ -24,9 +24,9 @@ public class MaterialGradeController implements MaterialGradeControllerDefinitio
     }
 
     @Override
-    public ResponseEntity<Page<SingleGradeResponse>> showGrades(int size, int page, String sort, Sort.Direction sortDirection, SearchFields searchFields) {
+    public ResponseEntity<Page<SingleGradeResponse>> showGrades(int size, int page, String sort, Sort.Direction sortDirection, GradeMaterialSearchFields searchFields) {
         var pageRequest = PageRequest.of(page, size, sortDirection, sort);
-        var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        var searchFieldsParam = Objects.isNull(searchFields) ? new GradeMaterialSearchFields() : searchFields;
         return ResponseEntity.status(HttpStatus.OK).body(
                 materialService.showGrades(pageRequest, searchFieldsParam)
         );

@@ -11,21 +11,13 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class SearchFields {
-    String phrase;
+public class GradeMaterialSearchFields {
     Long id;
-    String title;
-    String status;
-    String createdBy;
     Date createdDateFrom;
     Date createdDateTo;
-    Long sectionId;
-    List<Long> categoryIds;
-    List<Long> technologyIds;
 
     @Component
     @RequiredArgsConstructor
@@ -39,4 +31,3 @@ public class SearchFields {
         }
     }
 }
-

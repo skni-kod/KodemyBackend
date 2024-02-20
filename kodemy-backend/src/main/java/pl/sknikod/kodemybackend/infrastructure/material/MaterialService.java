@@ -69,13 +69,13 @@ public class MaterialService {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Page<SingleGradeResponse> showGrades(PageRequest pageRequest, SearchFields searchFields) {
+    public Page<SingleGradeResponse> showGrades(PageRequest pageRequest, GradeMaterialSearchFields searchFields) {
         Date minDate = Objects.nonNull(searchFields.getCreatedDateFrom())
                 ? searchFields.getCreatedDateFrom() : GradeRepository.DATE_MIN;
         Date maxDate = Objects.nonNull(searchFields.getCreatedDateTo())
                 ? searchFields.getCreatedDateTo() : GradeRepository.DATE_MAX;
         Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRange(
-                searchFields.getMaterialId(),
+                searchFields.getId(),
                 minDate, maxDate,
                 PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize())
         );
@@ -157,6 +157,18 @@ public class MaterialService {
         while (reindexObjectsCounter.get() > 0 || reindexTasksCounter.get() > 0) ; // wait
         executorService.shutdown();
         return new ReindexResult(reindexMaterials.get());
+    }
+
+    public Page<SingleMaterialResponse> searchMaterials(SearchFields searchFields, PageRequest pageRequest) {
+        return new PageImpl<>(
+                materialRepository
+                        .searchMaterials(searchFields, pageRequest)
+                        .stream()
+                        .map(materialMapper::map)
+                        .toList(),
+                pageRequest,
+                materialRepository.count()
+        );
     }
 
     @Value

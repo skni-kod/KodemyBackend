@@ -1,6 +1,9 @@
 package pl.sknikod.kodemybackend.infrastructure.material.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +13,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -40,13 +44,30 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('CAN_APPROVED_MATERIAL')")
+    public ResponseEntity<SingleMaterialResponse> changeStatus(Long materialId, Material.MaterialStatus status) {
+        return ResponseEntity.status(HttpStatus.OK).body(materialService.changeStatus(materialId, status));
+    }
+
+    @Override
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
     }
 
     @Override
-    @PreAuthorize("hasAuthority('CAN_APPROVED_MATERIAL')")
-    public ResponseEntity<SingleMaterialResponse> changeStatus(Long materialId, Material.MaterialStatus status) {
-        return ResponseEntity.status(HttpStatus.OK).body(materialService.changeStatus(materialId, status));
+    @PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
+    public ResponseEntity<Page<SingleMaterialResponse>> getAllMaterialsForAdmin(
+            int size,
+            int page,
+            String sort,
+            Sort.Direction sortDirection,
+            SearchFields searchFields
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                materialService.searchMaterials(
+                        Objects.isNull(searchFields) ? new SearchFields() : searchFields,
+                        PageRequest.of(page, size, sortDirection, sort)
+                )
+        );
     }
 }
