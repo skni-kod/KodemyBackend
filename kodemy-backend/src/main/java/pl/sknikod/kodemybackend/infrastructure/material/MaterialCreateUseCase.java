@@ -1,7 +1,10 @@
 package pl.sknikod.kodemybackend.infrastructure.material;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,14 +14,14 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
 import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.*;
-import pl.sknikod.kodemybackend.infrastructure.common.repository.AuthorRepository;
-import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
-import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
-import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialCreateRequest;
-import pl.sknikod.kodemybackend.infrastructure.material.rest.MaterialCreateResponse;
+import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.util.Set;
 
 import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.MaterialStatus.APPROVED;
@@ -28,6 +31,9 @@ import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.Mat
 @AllArgsConstructor
 @Slf4j
 public class MaterialCreateUseCase {
+    private final TechnologyRepository technologyRepository;
+    private final TypeRepository typeRepository;
+    private final CategoryRepository categoryRepository;
 
     private final MaterialRepository materialRepository;
     private final MaterialCreateMapper createMaterialMapper;
@@ -35,19 +41,18 @@ public class MaterialCreateUseCase {
     private final RabbitConfig.QueueProperties queueProperties;
     private final MaterialRabbitMapper rabbitMapper;
     private final GradeRepository gradeRepository;
-    private final EntityDao entityDao;
     private final AuthorRepository authorRepository;
 
-    public MaterialCreateResponse execute(MaterialCreateRequest body) {
+    public MaterialCreateResponse create(MaterialCreateRequest body) {
         var userPrincipal = getUserPrincipal();
         return Option.of(body)
                 .map(materialCreateRequest -> createMaterialMapper.map(
                         body,
                         authorRepository.findById(userPrincipal.getId())
                                 .orElseGet(() -> authorRepository.save(Author.map(userPrincipal))),
-                        entityDao.findCategoryById(body.getCategoryId()),
-                        entityDao.findTypeById(body.getTypeId()),
-                        entityDao.findTechnologySetByIds(body.getTechnologiesIds())
+                        categoryRepository.findCategoryById(body.getCategoryId()),
+                        typeRepository.findTypeById(body.getTypeId()),
+                        technologyRepository.findTechnologySetByIds(body.getTechnologiesIds())
                 ))
                 .map(this::updateStatus)
                 .map(materialRepository::save)
@@ -111,5 +116,39 @@ public class MaterialCreateUseCase {
         }
 
         MaterialCreateResponse map(Material material);
+    }
+
+
+    @Data
+    @AllArgsConstructor
+    public static class MaterialCreateRequest {
+        @NotNull
+        @Schema(example = "Title of the material")
+        private String title;
+
+        @Schema(example = "Description of the material")
+        private String description;
+
+        @Pattern(regexp = "^https?://.*", message = "Link must start with http:// or https://")
+        @Schema(example = "https://www.example.com/material/java-programming")
+        private String link;
+
+        @NotNull
+        @Positive(message = "Type ID must be > 0")
+        private Long typeId;
+
+        @NotNull
+        @Positive(message = "Category ID must be > 0")
+        private Long categoryId;
+
+        private Set<@NotNull @Positive(message = "Technology ID must be > 0") Long> technologiesIds;
+    }
+
+    @Value
+    public static class MaterialCreateResponse {
+        Long id;
+        String title;
+        @Enumerated(EnumType.STRING)
+        Material.MaterialStatus status;
     }
 }

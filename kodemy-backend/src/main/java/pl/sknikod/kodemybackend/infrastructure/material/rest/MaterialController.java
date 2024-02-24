@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
-import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
+import pl.sknikod.kodemybackend.infrastructure.material.*;
 
 import java.net.URI;
 import java.util.Date;
@@ -18,12 +18,16 @@ import java.util.Objects;
 @RestController
 @AllArgsConstructor
 public class MaterialController implements MaterialControllerDefinition {
-    private final MaterialService materialService;
+    private final MaterialCreateUseCase materialCreateUseCase;
+    private final MaterialUpdateUseCase materialUpdateUseCase;
+    private final MaterialGetUseCase materialGetUseCase;
+    private final MaterialUserGetUseCase materialManageGetUseCase;
+    private final MaterialOSearchUseCase materialOSearchUseCase;
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<MaterialCreateResponse> create(MaterialCreateRequest body) {
-        var materialResponse = materialService.create(body);
+    public ResponseEntity<MaterialCreateUseCase.MaterialCreateResponse> create(MaterialCreateUseCase.MaterialCreateRequest body) {
+        var materialResponse = materialCreateUseCase.create(body);
         return ResponseEntity
                 .created(URI.create("/api/materials/" + materialResponse.getId()))
                 .body(materialResponse);
@@ -31,32 +35,35 @@ public class MaterialController implements MaterialControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<MaterialUpdateResponse> update(Long materialId, MaterialUpdateRequest body) {
-        var materialResponse = materialService.update(materialId, body);
+    public ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(Long materialId, MaterialUpdateUseCase.MaterialUpdateRequest body) {
+        var materialResponse = materialUpdateUseCase.update(materialId, body);
         return ResponseEntity
                 .ok().body(materialResponse);
     }
 
     @Override
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_INDEX')")
-    public ResponseEntity<MaterialService.ReindexResult> reindex(Date from, Date to) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(materialService.reindexMaterial(from, to));
+    public ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(Date from, Date to) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(materialOSearchUseCase.reindex(from, to));
     }
 
     @Override
     @PreAuthorize("hasAuthority('CAN_APPROVED_MATERIAL')")
     public ResponseEntity<SingleMaterialResponse> changeStatus(Long materialId, Material.MaterialStatus status) {
-        return ResponseEntity.status(HttpStatus.OK).body(materialService.changeStatus(materialId, status));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialUpdateUseCase.changeStatus(materialId, status));
     }
 
     @Override
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
-        return ResponseEntity.status(HttpStatus.OK).body(materialService.showDetails(materialId));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialGetUseCase.showDetails(materialId));
     }
 
     @Override
     @PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
-    public ResponseEntity<Page<SingleMaterialResponse>> getAllMaterialsForAdmin(
+    public ResponseEntity<Page<SingleMaterialResponse>> manage(
             int size,
             int page,
             String sort,
@@ -64,7 +71,7 @@ public class MaterialController implements MaterialControllerDefinition {
             SearchFields searchFields
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                materialService.searchMaterials(
+                materialManageGetUseCase.search(
                         Objects.isNull(searchFields) ? new SearchFields() : searchFields,
                         PageRequest.of(page, size, sortDirection, sort)
                 )

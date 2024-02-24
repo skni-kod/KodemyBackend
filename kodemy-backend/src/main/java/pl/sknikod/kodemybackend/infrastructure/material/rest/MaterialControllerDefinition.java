@@ -9,7 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
-import pl.sknikod.kodemybackend.infrastructure.material.MaterialService;
+import pl.sknikod.kodemybackend.infrastructure.material.MaterialCreateUseCase;
+import pl.sknikod.kodemybackend.infrastructure.material.MaterialOSearchUseCase;
+import pl.sknikod.kodemybackend.infrastructure.material.MaterialUpdateUseCase;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
@@ -27,7 +29,7 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.NotFoundCode404
     @SwaggerResponse.ConflictCode409
     @PostMapping
-    ResponseEntity<MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateRequest body);
+    ResponseEntity<MaterialCreateUseCase.MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateUseCase.MaterialCreateRequest body);
 
     @Operation(summary = "Update material")
     @SwaggerResponse.SuccessCode200
@@ -36,14 +38,14 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @SwaggerResponse.NotFoundCode404
     @PutMapping("/{materialId}")
-    ResponseEntity<MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateRequest body);
+    ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateUseCase.MaterialUpdateRequest body);
 
     @Operation(summary = "Reindex material")
     @SwaggerResponse.AcceptedCode202
     @SwaggerResponse.UnauthorizedCode401
     @SwaggerResponse.ForbiddenCode403
     @PatchMapping("/reindex")
-    ResponseEntity<MaterialService.ReindexResult> reindex(
+    ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
             @RequestParam(value = "from") Date from,
@@ -70,7 +72,7 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.UnauthorizedCode401
     @SwaggerResponse.ForbiddenCode403
     @GetMapping("/manage")
-    ResponseEntity<Page<SingleMaterialResponse>> getAllMaterialsForAdmin(
+    ResponseEntity<Page<SingleMaterialResponse>> manage(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
