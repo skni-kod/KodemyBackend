@@ -1,89 +1,48 @@
 package pl.sknikod.kodemysearch.infrastructure.material;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
-import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.search.SearchRequest;
-import org.opensearch.action.update.UpdateRequest;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemysearch.configuration.OpenSearchConfig;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.infrastructure.material.rest.MaterialSearchFields;
-import pl.sknikod.kodemysearch.infrastructure.material.rest.SingleMaterialResponse;
-import pl.sknikod.kodemysearch.infrastructure.search.QueueConsumer;
+import pl.sknikod.kodemysearch.exception.structure.ValidationException;
 import pl.sknikod.kodemysearch.infrastructure.search.SearchBuilder;
 import pl.sknikod.kodemysearch.infrastructure.search.SearchCriteria;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MaterialSearchService {
+public class MaterialGetUseCase {
     private final RestHighLevelClient restHighLevelClient;
     private final MaterialSearchMapper materialSearchMapper;
-    private final ObjectMapper objectMapper;
-    private final OpenSearchConfig.IndexManager indexManager;
     private final OpenSearchConfig.IndexProperties indexProperties;
 
-    public void indexMaterial(QueueConsumer.MaterialEvent material) {
-        var index = indexProperties.getIndex();
-        indexManager.createIndexIfNotExists(index);
-        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, ?>>() {
-                }))
-                .map(jsonObject -> new IndexRequest(index.getName())
-                        .id(material.getId().toString())
-                        .source(jsonObject)
-                )
-                .onSuccess(request -> Try.of(() -> restHighLevelClient.index(request, OpenSearchConfig.REQUEST_OPTIONS))
-                        .onFailure(ex -> log.error(ex.getMessage()))
-                );
-    }
-
-    public void reindexMaterial(String materialId, QueueConsumer.MaterialEvent material) {
-        var index = indexProperties.getIndex();
-        indexManager.createIndexIfNotExists(index);
-
-        Try.of(() -> objectMapper.convertValue(material, new TypeReference<Map<String, Object>>() {
-                }))
-                .onSuccess(jsonObject -> {
-                    UpdateRequest request = new UpdateRequest(index.getName(), materialId)
-                            .doc(jsonObject)
-                            .docAsUpsert(true);
-                    Try.of(() -> restHighLevelClient.update(request, OpenSearchConfig.REQUEST_OPTIONS))
-                            .onFailure(ex -> log.error(ex.getMessage()));
-                })
-                .onFailure(ex -> log.error(ex.getMessage()));
-    }
-
-
-    private SearchRequest createMaterialSearchRequest(SearchSourceBuilder sourceBuilder) {
-        return new SearchRequest(indexProperties.getIndex().getName())
-                .source(sourceBuilder);
-    }
-
-    public Page<SingleMaterialResponse> searchMaterials(MaterialSearchFields searchFields, Pageable page) {
-        SearchSourceBuilder searchSourceBuilder = new SearchBuilder(map(searchFields, page))
-                .toSearchSourceBuilder();
+    public Page<MaterialPageable> searchMaterials(SearchFields searchFields, Pageable page) {
+        var searchRequest = new SearchRequest(indexProperties.getIndex().getName())
+                .source(new SearchBuilder(map(searchFields, page)).toSearchSourceBuilder());
         return Try.of(() -> restHighLevelClient.search(
-                        createMaterialSearchRequest(searchSourceBuilder), OpenSearchConfig.REQUEST_OPTIONS
+                        searchRequest, OpenSearchConfig.REQUEST_OPTIONS
                 ))
                 .onFailure(ex -> {
                     throw new ServerProcessingException(ex.getMessage());
@@ -99,7 +58,7 @@ public class MaterialSearchService {
                 .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
     }
 
-    private SearchCriteria map(@NonNull MaterialSearchFields searchFields, @NonNull Pageable page) {
+    private SearchCriteria map(@NonNull MaterialGetUseCase.SearchFields searchFields, @NonNull Pageable page) {
         List<SearchCriteria.PhraseField> phraseFields = new ArrayList<>();
 
         if (Objects.nonNull(searchFields.getId()))
@@ -118,18 +77,29 @@ public class MaterialSearchService {
             phraseFields.add(new SearchCriteria.PhraseField(
                     "createdBy", searchFields.getCreatedBy(), false, false
             ));
-        if (Objects.nonNull(searchFields.getSectionId()))
+        var sectionIds = searchFields.getSectionIds();
+        if (Objects.nonNull(sectionIds) && sectionIds.length != 0) {
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "sectionId", searchFields.getSectionId().toString(), false, false
+                    "sectionIds",
+                    StringUtils.join(sectionIds, ' '),
+                    false,
+                    false
             ));
-        if (Objects.nonNull(searchFields.getCategoryId()))
+        }
+        var categoryIds = searchFields.getCategoryIds();
+        if (Objects.nonNull(categoryIds) && categoryIds.length != 0) {
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "categoryId", searchFields.getCategoryId().toString(), false, false
+                    "categoryIds",
+                    StringUtils.join(categoryIds, ' '),
+                    false,
+                    false
             ));
-        if (Objects.nonNull(searchFields.getTechnologyIds()) && !searchFields.getTechnologyIds().isEmpty()) {
+        }
+        var technologyIds = searchFields.getTechnologyIds();
+        if (Objects.nonNull(technologyIds) && technologyIds.length != 0) {
             phraseFields.add(new SearchCriteria.PhraseField(
                     "technologyIds",
-                    StringUtils.join(searchFields.getTechnologyIds(), " "),
+                    StringUtils.join(searchFields.getTechnologyIds(), ' '),
                     false,
                     false
             ));
@@ -152,21 +122,92 @@ public class MaterialSearchService {
     public interface MaterialSearchMapper {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        SingleMaterialResponse map(QueueConsumer.MaterialEvent event);
-
-        default List<SingleMaterialResponse> map(SearchHits hits) {
+        default List<MaterialPageable> map(SearchHits hits) {
             return StreamSupport.stream(hits.spliterator(), false)
                     .map(SearchHit::getSourceAsString)
                     .map(this::map)
                     .toList();
         }
 
-        private SingleMaterialResponse map(String source) {
-            return Try.of(() -> objectMapper.readValue(source, SingleMaterialResponse.class))
+        private MaterialPageable map(String source) {
+            return Try.of(() -> objectMapper.readValue(source, MaterialPageable.class))
                     .onFailure(ex -> {
                         throw new ServerProcessingException(ex.getMessage());
                     })
                     .get();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class SearchFields {
+        String phrase;
+        Long id;
+        String title;
+        String status;
+        String createdBy;
+        Date createdDateFrom;
+        Date createdDateTo;
+        Long[] sectionIds;
+        Long[] categoryIds;
+        Long[] technologyIds;
+
+        @Component
+        @RequiredArgsConstructor
+        public static class MaterialSearchFieldsConverter implements Converter<String, SearchFields> {
+            private final ObjectMapper objectMapper;
+
+            @Override
+            public SearchFields convert(@NonNull String source) {
+                return Try.of(() -> objectMapper.readValue(source, SearchFields.class))
+                        .getOrElseThrow(() -> new ValidationException("Can't parse " + getClass().getSimpleName() + " params: " + source));
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MaterialPageable {
+        private Long id;
+        private String title;
+        private String description;
+        private MaterialStatus status;
+        private boolean isActive;
+        private double avgGrade;
+        private AuthorDetails author;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date createdDate;
+        private Long sectionId;
+        private Long categoryId;
+        private List<TechnologyDetails> technologies;
+
+        public enum MaterialStatus {
+            APPROVED, //CONFIRMED
+            PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING
+            REJECTED,
+            EDITED, //CORRECTED
+            BANNED
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class TechnologyDetails {
+            private Long id;
+            private String name;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class AuthorDetails {
+            private Long id;
+            private String username;
         }
     }
 }
