@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.infrastructure.search.rest;
+package pl.sknikod.kodemysearch.infrastructure.material.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class SearchFields {
+public class MaterialSearchFields {
     String phrase;
     Long id;
     String title;
@@ -29,12 +29,12 @@ public class SearchFields {
 
     @Component
     @RequiredArgsConstructor
-    public static class MaterialSearchFieldsConverter implements Converter<String, SearchFields> {
+    public static class MaterialSearchFieldsConverter implements Converter<String, MaterialSearchFields> {
         private final ObjectMapper objectMapper;
 
         @Override
-        public SearchFields convert(@NonNull String source) {
-            return Try.of(() -> objectMapper.readValue(source, SearchFields.class))
+        public MaterialSearchFields convert(@NonNull String source) {
+            return Try.of(() -> objectMapper.readValue(source, MaterialSearchFields.class))
                     .getOrElseThrow(() -> new ValidationException("Can't parse " + getClass().getSimpleName() + " params: " + source));
         }
     }

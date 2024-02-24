@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.util;
+package pl.sknikod.kodemysearch.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

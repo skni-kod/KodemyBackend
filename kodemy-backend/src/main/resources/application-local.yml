@@ -8,9 +8,10 @@ spring:
 logging.level:
   org.springframework.security: DEBUG
 
-kodemy:
-  jwt:
-    expiration-mins: 60
+jwt:
+  expiration-mins: 60
+
+app:
   security:
     cors:
       allowedUris:

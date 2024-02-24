@@ -1,33 +1,32 @@
 package pl.sknikod.kodemyauth.infrastructure.auth;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import io.vavr.control.Option;
+import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.SerializationUtils;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.util.Base64Util;
 import pl.sknikod.kodemyauth.util.Cookie;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Base64;
-import java.util.Optional;
 
 import static pl.sknikod.kodemyauth.infrastructure.auth.rest.AuthController.REDIRECT_URI_PARAMETER;
 
 @Repository
+@RequiredArgsConstructor
 public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-    public static final String REDIRECT_URI_COOKIE_NAME = "kodemy_uri";
-    public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "kodemy_sess";
+    private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        return Optional.ofNullable(request.getSession())
-                .map(session -> Option.of(session.getAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME)).getOrNull())
+        return Option.of(request.getSession())
+                .map(session -> Option.of(session.getAttribute(authProperties.getKey().getCurrentSession())).getOrNull())
                 .map(Object::toString)
-                .map(cookie -> Base64.getUrlDecoder().decode(cookie))
-                .map(authReq -> (OAuth2AuthorizationRequest) SerializationUtils.deserialize(authReq))
-                .orElse(null);
+                .map(session -> (OAuth2AuthorizationRequest) Base64Util.decode(session))
+                .getOrNull();
     }
 
     @Override
@@ -38,15 +37,14 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
         }
 
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
-        Option.of(request.getSession()).peek(sessionObj -> {
-            String authRequestEncoded = Base64.getUrlEncoder().encodeToString(
-                    SerializationUtils.serialize(authorizationRequest)
-            );
-            sessionObj.setAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME, authRequestEncoded);
-        });
+        Option.of(request.getSession()).peek(sessionObj -> sessionObj.setAttribute(
+                authProperties.getKey().getCurrentSession(),
+                Base64Util.encode(authorizationRequest)
+        ));
 
-        if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
-            Cookie.addCookie(response, REDIRECT_URI_COOKIE_NAME, redirectUriAfterLogin, 5 * 60);
+        if (Strings.isNotEmpty(redirectUriAfterLogin)) {
+            Cookie.addCookie(response, authProperties.getKey().getRedirect(),
+                    Base64Util.encode(redirectUriAfterLogin), 5 * 60);
         }
     }
 
@@ -59,12 +57,9 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         OAuth2AuthorizationRequest removedRequest = loadAuthorizationRequest(request);
-        removeAuthorizationSession(request, response);
+        Option.of(request.getSession()).peek(session ->
+                session.removeAttribute(authProperties.getKey().getCurrentSession())
+        );
         return removedRequest;
-    }
-
-    public void removeAuthorizationSession(HttpServletRequest request, HttpServletResponse response) {
-        Option.of(request.getSession()).peek(session -> session.removeAttribute(AUTHORIZATION_REQUEST_COOKIE_NAME));
-        Cookie.deleteCookie(request, response, REDIRECT_URI_COOKIE_NAME);
     }
 }

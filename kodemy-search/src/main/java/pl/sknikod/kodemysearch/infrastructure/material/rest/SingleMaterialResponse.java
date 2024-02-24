@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.infrastructure.search.rest;
+package pl.sknikod.kodemysearch.infrastructure.material.rest;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

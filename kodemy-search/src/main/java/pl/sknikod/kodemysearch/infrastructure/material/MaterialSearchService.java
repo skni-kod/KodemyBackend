@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.infrastructure.search;
+package pl.sknikod.kodemysearch.infrastructure.material;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,10 +7,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.Mapper;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.update.UpdateRequest;
 import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.search.SearchHit;
+import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,18 +21,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemysearch.configuration.OpenSearchConfig;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.infrastructure.search.rest.SearchFields;
-import pl.sknikod.kodemysearch.infrastructure.search.rest.SingleMaterialResponse;
+import pl.sknikod.kodemysearch.infrastructure.material.rest.MaterialSearchFields;
+import pl.sknikod.kodemysearch.infrastructure.material.rest.SingleMaterialResponse;
+import pl.sknikod.kodemysearch.infrastructure.search.QueueConsumer;
+import pl.sknikod.kodemysearch.infrastructure.search.SearchBuilder;
+import pl.sknikod.kodemysearch.infrastructure.search.SearchCriteria;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SearchService {
+public class MaterialSearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final MaterialSearchMapper materialSearchMapper;
     private final ObjectMapper objectMapper;
@@ -72,7 +79,7 @@ public class SearchService {
                 .source(sourceBuilder);
     }
 
-    public Page<SingleMaterialResponse> searchMaterials(SearchFields searchFields, Pageable page) {
+    public Page<SingleMaterialResponse> searchMaterials(MaterialSearchFields searchFields, Pageable page) {
         SearchSourceBuilder searchSourceBuilder = new SearchBuilder(map(searchFields, page))
                 .toSearchSourceBuilder();
         return Try.of(() -> restHighLevelClient.search(
@@ -92,7 +99,7 @@ public class SearchService {
                 .getOrElseThrow(ex -> new ServerProcessingException(ex.getMessage()));
     }
 
-    private SearchCriteria map(@NonNull SearchFields searchFields, @NonNull Pageable page) {
+    private SearchCriteria map(@NonNull MaterialSearchFields searchFields, @NonNull Pageable page) {
         List<SearchCriteria.PhraseField> phraseFields = new ArrayList<>();
 
         if (Objects.nonNull(searchFields.getId()))
@@ -139,5 +146,27 @@ public class SearchService {
 
         var contentField = new SearchCriteria.ContentField(searchFields.getPhrase());
         return new SearchCriteria(contentField, phraseFields, rangeFields, page);
+    }
+
+    @Mapper(componentModel = "spring")
+    public interface MaterialSearchMapper {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        SingleMaterialResponse map(QueueConsumer.MaterialEvent event);
+
+        default List<SingleMaterialResponse> map(SearchHits hits) {
+            return StreamSupport.stream(hits.spliterator(), false)
+                    .map(SearchHit::getSourceAsString)
+                    .map(this::map)
+                    .toList();
+        }
+
+        private SingleMaterialResponse map(String source) {
+            return Try.of(() -> objectMapper.readValue(source, SingleMaterialResponse.class))
+                    .onFailure(ex -> {
+                        throw new ServerProcessingException(ex.getMessage());
+                    })
+                    .get();
+        }
     }
 }
