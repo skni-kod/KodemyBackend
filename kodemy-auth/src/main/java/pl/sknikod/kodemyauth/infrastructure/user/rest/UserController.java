@@ -51,5 +51,4 @@ public class UserController implements UserControllerDefinition {
                 userService.searchUsers(pageRequest, searchFieldsParam)
         );
     }
-
 }

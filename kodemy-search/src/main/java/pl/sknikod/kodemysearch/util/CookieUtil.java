@@ -7,17 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Cookie {
+public class CookieUtil {
+    public final static int MAX_AGE = 15_778_463;
 
-    public static void addCookie(HttpServletResponse response, String name, String value){
-        addCookie(response, name, value, 15778463);
-    }
-
-    public static void addCookie(HttpServletResponse response, String name, String value, int expireTime) {
+    public static void addCookie(HttpServletResponse response, String name, String value, int expireTime, boolean httpOnly) {
         var cookie = new javax.servlet.http.Cookie(name, value);
         cookie.setPath("/");
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(httpOnly);
         cookie.setMaxAge(expireTime);
         response.addCookie(cookie);
     }

@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.util.Base64Util;
-import pl.sknikod.kodemyauth.util.Cookie;
+import pl.sknikod.kodemyauth.util.CookieUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,8 +43,8 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
         ));
 
         if (Strings.isNotEmpty(redirectUriAfterLogin)) {
-            Cookie.addCookie(response, authProperties.getKey().getRedirect(),
-                    Base64Util.encode(redirectUriAfterLogin), 5 * 60);
+            CookieUtil.addCookie(response, authProperties.getKey().getRedirect(),
+                    Base64Util.encode(redirectUriAfterLogin), 5 * 60, true);
         }
     }
 

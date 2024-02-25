@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.UserPrincipal;
 import pl.sknikod.kodemyauth.util.Base64Util;
-import pl.sknikod.kodemyauth.util.Cookie;
+import pl.sknikod.kodemyauth.util.CookieUtil;
 import pl.sknikod.kodemyauth.util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         if (response.isCommitted()) return;
 
         String redirectUri = Option.of(request)
-                .flatMap(req -> Option.of(Cookie.getCookie(req, authProperties.getKey().getRedirect()))
+                .flatMap(req -> Option.of(CookieUtil.getCookie(req, authProperties.getKey().getRedirect()))
                         .map(v -> (String) Base64Util.decode(v))
                         .orElse(Option.of(req.getHeader(HttpHeaders.REFERER)))
                 )
@@ -41,7 +41,13 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
                 .getOrNull();
 
         clearAuthenticationAttributes(request, response);
-        Cookie.addCookie(response, authProperties.getKey().getJwt(), genBearer());
+        CookieUtil.addCookie(
+                response,
+                authProperties.getKey().getJwt(),
+                genBearer(),
+                CookieUtil.MAX_AGE,
+                false
+        );
         getRedirectStrategy().sendRedirect(request, response, redirectUri == null ? "" : redirectUri);
     }
 
@@ -63,6 +69,6 @@ public class AuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         super.clearAuthenticationAttributes(request);
         Option.of(request.getSession()).peek(session ->
                 session.removeAttribute(authProperties.getKey().getCurrentSession()));
-        Cookie.deleteCookie(request, response, authProperties.getKey().getRedirect());
+        CookieUtil.deleteCookie(request, response, authProperties.getKey().getRedirect());
     }
 }

@@ -50,5 +50,4 @@ public interface UserControllerDefinition {
             @Parameter(description = "{\"username\": \"username\", \"email\": \"email@example.com\", \"role\": \"ROLE_USER\"}")
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
-
 }
