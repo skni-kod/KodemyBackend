@@ -1,6 +1,9 @@
 package pl.sknikod.kodemyauth.infrastructure.user.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.user.UserService;
 
-import java.util.List;
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -35,8 +38,18 @@ public class UserController implements UserControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<List<UserInfoResponse>> searchForUser(String phrase) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.searchForUser(phrase));
+    public ResponseEntity<Page<UserInfoResponse>> searchUsers(
+            int size,
+            int page,
+            String sort,
+            Sort.Direction sortDirection,
+            SearchFields searchFields
+    ) {
+        var pageRequest = PageRequest.of(page, size, sortDirection, sort);
+        var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        return ResponseEntity.status(HttpStatus.OK).body(
+                userService.searchUsers(pageRequest, searchFieldsParam)
+        );
     }
 
 }

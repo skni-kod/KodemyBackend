@@ -4,40 +4,55 @@ spring:
   application.name: kodemy-gateway
   banner.location: classpath:banner.txt
   cloud.gateway.routes:
-    - id: kodemy-auth
-      uri: ${kodemy.service.auth}
+    -
+      id: kodemy-auth-any-any
+      uri: ${app.service.auth}
       predicates:
         - Path=/api/users/**,/api/roles,/api/oauth2/**
       filters:
-        - AuthFilter
-    - id: kodemy-backend
-      uri: ${kodemy.service.backend}
+        - GatewayAuthFilter
+    -
+      id: kodemy-backend-admin-any
+      uri: ${app.service.backend}
       predicates:
-        - Path=/api/materials/{materialId}/**,/api/technologies,/api/types,/api/sections,/api/categories/{categoryId}
+        - Path=/api/admin/**
       filters:
-        - AuthFilter
-    - id: kodemy-backend-materials
-      uri: ${kodemy.service.backend}
+        - GatewayAuthFilter
+    -
+      id: kodemy-backend-materials-id-get
+      uri: ${app.service.backend}
+      predicates:
+        - Path=/api/materials/{materialId}/**
+        - Method=GET
+      filters:
+        - GatewayAuthFilter
+    -
+      id: kodemy-backend-materials-post
+      uri: ${app.service.backend}
       predicates:
         - Path=/api/materials
         - Method=POST
       filters:
-        - AuthFilter
-    - id: kodemy-search
-      uri: ${kodemy.service.search}
+        - GatewayAuthFilter
+    -
+      id: kodemy-backend-any-any
+      uri: ${app.service.backend}
+      predicates:
+        - Path=/api/technologies,/api/types,/api/sections,/api/categories/{categoryId}
+      filters:
+        - GatewayAuthFilter
+    -
+      id: kodemy-search-any-any
+      uri: ${app.service.search}
       predicates:
         - Path=/api/materials
         - Method=GET
       filters:
-        - AuthFilter
+        - GatewayAuthFilter
 
-kodemy:
-  security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+app:
   service:
     host-uri: http://localhost
-    auth: ${kodemy.service.host-uri}:8081
-    backend: ${kodemy.service.host-uri}:8082
-    search: ${kodemy.service.host-uri}:8083
-    auth-get-token: ${kodemy.service.auth}/api/oauth2/token
+    auth: ${app.service.host-uri}:8081
+    backend: ${app.service.host-uri}:8082
+    search: ${app.service.host-uri}:8083

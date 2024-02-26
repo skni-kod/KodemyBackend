@@ -91,7 +91,7 @@ public class RabbitConfig {
 
     @Data
     @Component
-    @ConfigurationProperties(prefix = "kodemy.rabbit")
+    @ConfigurationProperties(prefix = "app.rabbit")
     public static class QueueProperties {
         private Map<String, Queue> queues;
 

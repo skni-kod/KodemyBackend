@@ -50,9 +50,9 @@ public class Material extends Auditable<String> {
     private Set<Technology> technologies = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
-    @org.hibernate.annotations.Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private UserJsonB author;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "author_id")
+    private Author author;
 
     @Override
     public boolean equals(Object o) {

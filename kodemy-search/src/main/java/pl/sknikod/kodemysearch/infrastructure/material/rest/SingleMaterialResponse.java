@@ -1,5 +1,6 @@
-package pl.sknikod.kodemysearch.infrastructure.search.rest;
+package pl.sknikod.kodemysearch.infrastructure.material.rest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,17 +14,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MaterialSingleResponse {
+public class SingleMaterialResponse {
     private Long id;
     private String title;
     private String description;
-    private String link;
     private QueueConsumer.MaterialEvent.MaterialStatus status;
     private boolean isActive;
     private double avgGrade;
-    private String author;
+    private QueueConsumer.MaterialEvent.AuthorDetails author;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date createdDate;
     private Long sectionId;
     private Long categoryId;
-    private List<QueueConsumer.MaterialEvent.Technology> technologies;
+    private List<QueueConsumer.MaterialEvent.TechnologyDetails> technologies;
 }

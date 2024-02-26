@@ -21,7 +21,10 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
-kodemy:
+jwt:
+  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+
+app:
   opensearch:
     host: opensearch
     index:
@@ -36,5 +39,6 @@ kodemy:
         name: material.updated
         exchange: direct
   security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+    auth:
+      key:
+        jwt: jwtsession

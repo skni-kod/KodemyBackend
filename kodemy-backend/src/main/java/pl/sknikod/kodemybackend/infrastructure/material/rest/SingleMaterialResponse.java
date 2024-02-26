@@ -26,14 +26,17 @@ public class SingleMaterialResponse {
     final List<TechnologyDetails> technologies;
     @Setter
     Double averageGrade;
-    final UserResponse creator;
+    @Setter
+    List<Long> gradeStats;
+    final AuthorDetails author;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     final Date createdDate;
 
+
     @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class UserResponse extends UserDetails {
-        public UserResponse(Long id, String username) {
+    public static class AuthorDetails extends UserDetails {
+        public AuthorDetails(Long id, String username) {
             super(id, username);
         }
     }

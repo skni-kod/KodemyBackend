@@ -23,9 +23,9 @@ public class Grade extends Auditable<String> {
     private Long id;
     @Column(name = "grade", precision = 3, scale = 2)
     private Double value;
-    @org.hibernate.annotations.Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private UserJsonB author;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "author_id")
+    private Author author;
     @ManyToOne
     @JoinColumn(name = "material_id", nullable = false)
     private Material material;

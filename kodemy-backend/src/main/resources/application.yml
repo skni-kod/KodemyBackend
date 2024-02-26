@@ -38,7 +38,11 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
-kodemy:
+jwt:
+  expiration-mins: 15
+  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+
+app:
   rabbit:
     queues:
       m-created:
@@ -51,5 +55,6 @@ kodemy:
         name: notification
         exchange: fanout
   security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+    auth:
+      key:
+        jwt: jwtsession

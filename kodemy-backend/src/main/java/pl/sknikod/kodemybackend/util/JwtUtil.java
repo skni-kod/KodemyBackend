@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,9 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private static final int EXPIRATION_TOKEN_TIME = 1000 * 60 * 15;
-    @Value("${kodemy.security.jwt.secret-key}")
+    @Value("${jwt.expiration-mins}")
+    private int expirationMins;
+    @Value("${jwt.secret-key}")
     private String secretKey;
 
     public Output generateToken(Input input) {
@@ -40,7 +42,7 @@ public class JwtUtil {
 
     private Output createToken(String subject, Map<String, ?> claims) {
         final Date createdDate = new Date(System.currentTimeMillis());
-        final Date expirationDate = new Date(createdDate.getTime() + EXPIRATION_TOKEN_TIME);
+        final Date expirationDate = new Date(createdDate.getTime() + 1000L * 60 * expirationMins);
         String bearer = Jwts.builder()
                 .setSubject(subject)
                 .setClaims(claims)
@@ -68,10 +70,14 @@ public class JwtUtil {
     }
 
     public boolean isTokenValid(String token) {
-        var nowDate = new Date(System.currentTimeMillis());
+        return isTokenValid(token, null);
+    }
+
+    public boolean isTokenValid(String token, @Nullable String username) {
         try {
-            Jws<Claims> claimsJws = getClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(nowDate);
+            var nowDate = new Date(System.currentTimeMillis());
+            var isExpired = extractExpiration(token).before(nowDate);
+            return (username != null) ? extractUsername(token).equals(username) && !isExpired : !isExpired;
         } catch (Exception e) {
             return false;
         }

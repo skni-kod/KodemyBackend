@@ -8,8 +8,5 @@ spring:
 logging.level:
   org.springframework.security: DEBUG
 
-kodemy:
-  security:
-    cors:
-      allowedUris:
-        - http://localhost:3000
+jwt:
+  expiration-mins: 60

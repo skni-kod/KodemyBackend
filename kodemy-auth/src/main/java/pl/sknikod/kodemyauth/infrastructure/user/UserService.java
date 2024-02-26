@@ -2,6 +2,9 @@ package pl.sknikod.kodemyauth.infrastructure.user;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,11 +16,11 @@ import pl.sknikod.kodemyauth.infrastructure.common.entity.UserPrincipal;
 import pl.sknikod.kodemyauth.infrastructure.common.mapper.UserMapper;
 import pl.sknikod.kodemyauth.infrastructure.common.repository.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.common.repository.UserRepository;
+import pl.sknikod.kodemyauth.infrastructure.user.rest.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.user.rest.UserInfoResponse;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,11 +92,16 @@ public class UserService {
                 });
     }
 
-    public List<UserInfoResponse> searchForUser(String phrase) {
-        return userRepository
-                .findByUsernameContainingOrEmailContainingWithFetchRole(phrase, phrase)
-                .parallelStream()
-                .map(userMapper::map)
-                .toList();
+    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {
+        Role role = Option.ofOptional(roleRepository.findByName(searchFields.getRole()))
+                .getOrNull();
+        Page<User> users = userRepository.findByUsernameOrEmailOrRole(
+                searchFields.getUsername(), searchFields.getEmail(), role, pageRequest
+        );
+        return new PageImpl<>(
+                users.getContent().parallelStream().map(userMapper::map).toList(),
+                pageRequest,
+                users.getTotalElements()
+        );
     }
 }

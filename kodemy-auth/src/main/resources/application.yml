@@ -39,19 +39,26 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
-kodemy:
+jwt:
+  expiration-mins: 15
+  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+
+app:
   opensearch:
     host: opensearch
     index:
       name: materials
       alias: materials-alias
   security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
     auth:
-      loginUri: /api/oauth2/authorize
-      callbackUri: /api/oauth2/callback/**
-      logoutUri: /api/oauth2/logout
+      uri:
+        login: /api/oauth2/authorize
+        callback: /api/oauth2/callback/**
+        logout: /api/oauth2/logout
+      key:
+        current-session: ksession
+        redirect: redirect
+        jwt: jwtsession
     role:
       defaultRole: ROLE_USER
       privileges:

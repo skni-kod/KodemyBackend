@@ -1,10 +1,13 @@
 package pl.sknikod.kodemysearch.infrastructure.search;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemysearch.infrastructure.material.MaterialSearchService;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @DependsOn("rabbitConfig")
 public class QueueConsumer {
-    private final SearchService searchService;
+    private final MaterialSearchService searchService;
 
     @RabbitListener(queues = "material.created")
     private void index(@Payload MaterialEvent material) {
@@ -29,19 +32,20 @@ public class QueueConsumer {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MaterialEvent {
         private Long id;
         private String title;
         private String description;
-        private String link;
         private MaterialStatus status;
         private boolean isActive;
         private double avgGrade;
-        private String author;
+        private AuthorDetails author;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
-        private List<Technology> technologies;
+        private List<TechnologyDetails> technologies;
 
         public enum MaterialStatus {
             APPROVED, //CONFIRMED
@@ -56,9 +60,19 @@ public class QueueConsumer {
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        public static class Technology {
+        public static class TechnologyDetails {
             private Long id;
             private String name;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
+        public static class AuthorDetails {
+            private Long id;
+            private String username;
         }
     }
 }

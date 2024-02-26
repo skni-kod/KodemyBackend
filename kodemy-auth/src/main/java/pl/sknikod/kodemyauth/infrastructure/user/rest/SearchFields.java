@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.infrastructure.search.rest;
+package pl.sknikod.kodemyauth.infrastructure.user.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
@@ -8,24 +8,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemysearch.exception.structure.ValidationException;
-
-import java.util.Date;
-import java.util.List;
+import pl.sknikod.kodemyauth.exception.structure.ValidationException;
+import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 
 @Data
 @NoArgsConstructor
 public class SearchFields {
-    String phrase;
-    Long id;
-    String title;
-    String status;
-    String createdBy;
-    Date createdDateFrom;
-    Date createdDateTo;
-    Long sectionId;
-    Long categoryId;
-    List<Long> technologyIds;
+    String username;
+    String email;
+    Role.RoleName role;
 
     @Component
     @RequiredArgsConstructor
@@ -39,3 +30,4 @@ public class SearchFields {
         }
     }
 }
+
