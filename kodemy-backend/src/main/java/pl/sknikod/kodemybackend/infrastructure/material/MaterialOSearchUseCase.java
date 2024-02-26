@@ -69,7 +69,7 @@ public class MaterialOSearchUseCase {
                                     "",
                                     rabbitMapper.map(
                                             material,
-                                            gradeRepository.findAverageGradeByMaterialId(material.getId())
+                                            gradeRepository.findAvgGradeByMaterialId(material.getId())
                                     )
                             );
                             reindexObjectsCounter.decrementAndGet();
@@ -88,5 +88,15 @@ public class MaterialOSearchUseCase {
     @Value
     public static class ReindexResult {
         long value;
+    }
+
+    public void index(Material material) {
+        rabbitTemplate.convertAndSend(
+                queueProperties.get("m-created").getName(),
+                "",
+                rabbitMapper.map(
+                        material, gradeRepository.findAvgGradeByMaterialId(material.getId())
+                )
+        );
     }
 }

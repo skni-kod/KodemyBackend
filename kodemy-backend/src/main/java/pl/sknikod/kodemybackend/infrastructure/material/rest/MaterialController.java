@@ -21,7 +21,7 @@ public class MaterialController implements MaterialControllerDefinition {
     private final MaterialCreateUseCase materialCreateUseCase;
     private final MaterialUpdateUseCase materialUpdateUseCase;
     private final MaterialGetUseCase materialGetUseCase;
-    private final MaterialUserGetUseCase materialManageGetUseCase;
+    private final MaterialAdminGetUseCase materialManageGetUseCase;
     private final MaterialOSearchUseCase materialOSearchUseCase;
 
     @Override
@@ -63,18 +63,17 @@ public class MaterialController implements MaterialControllerDefinition {
 
     @Override
     @PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
-    public ResponseEntity<Page<SingleMaterialResponse>> manage(
+    public ResponseEntity<Page<MaterialPageable>> manage(
             int size,
             int page,
             String sort,
             Sort.Direction sortDirection,
             SearchFields searchFields
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                materialManageGetUseCase.search(
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialManageGetUseCase.manage(
                         Objects.isNull(searchFields) ? new SearchFields() : searchFields,
                         PageRequest.of(page, size, sortDirection, sort)
-                )
-        );
+                ));
     }
 }

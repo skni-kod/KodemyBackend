@@ -27,10 +27,12 @@ public class MaterialGetUseCase {
         return Option.of(materialRepository.findMaterialById(materialId))
                 .map(material -> materialMapper.map(
                         material,
-                        gradeRepository.findAverageGradeByMaterialId(materialId),
+                        gradeRepository.findAvgGradeByMaterialId(materialId),
                         fetchGradeStats(materialId))
                 )
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
+                .getOrElseThrow(() -> new ServerProcessingException(
+                        ServerProcessingException.Format.PROCESS_FAILED, Material.class
+                ));
     }
 
     private List<Long> fetchGradeStats(Long materialId) {

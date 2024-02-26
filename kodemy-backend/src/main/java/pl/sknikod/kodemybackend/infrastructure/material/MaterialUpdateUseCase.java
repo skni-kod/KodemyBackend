@@ -24,6 +24,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.SingleMaterialRespo
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import java.util.List;
 import java.util.Set;
 
 import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.MaterialStatus.APPROVED;
@@ -51,7 +52,7 @@ public class MaterialUpdateUseCase {
                         body,
                         categoryRepository.findCategoryById(body.getCategoryId()),
                         typeRepository.findTypeById(body.getTypeId()),
-                        technologyRepository.findTechnologySetByIds(body.getTechnologiesIds())
+                        technologyRepository.findTechnologiesByIdIn(body.getTechnologiesIds())
                 ))
                 .map(this::updateStatus)
                 .map(materialRepository::save)
@@ -82,7 +83,7 @@ public class MaterialUpdateUseCase {
                 "",
                 rabbitMapper.map(
                         material,
-                        gradeRepository.findAverageGradeByMaterialId(material.getId())
+                        gradeRepository.findAvgGradeByMaterialId(material.getId())
                 )
         );
     }
@@ -143,7 +144,7 @@ public class MaterialUpdateUseCase {
         @Positive(message = "Type ID must be > 0")
         private Long typeId;
 
-        private Set<@NotNull @Positive(message = "Technology ID must be > 0") Long> technologiesIds;
+        private List<@NotNull @Positive(message = "Technology ID must be > 0") Long> technologiesIds;
     }
 
     public SingleMaterialResponse changeStatus(Long materialId, Material.MaterialStatus status) {

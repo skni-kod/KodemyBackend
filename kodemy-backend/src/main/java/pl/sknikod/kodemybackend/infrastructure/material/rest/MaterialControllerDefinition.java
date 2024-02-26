@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialCreateUseCase;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialOSearchUseCase;
+import pl.sknikod.kodemybackend.infrastructure.material.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.material.MaterialUpdateUseCase;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
@@ -72,12 +73,22 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.UnauthorizedCode401
     @SwaggerResponse.ForbiddenCode403
     @GetMapping("/manage")
-    ResponseEntity<Page<SingleMaterialResponse>> manage(
+    ResponseEntity<Page<MaterialPageable>> manage(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @Parameter(description = "{\"phrase\":\"phrase\",\"id\":0,\"title\":\"title\",\"status\":\"PENDING\",\"createdBy\":\"createdBy\",\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\",\"sectionId\":0,\"categoryId\":0,\"technologyIds\":[0]}")
+            @Parameter(description = "{" +
+                    "\"phrase\":\"phrase\"," +
+                    "\"id\":0," +
+                    "\"status\":\"PENDING\"," +
+                    "\"createdBy\":\"createdBy\"," +
+                    "\"createdDateFrom\":\"2023-01-01T00:00:00\"," +
+                    "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
+                    "\"sectionId\":0," +
+                    "\"categoryId\":0," +
+                    "\"technologyIds\":[0]}"
+            )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
 }

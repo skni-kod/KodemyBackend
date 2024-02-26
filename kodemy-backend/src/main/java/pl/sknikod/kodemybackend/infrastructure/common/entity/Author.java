@@ -21,8 +21,4 @@ public class Author {
     private Long id;
     @Column(nullable = false, unique = true)
     private String username;
-
-    public static Author map(SecurityConfig.UserPrincipal userDetails) {
-        return new Author(userDetails.getId(), userDetails.getUsername());
-    }
 }

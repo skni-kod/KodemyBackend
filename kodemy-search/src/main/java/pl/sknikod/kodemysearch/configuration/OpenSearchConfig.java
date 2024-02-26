@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpHost;
 import org.opensearch.action.admin.indices.alias.Alias;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class OpenSearchConfig {
     public static final RequestOptions REQUEST_OPTIONS = RequestOptions.DEFAULT;
 
@@ -65,7 +67,10 @@ public class OpenSearchConfig {
         }
 
         public void createIndexIfNotExists(OpenSearchConfig.IndexProperties.IndexDetails index) {
-            indexExists(index.getName()).filter(isExists -> !isExists).map(isExists -> createIndex(index));
+            indexExists(index.getName())
+                    .filter(isExists -> !isExists)
+                    .peek(unused -> log.warn(String.format("Index '%s' not exists, creating", index.getName())))
+                    .map(unused -> createIndex(index));
         }
 
         private Try<Boolean> indexExists(String indexName) {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Technology;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,10 +22,5 @@ public interface TechnologyRepository extends JpaRepository<Technology, Long> {
                 );
     }
 
-    default Set<Technology> findTechnologySetByIds(Set<Long> technologiesIds) {
-        return technologiesIds
-                .stream()
-                .map(this::findTechnologyById)
-                .collect(Collectors.toSet());
-    }
+    Set<Technology> findTechnologiesByIdIn(List<Long> technologyIds);
 }

@@ -18,7 +18,6 @@ import java.util.List;
 public class SearchFields {
     String phrase;
     Long id;
-    String title;
     String status;
     String createdBy;
     Date createdDateFrom;
