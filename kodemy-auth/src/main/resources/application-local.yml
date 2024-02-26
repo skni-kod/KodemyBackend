@@ -1,0 +1,13 @@
+spring:
+  datasource.url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
+
+jwt:
+  expiration-mins: 60
+
+app:
+  opensearch:
+    host: http://localhost:9200
+  security:
+    cors:
+      allowedUris:
+        - http://localhost:3000

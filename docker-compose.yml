@@ -1,19 +1,6 @@
 version: '3.7'
 
 services:
-  api:
-    build: .
-    container_name: kodemy_api_dev
-    profiles:
-      - test
-    ports:
-      - "8181:8080"
-    networks:
-      - lan
-    depends_on:
-      - postgres
-      - rabbitmq
-
   postgres:
     container_name: kodemy_postgres_dev
     image: postgres:14.1-alpine
@@ -25,7 +12,6 @@ services:
       - "5435:5432"
     volumes:
       - postgres_dev:/var/lib/postgresql/data
-      - ./sql:/sql
     networks:
       - lan
 
@@ -47,12 +33,23 @@ services:
     image: opensearchproject/opensearch:2.8.0
     container_name: kodemy_opensearch_dev
     environment:
-      - discovery.type=single-node
       - cluster.name=kodemy-cluster
-      - "DISABLE_SECURITY_PLUGIN=true"
+      - node.name=kodemy-node
+      - discovery.type=single-node
+      - discovery.seed_hosts=kodemy-node
+      - bootstrap.memory_lock=true
+      - DISABLE_SECURITY_PLUGIN=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
     ports:
       - "9200:9200"
-      - "9300:9300"
+      - "9600:9600" # required for Performance Analyzer
     volumes:
       - opensearch_dev:/usr/share/opensearch/data
     networks:
@@ -66,6 +63,8 @@ services:
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
     ports:
       - "5601:5601"
+    expose:
+      - "5601"
     networks:
       - lan
 
@@ -76,3 +75,8 @@ volumes:
   postgres_dev:
   rabbitmq_dev:
   opensearch_dev:
+    driver: local
+    driver_opts:
+      o: size=10G
+      device: tmpfs
+      type: tmpfs

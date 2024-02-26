@@ -1,0 +1,18 @@
+spring:
+  datasource.url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-backend
+  jpa.show-sql: true
+  liquibase.contexts: dev,local
+  rabbitmq:
+    host: localhost
+
+logging.level:
+  org.springframework.security: DEBUG
+
+jwt:
+  expiration-mins: 60
+
+app:
+  security:
+    cors:
+      allowedUris:
+        - http://localhost:3000

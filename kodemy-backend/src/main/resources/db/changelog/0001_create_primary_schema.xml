@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="0001-1" author="KartVen">
+        <createTable tableName="authors">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_authors"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_authors_username"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="sections">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sections"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_sections_name"/>
+            </column>
+            <column name="prefix" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_sections_name"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
+            </column>
+            <column name="signature" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="section_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_categories_section" references="sections(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="types">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_types_name"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="technologies">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
+            </column>
+            <column name="name" type="VARCHAR(32)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_technologies_name"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="materials">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_materials"/>
+            </column>
+            <column name="title" type="VARCHAR(32)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="link" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_materials_category" references="categories(id)"/>
+            </column>
+            <column name="type_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_materials_type" references="types(id)"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_author" references="authors(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="technologies_materials">
+            <column name="material_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
+                             foreignKeyName="fk_technologies_materials_material" references="materials(id)"/>
+            </column>
+            <column name="technology_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
+                             foreignKeyName="fk_technologies_materials_material_technology"
+                             references="technologies(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="grades">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
+            </column>
+            <column name="grade" type="DOUBLE"/>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_author" references="authors(id)"/>
+            </column>
+            <column name="material_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_grades_material" references="materials(id)"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+</databaseChangeLog>

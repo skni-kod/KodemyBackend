@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+    <include file="0001_create_primary_schema.xml" relativeToChangelogFile="true"/>
+    <include file="0002_add_auditing_columns.xml" relativeToChangelogFile="true"/>
+    <include file="0003_insert_primary_sections_and_categories.xml" relativeToChangelogFile="true"/>
+    <include file="0004_insert_primary_types.xml" relativeToChangelogFile="true"/>
+    <include file="0005_insert_primary_technologies.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

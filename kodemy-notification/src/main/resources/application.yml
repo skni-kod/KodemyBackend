@@ -1,0 +1,39 @@
+server.port: 8084
+
+spring:
+  application.name: kodemy-notification
+  banner.location: classpath:banner.txt
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-notification
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    hibernate.ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate.types.print.banner: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-root.xml
+    contexts: prod
+    enabled: true
+  rabbitmq:
+    host: rabbitmq
+    username: rabbitmq
+    password: rabbitmq
+    port: 5672
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /api/actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: CAN_USE_ACTUATOR
+      show-components: always

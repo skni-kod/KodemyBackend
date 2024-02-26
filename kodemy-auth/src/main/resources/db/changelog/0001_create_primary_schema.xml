@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="0001-1" author="KartVen">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_roles_name" tableName="roles"/>
+
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="is_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_credentials_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_users_role" references="roles(id)"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
+
+        <createTable tableName="providers">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_providers"/>
+            </column>
+            <column name="principal_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_type" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_providers_user" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
+        <sql>
+            insert into ROLES (id, name)
+            values (1, 'ROLE_USER'),
+                   (2, 'ROLE_MODERATOR'),
+                   (3, 'ROLE_ADMIN'),
+                   (4, 'ROLE_SUPERADMIN');
+        </sql>
+    </changeSet>
+
+    <changeSet id="0001-3" author="MarcinBator">
+        <createIndex tableName="users" indexName="userIndex">
+            <column name="username"/>
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
