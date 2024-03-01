@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface GradeMapper {
-    default Grade map(MaterialAddGradeRequest request, Material material, SecurityConfig.JwtUserDetails author) {
+    default Grade map(MaterialAddGradeRequest request, Material material, SecurityConfig.UserPrincipal author) {
         var grade = new Grade();
         grade.setMaterial(material);
         grade.setAuthor(Author.map(author));

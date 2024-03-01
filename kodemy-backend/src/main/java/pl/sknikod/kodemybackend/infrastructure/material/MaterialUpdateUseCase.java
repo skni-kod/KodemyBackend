@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
@@ -34,7 +35,6 @@ public class MaterialUpdateUseCase {
     private final MaterialRabbitMapper rabbitMapper;
     private final GradeRepository gradeRepository;
     private final EntityDao entityDao;
-    private final AuthService authService;
 
     public MaterialUpdateResponse execute(Long materialId, MaterialUpdateRequest body) {
         Material existingMaterial = entityDao.findMaterialById(materialId);
@@ -55,10 +55,12 @@ public class MaterialUpdateUseCase {
     }
 
     private Material updateStatus(Material material) {
-        material.setStatus(
-                authService.getPrincipal().getAuthorities()
-                        .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
-                        ? APPROVED : PENDING
+        var userPrincipal = (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        material.setStatus(userPrincipal.getAuthorities()
+                .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
+                ? APPROVED : PENDING
         );
         return material;
     }

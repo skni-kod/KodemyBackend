@@ -4,14 +4,16 @@ import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.auth.AuthService;
 import pl.sknikod.kodemybackend.infrastructure.common.EntityDao;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
@@ -40,7 +42,6 @@ public class MaterialService {
     private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
     private final EntityDao entityDao;
-    private final AuthService authService;
     private final RabbitTemplate rabbitTemplate;
     private final RabbitConfig.QueueProperties queueProperties;
     private final MaterialRabbitMapper rabbitMapper;
@@ -63,7 +64,8 @@ public class MaterialService {
                 .map(request -> gradeMapper.map(
                         request,
                         entityDao.findMaterialById(materialId),
-                        authService.getPrincipal()
+                        (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
+                                .getAuthentication().getPrincipal()
                 ))
                 .map(gradeRepository::save)
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));

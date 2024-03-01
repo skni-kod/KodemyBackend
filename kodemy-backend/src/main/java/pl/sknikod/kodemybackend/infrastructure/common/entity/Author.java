@@ -22,7 +22,7 @@ public class Author {
     @Column(nullable = false, unique = true)
     private String username;
 
-    public static Author map(SecurityConfig.JwtUserDetails userDetails) {
+    public static Author map(SecurityConfig.UserPrincipal userDetails) {
         return new Author(userDetails.getId(), userDetails.getUsername());
     }
 }

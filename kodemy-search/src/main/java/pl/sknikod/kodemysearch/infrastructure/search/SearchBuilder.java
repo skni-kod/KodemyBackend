@@ -75,7 +75,7 @@ public class SearchBuilder {
         });
     }
 
-    SearchSourceBuilder toSearchSourceBuilder() {
+    public SearchSourceBuilder toSearchSourceBuilder() {
         return sourceBuilder.query(boolQueryBuilder).trackTotalHits(true);
     }
 }

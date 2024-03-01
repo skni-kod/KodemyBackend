@@ -27,7 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class OpenSearchConfig {
     public static final RequestOptions REQUEST_OPTIONS = RequestOptions.DEFAULT;
-    @Value("${kodemy.opensearch.host}")
+
+    @Value("${app.opensearch.host}")
     private String host;
 
     @Bean
@@ -41,7 +42,7 @@ public class OpenSearchConfig {
 
     @Data
     @Component
-    @ConfigurationProperties("kodemy.opensearch")
+    @ConfigurationProperties("app.opensearch")
     @DependsOn("openSearchConfig")
     public static class IndexProperties {
         private IndexDetails index;
