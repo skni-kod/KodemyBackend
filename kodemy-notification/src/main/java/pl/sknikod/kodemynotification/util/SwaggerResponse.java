@@ -3,7 +3,7 @@ package pl.sknikod.kodemynotification.util;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import pl.sknikod.kodemynotification.exception.ExceptionRestGenericMessage;
+import pl.sknikod.kodemybackend.exception.ExceptionRestGenericMessage;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

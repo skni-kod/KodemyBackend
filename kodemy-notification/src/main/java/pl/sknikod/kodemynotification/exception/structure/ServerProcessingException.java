@@ -2,8 +2,8 @@ package pl.sknikod.kodemynotification.exception.structure;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import pl.sknikod.kodemynotification.exception.ExceptionRestGenericMessage;
-import pl.sknikod.kodemynotification.exception.ExceptionStructure;
+import pl.sknikod.kodemybackend.exception.ExceptionRestGenericMessage;
+import pl.sknikod.kodemybackend.exception.ExceptionStructure;
 
 public class ServerProcessingException extends RuntimeException implements ExceptionStructure {
 

@@ -2,13 +2,18 @@ package pl.sknikod.kodemynotification.infrastructure.common.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Data
 @Table(name = "notifications")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Notification {

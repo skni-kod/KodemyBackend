@@ -3,15 +3,18 @@ package pl.sknikod.kodemynotification.util.filter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.sknikod.kodemynotification.configuration.SecurityConfig;
-import pl.sknikod.kodemynotification.util.JwtUtil;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
+import pl.sknikod.kodemybackend.util.Cookie;
+import pl.sknikod.kodemybackend.util.JwtUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
+    @Value("${app.security.auth.key.jwt}")
+    private String jwtKey;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -33,37 +39,36 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            String jwt = extractToken(request);
-            if (jwt != null && jwtUtil.isTokenValid(jwt)) {
-                var jwtUserDetails = mapToUserDetails(jwtUtil.deserializeToken(jwt));
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        jwtUserDetails, null, jwtUserDetails.getAuthorities()
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
+            String token = extractToken(request);
+            if (Strings.isEmpty(token) || (Strings.isNotEmpty(token) && !jwtUtil.isTokenValid(token)))
+                throw new RuntimeException("JWT empty or invalid");
+            var userPrincipal = map(jwtUtil.deserializeToken(token));
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userPrincipal, null, userPrincipal.getAuthorities()
+            );
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (RuntimeException e) {
             log.error("Cannot set user authentication: {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
 
     private String extractToken(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.split(" ")[1];
-        }
-        return null;
+        String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (Strings.isNotEmpty(headerAuth) && headerAuth.startsWith("Bearer "))
+            return headerAuth.substring(7);
+        return Cookie.getCookie(request, jwtKey);
     }
 
-    private SecurityConfig.JwtUserDetails mapToUserDetails(JwtUtil.Output.Deserialize deserialize) {
-        var deserializedAuthorities = deserialize.getAuthorities()
+    private SecurityConfig.UserPrincipal map(JwtUtil.Output.Deserialize deserializedObject) {
+        var deserializedAuthorities = deserializedObject.getAuthorities()
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
-        return new SecurityConfig.JwtUserDetails(
-                deserialize.getId(),
-                deserialize.getUsername(),
+        return new SecurityConfig.UserPrincipal(
+                deserializedObject.getId(),
+                deserializedObject.getUsername(),
                 deserializedAuthorities
         );
     }

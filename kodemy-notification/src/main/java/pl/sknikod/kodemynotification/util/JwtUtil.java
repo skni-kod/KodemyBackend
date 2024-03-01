@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +22,9 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    @Value("${kodemy.jwt.expiration-mins:15}")
+    @Value("${jwt.expiration-mins}")
     private int expirationMins;
-    @Value("${kodemy.security.jwt.secret-key}")
+    @Value("${jwt.secret-key}")
     private String secretKey;
 
     public Output generateToken(Input input) {
@@ -69,10 +70,14 @@ public class JwtUtil {
     }
 
     public boolean isTokenValid(String token) {
-        var nowDate = new Date(System.currentTimeMillis());
+        return isTokenValid(token, null);
+    }
+
+    public boolean isTokenValid(String token, @Nullable String username) {
         try {
-            Jws<Claims> claimsJws = getClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(nowDate);
+            var nowDate = new Date(System.currentTimeMillis());
+            var isExpired = extractExpiration(token).before(nowDate);
+            return (username != null) ? extractUsername(token).equals(username) && !isExpired : !isExpired;
         } catch (Exception e) {
             return false;
         }

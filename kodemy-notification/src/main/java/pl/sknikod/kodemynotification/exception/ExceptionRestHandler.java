@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.sknikod.kodemynotification.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
