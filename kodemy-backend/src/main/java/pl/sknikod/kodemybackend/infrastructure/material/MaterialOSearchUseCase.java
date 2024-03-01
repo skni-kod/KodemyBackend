@@ -14,6 +14,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,40 +37,36 @@ public class MaterialOSearchUseCase {
     private final Integer MAX_PAGE_SIZE_FOR_INDEX = 2000;
     private final Integer MAX_CONCURRENT_TASKS = 100;
 
-    public ReindexResult reindex(Date from, Date to) {
+    public ReindexResult reindex(Instant from, Instant to) {
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         reindexTasksCounter.set(0);
         reindexObjectsCounter.set(0);
         reindexMaterials.set(0);
+        var fromDate = Date.from(from);
+        var toDate = Date.from(to);
+        var mUpdatedQueueName = queueProperties.get("m-updated").getName();
+
         Pageable pageable = PageRequest.of(0, MAX_PAGE_SIZE_FOR_INDEX);
         Page<Material> materialPage;
         do {
-            materialPage = materialRepository.findMaterialsInDateRangeWithPage(from, to, pageable);
+            materialPage = materialRepository.findMaterialsInDateRangeWithPage(fromDate, toDate, pageable);
             var materialsToIndex = materialPage.getContent();
             var gradesMap = gradeRepository.findAverageGradeByMaterialsIds(
                             materialsToIndex.stream().map(Material::getId).toList()
                     )
                     .stream()
-                    .collect(Collectors.toMap(
-                            result -> (Long) result[0],
-                            result -> (Double) result[1]
-                    ));
+                    .collect(Collectors.toMap(result -> (Long) result[0], result -> (Double) result[1]));
             reindexObjectsCounter.addAndGet(materialsToIndex.size());
             reindexMaterials.addAndGet(materialsToIndex.size());
             executorService.submit(() -> {
                 reindexTasksCounter.incrementAndGet();
                 materialsToIndex
                         .forEach(material -> {
-                            var searchObj = materialMapper.map(
-                                    material,
-                                    gradesMap.getOrDefault(material.getId(), 0.00)
-                            );
                             rabbitTemplate.convertAndSend(
-                                    queueProperties.get("m-updated").getName(),
+                                    mUpdatedQueueName,
                                     "",
                                     rabbitMapper.map(
-                                            material,
-                                            gradeRepository.findAvgGradeByMaterialId(material.getId())
+                                            material, gradesMap.getOrDefault(material.getId(), 0.00)
                                     )
                             );
                             reindexObjectsCounter.decrementAndGet();

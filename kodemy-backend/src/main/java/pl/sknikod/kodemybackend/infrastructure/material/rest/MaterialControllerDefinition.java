@@ -16,6 +16,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.MaterialUpdateUseCase;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.Date;
 
 @RequestMapping("/api/materials")
@@ -48,11 +49,11 @@ public interface MaterialControllerDefinition {
     @PatchMapping("/reindex")
     ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
-            @RequestParam(value = "from") Date from,
-            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ss")
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ssZ")
+            @RequestParam(value = "from") Instant from,
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ssZ")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            @RequestParam(value = "to") Date to
+            @RequestParam(value = "to") Instant to
     );
 
     @Operation(summary = "Change material's status")

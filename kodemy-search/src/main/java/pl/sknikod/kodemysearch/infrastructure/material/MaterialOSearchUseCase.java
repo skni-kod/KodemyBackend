@@ -27,7 +27,7 @@ public class MaterialOSearchUseCase {
     private final ObjectMapper objectMapper;
     private final IndexManager indexManager;
     private final IndexProperties indexProperties;
-    private final TypeReference<Map<String, ?>> MAP_TYPE_REF = new TypeReference<>() {
+    private final TypeReference<Map<String, Object>> MAP_TYPE_REF = new TypeReference<>() {
     };
 
     private String checkAndGetIndex() {
@@ -37,26 +37,26 @@ public class MaterialOSearchUseCase {
     }
 
     @RabbitListener(queues = "${app.rabbit.queues.m-created.name}")
-    private void index(@Payload Object message) {
+    private void index(@Payload Object object) {
         var index = checkAndGetIndex();
-        Try.of(() -> objectMapper.convertValue(((Message) message).getBody(), MAP_TYPE_REF))
-                .map(jsonObject -> new IndexRequest(index)
-                        .id(jsonObject.get("id").toString())
-                        .source(jsonObject)
-                )
-                .onSuccess(request -> Try.of(() -> restHighLevelClient.index(request, REQUEST_OPTIONS))
-                        .onFailure(ex -> log.error(ex.getMessage()))
-                );
+        Try.of(() -> objectMapper.readValue(((Message) object).getBody(), MAP_TYPE_REF))
+                .map(map -> new IndexRequest(index)
+                        .id(String.valueOf(map.get("id")))
+                        .source(map))
+                .flatMap(request -> Try.of(() -> restHighLevelClient.index(request, REQUEST_OPTIONS))
+                        .onSuccess(response -> log.debug("Successfully indexed as {}", response.getId())))
+                .onFailure(ex -> log.error("Indexing failed due to an exception: {}", ex.getMessage(), ex));
     }
 
     @RabbitListener(queues = "${app.rabbit.queues.m-updated.name}")
-    private void reindex(@Payload Object message) {
+    private void reindex(@Payload Object object) {
         var index = checkAndGetIndex();
-        Try.of(() -> objectMapper.convertValue(((Message) message).getBody(), MAP_TYPE_REF))
-                .map(map -> new UpdateRequest(index, (String) map.get("id"))
-                        .doc(map))
+        Try.of(() -> objectMapper.readValue(((Message) object).getBody(), MAP_TYPE_REF))
+                .map(map -> new UpdateRequest(index, String.valueOf(map.get("id")))
+                        .doc(map)
+                        .docAsUpsert(true))
                 .flatMap(request -> Try.of(() -> restHighLevelClient.update(request, REQUEST_OPTIONS))
-                        .onFailure(ex -> log.error(ex.getMessage())))
-                .onFailure(ex -> log.error(ex.getMessage()));
+                        .onSuccess(response -> log.debug("Successfully reindexed as {}", response.getId())))
+                .onFailure(ex -> log.error("Reindexing failed due to an exception: {}", ex.getMessage(), ex));
     }
 }

@@ -12,6 +12,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.*;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
@@ -43,7 +44,7 @@ public class MaterialController implements MaterialControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_INDEX')")
-    public ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(Date from, Date to) {
+    public ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(Instant from, Instant to) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(materialOSearchUseCase.reindex(from, to));
     }
