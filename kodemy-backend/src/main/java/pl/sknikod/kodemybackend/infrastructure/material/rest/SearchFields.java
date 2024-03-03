@@ -9,15 +9,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class SearchFields {
-    Long materialId;
+    String phrase;
+    Long id;
+    List<Material.MaterialStatus> statuses;
+    String createdBy;
     Date createdDateFrom;
     Date createdDateTo;
+    Long sectionId;
+    List<Long> categoryIds;
+    List<Long> technologyIds;
 
     @Component
     @RequiredArgsConstructor

@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.sknikod.kodemybackend.configuration.SecurityConfig;
-import pl.sknikod.kodemybackend.util.Cookie;
+import pl.sknikod.kodemybackend.util.CookieUtil;
 import pl.sknikod.kodemybackend.util.JwtUtil;
 
 import javax.servlet.FilterChain;
@@ -58,7 +58,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (Strings.isNotEmpty(headerAuth) && headerAuth.startsWith("Bearer "))
             return headerAuth.substring(7);
-        return Cookie.getCookie(request, jwtKey);
+        return CookieUtil.getCookie(request, jwtKey);
     }
 
     private SecurityConfig.UserPrincipal map(JwtUtil.Output.Deserialize deserializedObject) {

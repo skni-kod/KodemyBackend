@@ -22,7 +22,12 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     Long countAllByMaterialIdAndValue(Long id, Double value);
 
     @Query("SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g WHERE g.material.id = :materialId")
-    Double findAverageGradeByMaterialId(Long materialId);
+    Double findAvgGradeByMaterialId(Long materialId);
+
+    @Query(
+            value = "SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g " +
+                    "WHERE g.material.id IN :materialIds GROUP BY g.material.id")
+    List<Double> findAvgGradesByMaterialIdIn(List<Long> materialIds);
 
     @Query("SELECT g.material.id, COALESCE(AVG(g.value), 0.00) " +
             "FROM Grade g " +

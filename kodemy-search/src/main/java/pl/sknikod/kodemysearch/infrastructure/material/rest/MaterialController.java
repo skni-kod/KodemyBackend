@@ -7,19 +7,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemysearch.infrastructure.material.MaterialSearchService;
+import pl.sknikod.kodemysearch.infrastructure.material.MaterialGetUseCase;
 
 import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
 public class MaterialController implements MaterialControllerDefinition {
-    private final MaterialSearchService searchService;
+    private final MaterialGetUseCase searchService;
 
     @Override
-    public ResponseEntity<Page<SingleMaterialResponse>> search(int size, int page, String sort, Sort.Direction sortDirection, MaterialSearchFields searchFields) {
+    public ResponseEntity<Page<MaterialGetUseCase.MaterialPageable>> search(int size, int page, String sort, Sort.Direction sortDirection, MaterialGetUseCase.SearchFields searchFields) {
         var materialResponses = searchService.searchMaterials(
-                Objects.isNull(searchFields) ? new MaterialSearchFields() : searchFields,
+                Objects.isNull(searchFields) ? new MaterialGetUseCase.SearchFields() : searchFields,
                 PageRequest.of(page, size, sortDirection, sort)
         );
         return ResponseEntity.status(HttpStatus.OK).body(materialResponses);

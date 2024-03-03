@@ -2,8 +2,9 @@ spring:
   rabbitmq:
     host: localhost
 
-logging.level:
-  org.springframework.security: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 jwt:
   expiration-mins: 60

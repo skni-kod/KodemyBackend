@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.util.Base64Util;
-import pl.sknikod.kodemyauth.util.Cookie;
+import pl.sknikod.kodemyauth.util.CookieUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
             AuthenticationException exception
     ) throws IOException {
         String redirectAfter = Option.of(request)
-                .flatMap(req -> Option.of(Cookie.getCookie(req, authProperties.getKey().getRedirect()))
+                .flatMap(req -> Option.of(CookieUtil.getCookie(req, authProperties.getKey().getRedirect()))
                         .map(v -> (String) Base64Util.decode(v))
                         .orElse(Option.of(req.getHeader(HttpHeaders.REFERER)))
                 )
@@ -45,6 +45,6 @@ public class AuthAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 
     protected final void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         Option.of(request.getSession()).peek(session -> session.removeAttribute(authProperties.getKey().getCurrentSession()));
-        Cookie.deleteCookie(request, response, authProperties.getKey().getRedirect());
+        CookieUtil.deleteCookie(request, response, authProperties.getKey().getRedirect());
     }
 }
