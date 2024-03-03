@@ -32,6 +32,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "AND (:categoryIds IS NULL OR m.category.id IN :categoryIds) " +
             "AND (:technologyIds IS NULL OR EXISTS (" +
             "   SELECT 1 FROM m.technologies t WHERE t.id IN :technologyIds)) " +
+            "AND (cast(:dateFrom as date) IS NULL OR m.createdDate >= :dateFrom) " +
+            "AND (cast(:dateTo as date) IS NULL OR m.createdDate <= :dateTo) " +
             "GROUP BY m")
     Page<Object[]> searchMaterialsWithAvgGrades(
             Long id,
@@ -42,8 +44,12 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             List<Long> categoryIds,
             List<Long> technologyIds,
             Long authorId,
+            Date dateFrom,
+            Date dateTo,
             Pageable pageable
     );
+
+
 
     default Material findMaterialById(Long materialId) {
         return Option.ofOptional(findById(materialId))

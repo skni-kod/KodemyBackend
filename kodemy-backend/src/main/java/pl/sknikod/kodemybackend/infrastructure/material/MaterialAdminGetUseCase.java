@@ -32,6 +32,8 @@ public class MaterialAdminGetUseCase {
                 searchFields.getCategoryIds(),
                 searchFields.getTechnologyIds(),
                 null,
+                searchFields.getCreatedDateFrom(),
+                searchFields.getCreatedDateTo(),
                 page
         );
         return new PageImpl<>(
