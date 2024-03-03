@@ -17,7 +17,6 @@ import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.util.Date;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -82,12 +81,12 @@ public interface MaterialControllerDefinition {
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +
                     "\"id\":0," +
-                    "\"status\":\"PENDING\"," +
+                    "\"statuses\":[\"PENDING\"]," +
                     "\"createdBy\":\"createdBy\"," +
                     "\"createdDateFrom\":\"2023-01-01T00:00:00\"," +
                     "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
                     "\"sectionId\":0," +
-                    "\"categoryId\":0," +
+                    "\"categoryIds\":[0]," +
                     "\"technologyIds\":[0]}"
             )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields

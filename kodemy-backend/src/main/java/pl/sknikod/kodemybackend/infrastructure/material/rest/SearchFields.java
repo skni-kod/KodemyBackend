@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class SearchFields {
     String phrase;
     Long id;
-    String status;
+    List<Material.MaterialStatus> statuses;
     String createdBy;
     Date createdDateFrom;
     Date createdDateTo;

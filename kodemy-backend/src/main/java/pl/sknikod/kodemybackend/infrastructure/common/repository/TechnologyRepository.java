@@ -9,7 +9,6 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Technology;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Repository
 public interface TechnologyRepository extends JpaRepository<Technology, Long> {

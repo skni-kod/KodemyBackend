@@ -13,7 +13,6 @@ import pl.sknikod.kodemybackend.infrastructure.material.*;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Objects;
 
 @RestController
@@ -63,7 +62,7 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
-    //@PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
+    @PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
     public ResponseEntity<Page<MaterialPageable>> manage(
             int size,
             int page,

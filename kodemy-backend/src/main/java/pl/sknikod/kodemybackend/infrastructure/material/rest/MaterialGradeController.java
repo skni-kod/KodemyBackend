@@ -29,7 +29,7 @@ public class MaterialGradeController implements MaterialGradeControllerDefinitio
         var searchFieldsParam = Objects.isNull(searchFields) ? new GradeMaterialSearchFields() : searchFields;
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                materialGradeUseCase.showGrades(pageRequest, searchFieldsParam)
-        );
+                        materialGradeUseCase.showGrades(pageRequest, searchFieldsParam)
+                );
     }
 }

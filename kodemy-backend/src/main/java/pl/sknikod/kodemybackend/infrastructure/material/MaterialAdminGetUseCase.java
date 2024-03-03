@@ -26,7 +26,7 @@ public class MaterialAdminGetUseCase {
         Page<Object[]> materials = materialRepository.searchMaterialsWithAvgGrades(
                 searchFields.getId(),
                 searchFields.getPhrase(),
-                searchFields.getStatus(),
+                searchFields.getStatuses(),
                 searchFields.getCreatedBy(),
                 searchFields.getSectionId(),
                 searchFields.getCategoryIds(),

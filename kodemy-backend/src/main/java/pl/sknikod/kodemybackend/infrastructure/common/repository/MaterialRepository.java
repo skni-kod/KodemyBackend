@@ -25,7 +25,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "WHERE (:authorId IS NULL OR m.author.id = :authorId) " +
             "AND (:id IS NULL OR m.id = :id) " +
             "AND (:phrase IS NULL OR m.title LIKE CONCAT('%', :phrase, '%')) " +
-            "AND (:status IS NULL OR m.status = :status) " +
+            "AND ((:statuses) IS NULL OR m.status IN (:statuses)) " +
             "AND (:createdBy IS NULL OR m.createdBy = :createdBy) " +
             "AND (:sectionId IS NULL OR m.category.id IN (" +
             "   SELECT c.id FROM Category c WHERE c.section.id = :sectionId)) " +
@@ -38,7 +38,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
     Page<Object[]> searchMaterialsWithAvgGrades(
             Long id,
             String phrase,
-            String status,
+            List<Material.MaterialStatus> statuses,
             String createdBy,
             Long sectionId,
             List<Long> categoryIds,
@@ -48,7 +48,6 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             Date dateTo,
             Pageable pageable
     );
-
 
 
     default Material findMaterialById(Long materialId) {

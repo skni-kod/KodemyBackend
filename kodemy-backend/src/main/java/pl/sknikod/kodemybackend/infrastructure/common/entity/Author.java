@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
