@@ -20,7 +20,7 @@ public class SearchFields {
 
     @Component
     @RequiredArgsConstructor
-    public static class MaterialSearchFieldsConverter implements Converter<String, SearchFields> {
+    public static class UserSearchFieldsConverter implements Converter<String, SearchFields> {
         private final ObjectMapper objectMapper;
 
         @Override

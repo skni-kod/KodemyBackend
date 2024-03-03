@@ -77,15 +77,10 @@ public class MaterialGetUseCase {
             phraseFields.add(new SearchCriteria.PhraseField(
                     "createdBy", searchFields.getCreatedBy(), false, false
             ));
-        var sectionIds = searchFields.getSectionIds();
-        if (Objects.nonNull(sectionIds) && sectionIds.length != 0) {
+        if (Objects.nonNull(searchFields.getSectionId()))
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "sectionIds",
-                    StringUtils.join(sectionIds, ' '),
-                    false,
-                    false
+                    "sectionId", searchFields.getSectionId().toString(), false, false
             ));
-        }
         var categoryIds = searchFields.getCategoryIds();
         if (Objects.nonNull(categoryIds) && categoryIds.length != 0) {
             phraseFields.add(new SearchCriteria.PhraseField(
@@ -148,7 +143,7 @@ public class MaterialGetUseCase {
         String createdBy;
         Date createdDateFrom;
         Date createdDateTo;
-        Long[] sectionIds;
+        Long sectionId;
         Long[] categoryIds;
         Long[] technologyIds;
 
