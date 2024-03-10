@@ -25,7 +25,7 @@ public class SearchFields {
     Date createdDateTo;
     Long sectionId;
     List<Long> categoryIds;
-    List<Long> technologyIds;
+    List<Long> tagIds;
 
     @Component
     @RequiredArgsConstructor

@@ -51,12 +51,12 @@
             </column>
         </createTable>
 
-        <createTable tableName="technologies">
+        <createTable tableName="tags">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tags"/>
             </column>
             <column name="name" type="VARCHAR(32)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="uc_technologies_name"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_tags_name"/>
             </column>
         </createTable>
 
@@ -82,15 +82,15 @@
             </column>
         </createTable>
 
-        <createTable tableName="technologies_materials">
+        <createTable tableName="tags_materials">
             <column name="material_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
-                             foreignKeyName="fk_technologies_materials_material" references="materials(id)"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tags_materials"
+                             foreignKeyName="fk_tags_materials_material" references="materials(id)"/>
             </column>
-            <column name="technology_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_technologies_materials"
-                             foreignKeyName="fk_technologies_materials_material_technology"
-                             references="technologies(id)"/>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tags_materials"
+                             foreignKeyName="fk_tags_materials_material_tag"
+                             references="tags(id)"/>
             </column>
         </createTable>
 

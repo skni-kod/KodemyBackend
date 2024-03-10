@@ -32,7 +32,7 @@ import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.Mat
 @Slf4j
 public class MaterialCreateUseCase {
     private final GradeRepository gradeRepository;
-    private final TechnologyRepository technologyRepository;
+    private final TagRepository tagRepository;
     private final TypeRepository typeRepository;
     private final CategoryRepository categoryRepository;
     private final MaterialRepository materialRepository;
@@ -66,7 +66,7 @@ public class MaterialCreateUseCase {
         material.setAuthor(author);
         material.setCategory(categoryRepository.findCategoryById(body.getCategoryId()));
         material.setType(typeRepository.findTypeById(body.getTypeId()));
-        material.setTechnologies(technologyRepository.findTechnologiesByIdIn(body.getTechnologiesIds()));
+        material.setTags(tagRepository.findTagsByIdIn(body.getTagsIds()));
         var isApprovedMaterial = getUserPrincipal().getAuthorities()
                 .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"));
         material.setStatus(isApprovedMaterial ? APPROVED : PENDING);
@@ -111,7 +111,7 @@ public class MaterialCreateUseCase {
         @Positive(message = "Category ID must be > 0")
         private Long categoryId;
 
-        private List<@NotNull @Positive(message = "Technology ID must be > 0") Long> technologiesIds;
+        private List<@NotNull @Positive(message = "Tag ID must be > 0") Long> tagsIds;
     }
 
     @Value

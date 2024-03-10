@@ -43,14 +43,14 @@ public interface MaterialRabbitMapper {
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
-        private List<Technology> technologies;
+        private List<Tag> tags;
 
         @Getter
         @Setter
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        public static class Technology {
+        public static class Tag {
             private Long id;
             private String name;
         }

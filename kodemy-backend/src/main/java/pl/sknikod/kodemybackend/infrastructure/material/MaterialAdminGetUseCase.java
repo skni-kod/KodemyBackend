@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
-import pl.sknikod.kodemybackend.infrastructure.common.repository.TechnologyRepository;
+import pl.sknikod.kodemybackend.infrastructure.common.repository.TagRepository;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.SearchFields;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @Slf4j
 public class MaterialAdminGetUseCase {
-    private final TechnologyRepository technologyRepository;
+    private final TagRepository tagRepository;
     private final MaterialRepository materialRepository;
     private final GradeRepository gradeRepository;
 
@@ -30,7 +30,7 @@ public class MaterialAdminGetUseCase {
                 searchFields.getCreatedBy(),
                 searchFields.getSectionId(),
                 searchFields.getCategoryIds(),
-                searchFields.getTechnologyIds(),
+                searchFields.getTagIds(),
                 null,
                 searchFields.getCreatedDateFrom(),
                 searchFields.getCreatedDateTo(),
@@ -51,11 +51,11 @@ public class MaterialAdminGetUseCase {
         output.type(new MaterialPageable.TypeDetails(
                 type.getId(), type.getName()
         ));
-        var technologies = material.getTechnologies()
+        var tags = material.getTags()
                 .stream()
-                .map(tech -> new MaterialPageable.TechnologyDetails(tech.getId(), tech.getName()))
+                .map(tag -> new MaterialPageable.TagDetails(tag.getId(), tag.getName()))
                 .toList();
-        output.technologies(technologies);
+        output.tags(tags);
         var author = material.getAuthor();
         output.author(new MaterialPageable.AuthorDetails(
                 author.getId(), author.getUsername()

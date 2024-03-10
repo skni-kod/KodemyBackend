@@ -22,7 +22,7 @@ public class MaterialPageable {
     @Enumerated(EnumType.STRING)
     final Material.MaterialStatus status;
     final TypeDetails type;
-    final List<TechnologyDetails> technologies;
+    final List<TagDetails> tags;
     final Double gradeAvg;
     final AuthorDetails author;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -35,7 +35,7 @@ public class MaterialPageable {
     }
 
     @Value
-    public static class TechnologyDetails {
+    public static class TagDetails {
         Long id;
         String name;
     }

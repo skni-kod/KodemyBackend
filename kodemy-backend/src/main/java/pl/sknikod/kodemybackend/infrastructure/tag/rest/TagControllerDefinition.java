@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.infrastructure.technology.rest;
+package pl.sknikod.kodemybackend.infrastructure.tag.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,22 +12,22 @@ import pl.sknikod.kodemybackend.util.SwaggerResponse;
 import javax.validation.Valid;
 import java.util.List;
 
-@RequestMapping("/api/technologies")
+@RequestMapping("/api/tags")
 @SwaggerResponse
 @SwaggerResponse.SuccessCode200
 @SwaggerResponse.UnauthorizedCode401
 @SwaggerResponse.ForbiddenCode403
-@Tag(name = "Technology")
-public interface TechnologyControllerDefinition {
+@Tag(name = "Tag")
+public interface TagControllerDefinition {
 
     @PostMapping
-    @Operation(summary = "Add new technology")
+    @Operation(summary = "Add new tag")
     @SwaggerResponse.CreatedCode201
     @SwaggerResponse.BadRequestCode400
-    ResponseEntity<TechnologyAddResponse> addTechnology(@RequestBody @Valid TechnologyAddRequest body);
+    ResponseEntity<TagAddResponse> addTag(@RequestBody @Valid TagAddRequest body);
 
     @GetMapping
-    @Operation(summary = "Show all technologies")
+    @Operation(summary = "Show all tags")
     @SwaggerResponse.SuccessCode200
-    ResponseEntity<List<TechnologyAddResponse>> showTechnologies();
+    ResponseEntity<List<TagAddResponse>> showTags();
 }

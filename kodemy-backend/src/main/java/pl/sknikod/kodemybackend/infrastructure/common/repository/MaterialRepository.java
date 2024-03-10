@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
     @Query(
-            value = "SELECT m FROM Material m LEFT JOIN FETCH m.technologies WHERE m.createdDate BETWEEN :from AND :to",
+            value = "SELECT m FROM Material m LEFT JOIN FETCH m.tags WHERE m.createdDate BETWEEN :from AND :to",
             countQuery = "SELECT COUNT(m) FROM Material m WHERE m.createdDate BETWEEN :from AND :to")
     Page<Material> findMaterialsInDateRangeWithPage(Date from, Date to, Pageable pageable);
 
@@ -30,8 +30,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "AND (:sectionId IS NULL OR m.category.id IN (" +
             "   SELECT c.id FROM Category c WHERE c.section.id = :sectionId)) " +
             "AND (:categoryIds IS NULL OR m.category.id IN :categoryIds) " +
-            "AND (:technologyIds IS NULL OR EXISTS (" +
-            "   SELECT 1 FROM m.technologies t WHERE t.id IN :technologyIds)) " +
+            "AND (:tagIds IS NULL OR EXISTS (" +
+            "   SELECT 1 FROM m.tags t WHERE t.id IN :tagIds)) " +
             "AND (cast(:dateFrom as date) IS NULL OR m.createdDate >= :dateFrom) " +
             "AND (cast(:dateTo as date) IS NULL OR m.createdDate <= :dateTo) " +
             "GROUP BY m")
@@ -42,7 +42,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             String createdBy,
             Long sectionId,
             List<Long> categoryIds,
-            List<Long> technologyIds,
+            List<Long> tagIds,
             Long authorId,
             Date dateFrom,
             Date dateTo,

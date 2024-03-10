@@ -30,7 +30,7 @@ public interface MaterialMapper {
             @Mapping(target = "isActive", source = "active"),
             @Mapping(target = "sectionId", source = "category.section.id"),
             @Mapping(target = "categoryId", source = "category.id"),
-            @Mapping(target = "technologies", source = "technologies"),
+            @Mapping(target = "tags", source = "tags"),
             @Mapping(target = "avgGrade", constant = "0"),
     })
     MaterialRabbitMapper.MaterialEvent indexMap(Material material);

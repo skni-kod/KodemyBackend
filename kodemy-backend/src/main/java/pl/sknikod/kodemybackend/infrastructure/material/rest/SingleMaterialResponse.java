@@ -23,7 +23,7 @@ public class SingleMaterialResponse {
     @Enumerated(EnumType.STRING)
     final Material.MaterialStatus status;
     final TypeDetails type;
-    final List<TechnologyDetails> technologies;
+    final List<TagDetails> tags;
     @Setter
     Double averageGrade;
     @Setter
@@ -43,8 +43,8 @@ public class SingleMaterialResponse {
 
     @Value
     @EqualsAndHashCode(callSuper = true)
-    public static class TechnologyDetails extends BaseDetails {
-        public TechnologyDetails(Long id, String name) {
+    public static class TagDetails extends BaseDetails {
+        public TagDetails(Long id, String name) {
             super(id, name);
         }
     }

@@ -16,8 +16,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "technologies")
-public class Technology extends Auditable<String> {
+@Table(name = "tags")
+public class Tag extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -26,14 +26,14 @@ public class Technology extends Auditable<String> {
     @NotEmpty(message = "Name may not be empty")
     @Size(min = 2, max = 32, message = "Name must be between 2 and 32 characters long")
     private String name;
-    @ManyToMany(mappedBy = "technologies")
+    @ManyToMany(mappedBy = "tags")
     private Set<Material> materials = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Technology that = (Technology) o;
+        Tag that = (Tag) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 

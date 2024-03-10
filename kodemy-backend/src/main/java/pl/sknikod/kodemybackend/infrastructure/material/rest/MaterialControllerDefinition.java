@@ -87,7 +87,7 @@ public interface MaterialControllerDefinition {
                     "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
                     "\"sectionId\":0," +
                     "\"categoryIds\":[0]," +
-                    "\"technologyIds\":[0]}"
+                    "\"tagIds\":[0]}"
             )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );
