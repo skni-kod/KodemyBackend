@@ -90,11 +90,11 @@ public class MaterialGetUseCase {
                     false
             ));
         }
-        var technologyIds = searchFields.getTechnologyIds();
-        if (Objects.nonNull(technologyIds) && technologyIds.length != 0) {
+        var tagIds = searchFields.getTagIds();
+        if (Objects.nonNull(tagIds) && tagIds.length != 0) {
             phraseFields.add(new SearchCriteria.PhraseField(
-                    "technologyIds",
-                    StringUtils.join(searchFields.getTechnologyIds(), ' '),
+                    "tagIds",
+                    StringUtils.join(searchFields.getTagIds(), ' '),
                     false,
                     false
             ));
@@ -145,7 +145,7 @@ public class MaterialGetUseCase {
         Date createdDateTo;
         Long sectionId;
         Long[] categoryIds;
-        Long[] technologyIds;
+        Long[] tagIds;
 
         @Component
         @RequiredArgsConstructor
@@ -177,7 +177,7 @@ public class MaterialGetUseCase {
         private Date createdDate;
         private Long sectionId;
         private Long categoryId;
-        private List<TechnologyDetails> technologies;
+        private List<TagDetails> tags;
 
         public enum MaterialStatus {
             APPROVED, //CONFIRMED
@@ -191,7 +191,7 @@ public class MaterialGetUseCase {
         @Setter
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class TechnologyDetails {
+        public static class TagDetails {
             private Long id;
             private String name;
         }

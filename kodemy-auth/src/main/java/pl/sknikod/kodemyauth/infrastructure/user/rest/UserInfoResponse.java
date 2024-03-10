@@ -13,7 +13,7 @@ public record UserInfoResponse(
         UserInfoResponse.RoleDetails role,
         Boolean isEnabled,
         Boolean isLocked
-    ) {
+) {
     public record RoleDetails(Long id, String name) {
     }
 }

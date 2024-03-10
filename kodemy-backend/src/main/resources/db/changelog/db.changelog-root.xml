@@ -8,5 +8,5 @@
     <include file="0002_add_auditing_columns.xml" relativeToChangelogFile="true"/>
     <include file="0003_insert_primary_sections_and_categories.xml" relativeToChangelogFile="true"/>
     <include file="0004_insert_primary_types.xml" relativeToChangelogFile="true"/>
-    <include file="0005_insert_primary_technologies.xml" relativeToChangelogFile="true"/>
+    <include file="0005_insert_primary_tags.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

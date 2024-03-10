@@ -15,7 +15,7 @@ import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Technology;
+import pl.sknikod.kodemybackend.infrastructure.common.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Type;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
@@ -42,7 +42,7 @@ public class MaterialUpdateUseCase {
     private final MaterialMapper materialMapper;
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
-    private final TechnologyRepository technologyRepository;
+    private final TagRepository tagRepository;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         Material existingMaterial = materialRepository.findMaterialById(materialId);
@@ -52,7 +52,7 @@ public class MaterialUpdateUseCase {
                         body,
                         categoryRepository.findCategoryById(body.getCategoryId()),
                         typeRepository.findTypeById(body.getTypeId()),
-                        technologyRepository.findTechnologiesByIdIn(body.getTechnologiesIds())
+                        tagRepository.findTagsByIdIn(body.getTagsIds())
                 ))
                 .map(this::updateStatus)
                 .map(materialRepository::save)
@@ -90,7 +90,7 @@ public class MaterialUpdateUseCase {
 
     @Mapper(componentModel = "spring")
     public interface MaterialUpdateMapper {
-        default Material map(Material existingMaterial, MaterialUpdateRequest body, Category category, Type type, Set<Technology> technologies) {
+        default Material map(Material existingMaterial, MaterialUpdateRequest body, Category category, Type type, Set<Tag> tags) {
             existingMaterial.setActive(true);
             existingMaterial.setStatus(PENDING);
             existingMaterial.setTitle(body.getTitle());
@@ -98,7 +98,7 @@ public class MaterialUpdateUseCase {
             existingMaterial.setLink(body.getLink());
             existingMaterial.setCategory(category);
             existingMaterial.setType(type);
-            existingMaterial.setTechnologies(technologies);
+            existingMaterial.setTags(tags);
             return existingMaterial;
         }
 
@@ -113,7 +113,7 @@ public class MaterialUpdateUseCase {
         String link;
         BaseDetails category;
         BaseDetails type;
-        Set<BaseDetails> technologies;
+        Set<BaseDetails> tags;
 
         @Value
         public static class BaseDetails {
@@ -144,7 +144,7 @@ public class MaterialUpdateUseCase {
         @Positive(message = "Type ID must be > 0")
         private Long typeId;
 
-        private List<@NotNull @Positive(message = "Technology ID must be > 0") Long> technologiesIds;
+        private List<@NotNull @Positive(message = "Tag ID must be > 0") Long> tagsIds;
     }
 
     public SingleMaterialResponse changeStatus(Long materialId, Material.MaterialStatus status) {

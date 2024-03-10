@@ -41,7 +41,7 @@ public class AuthService extends DefaultOAuth2UserService {
 
     public OAuth2LinksResponse getLinks(String redirectUri, HttpServletRequest request) {
         var uriComponentsBuilder = UriComponentsBuilder.newInstance();
-        if (!StringUtils.isEmpty(redirectUri))  uriComponentsBuilder.queryParam(REDIRECT_URI_PARAMETER, redirectUri);
+        if (!StringUtils.isEmpty(redirectUri)) uriComponentsBuilder.queryParam(REDIRECT_URI_PARAMETER, redirectUri);
         var uri = uriComponentsBuilder.build().toUri();
         var providersDetails = Arrays.stream(Provider.ProviderType.values())
                 .map(provider -> new OAuth2LinksResponse.ProviderDetails(

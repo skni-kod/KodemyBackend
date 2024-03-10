@@ -4,9 +4,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="0006-1" author="KartVen" labels="primary_technologies_records">
+    <changeSet id="0006-1" author="KartVen" labels="primary_tags_records">
         <sql>
-            insert into technologies (id, name)
+            insert into tags (id, name)
             values (1, 'html'),
                    (2, 'css'),
                    (3, 'sass'),

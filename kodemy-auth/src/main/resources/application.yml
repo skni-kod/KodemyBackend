@@ -64,12 +64,12 @@ app:
       privileges:
         ROLE_USER:
         ROLE_MODERATOR:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_GET_USER_INFO
           - CAN_VIEW_ALL_MATERIALS
         ROLE_ADMIN:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS
@@ -80,7 +80,7 @@ app:
           - CAN_INDEX
           - CAN_VIEW_ALL_MATERIALS
         ROLE_SUPERADMIN:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS

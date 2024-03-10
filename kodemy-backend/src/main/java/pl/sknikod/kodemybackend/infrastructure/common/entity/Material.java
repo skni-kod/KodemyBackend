@@ -43,11 +43,11 @@ public class Material extends Auditable<String> {
     private Type type;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "technologies_materials",
+            name = "tags_materials",
             joinColumns = @JoinColumn(name = "material_id"),
-            inverseJoinColumns = @JoinColumn(name = "technology_id")
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Technology> technologies = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
     @OneToMany(mappedBy = "material")
     private Set<Grade> grades = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
