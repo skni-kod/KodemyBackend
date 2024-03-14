@@ -33,7 +33,7 @@ import static pl.sknikod.kodemyauth.infrastructure.auth.rest.AuthController.REDI
 
 @Service
 @RequiredArgsConstructor
-public class AuthService extends DefaultOAuth2UserService {
+public class AuthService {
     private final UserPrincipalUseCase userPrincipalUseCase;
     private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
     private final JwtUtil jwtUtil;
@@ -56,18 +56,18 @@ public class AuthService extends DefaultOAuth2UserService {
         );
     }
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        try {
-            return userPrincipalUseCase.execute(
-                    super.loadUser(userRequest), userRequest.getClientRegistration().getRegistrationId()
-            );
-        } catch (AuthenticationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
-        }
-    }
+//    @Override
+//    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+//        try {
+//            return userPrincipalUseCase.execute(
+//                    super.loadUser(userRequest), userRequest.getClientRegistration().getRegistrationId()
+//            );
+//        } catch (AuthenticationException ex) {
+//            throw ex;
+//        } catch (Exception ex) {
+//            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+//        }
+//    }
 
     public AuthInfo isAuthenticated() {
         AuthInfo authInfo = new AuthInfo();

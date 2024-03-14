@@ -59,6 +59,7 @@ app:
         current-session: ksession
         redirect: redirect
         jwt: jwtsession
+      password: password
     role:
       defaultRole: ROLE_USER
       privileges:

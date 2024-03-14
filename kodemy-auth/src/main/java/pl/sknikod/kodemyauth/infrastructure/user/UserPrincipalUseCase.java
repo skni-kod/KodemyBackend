@@ -7,8 +7,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.exception.structure.OAuth2Exception;
-import pl.sknikod.kodemyauth.infrastructure.auth.oauth2.OAuth2UserInfo;
-import pl.sknikod.kodemyauth.infrastructure.auth.oauth2.OAuth2UserInfoFactory;
+import pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo.OAuth2UserInfo;
+import pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo.OAuth2UserInfoFactory;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.User;
@@ -28,23 +28,19 @@ public class UserPrincipalUseCase {
     private final RoleRepository roleRepository;
     private final SecurityConfig.SecurityProperties.RoleProperties roleProperties;
 
-    public UserPrincipal execute(OAuth2User oAuth2User, String registrationId) {
-        OAuth2UserInfo authUserInfo = OAuth2UserInfoFactory.getAuthUserInfo(
-                registrationId, oAuth2User.getAttributes()
-        );
+    public UserPrincipal execute(OAuth2UserInfo userInfo) {
         return Option.of(userRepository.findUserByPrincipalIdAndAuthProviderWithFetchRole(
-                        authUserInfo.getPrincipalId(), authUserInfo.getProvider()
+                        userInfo.getPrincipalId(), userInfo.getProvider()
                 ))
-                .fold(() -> this.create(authUserInfo),
-                        user -> this.create(user, authUserInfo.getAttributes()));
+                .fold(() -> this.create(userInfo), this::create);
     }
 
-    public UserPrincipal create(User user, Map<String, Object> attributes) {
+    public UserPrincipal create(User user) {
         return Option
                 .of(user.getRole().getName())
                 .map(roleProperties::getPrivileges)
-                .map(authorities -> UserPrincipal.create(user, authorities, attributes))
-                .getOrElse(() -> UserPrincipal.create(user, new HashSet<>(), attributes));
+                .map(authorities -> UserPrincipal.create(user, authorities))
+                .getOrElse(() -> UserPrincipal.create(user, new HashSet<>()));
     }
 
     public UserPrincipal create(OAuth2UserInfo authUserInfo) {
@@ -61,7 +57,7 @@ public class UserPrincipalUseCase {
                         authUserInfo.getEmail(), authUserInfo.getPhoto(), user
                 ))))
                 .map(userRepository::save)
-                .map(user -> this.create(user, authUserInfo.getAttributes()))
+                .map(this::create)
                 .getOrElseThrow(
                         () -> new OAuth2Exception("Failed to user principal processing")
                 );

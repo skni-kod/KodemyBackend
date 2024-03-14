@@ -2,61 +2,63 @@ package pl.sknikod.kodemyauth.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
+import java.time.Duration;
+import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CookieUtil {
-    public final static int MAX_AGE = 15_778_463;
+    private static final String COOKIE_DOMAIN = "localhost";
+    private static final Boolean HTTP_ONLY = Boolean.TRUE;
+    private static final Boolean SECURE = Boolean.TRUE;
+    private static final Boolean NON_SECURE = Boolean.FALSE;
+    public static final Duration MAX_AGE = Duration.ofMillis(15_778_463);
 
-    public static void addCookie(HttpServletResponse response, String name, String value, int expireTime, boolean httpOnly) {
+    public static Cookie generate(
+            @NonNull String name,
+            @NonNull String value,
+            @NonNull Duration expireTime,
+            boolean httpOnly
+    ) {
         var cookie = new javax.servlet.http.Cookie(name, value);
+        if (!"localhost".equals(COOKIE_DOMAIN))
+            cookie.setDomain(COOKIE_DOMAIN);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(SECURE);
         cookie.setHttpOnly(httpOnly);
-        cookie.setMaxAge(expireTime);
-        response.addCookie(cookie);
+        cookie.setMaxAge((int) expireTime.toSeconds());
+        return cookie;
     }
 
-    public static String getCookie(HttpServletRequest request, String name) {
-        var cookies = request.getCookies();
-        if (cookies != null) {
-            for (var cookie : cookies) {
-                if (cookie.getName().equals(name)) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
+    public static Cookie generate(
+            @NonNull String name,
+            @NonNull String value,
+            @NonNull Duration expireTime
+    ) {
+        return generate(name, value, expireTime, HTTP_ONLY);
     }
 
-    public static javax.servlet.http.Cookie[] getCookies(HttpServletRequest request) {
-        return request.getCookies();
+    public static Optional<String> get(Cookie[] cookies, @NonNull String name) {
+        if (cookies != null)
+            for (var cookie : cookies)
+                if (cookie.getName().equalsIgnoreCase(name))
+                    return Optional.ofNullable(cookie.getValue());
+        return Optional.empty();
     }
 
-    public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
-        var cookies = request.getCookies();
+    public static Optional<Cookie> expire(Cookie[] cookies, @NonNull String name) {
         if (cookies != null) {
             for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     cookie.setValue("");
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
-                    response.addCookie(cookie);
+                    return Optional.of(cookie);
                 }
             }
         }
-    }
-
-    public static void clearAll(HttpServletRequest req, HttpServletResponse res) {
-        for (var cookie : req.getCookies()) {
-            String cookieName = cookie.getName();
-            var cookieToDelete = new javax.servlet.http.Cookie(cookieName, null);
-            cookieToDelete.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookieToDelete.setMaxAge(0);
-            res.addCookie(cookieToDelete);
-        }
+        return Optional.empty();
     }
 }

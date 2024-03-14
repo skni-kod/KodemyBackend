@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.infrastructure.auth.oauth2;
+package pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo;
 
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 
