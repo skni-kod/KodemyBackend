@@ -3,7 +3,6 @@ package pl.sknikod.kodemybackend.infrastructure.material;
 import io.vavr.control.Option;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,20 +41,6 @@ public class MaterialGradeUseCase {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    private Grade map(Long materialId, MaterialAddGradeRequest request) {
-        var grade = new Grade();
-        grade.setMaterial(materialRepository.findMaterialById(materialId));
-        var principal = (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-        var authorOptional = authorRepository.findById(principal.getId());
-        if (authorOptional.isEmpty())
-            throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class);
-        grade.setAuthor(authorOptional.get());
-        grade.setValue(Double.parseDouble(request.getGrade()));
-        return grade;
-    }
-
-
     public Page<GradePageable> showGrades(PageRequest pageRequest, GradeMaterialSearchFields searchFields) {
         Date minDate = Objects.nonNull(searchFields.getCreatedDateFrom())
                 ? searchFields.getCreatedDateFrom() : GradeRepository.DATE_MIN;
@@ -73,18 +58,25 @@ public class MaterialGradeUseCase {
         return new PageImpl<>(singleGradeResponses, gradesPage.getPageable(), gradesPage.getTotalElements());
     }
 
+    private Grade map(Long materialId, MaterialAddGradeRequest request) {
+        var grade = new Grade();
+        grade.setMaterial(materialRepository.findMaterialById(materialId));
+        var principal = (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        var authorOptional = authorRepository.findById(principal.getId());
+        if (authorOptional.isEmpty())
+            throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class);
+        grade.setAuthor(authorOptional.get());
+        grade.setValue(Double.parseDouble(request.getGrade()));
+        return grade;
+    }
+
     @Data
     public static class MaterialAddGradeRequest {
         @NotNull
         @Pattern(regexp = "^[0-5](\\.[05])?$")
         private String grade;
-
     }
 
-    @Value
-    public static class GradePageable {
-        Long id;
-        Double value;
-        UserDetails author;
-    }
+    public record GradePageable(Long id, Double value, UserDetails author) { }
 }

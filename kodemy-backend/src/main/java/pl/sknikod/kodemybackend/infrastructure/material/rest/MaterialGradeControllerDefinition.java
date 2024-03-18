@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @Tag(name = "Material")
 public interface MaterialGradeControllerDefinition {
     @Operation(summary = "Add a new grade to the Material")
-    @SwaggerResponse.CreatedCode201
+    @SwaggerResponse.SuccessCode200
     @SwaggerResponse.BadRequestCode400
     @SwaggerResponse.UnauthorizedCode401
     @SwaggerResponse.ForbiddenCode403
