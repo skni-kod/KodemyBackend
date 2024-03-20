@@ -1,70 +1,63 @@
 package pl.sknikod.kodemyauth.infrastructure.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vavr.control.Option;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.util.UriComponentsBuilder;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
-import pl.sknikod.kodemyauth.exception.ExceptionRestGenericMessage;
-import pl.sknikod.kodemyauth.util.Base64Util;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig.SecurityProperties.AuthProperties;
+import pl.sknikod.kodemyauth.infrastructure.AuthDetails;
 import pl.sknikod.kodemyauth.util.CookieUtil;
+import pl.sknikod.kodemyauth.util.ServerController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-public class OAuth2Controller {
-    private final ObjectMapper objectMapper;
-    private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
+public class OAuth2Controller extends ServerController {
+    private final AuthProperties authProperties;
 
     @SneakyThrows
-    public void redirectStrategyResponse(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            String url
-    ) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.getWriter().write(objectMapper.writeValueAsString(Map.of(
-                "redirectUrl", url
-        )));
-    }
-
-    @SneakyThrows
-    public void successResponse(
+    public void successLoginResponse(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
     ) {
-        String redirectUri = Option.ofOptional(CookieUtil.get(request.getCookies(), authProperties.getKey().getRedirect()))
-                .map(v -> (String) Base64Util.decode(v))
-                .orElse(Option.of(request.getHeader(HttpHeaders.REFERER)))
-                .map(uri -> UriComponentsBuilder.fromUriString(uri).build().toString())
-                .getOrNull();
-        response.sendRedirect(redirectUri);
+        var authDetails = (AuthDetails) authentication.getDetails();
+        String accessToken = authDetails.getAccessToken();
+        String refreshToken = authDetails.getRefreshToken();
+        setJsonResponseHeaders(response);
+        response.setStatus(HttpServletResponse.SC_OK);
+        var rootNode = JsonNodeFactory.instance.objectNode()
+                .put("accessToken", accessToken)
+                .put("refreshToken", refreshToken);
+        response.getWriter().write(rootNode.toPrettyString());
     }
 
     @SneakyThrows
-    public void failureResponse(
+    public void failureLoginResponse(
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException ex) {
-        String redirectUri = Option.ofOptional(CookieUtil.get(request.getCookies(), authProperties.getKey().getRedirect()))
-                .map(v -> (String) Base64Util.decode(v))
-                .orElse(Option.of(request.getHeader(HttpHeaders.REFERER)))
-                .map(uri -> UriComponentsBuilder.fromUriString(uri).queryParam("error", ex.getMessage()).build().toString())
-                .getOrNull();
-        response.sendRedirect(redirectUri);
+        setJsonResponseHeaders(response);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        var rootNode = JsonNodeFactory.instance.objectNode()
+                .put("error", ex.getMessage());
+        response.getWriter().write(rootNode.toPrettyString());
+    }
+
+    public void successLogoutResponse(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) {
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

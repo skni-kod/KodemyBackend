@@ -1,12 +1,10 @@
 package pl.sknikod.kodemyauth.infrastructure.oauth2;
 
-import io.vavr.control.Option;
-import lombok.NonNull;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Repository;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig.SecurityProperties.AuthProperties;
 import pl.sknikod.kodemyauth.util.Base64Util;
 import pl.sknikod.kodemyauth.util.CookieUtil;
 import pl.sknikod.kodemyauth.util.EncryptionUtil;
@@ -22,17 +20,17 @@ import static pl.sknikod.kodemyauth.infrastructure.auth.rest.AuthController.REDI
 
 @Repository
 public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-    private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
+    private final AuthProperties.CookieKeyProperties cookieProperties;
     private final SecretKey encryptionKey;
 
-    public AuthorizationRequestRepositoryImpl(SecurityConfig.SecurityProperties.AuthProperties authProperties) {
-        this.authProperties = authProperties;
-        this.encryptionKey = EncryptionUtil.generateKey(authProperties.getPassword(), new byte[]{0});
+    public AuthorizationRequestRepositoryImpl(AuthProperties authProperties) {
+        this.cookieProperties = authProperties.getCookieKey();
+        this.encryptionKey = EncryptionUtil.generateKey(authProperties.getSessionEncryptPassword(), new byte[]{0});
     }
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        return CookieUtil.get(request.getCookies(), authProperties.getKey().getCurrentSession())
+        return CookieUtil.get(request.getCookies(), cookieProperties.getCurrentSession())
                 .map(session -> Base64Util.decode(session, bytes -> EncryptionUtil.decrypt(encryptionKey, bytes)))
                 .map(OAuth2AuthorizationRequest.class::cast)
                 .orElse(null);
@@ -40,19 +38,19 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
 
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
-        String currentSessionKey = authProperties.getKey().getCurrentSession();
+        String currentSessionKey = cookieProperties.getCurrentSession();
         if (authorizationRequest == null) {
             CookieUtil.expire(request.getCookies(), currentSessionKey)
                     .ifPresent(response::addCookie);
             return;
         }
 
-        String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
+       /* String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAMETER);
         if (Strings.isNotEmpty(redirectUriAfterLogin)) {
-            Cookie redirect = CookieUtil.generate(authProperties.getKey().getRedirect(),
+            Cookie redirect = CookieUtil.generate(cookieProperties.getRedirectUri(),
                     Base64Util.encode(redirectUriAfterLogin), Duration.ofMinutes(5));
             response.addCookie(redirect);
-        }
+        }*/
 
         Cookie session = CookieUtil.generate(
                 currentSessionKey,
@@ -70,6 +68,9 @@ public class AuthorizationRequestRepositoryImpl implements AuthorizationRequestR
 
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
-        return removeAuthorizationRequest(request);
+        OAuth2AuthorizationRequest oAuth2AuthorizationRequest = removeAuthorizationRequest(request);
+        CookieUtil.expire(request.getCookies(), cookieProperties.getCurrentSession())
+                .ifPresent(response::addCookie);
+        return oAuth2AuthorizationRequest;
     }
 }

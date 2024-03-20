@@ -10,8 +10,7 @@ import java.util.Map;
 @Component
 @AllArgsConstructor
 public abstract class OAuth2UserInfo {
-    @Getter
-    private final Map<String, Object> attributes;
+    protected final Map<String, Object> attributes;
 
     public abstract Provider.ProviderType getProvider();
 

@@ -2,7 +2,10 @@ package pl.sknikod.kodemyauth.exception;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -32,5 +35,13 @@ public class ExceptionRestGenericMessage {
 
     public ExceptionRestGenericMessage(HttpStatus status, String message) {
         this(status.value(), status.getReasonPhrase(), message);
+    }
+
+    public ObjectNode toObjectNode() {
+        return JsonNodeFactory.instance.objectNode()
+                .put("timeStamp", this.getTimeStamp().toString())
+                .put("status", this.getStatus())
+                .put("error", this.getError())
+                .put("message", this.getMessage());
     }
 }

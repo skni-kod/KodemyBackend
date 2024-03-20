@@ -3,21 +3,18 @@ package pl.sknikod.kodemyauth.infrastructure.user;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.exception.structure.OAuth2Exception;
-import pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo.OAuth2UserInfo;
-import pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo.OAuth2UserInfoFactory;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.UserPrincipal;
 import pl.sknikod.kodemyauth.infrastructure.common.repository.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.common.repository.UserRepository;
+import pl.sknikod.kodemyauth.infrastructure.oauth2.userinfo.OAuth2UserInfo;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,16 +31,7 @@ public class UserPrincipalUseCase {
                 ))
                 .fold(() -> this.create(userInfo), this::create);
     }
-
-    public UserPrincipal create(User user) {
-        return Option
-                .of(user.getRole().getName())
-                .map(roleProperties::getPrivileges)
-                .map(authorities -> UserPrincipal.create(user, authorities))
-                .getOrElse(() -> UserPrincipal.create(user, new HashSet<>()));
-    }
-
-    public UserPrincipal create(OAuth2UserInfo authUserInfo) {
+    private UserPrincipal create(OAuth2UserInfo authUserInfo) {
         return Try.of(roleProperties::getDefaultRole)
                 .map(Role.RoleName::valueOf)
                 .map(roleRepository::findByName)
@@ -60,6 +48,16 @@ public class UserPrincipalUseCase {
                 .map(this::create)
                 .getOrElseThrow(
                         () -> new OAuth2Exception("Failed to user principal processing")
+                );
+    }
+
+    private UserPrincipal create(User user) {
+        return Option
+                .of(user.getRole().getName())
+                .map(roleProperties::getPrivileges)
+                .fold(
+                        () -> UserPrincipal.create(user, new HashSet<>()),
+                        authorities -> UserPrincipal.create(user, authorities)
                 );
     }
 }

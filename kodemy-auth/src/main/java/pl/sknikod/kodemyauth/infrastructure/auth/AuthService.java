@@ -1,17 +1,9 @@
 package pl.sknikod.kodemyauth.infrastructure.auth;
 
-import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
@@ -20,7 +12,6 @@ import pl.sknikod.kodemyauth.infrastructure.auth.rest.AuthResponse;
 import pl.sknikod.kodemyauth.infrastructure.auth.rest.OAuth2LinksResponse;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.Provider;
 import pl.sknikod.kodemyauth.infrastructure.common.entity.User;
-import pl.sknikod.kodemyauth.infrastructure.common.entity.UserPrincipal;
 import pl.sknikod.kodemyauth.infrastructure.user.UserPrincipalUseCase;
 import pl.sknikod.kodemyauth.infrastructure.user.rest.UserInfoResponse;
 import pl.sknikod.kodemyauth.util.JwtUtil;
@@ -36,7 +27,6 @@ import static pl.sknikod.kodemyauth.infrastructure.auth.rest.AuthController.REDI
 public class AuthService {
     private final UserPrincipalUseCase userPrincipalUseCase;
     private final SecurityConfig.SecurityProperties.AuthProperties authProperties;
-    private final JwtUtil jwtUtil;
     private final AuthMapper authMapper;
 
     public OAuth2LinksResponse getLinks(String redirectUri, HttpServletRequest request) {
@@ -80,18 +70,19 @@ public class AuthService {
     }
 
     public AuthResponse getSessionToken() {
-        String bearer = Option.of(SecurityContextHolder.getContext().getAuthentication())
+        /*String bearer = Option.of(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(principal -> principal instanceof UserPrincipal)
                 .map(o -> (UserPrincipal) o)
-                .map(user -> jwtUtil.generateToken(new JwtUtil.Input(
+                .map(user -> jwtUtil.generateToken(new JwtTool.Input(
                         user.getId(),
                         user.getUsername(),
                         user.getAuthorities()
                 )))
-                .map(JwtUtil.Output::getBearer)
+                .map(JwtTool.Output::getBearer)
                 .getOrNull();
-        return new AuthResponse(bearer);
+        return new AuthResponse(bearer);*/
+        return null;
     }
 
     @Mapper(componentModel = "spring")

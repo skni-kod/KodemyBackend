@@ -25,20 +25,4 @@ public interface AuthControllerDefinition {
             @RequestParam(name = REDIRECT_URI_PARAMETER, required = false) String redirectUri,
             HttpServletRequest request
     );
-
-    @GetMapping("/providers")
-    @Operation(summary = "Show all OAuth2 providers")
-    ResponseEntity<Provider.ProviderType[]> getProvidersList();
-
-    @GetMapping
-    @Operation(summary = "Check if user is authenticated")
-    ResponseEntity<AuthInfo> isAuthenticated();
-
-    @GetMapping("/token")
-    @Operation(summary = "Get authentication token")
-    ResponseEntity<AuthResponse> getToken();
-
-    @Hidden
-    @GetMapping("/validateToken")
-    ResponseEntity<TokenInfo> validateToken(@RequestParam String bearer);
 }

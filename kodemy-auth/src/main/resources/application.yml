@@ -39,10 +39,6 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
-jwt:
-  expiration-mins: 15
-  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
-
 app:
   opensearch:
     host: opensearch
@@ -55,11 +51,16 @@ app:
         login: /api/oauth2/authorize
         callback: /api/oauth2/callback/**
         logout: /api/oauth2/logout
-      key:
-        current-session: ksession
-        redirect: redirect
-        jwt: jwtsession
-      password: password
+      cookie-key:
+        current-session: KSESSION
+        access-session: JWTSESSION
+        refresh-session: REFRESHSESSION
+      session-encrypt-password: password
+      token:
+        access:
+          expiration-in-min: 4320
+        refresh:
+          expiration-in-min: 10080
     role:
       defaultRole: ROLE_USER
       privileges:

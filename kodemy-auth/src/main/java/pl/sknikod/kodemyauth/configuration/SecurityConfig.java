@@ -1,6 +1,5 @@
 package pl.sknikod.kodemyauth.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Option;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,19 +16,17 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import pl.sknikod.kodemyauth.exception.ExceptionRestGenericMessage;
-import pl.sknikod.kodemyauth.infrastructure.oauth2.OAuth2Service;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
+import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.oauth2.AuthorizationRequestRepositoryImpl;
 import pl.sknikod.kodemyauth.infrastructure.oauth2.OAuth2Controller;
-import pl.sknikod.kodemyauth.infrastructure.common.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.oauth2.OAuth2Service;
 import pl.sknikod.kodemyauth.infrastructure.oauth2.filter.OAuth2RedirectFilter;
+import pl.sknikod.kodemyauth.infrastructure.oauth2.handler.InvalidationLogoutHandler;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,8 +45,6 @@ import java.util.stream.Collectors;
 })
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class SecurityConfig {
-    private final ObjectMapper objectMapper;
-
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
@@ -58,7 +52,8 @@ public class SecurityConfig {
             AuthorizationRequestRepositoryImpl authorizationRequestRepository,
             OAuth2Controller oAuth2Controller,
             OAuth2Service oAuth2Service,
-            OAuth2RedirectFilter oAuth2RedirectFilter
+            OAuth2RedirectFilter oAuth2RedirectFilter,
+            InvalidationLogoutHandler invalidationLogoutHandler
     ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable).cors()
@@ -73,42 +68,24 @@ public class SecurityConfig {
                             endpoint.baseUri(authProperties.uri.login);
                             endpoint.authorizationRequestRepository(authorizationRequestRepository);
                         })
-                        .redirectionEndpoint(endpoint ->
-                                endpoint.baseUri(authProperties.uri.callback)
-                        )
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri(authProperties.uri.callback))
                         .authorizedClientService(oAuth2Service)
-                        .successHandler(oAuth2Controller::successResponse)
-                        .failureHandler(oAuth2Controller::failureResponse)
+                        .successHandler(oAuth2Controller::successLoginResponse)
+                        .failureHandler(oAuth2Controller::failureLoginResponse)
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint((req, res, e) ->
-                                writeBodyResponseForHandler(res, e, HttpStatus.UNAUTHORIZED))
-                        .accessDeniedHandler((req, res, e) ->
-                                writeBodyResponseForHandler(res, e, HttpStatus.FORBIDDEN))
-                );
-                /*.logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher(authProperties.uri.logout, HttpMethod.GET.name())
-                        )
-                        .logoutSuccessHandler(authLogoutSuccessHandler)
+                        .authenticationEntryPoint(oAuth2Controller::unauthorizedResponse)
+                        .accessDeniedHandler(oAuth2Controller::forbiddenResponse)
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher(authProperties.uri.logout, "GET"))
+                        .addLogoutHandler(invalidationLogoutHandler)
                         .invalidateHttpSession(false)
-                        .deleteCookies(
-                                "JSESSIONID",
-                                authProperties.key.currentSession,
-                                authProperties.key.jwt
-                        )
-                );*/
+                        .deleteCookies(authProperties.cookieKey.currentSession)
+                        .logoutSuccessHandler(oAuth2Controller::successLogoutResponse)
+                )
+                .addFilterBefore(oAuth2RedirectFilter, OAuth2AuthorizationRequestRedirectFilter.class);
         return http.build();
-    }
-
-    private void writeBodyResponseForHandler(
-            HttpServletResponse response,
-            Exception ex,
-            HttpStatus status
-    ) throws IOException {
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.getWriter().write(objectMapper.writeValueAsString(new ExceptionRestGenericMessage(status, ex)));
     }
 
     @Bean
@@ -125,8 +102,9 @@ public class SecurityConfig {
         @ConfigurationProperties(prefix = "app.security.auth")
         public static class AuthProperties {
             private UriProperties uri;
-            private KeyProperties key;
-            private String password;
+            private CookieKeyProperties cookieKey;
+            private TokenProperties token;
+            private String sessionEncryptPassword;
 
             @Getter
             @Setter
@@ -138,10 +116,24 @@ public class SecurityConfig {
 
             @Getter
             @Setter
-            public static class KeyProperties {
+            public static class CookieKeyProperties {
                 private String currentSession;
-                private String redirect;
-                private String jwt;
+                private String accessSession;
+                private String refreshSession;
+            }
+
+            @Getter
+            @Setter
+            public static class TokenProperties {
+                private TokenDetails access;
+                private TokenDetails refresh;
+
+                @Getter
+                @Setter
+                public static class TokenDetails {
+                    private int expirationInMin;
+                    private String secretKey;
+                }
             }
         }
 
@@ -156,7 +148,8 @@ public class SecurityConfig {
                 return Option
                         .of(privileges.get(role.toString()))
                         .map(Collection::stream)
-                        .map(stream -> stream.map(SimpleGrantedAuthority::new).collect(Collectors.toSet()))
+                        .map(stream -> stream.map(SimpleGrantedAuthority::new)
+                                .collect(Collectors.toSet()))
                         .getOrElse(Collections::emptySet);
             }
         }
@@ -167,5 +160,10 @@ public class SecurityConfig {
         public static class CorsProperties {
             private String[] allowedUris;
         }
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

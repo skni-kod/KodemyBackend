@@ -1,13 +1,17 @@
 spring:
-  datasource.url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
-
-jwt:
-  expiration-mins: 60
+  datasource:
+    url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
 
 app:
   opensearch:
     host: http://localhost:9200
   security:
+    auth:
+      token:
+        access:
+          secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+        refresh:
+          secret-key: CRY9BVQKQEP35D9RWV6BGK5P38MJZ5DW3F8R6YW3D3BGB7EK5RQ9MPF6YVDR3Q5Y
     cors:
       allowedUris:
         - http://localhost:3000

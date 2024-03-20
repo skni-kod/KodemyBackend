@@ -1,5 +1,7 @@
 package pl.sknikod.kodemyauth.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
@@ -11,6 +13,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EncryptionUtil {
     private static final int KEY_ITERATION_COUNT = 100_000;
     private static final int KEY_SIZE_BYTES = 32;
