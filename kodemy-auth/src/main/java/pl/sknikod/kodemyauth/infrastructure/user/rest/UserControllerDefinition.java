@@ -45,7 +45,7 @@ public interface UserControllerDefinition {
     ResponseEntity<Page<UserInfoResponse>> searchUsers(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "id") String sort,
+            @RequestParam(value = "sort", defaultValue = "id") PossibleUserSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "ASC") Sort.Direction sortDirection,
             @Parameter(description = "{\"username\": \"username\", \"email\": \"email@example.com\", \"role\": \"ROLE_USER\"}")
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields

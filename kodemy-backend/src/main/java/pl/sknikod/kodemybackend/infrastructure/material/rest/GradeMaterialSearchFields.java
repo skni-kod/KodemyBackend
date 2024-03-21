@@ -15,7 +15,6 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class GradeMaterialSearchFields {
-    Long id;
     Date createdDateFrom;
     Date createdDateTo;
 

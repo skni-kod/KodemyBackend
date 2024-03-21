@@ -66,14 +66,14 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<Page<MaterialPageable>> manage(
             int size,
             int page,
-            String sort,
+            PossibleMaterialSortFields sort,
             Sort.Direction sortDirection,
             SearchFields searchFields
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialManageGetUseCase.manage(
                         Objects.isNull(searchFields) ? new SearchFields() : searchFields,
-                        PageRequest.of(page, size, sortDirection, sort)
+                        PageRequest.of(page, size, sortDirection, sort.toString())
                 ));
     }
 }

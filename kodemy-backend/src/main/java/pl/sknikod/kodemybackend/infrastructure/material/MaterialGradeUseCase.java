@@ -41,15 +41,15 @@ public class MaterialGradeUseCase {
                 .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 
-    public Page<GradePageable> showGrades(PageRequest pageRequest, GradeMaterialSearchFields searchFields) {
+    public Page<GradePageable> showGrades(PageRequest pageRequest, GradeMaterialSearchFields searchFields, Long materialId) {
         Date minDate = Objects.nonNull(searchFields.getCreatedDateFrom())
                 ? searchFields.getCreatedDateFrom() : GradeRepository.DATE_MIN;
         Date maxDate = Objects.nonNull(searchFields.getCreatedDateTo())
                 ? searchFields.getCreatedDateTo() : GradeRepository.DATE_MAX;
         Page<Grade> gradesPage = gradeRepository.findGradesByMaterialInDateRange(
-                searchFields.getId(),
+                materialId,
                 minDate, maxDate,
-                PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize())
+                PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(), pageRequest.getSort())
         );
         List<GradePageable> singleGradeResponses = gradesPage.getContent()
                 .stream()
@@ -78,5 +78,6 @@ public class MaterialGradeUseCase {
         private String grade;
     }
 
-    public record GradePageable(Long id, Double value, UserDetails author) { }
+    public record GradePageable(Long id, Double value, UserDetails author) {
+    }
 }

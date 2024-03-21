@@ -17,10 +17,16 @@ public class MaterialController implements MaterialControllerDefinition {
     private final MaterialGetUseCase searchService;
 
     @Override
-    public ResponseEntity<Page<MaterialGetUseCase.MaterialPageable>> search(int size, int page, String sort, Sort.Direction sortDirection, MaterialGetUseCase.SearchFields searchFields) {
+    public ResponseEntity<Page<MaterialGetUseCase.MaterialPageable>> search(
+            int size,
+            int page,
+            PossibleMaterialSortFields sort,
+            Sort.Direction sortDirection,
+            MaterialGetUseCase.SearchFields searchFields
+    ) {
         var materialResponses = searchService.searchMaterials(
                 Objects.isNull(searchFields) ? new MaterialGetUseCase.SearchFields() : searchFields,
-                PageRequest.of(page, size, sortDirection, sort)
+                PageRequest.of(page, size, sortDirection, sort.toString())
         );
         return ResponseEntity.status(HttpStatus.OK).body(materialResponses);
     }
