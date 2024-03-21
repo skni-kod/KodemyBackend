@@ -33,9 +33,10 @@ public interface MaterialGradeControllerDefinition {
     ResponseEntity<Page<MaterialGradeUseCase.GradePageable>> showGrades(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
+            @PathVariable Long materialId,
+            @RequestParam(value = "sort", defaultValue = "created_date") PossibleGradeMaterialSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @Parameter(description = "{\"materialId\":number, \"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\"}")
+            @Parameter(description = "{\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\"}")
             @RequestParam(value = "search_fields", required = false) GradeMaterialSearchFields searchFields
     );
 }

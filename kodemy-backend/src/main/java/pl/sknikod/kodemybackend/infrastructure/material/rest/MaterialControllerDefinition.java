@@ -76,7 +76,7 @@ public interface MaterialControllerDefinition {
     ResponseEntity<Page<MaterialPageable>> manage(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") String sort,
+            @RequestParam(value = "sort", defaultValue = "createdDate") PossibleMaterialSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +
