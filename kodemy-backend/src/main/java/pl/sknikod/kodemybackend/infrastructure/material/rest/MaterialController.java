@@ -29,7 +29,7 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<MaterialCreateUseCase.MaterialCreateResponse> create(MaterialCreateUseCase.MaterialCreateRequest body) {
         var materialResponse = materialCreateUseCase.create(body);
         return ResponseEntity
-                .created(URI.create("/api/materials/" + materialResponse.getId()))
+                .created(URI.create("/api/materials/" + materialResponse.id()))
                 .body(materialResponse);
     }
 
@@ -59,6 +59,23 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialGetUseCase.showDetails(materialId));
+    }
+
+    @Override
+    public ResponseEntity<Page<MaterialPageable>> personal(
+            Long authorId,
+            int size,
+            int page,
+            PossibleMaterialSortFields sort,
+            Sort.Direction sortDirection,
+            SearchFields searchFields
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialGetUseCase.getPersonalMaterials(
+                        authorId,
+                        Objects.isNull(searchFields) ? new SearchFields() : searchFields,
+                        PageRequest.of(page, size, sortDirection, sort.toString())
+                ));
     }
 
     @Override

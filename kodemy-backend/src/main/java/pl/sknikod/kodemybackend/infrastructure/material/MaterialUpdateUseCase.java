@@ -8,11 +8,10 @@ import lombok.Value;
 import org.mapstruct.Mapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Tag;
@@ -43,6 +42,7 @@ public class MaterialUpdateUseCase {
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
     private final TagRepository tagRepository;
+    private final ContextUtil contextUtil;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         Material existingMaterial = materialRepository.findMaterialById(materialId);
@@ -63,10 +63,7 @@ public class MaterialUpdateUseCase {
     }
 
     private Material updateStatus(Material material) {
-        var userPrincipal = (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-        material.setStatus(userPrincipal.getAuthorities()
+        material.setStatus(contextUtil.getCurrentUserPrincipal().getAuthorities()
                 .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                 ? APPROVED : PENDING
         );

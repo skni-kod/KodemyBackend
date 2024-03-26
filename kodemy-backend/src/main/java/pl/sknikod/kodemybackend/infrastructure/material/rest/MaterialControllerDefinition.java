@@ -68,6 +68,29 @@ public interface MaterialControllerDefinition {
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 
+    @Operation(summary = "Get all materials by user ")
+    @SwaggerResponse.SuccessCode200
+    @GetMapping
+    ResponseEntity<Page<MaterialPageable>> personal(
+            @RequestParam Long authorId,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @Parameter(description = "{" +
+                    "\"phrase\":\"phrase\"," +
+                    "\"id\":0," +
+                    "\"statuses\":[\"PENDING\"]," +
+                    "\"createdBy\":\"createdBy\"," +
+                    "\"createdDateFrom\":\"2023-01-01T00:00:00\"," +
+                    "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
+                    "\"sectionId\":0," +
+                    "\"categoryIds\":[0]," +
+                    "\"tagIds\":[0]}"
+            )
+            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
+    );
+
     @Operation(summary = "Get all materials for admin (including not public)")
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.UnauthorizedCode401
@@ -76,7 +99,7 @@ public interface MaterialControllerDefinition {
     ResponseEntity<Page<MaterialPageable>> manage(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +
