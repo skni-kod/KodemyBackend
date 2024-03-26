@@ -70,12 +70,12 @@ public interface MaterialControllerDefinition {
 
     @Operation(summary = "Get all materials by user ")
     @SwaggerResponse.SuccessCode200
-    @GetMapping("/{authorId}")
+    @GetMapping
     ResponseEntity<Page<MaterialPageable>> personal(
-            @PathVariable Long authorId,
+            @RequestParam Long authorId,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +
@@ -99,7 +99,7 @@ public interface MaterialControllerDefinition {
     ResponseEntity<Page<MaterialPageable>> manage(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +

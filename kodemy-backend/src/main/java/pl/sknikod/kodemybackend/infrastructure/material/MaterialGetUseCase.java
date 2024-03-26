@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
@@ -15,6 +17,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialReposit
 import pl.sknikod.kodemybackend.infrastructure.material.rest.SearchFields;
 import pl.sknikod.kodemybackend.infrastructure.material.rest.SingleMaterialResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +29,7 @@ public class MaterialGetUseCase {
     private final GradeRepository gradeRepository;
     private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
+    private final ContextUtil contextUtil;
 
     public SingleMaterialResponse showDetails(Long materialId) {
         return Option.of(materialRepository.findMaterialById(materialId))
@@ -40,26 +44,32 @@ public class MaterialGetUseCase {
     }
 
     public Page<MaterialPageable> getPersonalMaterials(Long authorId, SearchFields searchFields, PageRequest pageRequest) {
-        Page<Object[]> materials = materialRepository.searchMaterialsWithAvgGrades(
-                searchFields.getId(),
-                searchFields.getPhrase(),
-                searchFields.getStatuses(),
-                searchFields.getCreatedBy(),
-                searchFields.getSectionId(),
-                searchFields.getCategoryIds(),
-                searchFields.getTagIds(),
-                authorId,
-                searchFields.getCreatedDateFrom(),
-                searchFields.getCreatedDateTo(),
-                pageRequest
-        );
-        //todo user check
+        var principal = contextUtil.getCurrentUserPrincipal();
+        var statuses = searchFields.getStatuses();
+        if (!principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_VIEW_ALL_MATERIALS")) && !authorId.equals(principal.getId())) {
+            statuses = new ArrayList<>(List.of(Material.MaterialStatus.APPROVED));
+        }
+
+        var materials = materialRepository.searchMaterialsWithAvgGrades(
+                        searchFields.getId(),
+                        searchFields.getPhrase(),
+                        statuses,
+                        searchFields.getCreatedBy(),
+                        searchFields.getSectionId(),
+                        searchFields.getCategoryIds(),
+                        searchFields.getTagIds(),
+                        authorId,
+                        searchFields.getCreatedDateFrom(),
+                        searchFields.getCreatedDateTo(),
+                        pageRequest
+                ).stream()
+                .map(material -> this.map((Material) material[0], (Double) material[1]))
+                .toList();
+
         return new PageImpl<>(
-                materials.stream()
-                        .map(material -> this.map((Material) material[0], (Double) material[1]))
-                        .toList(),
+                materials,
                 pageRequest,
-                materials.getTotalElements()
+                materials.size()
         );
     }
 
