@@ -7,10 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
@@ -34,6 +33,7 @@ public class MaterialGradeUseCase {
     private final MaterialRepository materialRepository;
     private final GradeMapper gradeMapper;
     private final GradeRepository gradeRepository;
+    private final ContextUtil contextUtil;
 
     public void addGrade(Long materialId, MaterialAddGradeRequest body) {
         Option.of(this.map(materialId, body))
@@ -61,9 +61,7 @@ public class MaterialGradeUseCase {
     private Grade map(Long materialId, MaterialAddGradeRequest request) {
         var grade = new Grade();
         grade.setMaterial(materialRepository.findMaterialById(materialId));
-        var principal = (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-        var authorOptional = authorRepository.findById(principal.getId());
+        var authorOptional = authorRepository.findById(contextUtil.getCurrentUserPrincipal().getId());
         if (authorOptional.isEmpty())
             throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class);
         grade.setAuthor(authorOptional.get());
