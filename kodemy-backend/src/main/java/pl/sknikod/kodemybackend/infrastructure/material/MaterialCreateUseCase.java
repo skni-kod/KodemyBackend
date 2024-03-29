@@ -5,14 +5,12 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Author;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
@@ -31,7 +29,7 @@ import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.Mat
 @AllArgsConstructor
 @Slf4j
 public class MaterialCreateUseCase {
-    private final GradeRepository gradeRepository;
+    private final ContextUtil contextUtil;
     private final TagRepository tagRepository;
     private final TypeRepository typeRepository;
     private final CategoryRepository categoryRepository;
@@ -54,7 +52,7 @@ public class MaterialCreateUseCase {
     }
 
     private Material map(MaterialCreateRequest body) {
-        var userPrincipal = getUserPrincipal();
+        var userPrincipal = contextUtil.getCurrentUserPrincipal();
         var material = new Material();
         var author = authorRepository.findById(userPrincipal.getId())
                 .orElseGet(() -> Try.of(() -> authorRepository.save(
@@ -67,7 +65,7 @@ public class MaterialCreateUseCase {
         material.setCategory(categoryRepository.findCategoryById(body.getCategoryId()));
         material.setType(typeRepository.findTypeById(body.getTypeId()));
         material.setTags(tagRepository.findTagsByIdIn(body.getTagsIds()));
-        var isApprovedMaterial = getUserPrincipal().getAuthorities()
+        var isApprovedMaterial = contextUtil.getCurrentUserPrincipal().getAuthorities()
                 .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"));
         material.setStatus(isApprovedMaterial ? APPROVED : PENDING);
         material.setActive(true);
@@ -77,17 +75,10 @@ public class MaterialCreateUseCase {
         return material;
     }
 
-    private static SecurityConfig.UserPrincipal getUserPrincipal() {
-        return (SecurityConfig.UserPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-    }
-
     @Mapper(componentModel = "spring")
     public interface MaterialCreateMapper {
         MaterialCreateResponse map(Material material);
     }
-
 
     @Data
     @AllArgsConstructor
@@ -114,11 +105,7 @@ public class MaterialCreateUseCase {
         private List<@NotNull @Positive(message = "Tag ID must be > 0") Long> tagsIds;
     }
 
-    @Value
-    public static class MaterialCreateResponse {
-        Long id;
-        String title;
-        @Enumerated(EnumType.STRING)
-        Material.MaterialStatus status;
+    public record MaterialCreateResponse(Long id, String title,
+                                         @Enumerated(EnumType.STRING) Material.MaterialStatus status) {
     }
 }
