@@ -29,6 +29,7 @@ public class MaterialGetUseCase {
     private final GradeRepository gradeRepository;
     private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
+    private final MaterialPageableMapper materialPageableMapper;
     private final ContextUtil contextUtil;
 
     public SingleMaterialResponse showDetails(Long materialId) {
@@ -63,7 +64,7 @@ public class MaterialGetUseCase {
                         searchFields.getCreatedDateTo(),
                         pageRequest
                 ).stream()
-                .map(material -> this.map((Material) material[0], (Double) material[1]))
+                .map(material -> materialPageableMapper.map((Material) material[0], (Double) material[1]))
                 .toList();
 
         return new PageImpl<>(
@@ -73,31 +74,7 @@ public class MaterialGetUseCase {
         );
     }
 
-    MaterialPageable map(Material material, Double avgGrade) {
-        var output = MaterialPageable.builder();
-        var type = material.getType();
-        output.type(new MaterialPageable.TypeDetails(
-                type.getId(), type.getName()
-        ));
-        var tags = material.getTags()
-                .stream()
-                .map(tag -> new MaterialPageable.TagDetails(tag.getId(), tag.getName()))
-                .toList();
-        output.tags(tags);
-        var author = material.getAuthor();
-        output.author(new MaterialPageable.AuthorDetails(
-                author.getId(), author.getUsername()
-        ));
 
-        output.id(material.getId());
-        output.title(material.getTitle());
-        output.description(material.getDescription());
-        output.link(material.getLink());
-        output.status(material.getStatus());
-        output.createdDate(material.getCreatedDate());
-        output.gradeAvg(avgGrade);
-        return output.build();
-    }
 
     private List<Long> fetchGradeStats(Long materialId) {
         return Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
