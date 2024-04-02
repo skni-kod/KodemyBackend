@@ -23,6 +23,7 @@ public class MaterialController implements MaterialControllerDefinition {
     private final MaterialGetUseCase materialGetUseCase;
     private final MaterialAdminGetUseCase materialManageGetUseCase;
     private final MaterialOSearchUseCase materialOSearchUseCase;
+    private final MaterialStatusUseCase materialStatusUseCase;
 
     @Override
     @PreAuthorize("isAuthenticated()")
@@ -39,6 +40,13 @@ public class MaterialController implements MaterialControllerDefinition {
         var materialResponse = materialUpdateUseCase.update(materialId, body);
         return ResponseEntity
                 .ok().body(materialResponse);
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Material.MaterialStatus> updateStatus(Long materialId, Material.MaterialStatus newStatus) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialStatusUseCase.update(materialId, newStatus));
     }
 
     @Override

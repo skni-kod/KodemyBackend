@@ -41,6 +41,15 @@ public interface MaterialControllerDefinition {
     @PutMapping("/{materialId}")
     ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateUseCase.MaterialUpdateRequest body);
 
+    @Operation(summary = "Update material status")
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.BadRequestCode400
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
+    @PatchMapping("/{materialId}/status")
+    ResponseEntity<Material.MaterialStatus> updateStatus(@PathVariable Long materialId, @RequestParam Material.MaterialStatus newStatus);
+
     @Operation(summary = "Reindex material")
     @SwaggerResponse.AcceptedCode202
     @SwaggerResponse.UnauthorizedCode401
