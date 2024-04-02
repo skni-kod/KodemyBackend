@@ -68,6 +68,7 @@ app:
           - CAN_APPROVED_MATERIAL
           - CAN_GET_USER_INFO
           - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
         ROLE_ADMIN:
           - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
@@ -79,6 +80,7 @@ app:
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
           - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
         ROLE_SUPERADMIN:
           - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
@@ -91,3 +93,6 @@ app:
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
           - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
+          - CAN_BAN_MATERIAL
+          - CAN_UNBAN_MATERIAL

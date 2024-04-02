@@ -18,7 +18,6 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Type;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
-import pl.sknikod.kodemybackend.infrastructure.material.rest.SingleMaterialResponse;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -142,13 +141,5 @@ public class MaterialUpdateUseCase {
         private Long typeId;
 
         private List<@NotNull @Positive(message = "Tag ID must be > 0") Long> tagsIds;
-    }
-
-    public SingleMaterialResponse changeStatus(Long materialId, Material.MaterialStatus status) {
-        return Option.of(materialRepository.findMaterialById(materialId))
-                .peek(material -> material.setStatus(status))
-                .map(materialRepository::save)
-                .map(materialMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class));
     }
 }
