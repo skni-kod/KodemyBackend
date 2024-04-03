@@ -68,10 +68,14 @@ public class Material extends Auditable<String> {
     }
 
     public enum MaterialStatus {
-        APPROVED, //CONFIRMED
-        PENDING, //UNCONFIRMED, AWAITING_APPROVAL, PENDING
+        APPROVED,
+        PENDING,
+        DRAFT,
         REJECTED,
-        EDITED, //CORRECTED
-        BANNED
+        BAN_REQUESTED,
+        BANNED,
+        DEPRECATION_REQUEST,
+        DEPRECATED,
+        DELETED
     }
 }

@@ -16,6 +16,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.MaterialUpdateUseCase;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.time.Instant;
 
 @RequestMapping("/api/materials")
@@ -41,6 +42,15 @@ public interface MaterialControllerDefinition {
     @PutMapping("/{materialId}")
     ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateUseCase.MaterialUpdateRequest body);
 
+    @Operation(summary = "Update material status")
+    @SwaggerResponse.SuccessCode200
+    @SwaggerResponse.BadRequestCode400
+    @SwaggerResponse.UnauthorizedCode401
+    @SwaggerResponse.ForbiddenCode403
+    @SwaggerResponse.NotFoundCode404
+    @PatchMapping("/{materialId}/status")
+    ResponseEntity<Material.MaterialStatus> updateStatus(@PathVariable Long materialId, @RequestParam Material.MaterialStatus newStatus) throws ValidationException;
+
     @Operation(summary = "Reindex material")
     @SwaggerResponse.AcceptedCode202
     @SwaggerResponse.UnauthorizedCode401
@@ -54,14 +64,6 @@ public interface MaterialControllerDefinition {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @RequestParam(value = "to") Instant to
     );
-
-    @Operation(summary = "Change material's status")
-    @SwaggerResponse.SuccessCode200
-    @SwaggerResponse.UnauthorizedCode401
-    @SwaggerResponse.ForbiddenCode403
-    @SwaggerResponse.NotFoundCode404
-    @PatchMapping("/{materialId}/status")
-    ResponseEntity<SingleMaterialResponse> changeStatus(@PathVariable Long materialId, @RequestBody Material.MaterialStatus status);
 
     @Operation(summary = "Show material details")
     @SwaggerResponse.SuccessCode200

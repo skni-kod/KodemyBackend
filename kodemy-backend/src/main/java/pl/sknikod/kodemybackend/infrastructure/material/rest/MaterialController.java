@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.*;
 
+import javax.xml.bind.ValidationException;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class MaterialController implements MaterialControllerDefinition {
     private final MaterialGetUseCase materialGetUseCase;
     private final MaterialAdminGetUseCase materialManageGetUseCase;
     private final MaterialOSearchUseCase materialOSearchUseCase;
+    private final MaterialStatusUseCase materialStatusUseCase;
 
     @Override
     @PreAuthorize("isAuthenticated()")
@@ -42,17 +44,17 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Material.MaterialStatus> updateStatus(Long materialId, Material.MaterialStatus newStatus) throws ValidationException {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialStatusUseCase.update(materialId, newStatus));
+    }
+
+    @Override
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_INDEX')")
     public ResponseEntity<MaterialOSearchUseCase.ReindexResult> reindex(Instant from, Instant to) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(materialOSearchUseCase.reindex(from, to));
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('CAN_APPROVED_MATERIAL')")
-    public ResponseEntity<SingleMaterialResponse> changeStatus(Long materialId, Material.MaterialStatus status) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(materialUpdateUseCase.changeStatus(materialId, status));
     }
 
     @Override

@@ -75,7 +75,6 @@ public class MaterialGetUseCase {
     }
 
 
-
     private List<Long> fetchGradeStats(Long materialId) {
         return Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)
                 .map(i -> gradeRepository.countAllByMaterialIdAndValue(materialId, i))
