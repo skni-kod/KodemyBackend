@@ -3,10 +3,11 @@ package pl.sknikod.kodemybackend.infrastructure.material;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.material.rest.SearchFields;
 
 @Component
 @AllArgsConstructor
-public class MaterialPageableMapper {
+public class MaterialPageableUtil {
     MaterialPageable map(Material material, Double avgGrade) {
         var output = MaterialPageable.builder();
         var type = material.getType();
@@ -31,5 +32,11 @@ public class MaterialPageableMapper {
         output.createdDate(material.getCreatedDate());
         output.gradeAvg(avgGrade);
         return output.build();
+    }
+
+    public boolean filterByAvgGrade(SearchFields searchFields, MaterialPageable m) {
+        double gradeAvg = m.getGradeAvg();
+        return (searchFields.getMinAvgGrade() == null || gradeAvg >= searchFields.getMinAvgGrade()) &&
+                (searchFields.getMaxAvgGrade() == null || gradeAvg <= searchFields.getMaxAvgGrade());
     }
 }

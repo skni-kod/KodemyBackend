@@ -88,6 +88,8 @@ public interface MaterialControllerDefinition {
                     "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
                     "\"sectionId\":0," +
                     "\"categoryIds\":[0]," +
+                    "\"minAvgGrade\":2.2" +
+                    "\"maxAvgGrade\":4.2" +
                     "\"tagIds\":[0]}"
             )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
@@ -112,6 +114,8 @@ public interface MaterialControllerDefinition {
                     "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
                     "\"sectionId\":0," +
                     "\"categoryIds\":[0]," +
+                    "\"minAvgGrade\":2.2" +
+                    "\"maxAvgGrade\":4.2" +
                     "\"tagIds\":[0]}"
             )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields

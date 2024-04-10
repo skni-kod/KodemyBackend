@@ -29,7 +29,7 @@ public class MaterialGetUseCase {
     private final GradeRepository gradeRepository;
     private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
-    private final MaterialPageableMapper materialPageableMapper;
+    private final MaterialPageableUtil materialPageableUtil;
     private final ContextUtil contextUtil;
 
     public SingleMaterialResponse showDetails(Long materialId) {
@@ -64,7 +64,8 @@ public class MaterialGetUseCase {
                         searchFields.getCreatedDateTo(),
                         pageRequest
                 ).stream()
-                .map(material -> materialPageableMapper.map((Material) material[0], (Double) material[1]))
+                .map(material -> materialPageableUtil.map((Material) material[0], (Double) material[1]))
+                .filter(m -> materialPageableUtil.filterByAvgGrade(searchFields, m))
                 .toList();
 
         return new PageImpl<>(
@@ -73,7 +74,6 @@ public class MaterialGetUseCase {
                 materials.size()
         );
     }
-
 
     private List<Long> fetchGradeStats(Long materialId) {
         return Stream.iterate(1.0, i -> i <= 5.0, i -> i + 1.0)

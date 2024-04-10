@@ -50,7 +50,10 @@ public class MaterialGetUseCase {
                 .map(searchResponse -> {
                     var hits = searchResponse.getHits();
                     return new PageImpl<>(
-                            materialSearchMapper.map(hits),
+                            materialSearchMapper.map(hits)
+                                    .stream()
+                                    .filter(m -> filterByAvgGrade(searchFields, m))
+                                    .toList(),
                             page,
                             hits.getTotalHits().value
                     );
@@ -113,6 +116,12 @@ public class MaterialGetUseCase {
         return new SearchCriteria(contentField, phraseFields, rangeFields, page);
     }
 
+    private boolean filterByAvgGrade(SearchFields searchFields, MaterialPageable m) {
+        double gradeAvg = m.getAvgGrade();
+        return (searchFields.getMinAvgGrade() == null || gradeAvg >= searchFields.getMinAvgGrade()) &&
+                (searchFields.getMaxAvgGrade() == null || gradeAvg <= searchFields.getMaxAvgGrade());
+    }
+
     @Mapper(componentModel = "spring")
     public interface MaterialSearchMapper {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -146,6 +155,8 @@ public class MaterialGetUseCase {
         Long sectionId;
         Long[] categoryIds;
         Long[] tagIds;
+        Double minAvgGrade;
+        Double maxAvgGrade;
 
         @Component
         @RequiredArgsConstructor

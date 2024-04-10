@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 public class MaterialAdminGetUseCase {
     private final MaterialRepository materialRepository;
-    private final MaterialPageableMapper materialPageableMapper;
+    private final MaterialPageableUtil materialPageableUtil;
 
     public Page<MaterialPageable> manage(@NotNull SearchFields searchFields, PageRequest page) {
         Page<Object[]> materials = materialRepository.searchMaterialsWithAvgGrades(
@@ -35,7 +35,8 @@ public class MaterialAdminGetUseCase {
         );
         return new PageImpl<>(
                 materials.stream()
-                        .map(material -> materialPageableMapper.map((Material) material[0], (Double) material[1]))
+                        .map(material -> materialPageableUtil.map((Material) material[0], (Double) material[1]))
+                        .filter(m -> materialPageableUtil.filterByAvgGrade(searchFields, m))
                         .toList(),
                 page,
                 materials.getTotalElements()

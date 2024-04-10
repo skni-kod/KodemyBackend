@@ -26,6 +26,8 @@ public class SearchFields {
     Long sectionId;
     List<Long> categoryIds;
     List<Long> tagIds;
+    Double minAvgGrade;
+    Double maxAvgGrade;
 
     @Component
     @RequiredArgsConstructor
