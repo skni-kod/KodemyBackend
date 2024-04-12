@@ -22,7 +22,8 @@ public class MaterialStatusUseCase {
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) throws ValidationException {
         Material material = materialRepository.findMaterialById(materialId);
-        SecurityConfig.UserPrincipal userPrincipal = contextUtil.getCurrentUserPrincipal();
+        var userPrincipal = Option.ofOptional(contextUtil.getCurrentUserPrincipal())
+                .getOrElseThrow(() -> new ValidationException("User not authorized"));
 
         List<Material.MaterialStatus> possibleStatuses = materialStatusUtil.getPossibleStatuses(material.getStatus());
         var neededAuthority = materialStatusUtil.getAuthorityForStatusChange(material.getStatus(), newStatus);

@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.exception.structure.ValidationException;
 import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
@@ -59,9 +60,11 @@ public class MaterialGradeUseCase {
     }
 
     private Grade map(Long materialId, MaterialAddGradeRequest request) {
+        var userPrincipal = Option.ofOptional(contextUtil.getCurrentUserPrincipal())
+                .getOrElseThrow(() -> new ValidationException("User not authorized"));
         var grade = new Grade();
         grade.setMaterial(materialRepository.findMaterialById(materialId));
-        var authorOptional = authorRepository.findById(contextUtil.getCurrentUserPrincipal().getId());
+        var authorOptional = authorRepository.findById(userPrincipal.getId());
         if (authorOptional.isEmpty())
             throw new ServerProcessingException(ServerProcessingException.Format.PROCESS_FAILED, Material.class);
         grade.setAuthor(authorOptional.get());

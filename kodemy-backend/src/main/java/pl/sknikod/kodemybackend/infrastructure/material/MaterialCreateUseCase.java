@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemybackend.exception.structure.ValidationException;
 import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Author;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
@@ -52,7 +53,8 @@ public class MaterialCreateUseCase {
     }
 
     private Material map(MaterialCreateRequest body) {
-        var userPrincipal = contextUtil.getCurrentUserPrincipal();
+        var userPrincipal = Option.ofOptional(contextUtil.getCurrentUserPrincipal())
+                .getOrElseThrow(() -> new ValidationException("User not authorized"));
         var material = new Material();
         var author = authorRepository.findById(userPrincipal.getId())
                 .orElseGet(() -> Try.of(() -> authorRepository.save(
@@ -65,7 +67,7 @@ public class MaterialCreateUseCase {
         material.setCategory(categoryRepository.findCategoryById(body.getCategoryId()));
         material.setType(typeRepository.findTypeById(body.getTypeId()));
         material.setTags(tagRepository.findTagsByIdIn(body.getTagsIds()));
-        var isApprovedMaterial = contextUtil.getCurrentUserPrincipal().getAuthorities()
+        var isApprovedMaterial = userPrincipal.getAuthorities()
                 .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"));
         material.setStatus(isApprovedMaterial ? APPROVED : PENDING);
         material.setActive(true);

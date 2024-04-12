@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
@@ -47,7 +48,7 @@ public class MaterialGetUseCase {
     public Page<MaterialPageable> getPersonalMaterials(Long authorId, SearchFields searchFields, PageRequest pageRequest) {
         var principal = contextUtil.getCurrentUserPrincipal();
         var statuses = searchFields.getStatuses();
-        if (!principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_VIEW_ALL_MATERIALS")) && !authorId.equals(principal.getId())) {
+        if (principal.isEmpty() || userCannotViewNotApprovedMaterials(authorId, principal.get())) {
             statuses = new ArrayList<>(List.of(Material.MaterialStatus.APPROVED));
         }
 
@@ -62,10 +63,11 @@ public class MaterialGetUseCase {
                         authorId,
                         searchFields.getCreatedDateFrom(),
                         searchFields.getCreatedDateTo(),
+                        searchFields.getMinAvgGrade(),
+                        searchFields.getMaxAvgGrade(),
                         pageRequest
                 ).stream()
                 .map(material -> materialPageableUtil.map((Material) material[0], (Double) material[1]))
-                .filter(m -> materialPageableUtil.filterByAvgGrade(searchFields, m))
                 .toList();
 
         return new PageImpl<>(
@@ -73,6 +75,11 @@ public class MaterialGetUseCase {
                 pageRequest,
                 materials.size()
         );
+    }
+
+    private static boolean userCannotViewNotApprovedMaterials(Long authorId, SecurityConfig.UserPrincipal principal) {
+        return !principal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_VIEW_ALL_MATERIALS")) &&
+                !authorId.equals(principal.getId());
     }
 
     private List<Long> fetchGradeStats(Long materialId) {

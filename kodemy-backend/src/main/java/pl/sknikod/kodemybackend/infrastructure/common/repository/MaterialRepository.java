@@ -34,6 +34,10 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "   SELECT 1 FROM m.tags t WHERE t.id IN :tagIds)) " +
             "AND (cast(:dateFrom as date) IS NULL OR m.createdDate >= :dateFrom) " +
             "AND (cast(:dateTo as date) IS NULL OR m.createdDate <= :dateTo) " +
+            "AND (:minAvgGrade IS NULL OR :minAvgGrade <= " +
+            "   (SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g WHERE g.material.id = m.id)) " +
+            "AND (:maxAvgGrade IS NULL OR :maxAvgGrade >= " +
+            "   (SELECT COALESCE(AVG(g.value), 0.00) FROM Grade g WHERE g.material.id = m.id)) " +
             "GROUP BY m")
     Page<Object[]> searchMaterialsWithAvgGrades(
             Long id,
@@ -46,6 +50,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             Long authorId,
             Date dateFrom,
             Date dateTo,
+            Double minAvgGrade,
+            Double maxAvgGrade,
             Pageable pageable
     );
 

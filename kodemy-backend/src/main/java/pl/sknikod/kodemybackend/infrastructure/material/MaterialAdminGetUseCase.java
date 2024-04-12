@@ -31,12 +31,13 @@ public class MaterialAdminGetUseCase {
                 null,
                 searchFields.getCreatedDateFrom(),
                 searchFields.getCreatedDateTo(),
+                searchFields.getMinAvgGrade(),
+                searchFields.getMaxAvgGrade(),
                 page
         );
         return new PageImpl<>(
                 materials.stream()
                         .map(material -> materialPageableUtil.map((Material) material[0], (Double) material[1]))
-                        .filter(m -> materialPageableUtil.filterByAvgGrade(searchFields, m))
                         .toList(),
                 page,
                 materials.getTotalElements()
