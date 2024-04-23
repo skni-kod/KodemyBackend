@@ -24,8 +24,8 @@ public class MaterialGradeController implements MaterialGradeControllerDefinitio
     }
 
     @Override
-    public ResponseEntity<Page<MaterialGradeUseCase.GradePageable>> showGrades(int size, int page, Long materialId, PossibleGradeMaterialSortFields sort, Sort.Direction sortDirection, GradeMaterialSearchFields searchFields) {
-        var pageRequest = PageRequest.of(page, size, sortDirection, sort.toString());
+    public ResponseEntity<Page<MaterialGradeUseCase.GradePageable>> showGrades(int size, int page, Long materialId, GradeMaterialSortField sortField, Sort.Direction sortDirection, GradeMaterialSearchFields searchFields) {
+        var pageRequest = PageRequest.of(page, size, sortDirection, sortField.getField());
         var searchFieldsParam = Objects.isNull(searchFields) ? new GradeMaterialSearchFields() : searchFields;
         return ResponseEntity.status(HttpStatus.OK)
                 .body(

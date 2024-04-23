@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.MaterialMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.GradeRepository;
@@ -20,6 +19,7 @@ import pl.sknikod.kodemybackend.infrastructure.material.rest.SingleMaterialRespo
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,7 +31,6 @@ public class MaterialGetUseCase {
     private final MaterialRepository materialRepository;
     private final MaterialMapper materialMapper;
     private final MaterialPageableUtil materialPageableUtil;
-    private final ContextUtil contextUtil;
 
     public SingleMaterialResponse showDetails(Long materialId) {
         return Option.of(materialRepository.findMaterialById(materialId))
@@ -45,8 +44,7 @@ public class MaterialGetUseCase {
                 ));
     }
 
-    public Page<MaterialPageable> getPersonalMaterials(Long authorId, SearchFields searchFields, PageRequest pageRequest) {
-        var principal = contextUtil.getCurrentUserPrincipal();
+    public Page<MaterialPageable> getPersonalMaterials(Long authorId, SearchFields searchFields, PageRequest pageRequest, Optional<SecurityConfig.UserPrincipal> principal) {
         var statuses = searchFields.getStatuses();
         if (principal.isEmpty() || userCannotViewNotApprovedMaterials(authorId, principal.get())) {
             statuses = new ArrayList<>(List.of(Material.MaterialStatus.APPROVED));

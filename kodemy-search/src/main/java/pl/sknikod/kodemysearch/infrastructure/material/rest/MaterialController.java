@@ -20,13 +20,13 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<Page<MaterialGetUseCase.MaterialPageable>> search(
             int size,
             int page,
-            PossibleMaterialSortFields sort,
+            MaterialGetUseCase.MaterialSortField sortField,
             Sort.Direction sortDirection,
             MaterialGetUseCase.SearchFields searchFields
     ) {
         var materialResponses = searchService.searchMaterials(
                 Objects.isNull(searchFields) ? new MaterialGetUseCase.SearchFields() : searchFields,
-                PageRequest.of(page, size, sortDirection, sort.toString())
+                PageRequest.of(page, size, sortDirection, sortField.getField())
         );
         return ResponseEntity.status(HttpStatus.OK).body(materialResponses);
     }

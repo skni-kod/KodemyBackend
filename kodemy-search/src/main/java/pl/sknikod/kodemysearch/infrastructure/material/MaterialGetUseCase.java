@@ -112,6 +112,13 @@ public class MaterialGetUseCase {
                     searchFields.getCreatedDateTo()
             ));
 
+        if (Objects.nonNull(searchFields.getMinAvgGrade()) || Objects.nonNull(searchFields.getMaxAvgGrade()))
+            rangeFields.add(new SearchCriteria.RangeField<>(
+                    "avgGrade",
+                    searchFields.getMinAvgGrade(),
+                    searchFields.getMaxAvgGrade()
+            ));
+
         var contentField = new SearchCriteria.ContentField(searchFields.getPhrase());
         return new SearchCriteria(contentField, phraseFields, rangeFields, page);
     }
@@ -120,6 +127,23 @@ public class MaterialGetUseCase {
         double gradeAvg = m.getAvgGrade();
         return (searchFields.getMinAvgGrade() == null || gradeAvg >= searchFields.getMinAvgGrade()) &&
                 (searchFields.getMaxAvgGrade() == null || gradeAvg <= searchFields.getMaxAvgGrade());
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum MaterialSortField {
+        ID("id"),
+        TITLE("title"),
+        DESCRIPTION("description"),
+        STATUS("status"),
+        IS_ACTIVE("isActive"),
+        AVG_GRADE("avgGrade"),
+        AUTHOR("author"),
+        CREATED_DATE("createdDate"),
+        SECTION_ID("sectionId"),
+        CATEGORY_ID("categoryId");
+
+        private final String field;
     }
 
     @Mapper(componentModel = "spring")
@@ -157,6 +181,7 @@ public class MaterialGetUseCase {
         Long[] tagIds;
         Double minAvgGrade;
         Double maxAvgGrade;
+
 
         @Component
         @RequiredArgsConstructor

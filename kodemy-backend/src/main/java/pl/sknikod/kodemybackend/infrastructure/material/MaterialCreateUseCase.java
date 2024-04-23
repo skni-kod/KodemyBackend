@@ -11,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
-import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
+import pl.sknikod.kodemybackend.util.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Author;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.*;
@@ -30,7 +30,6 @@ import static pl.sknikod.kodemybackend.infrastructure.common.entity.Material.Mat
 @AllArgsConstructor
 @Slf4j
 public class MaterialCreateUseCase {
-    private final ContextUtil contextUtil;
     private final TagRepository tagRepository;
     private final TypeRepository typeRepository;
     private final CategoryRepository categoryRepository;
@@ -53,7 +52,7 @@ public class MaterialCreateUseCase {
     }
 
     private Material map(MaterialCreateRequest body) {
-        var userPrincipal = Option.ofOptional(contextUtil.getCurrentUserPrincipal())
+        var userPrincipal = Option.ofOptional(ContextUtil.getCurrentUserPrincipal())
                 .getOrElseThrow(() -> new ValidationException("User not authorized"));
         var material = new Material();
         var author = authorRepository.findById(userPrincipal.getId())

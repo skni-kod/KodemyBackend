@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
-import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
+import pl.sknikod.kodemybackend.util.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
@@ -34,7 +34,6 @@ public class MaterialGradeUseCase {
     private final MaterialRepository materialRepository;
     private final GradeMapper gradeMapper;
     private final GradeRepository gradeRepository;
-    private final ContextUtil contextUtil;
 
     public void addGrade(Long materialId, MaterialAddGradeRequest body) {
         Option.of(this.map(materialId, body))
@@ -60,7 +59,7 @@ public class MaterialGradeUseCase {
     }
 
     private Grade map(Long materialId, MaterialAddGradeRequest request) {
-        var userPrincipal = Option.ofOptional(contextUtil.getCurrentUserPrincipal())
+        var userPrincipal = Option.ofOptional(ContextUtil.getCurrentUserPrincipal())
                 .getOrElseThrow(() -> new ValidationException("User not authorized"));
         var grade = new Grade();
         grade.setMaterial(materialRepository.findMaterialById(materialId));
