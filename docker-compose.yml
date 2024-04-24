@@ -75,8 +75,3 @@ volumes:
   postgres_dev:
   rabbitmq_dev:
   opensearch_dev:
-    driver: local
-    driver_opts:
-      o: size=10G
-      device: tmpfs
-      type: tmpfs

@@ -11,7 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.RabbitConfig;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
+import pl.sknikod.kodemybackend.exception.structure.ValidationException;
+import pl.sknikod.kodemybackend.util.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Tag;
@@ -41,7 +42,6 @@ public class MaterialUpdateUseCase {
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
     private final TagRepository tagRepository;
-    private final ContextUtil contextUtil;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         Material existingMaterial = materialRepository.findMaterialById(materialId);
@@ -62,7 +62,10 @@ public class MaterialUpdateUseCase {
     }
 
     private Material updateStatus(Material material) {
-        material.setStatus(contextUtil.getCurrentUserPrincipal().getAuthorities()
+        var userPrincipal = Option.ofOptional(ContextUtil.getCurrentUserPrincipal())
+                .getOrElseThrow(() -> new ValidationException("User not authorized"));
+
+        material.setStatus(userPrincipal.getAuthorities()
                 .contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                 ? APPROVED : PENDING
         );

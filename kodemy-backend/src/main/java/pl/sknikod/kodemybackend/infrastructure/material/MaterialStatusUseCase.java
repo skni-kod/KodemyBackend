@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.exception.structure.ValidationException;
-import pl.sknikod.kodemybackend.infrastructure.common.ContextUtil;
+import pl.sknikod.kodemybackend.util.ContextUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.MaterialStatusUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.common.repository.MaterialRepository;
@@ -17,23 +17,20 @@ import java.util.List;
 @AllArgsConstructor
 public class MaterialStatusUseCase {
     private final MaterialRepository materialRepository;
-    private final ContextUtil contextUtil;
-    private final MaterialStatusUtil materialStatusUtil;
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) throws ValidationException {
         Material material = materialRepository.findMaterialById(materialId);
-        SecurityConfig.UserPrincipal userPrincipal = contextUtil.getCurrentUserPrincipal();
+        var userPrincipal = Option.ofOptional(ContextUtil.getCurrentUserPrincipal())
+                .getOrElseThrow(() -> new ValidationException("User not authorized"));
 
-        List<Material.MaterialStatus> possibleStatuses = materialStatusUtil.getPossibleStatuses(material.getStatus());
-        var neededAuthority = materialStatusUtil.getAuthorityForStatusChange(material.getStatus(), newStatus);
+        List<Material.MaterialStatus> possibleStatuses = MaterialStatusUtil.getPossibleStatuses(material.getStatus());
+        var neededAuthority = MaterialStatusUtil.getAuthorityForStatusChange(material.getStatus(), newStatus);
 
         if (possibleStatuses.contains(newStatus) && canUserUpdateStatus(userPrincipal, neededAuthority, material)) {
             return updateStatus(material, newStatus);
         }
         throw new ValidationException("Cannot update status of the material");
     }
-
-    //
 
     private boolean canUserUpdateStatus(SecurityConfig.UserPrincipal userPrincipal, SimpleGrantedAuthority neededAuthority, Material material) {
         return userPrincipal.getAuthorities().contains(neededAuthority)

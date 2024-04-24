@@ -41,11 +41,11 @@ public class UserController implements UserControllerDefinition {
     public ResponseEntity<Page<UserInfoResponse>> searchUsers(
             int size,
             int page,
-            PossibleUserSortFields sort,
+            UserSortField sortField,
             Sort.Direction sortDirection,
             SearchFields searchFields
     ) {
-        var pageRequest = PageRequest.of(page, size, sortDirection, sort.toString());
+        var pageRequest = PageRequest.of(page, size, sortDirection, sortField.getField());
         var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
         return ResponseEntity.status(HttpStatus.OK).body(
                 userService.searchUsers(pageRequest, searchFieldsParam)

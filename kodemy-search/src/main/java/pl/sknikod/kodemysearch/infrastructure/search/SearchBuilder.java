@@ -25,7 +25,11 @@ public class SearchBuilder {
     }
 
     private void withContentPhrase(SearchCriteria.ContentField contentField) {
-        Function<String, QueryStringQueryBuilder> queryStringBuilderFunction = fieldValue -> QueryBuilders.queryStringQuery(fieldValue).type(MultiMatchQueryBuilder.Type.PHRASE).escape(true).lenient(true);
+        Function<String, QueryStringQueryBuilder> queryStringBuilderFunction = fieldValue ->
+                QueryBuilders.queryStringQuery(fieldValue)
+                        .type(MultiMatchQueryBuilder.Type.PHRASE)
+                        .escape(true)
+                        .lenient(true);
 
         Optional.ofNullable(contentField)
                 .map(SearchCriteria.ContentField::getValue)

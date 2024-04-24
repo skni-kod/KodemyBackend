@@ -6,7 +6,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 
 @Component
 @AllArgsConstructor
-public class MaterialPageableMapper {
+public class MaterialPageableUtil {
     MaterialPageable map(Material material, Double avgGrade) {
         var output = MaterialPageable.builder();
         var type = material.getType();

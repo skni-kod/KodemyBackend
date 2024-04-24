@@ -16,7 +16,6 @@ import pl.sknikod.kodemybackend.infrastructure.material.MaterialUpdateUseCase;
 import pl.sknikod.kodemybackend.util.SwaggerResponse;
 
 import javax.validation.Valid;
-import javax.xml.bind.ValidationException;
 import java.time.Instant;
 
 @RequestMapping("/api/materials")
@@ -31,7 +30,8 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.NotFoundCode404
     @SwaggerResponse.ConflictCode409
     @PostMapping
-    ResponseEntity<MaterialCreateUseCase.MaterialCreateResponse> create(@RequestBody @Valid MaterialCreateUseCase.MaterialCreateRequest body);
+    ResponseEntity<MaterialCreateUseCase.MaterialCreateResponse> create(
+            @RequestBody @Valid MaterialCreateUseCase.MaterialCreateRequest body);
 
     @Operation(summary = "Update material")
     @SwaggerResponse.SuccessCode200
@@ -40,7 +40,8 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @SwaggerResponse.NotFoundCode404
     @PutMapping("/{materialId}")
-    ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(@PathVariable Long materialId, @RequestBody @Valid MaterialUpdateUseCase.MaterialUpdateRequest body);
+    ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(
+            @PathVariable Long materialId, @RequestBody @Valid MaterialUpdateUseCase.MaterialUpdateRequest body);
 
     @Operation(summary = "Update material status")
     @SwaggerResponse.SuccessCode200
@@ -49,7 +50,8 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @SwaggerResponse.NotFoundCode404
     @PatchMapping("/{materialId}/status")
-    ResponseEntity<Material.MaterialStatus> updateStatus(@PathVariable Long materialId, @RequestParam Material.MaterialStatus newStatus) throws ValidationException;
+    ResponseEntity<Material.MaterialStatus> updateStatus(
+            @PathVariable Long materialId, @RequestParam Material.MaterialStatus newStatus);
 
     @Operation(summary = "Reindex material")
     @SwaggerResponse.AcceptedCode202
@@ -70,38 +72,16 @@ public interface MaterialControllerDefinition {
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
 
-    @Operation(summary = "Get all materials by user ")
-    @SwaggerResponse.SuccessCode200
-    @GetMapping
-    ResponseEntity<Page<MaterialPageable>> personal(
-            @RequestParam Long authorId,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
-            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @Parameter(description = "{" +
-                    "\"phrase\":\"phrase\"," +
-                    "\"id\":0," +
-                    "\"statuses\":[\"PENDING\"]," +
-                    "\"createdBy\":\"createdBy\"," +
-                    "\"createdDateFrom\":\"2023-01-01T00:00:00\"," +
-                    "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
-                    "\"sectionId\":0," +
-                    "\"categoryIds\":[0]," +
-                    "\"tagIds\":[0]}"
-            )
-            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
-    );
-
-    @Operation(summary = "Get all materials for admin (including not public)")
+    @Operation(summary = "Get all materials by user (including not public) / manage")
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.UnauthorizedCode401
     @SwaggerResponse.ForbiddenCode403
-    @GetMapping("/manage")
-    ResponseEntity<Page<MaterialPageable>> manage(
+    @GetMapping
+    ResponseEntity<Page<MaterialPageable>> materials(
+            @RequestParam(required = false) Long authorId,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "id") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sort", defaultValue = "CREATED_DATE") MaterialSortField sortField,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{" +
                     "\"phrase\":\"phrase\"," +
@@ -112,7 +92,10 @@ public interface MaterialControllerDefinition {
                     "\"createdDateTo\":\"2023-12-12T23:59:59\"," +
                     "\"sectionId\":0," +
                     "\"categoryIds\":[0]," +
-                    "\"tagIds\":[0]}"
+                    "\"minAvgGrade\":2.2" +
+                    "\"maxAvgGrade\":4.2" +
+                    "\"tagIds\":[0]" +
+                    "}"
             )
             @RequestParam(value = "search_fields", required = false) SearchFields searchFields
     );

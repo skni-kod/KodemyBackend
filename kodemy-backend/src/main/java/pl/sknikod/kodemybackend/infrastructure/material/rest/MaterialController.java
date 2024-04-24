@@ -6,15 +6,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sknikod.kodemybackend.configuration.SecurityConfig;
 import pl.sknikod.kodemybackend.infrastructure.common.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.material.*;
+import pl.sknikod.kodemybackend.util.ContextUtil;
 
-import javax.xml.bind.ValidationException;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -37,7 +43,9 @@ public class MaterialController implements MaterialControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(Long materialId, MaterialUpdateUseCase.MaterialUpdateRequest body) {
+    public ResponseEntity<MaterialUpdateUseCase.MaterialUpdateResponse> update(
+            Long materialId, MaterialUpdateUseCase.MaterialUpdateRequest body
+    ) {
         var materialResponse = materialUpdateUseCase.update(materialId, body);
         return ResponseEntity
                 .ok().body(materialResponse);
@@ -45,7 +53,7 @@ public class MaterialController implements MaterialControllerDefinition {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Material.MaterialStatus> updateStatus(Long materialId, Material.MaterialStatus newStatus) throws ValidationException {
+    public ResponseEntity<Material.MaterialStatus> updateStatus(Long materialId, Material.MaterialStatus newStatus) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialStatusUseCase.update(materialId, newStatus));
     }
@@ -64,35 +72,26 @@ public class MaterialController implements MaterialControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<Page<MaterialPageable>> personal(
+    public ResponseEntity<Page<MaterialPageable>> materials(
             Long authorId,
             int size,
             int page,
-            PossibleMaterialSortFields sort,
+            MaterialSortField sortField,
             Sort.Direction sortDirection,
             SearchFields searchFields
     ) {
+        var principal = ContextUtil.getCurrentUserPrincipal();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(materialGetUseCase.getPersonalMaterials(
-                        authorId,
-                        Objects.isNull(searchFields) ? new SearchFields() : searchFields,
-                        PageRequest.of(page, size, sortDirection, sort.toString())
-                ));
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('CAN_VIEW_ALL_MATERIALS')")
-    public ResponseEntity<Page<MaterialPageable>> manage(
-            int size,
-            int page,
-            PossibleMaterialSortFields sort,
-            Sort.Direction sortDirection,
-            SearchFields searchFields
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(materialManageGetUseCase.manage(
-                        Objects.isNull(searchFields) ? new SearchFields() : searchFields,
-                        PageRequest.of(page, size, sortDirection, sort.toString())
-                ));
+                .body((authorId != null) ?
+                        materialGetUseCase.getPersonalMaterials(
+                                authorId,
+                                Objects.isNull(searchFields) ? new SearchFields() : searchFields,
+                                PageRequest.of(page, size, sortDirection, sortField.toString()),
+                                principal) :
+                        materialManageGetUseCase.manage(
+                                Objects.isNull(searchFields) ? new SearchFields() : searchFields,
+                                PageRequest.of(page, size, sortDirection, sortField.toString()),
+                                principal)
+                );
     }
 }

@@ -22,9 +22,9 @@ public interface MaterialControllerDefinition {
     ResponseEntity<Page<MaterialGetUseCase.MaterialPageable>> search(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "createdDate") PossibleMaterialSortFields sort,
+            @RequestParam(value = "sortField", defaultValue = "CREATED_DATE") MaterialGetUseCase.MaterialSortField sortField,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @Parameter(description = "{\"phrase\":\"phrase\",\"id\":0,\"title\":\"title\",\"status\":\"PENDING\",\"createdBy\":\"createdBy\",\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\",\"sectionId\":0,\"categoryId\":0,\"tagIds\":[0]}")
+            @Parameter(description = "{\"phrase\":\"phrase\",\"id\":0,\"title\":\"title\",\"status\":\"PENDING\",\"createdBy\":\"createdBy\",\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\",\"sectionId\":0,\"minAvgGrade\":2.2\",\"maxAvgGrade\":4.2\",\"categoryId\":0,\"tagIds\":[0]}")
             @RequestParam(value = "search_fields", required = false) MaterialGetUseCase.SearchFields searchFields
     );
 }

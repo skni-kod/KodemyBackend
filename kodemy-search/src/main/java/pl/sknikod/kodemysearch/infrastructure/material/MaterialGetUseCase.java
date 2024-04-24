@@ -50,7 +50,10 @@ public class MaterialGetUseCase {
                 .map(searchResponse -> {
                     var hits = searchResponse.getHits();
                     return new PageImpl<>(
-                            materialSearchMapper.map(hits),
+                            materialSearchMapper.map(hits)
+                                    .stream()
+                                    .filter(m -> filterByAvgGrade(searchFields, m))
+                                    .toList(),
                             page,
                             hits.getTotalHits().value
                     );
@@ -109,8 +112,38 @@ public class MaterialGetUseCase {
                     searchFields.getCreatedDateTo()
             ));
 
+        if (Objects.nonNull(searchFields.getMinAvgGrade()) || Objects.nonNull(searchFields.getMaxAvgGrade()))
+            rangeFields.add(new SearchCriteria.RangeField<>(
+                    "avgGrade",
+                    searchFields.getMinAvgGrade(),
+                    searchFields.getMaxAvgGrade()
+            ));
+
         var contentField = new SearchCriteria.ContentField(searchFields.getPhrase());
         return new SearchCriteria(contentField, phraseFields, rangeFields, page);
+    }
+
+    private boolean filterByAvgGrade(SearchFields searchFields, MaterialPageable m) {
+        double gradeAvg = m.getAvgGrade();
+        return (searchFields.getMinAvgGrade() == null || gradeAvg >= searchFields.getMinAvgGrade()) &&
+                (searchFields.getMaxAvgGrade() == null || gradeAvg <= searchFields.getMaxAvgGrade());
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum MaterialSortField {
+        ID("id"),
+        TITLE("title"),
+        DESCRIPTION("description"),
+        STATUS("status"),
+        IS_ACTIVE("isActive"),
+        AVG_GRADE("avgGrade"),
+        AUTHOR("author"),
+        CREATED_DATE("createdDate"),
+        SECTION_ID("sectionId"),
+        CATEGORY_ID("categoryId");
+
+        private final String field;
     }
 
     @Mapper(componentModel = "spring")
@@ -146,6 +179,9 @@ public class MaterialGetUseCase {
         Long sectionId;
         Long[] categoryIds;
         Long[] tagIds;
+        Double minAvgGrade;
+        Double maxAvgGrade;
+
 
         @Component
         @RequiredArgsConstructor
