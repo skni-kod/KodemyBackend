@@ -1,0 +1,81 @@
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
+
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import io.vavr.control.Try;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
+import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
+import pl.sknikod.kodemyauth.infrastructure.database.handler.UserRepositoryHandler;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2RestOperations;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2UserPrincipal;
+
+import java.util.*;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+    private final OAuth2RestOperations oAuth2RestOperations;
+    private final List<OAuth2Provider> oAuth2Providers;
+    private final UserRepositoryHandler userRepositoryHandler;
+    private final SecurityConfig.RoleProperties roleProperties;
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        return retrieve(userRequest, oAuth2Providers.iterator())
+                .map(this::createOrLoadUser)
+                .map(this::toUserPrincipal)
+                .orElse(null);
+    }
+
+    private Optional<OAuth2Provider.User> retrieve(OAuth2UserRequest userRequest, Iterator<OAuth2Provider> iterator) {
+        if (!iterator.hasNext())
+            return Optional.empty();
+        OAuth2Provider provider = iterator.next();
+        if (provider.supports(userRequest.getClientRegistration().getRegistrationId()))
+            return Optional.of(provider.retrieve(oAuth2RestOperations, userRequest));
+        return retrieve(userRequest, iterator); // check another one
+    }
+
+    private Tuple2<User, OAuth2Provider.User> createOrLoadUser(OAuth2Provider.User providerUser) {
+        return userRepositoryHandler.findByProviderUser(providerUser)
+                .fold(th -> Tuple.of(this.createNewUser(providerUser), providerUser),
+                        user -> Tuple.of(user, providerUser));
+    }
+
+    private User createNewUser(OAuth2Provider.User providerUser) {
+        return userRepositoryHandler.save(providerUser)
+                .orElse(null);
+    }
+
+    private OAuth2UserPrincipal toUserPrincipal(Tuple2<User, OAuth2Provider.User> userTuple2) {
+        return Try.of(() -> roleProperties.getAuthorities(userTuple2._1.getRole().getName().name()))
+                .onFailure(th -> log.error("Cannot retrieve authorities for role", th))
+                .fold(
+                        unused -> map(userTuple2._1, Collections.emptySet(), userTuple2._2.getAttributes()),
+                        authorities -> map(userTuple2._1, authorities, userTuple2._2.getAttributes())
+                );
+    }
+
+    private OAuth2UserPrincipal map(User user, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
+        return new OAuth2UserPrincipal(
+                user.getId(),
+                user.getUsername(),
+                user.getIsExpired(),
+                user.getIsLocked(),
+                user.getIsCredentialsExpired(),
+                user.getIsEnabled(),
+                authorities,
+                attributes
+        );
+    }
+}

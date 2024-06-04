@@ -1,23 +1,16 @@
 package pl.sknikod.kodemybackend.infrastructure.common.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Tag;
-import pl.sknikod.kodemybackend.infrastructure.tag.rest.TagAddRequest;
-import pl.sknikod.kodemybackend.infrastructure.tag.rest.TagAddResponse;
+import org.mapstruct.MappingConstants;
+import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
+import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
 
-@Mapper(componentModel = "spring")
+import java.util.Collection;
+import java.util.List;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TagMapper {
-    @Mappings(value = {
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "materials", ignore = true),
-            @Mapping(target = "createdBy", ignore = true),
-            @Mapping(target = "createdDate", ignore = true),
-            @Mapping(target = "lastModifiedBy", ignore = true),
-            @Mapping(target = "lastModifiedDate", ignore = true)
-    })
-    Tag map(TagAddRequest tag);
+    List<TagAddResponse> map(Collection<Tag> tag);
 
     TagAddResponse map(Tag tag);
 }

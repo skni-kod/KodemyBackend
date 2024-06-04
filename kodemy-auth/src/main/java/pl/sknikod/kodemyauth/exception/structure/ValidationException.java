@@ -1,10 +1,11 @@
 package pl.sknikod.kodemyauth.exception.structure;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 public class ValidationException extends ServerProcessingException {
-    public ValidationException(String message) {
-        super(message);
+    public ValidationException(String pattern, @Nullable Object... args) {
+        super(pattern, args);
     }
 
     @Override

@@ -1,12 +1,13 @@
 package pl.sknikod.kodemybackend.infrastructure.common.mapper;
 
 import org.mapstruct.Mapper;
-import pl.sknikod.kodemybackend.infrastructure.common.entity.Type;
-import pl.sknikod.kodemybackend.infrastructure.type.rest.SingleTypeResponse;
+import org.mapstruct.MappingConstants;
+import pl.sknikod.kodemybackend.infrastructure.database.entity.Type;
+import pl.sknikod.kodemybackend.infrastructure.module.type.model.SingleTypeResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TypeMapper {
 
     List<SingleTypeResponse> map(List<Type> types);
