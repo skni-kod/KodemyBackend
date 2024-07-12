@@ -1,89 +1,58 @@
 package pl.sknikod.kodemysearch.configuration;
 
+import io.jsonwebtoken.lang.Assert;
 import io.vavr.control.Try;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.BooleanUtils;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
-import org.opensearch.action.admin.indices.alias.Alias;
-import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.client.indices.CreateIndexRequest;
-import org.opensearch.client.indices.CreateIndexResponse;
-import org.opensearch.client.indices.GetIndexRequest;
-import org.springframework.beans.factory.annotation.Value;
+import org.opensearch.client.json.jsonb.JsonbJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.indices.*;
+import org.opensearch.client.transport.endpoints.BooleanResponse;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
+import pl.sknikod.kodemysearch.exception.ExceptionUtil;
+import pl.sknikod.kodemysearch.util.opensearch.OpenSearchFactory;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Configuration
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class OpenSearchConfig {
-    public static final RequestOptions REQUEST_OPTIONS = RequestOptions.DEFAULT;
-
-    @Value("${app.opensearch.host}")
-    private String host;
-
     @Bean
-    public RestHighLevelClient restHighLevelClient() {
-        HttpHost httpHost = Optional.of(host)
-                .map(HttpHost::create)
-                .map(HttpHost::new)
-                .get();
-        return new RestHighLevelClient(RestClient.builder(httpHost));
+    public OpenSearchClient openSearchClient(OpenSearchProperties openSearchProperties) throws IOException {
+        final var httpHost = Optional.of(openSearchProperties.host).map(HttpHost::create).get();
+        final var restClient = RestClient.builder(httpHost).build();/*) {*/
+        final var transport = new RestClientTransport(restClient, new JsonbJsonpMapper());
+        var client = new OpenSearchClient(transport);
+        OpenSearchFactory.of(client).initialize(openSearchProperties.indices);
+        return client;
     }
 
-    @Data
+    @Getter
+    @Setter
+    @NoArgsConstructor
     @Component
-    @ConfigurationProperties("app.opensearch")
-    @DependsOn("openSearchConfig")
-    public static class IndexProperties {
-        private IndexDetails index;
+    @ConfigurationProperties(prefix = "opensearch")
+    public static class OpenSearchProperties {
+        private String host;
+        private Map<String, IndexDetails> indices = new HashMap<>();
 
-        @Data
+        @Getter
+        @Setter
+        @NoArgsConstructor
         public static class IndexDetails {
             private String name;
             private String alias;
-        }
-    }
-
-    @Component
-    @DependsOn("openSearchConfig")
-    public static class IndexManager {
-        private final RestHighLevelClient restHighLevelClient;
-
-        protected IndexManager(RestHighLevelClient restHighLevelClient, IndexProperties indexProperties) {
-            this.restHighLevelClient = restHighLevelClient;
-            createIndexIfNotExists(indexProperties.getIndex());
-        }
-
-        public void createIndexIfNotExists(OpenSearchConfig.IndexProperties.IndexDetails index) {
-            indexExists(index.getName()).filter(isExists -> !isExists).map(isExists -> createIndex(index));
-        }
-
-        private Try<Boolean> indexExists(String indexName) {
-            return Try.of(() -> restHighLevelClient.indices().exists(new GetIndexRequest(indexName), REQUEST_OPTIONS))
-                    .onFailure(ex -> {
-                        throw new ServerProcessingException(ex.getMessage());
-                    })
-                    .filter(BooleanUtils::isFalse);
-        }
-
-        private Try<CreateIndexResponse> createIndex(OpenSearchConfig.IndexProperties.IndexDetails index) {
-            CreateIndexRequest request = new CreateIndexRequest(index.getName())
-                    .alias(new Alias(index.getAlias()));
-
-            return Try.of(() -> restHighLevelClient.indices().create(request, REQUEST_OPTIONS))
-                    .onFailure(ex -> {
-                        throw new ServerProcessingException(ex.getMessage());
-                    });
         }
     }
 }

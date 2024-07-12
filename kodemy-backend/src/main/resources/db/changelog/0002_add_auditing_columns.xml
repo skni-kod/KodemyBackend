@@ -20,7 +20,7 @@
             <column name="last_modified_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
         </addColumn>
 
-        <addColumn tableName="technologies">
+        <addColumn tableName="tags">
             <column name="created_by" type="VARCHAR(255)"/>
             <column name="created_date" type="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>

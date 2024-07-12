@@ -1,10 +1,11 @@
 package pl.sknikod.kodemysearch.exception.structure;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 
 public class ValidationException extends ServerProcessingException {
-    public ValidationException(String message) {
-        super(message);
+    public ValidationException(String pattern, @Nullable Object... args) {
+        super(pattern, args);
     }
 
     @Override

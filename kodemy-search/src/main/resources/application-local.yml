@@ -2,16 +2,17 @@ spring:
   rabbitmq:
     host: localhost
 
-logging.level:
-  org.springframework.security: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG
 
-jwt:
-  expiration-mins: 60
+opensearch:
+  host: http://localhost:9200
 
 app:
-  opensearch:
-    host: http://localhost:9200
   security:
     cors:
-      allowed-uris:
+      allowed-origins:
         - http://localhost:3000
+      mapping: "/**"
+      credentials: true

@@ -1,37 +1,22 @@
 package pl.sknikod.kodemysearch.exception.structure;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
-import pl.sknikod.kodemysearch.exception.ExceptionRestGenericMessage;
-import pl.sknikod.kodemysearch.exception.ExceptionStructure;
+import pl.sknikod.kodemysearch.exception.ExceptionPattern;
+import pl.sknikod.kodemysearch.exception.ExceptionStructureWrapper;
 
-public class ServerProcessingException extends RuntimeException implements ExceptionStructure {
-
-    public ServerProcessingException(String message) {
-        super(message);
+public class ServerProcessingException extends ExceptionStructureWrapper {
+    public ServerProcessingException(@NotNull String pattern, @Nullable Object... args) {
+        super(String.format(pattern, args));
     }
 
     public ServerProcessingException() {
-        super("Internal error");
-    }
-
-    public <T> ServerProcessingException(Format runtimeFormat, Class<T> className) {
-        super(String.format(runtimeFormat.message, className.getSimpleName()));
+        super(ExceptionPattern.INTERNAL_ERROR);
     }
 
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-
-    @Override
-    public ExceptionRestGenericMessage getBody() {
-        return new ExceptionRestGenericMessage(this.getHttpStatus(), this.getMessage());
-    }
-
-    @AllArgsConstructor
-    public enum Format {
-        PROCESS_FAILED("Failed to process %s");
-        private final String message;
     }
 }

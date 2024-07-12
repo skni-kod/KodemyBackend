@@ -14,34 +14,55 @@ spring:
     hibernate.ddl-auto: validate
     open-in-view: false
     show-sql: true
+    properties:
+      hibernate.types.print.banner: false
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
     contexts: prod
     enabled: true
-  security.oauth2.client.registration:
-    github:
-      clientId: 6fbe33527fc7bce1820f
-      clientSecret: 95ba6be1aacccd5547b19248d77b28bf492bde71
-      redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
-      scope:
-        - user:email
-        - read:user
+  security:
+    oauth2:
+      path:
+        authorize: /api/oauth2/authorize
+        callback: /api/oauth2/callback
+        error: /
+      client:
+        registration:
+          github:
+            clientId: Ov23liqWT50Vtt0A0uIg
+            clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
+            redirect-uri: ${routes.gateway}${spring.security.oauth2.path.callback}/github
+            scope:
+              - user:email
+              - read:user
 
 management:
   endpoints:
     web:
-      exposure:
-        include: health,info,metrics
       base-path: /api/actuator
+      exposure:
+        include:
+          - health
+          - info
   endpoint:
     health:
       show-details: when_authorized
       roles: CAN_USE_ACTUATOR
       show-components: always
 
+network:
+  routes:
+    front: /
+    backend: http://localhost:8082
+    search: http://localhost:8083
+  databus:
+    username: user
+    password: password
+    connect-timeout-ms: 3000
+    read-timeout-ms: 5000
+
 jwt:
-  expiration-mins: 15
-  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+  secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
 
 app:
   opensearch:
@@ -50,25 +71,22 @@ app:
       name: materials
       alias: materials-alias
   security:
-    auth:
-      uri:
-        login: /api/oauth2/authorize
-        callback: /api/oauth2/callback/**
-        logout: /api/oauth2/logout
-      key:
-        current-session: ksession
-        redirect: redirect
-        jwt: jwtsession
-    role:
-      defaultRole: ROLE_USER
-      privileges:
-        ROLE_USER:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+      credentials: true
+      mapping: "/**"
+    roles:
+      primary: ROLE_USER
+      authorities:
         ROLE_MODERATOR:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_GET_USER_INFO
+          - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
         ROLE_ADMIN:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS
@@ -77,8 +95,10 @@ app:
           - CAN_GET_USER_INFO
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
+          - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
         ROLE_SUPERADMIN:
-          - CAN_MODIFY_TECHNOLOGIES
+          - CAN_MODIFY_TAGS
           - CAN_APPROVED_MATERIAL
           - CAN_AUTO_APPROVED_MATERIAL
           - CAN_GET_USERS
@@ -88,3 +108,7 @@ app:
           - CAN_GET_USER_INFO
           - CAN_READ_NOTIFICATIONS
           - CAN_INDEX
+          - CAN_VIEW_ALL_MATERIALS
+          - CAN_DEPRECATE_MATERIAL
+          - CAN_BAN_MATERIAL
+          - CAN_UNBAN_MATERIAL
