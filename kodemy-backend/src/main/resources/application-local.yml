@@ -11,7 +11,7 @@ logging.level:
 jwt:
   expiration-mins: 60
 
-app:
+internal:
   security:
     cors:
       allowedUris:
