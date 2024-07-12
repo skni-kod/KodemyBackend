@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 
 @TestConfiguration
-public class WebBeanConfig {
+public class TestWebConfig {
     @Bean
     public WebMvcConfigurer webSecurityConfigurer() {
         return Mockito.mock(WebMvcConfigurer.class);

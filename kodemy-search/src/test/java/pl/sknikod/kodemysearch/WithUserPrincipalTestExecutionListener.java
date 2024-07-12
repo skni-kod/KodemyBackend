@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.util;
+package pl.sknikod.kodemysearch;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemysearch.util.auth.UserPrincipal;
 
 import java.util.Arrays;
 import java.util.Collection;

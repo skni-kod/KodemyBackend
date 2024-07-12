@@ -6,7 +6,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.MaterialRepository;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Optional;
 

@@ -38,14 +38,25 @@ spring:
 management:
   endpoints:
     web:
-      exposure:
-        include: health,info,metrics
       base-path: /api/actuator
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: always
       roles: CAN_USE_ACTUATOR
       show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
 
 network:
   routes:

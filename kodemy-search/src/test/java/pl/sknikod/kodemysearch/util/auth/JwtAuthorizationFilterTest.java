@@ -13,7 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.sknikod.kodemysearch.factory.TokenFactory;
-import pl.sknikod.kodemysearch.util.BaseTest;
+import pl.sknikod.kodemysearch.BaseTest;
 
 import java.io.IOException;
 import java.util.List;

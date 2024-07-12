@@ -2,8 +2,8 @@ package pl.sknikod.kodemybackend.util.data;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.AuditorAware;
-import pl.sknikod.kodemybackend.util.BaseTest;
-import pl.sknikod.kodemybackend.util.WithUserPrincipal;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 
 import java.util.Optional;
 

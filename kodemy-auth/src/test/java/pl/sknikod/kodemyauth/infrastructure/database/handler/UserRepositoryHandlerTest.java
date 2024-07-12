@@ -18,7 +18,7 @@ import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.UserRepository;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.Collections;
 import java.util.List;

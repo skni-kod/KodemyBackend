@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.util;
+package pl.sknikod.kodemysearch;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -3,9 +3,8 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.List;
 

@@ -1,15 +1,8 @@
 package pl.sknikod.kodemybackend.infrastructure.module.material.add;
 
 import io.vavr.control.Try;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.factory.*;
@@ -20,8 +13,8 @@ import pl.sknikod.kodemybackend.infrastructure.database.handler.TagRepositoryHan
 import pl.sknikod.kodemybackend.infrastructure.database.handler.TypeRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducerTest;
-import pl.sknikod.kodemybackend.util.BaseTest;
-import pl.sknikod.kodemybackend.util.WithUserPrincipal;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 
 import java.util.Set;
 

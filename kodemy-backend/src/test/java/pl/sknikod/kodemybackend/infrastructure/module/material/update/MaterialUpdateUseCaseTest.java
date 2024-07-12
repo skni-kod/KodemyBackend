@@ -13,8 +13,8 @@ import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.*;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducerTest;
-import pl.sknikod.kodemybackend.util.BaseTest;
-import pl.sknikod.kodemybackend.util.WithUserPrincipal;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 
 import java.util.Set;
 

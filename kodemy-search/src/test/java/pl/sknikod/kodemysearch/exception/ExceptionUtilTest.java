@@ -2,7 +2,7 @@ package pl.sknikod.kodemysearch.exception;
 
 import org.junit.jupiter.api.Test;
 import pl.sknikod.kodemysearch.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemysearch.util.BaseTest;
+import pl.sknikod.kodemysearch.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

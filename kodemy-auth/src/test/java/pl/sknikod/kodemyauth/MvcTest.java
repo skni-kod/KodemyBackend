@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.util;
+package pl.sknikod.kodemyauth;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

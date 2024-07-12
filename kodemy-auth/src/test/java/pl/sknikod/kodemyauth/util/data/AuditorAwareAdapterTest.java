@@ -1,20 +1,14 @@
 package pl.sknikod.kodemyauth.util.data;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import pl.sknikod.kodemyauth.util.BaseTest;
-import pl.sknikod.kodemyauth.util.WithUserPrincipal;
+import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemyauth.WithUserPrincipal;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 class AuditorAwareAdapterTest extends BaseTest {
     AuditorAware<String> auditorAware = new AuditorAwareAdapter();

@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @TestConfiguration
-public class WebBeanConfig {
+public class TestWebConfig {
     @Bean
     public WebMvcConfigurer webSecurityConfigurer() {
         return Mockito.mock(WebMvcConfigurer.class);

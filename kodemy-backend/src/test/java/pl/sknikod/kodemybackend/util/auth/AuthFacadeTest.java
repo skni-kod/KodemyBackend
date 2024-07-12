@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.sknikod.kodemybackend.util.BaseTest;
-import pl.sknikod.kodemybackend.util.WithUserPrincipal;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 
 import java.util.Collection;
 import java.util.Collections;

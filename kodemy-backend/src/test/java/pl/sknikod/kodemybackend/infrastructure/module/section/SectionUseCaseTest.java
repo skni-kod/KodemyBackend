@@ -9,7 +9,7 @@ import pl.sknikod.kodemybackend.factory.SectionFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.SectionMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.SectionRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.section.model.SingleSectionResponse;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.TagRepository;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collections;
 import java.util.Set;

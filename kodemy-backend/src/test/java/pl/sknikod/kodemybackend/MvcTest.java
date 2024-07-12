@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.util;
+package pl.sknikod.kodemybackend;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

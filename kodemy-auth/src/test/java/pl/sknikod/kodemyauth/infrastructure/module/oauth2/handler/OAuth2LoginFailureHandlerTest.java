@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 
 import java.util.Map;

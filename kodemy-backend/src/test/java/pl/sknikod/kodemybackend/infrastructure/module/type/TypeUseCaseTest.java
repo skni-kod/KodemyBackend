@@ -3,13 +3,11 @@ package pl.sknikod.kodemybackend.infrastructure.module.type;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.TypeMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.TypeRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.type.model.SingleTypeResponse;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.List;
 

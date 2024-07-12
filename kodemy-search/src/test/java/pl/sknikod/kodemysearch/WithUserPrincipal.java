@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.util;
+package pl.sknikod.kodemysearch;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.util;
+package pl.sknikod.kodemybackend;
 
 import java.lang.annotation.*;
 

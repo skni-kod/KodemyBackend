@@ -9,7 +9,7 @@ import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.TagRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddRequest;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collection;
 import java.util.List;

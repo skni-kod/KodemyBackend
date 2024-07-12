@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.util;
+package pl.sknikod.kodemysearch;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

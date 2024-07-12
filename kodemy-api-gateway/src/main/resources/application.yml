@@ -56,6 +56,20 @@ spring:
               - user:email
               - read:user
 
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      show-details: always
+      roles: CAN_USE_ACTUATOR
+      show-components: always
+
 network:
   routes:
     front: /

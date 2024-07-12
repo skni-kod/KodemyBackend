@@ -1,4 +1,4 @@
-package pl.sknikod.kodemybackend.util;
+package pl.sknikod.kodemybackend;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,13 +8,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.sknikod.kodemybackend.configuration.SecurityBeanConfig;
+import pl.sknikod.kodemybackend.configuration.TestSecurityConfig;
+import pl.sknikod.kodemybackend.configuration.TestWebConfig;
 
 @SpringBootTest
 @Testcontainers
 @ImportAutoConfiguration(value = {
-        SecurityBeanConfig.class,
-        UtilBeanConfig.class
+        TestSecurityConfig.class,
+        TestWebConfig.class
 })
 @TestExecutionListeners(
         listeners = {WithUserPrincipalTestExecutionListener.class},

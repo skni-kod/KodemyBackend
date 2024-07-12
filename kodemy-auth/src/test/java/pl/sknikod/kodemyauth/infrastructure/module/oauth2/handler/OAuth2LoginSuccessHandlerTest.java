@@ -16,7 +16,7 @@ import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.factory.UserFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.util.auth.JwtService;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 

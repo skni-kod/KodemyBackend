@@ -17,13 +17,11 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.cloud.stream.config.BindingProperties;
 import org.springframework.cloud.stream.config.BindingServiceProperties;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
 
 import java.util.Map;
 
@@ -33,10 +31,7 @@ public class RabbitConfig {
     private static final String PARKING_LOT_BEAN_SUFFIX = "ParkingLot";
     public static final String PARKING_LOT_SUFFIX = ".parking-lot";
 
-    public RabbitConfig(
-            GenericApplicationContext context,
-            BindingServiceProperties bindingServiceProperties
-    ) {
+    public RabbitConfig(GenericApplicationContext context, BindingServiceProperties bindingServiceProperties) {
         this.declareAdditionalQueues(context, bindingServiceProperties.getBindings());
     }
 
@@ -84,7 +79,7 @@ public class RabbitConfig {
     @Component
     @DependsOn("rabbitConfig")
     @RequiredArgsConstructor
-    public static class DlqRabbitSwitch implements RabbitListenerConfigurer {
+    public static class RabbitDlqErrorSwitch implements RabbitListenerConfigurer {
         public static final String DLQ_SUFFIX = ".dlq";
         private final RabbitTemplate rabbitTemplate;
         private final BindingServiceProperties bindingServiceProperties;

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class WebBeanConfig {
+public class WebConfig {
     @Bean
     public WebMvcConfigurer webSecurityConfigurer(CorsProperties corsProperties) {
         return new WebMvcConfigurer() {

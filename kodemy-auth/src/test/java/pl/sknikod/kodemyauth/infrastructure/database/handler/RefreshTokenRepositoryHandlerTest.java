@@ -11,7 +11,7 @@ import pl.sknikod.kodemyauth.factory.UserFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RefreshTokenRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.UserRepository;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.Optional;
 import java.util.UUID;

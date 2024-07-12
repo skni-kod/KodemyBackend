@@ -2,7 +2,6 @@ package pl.sknikod.kodemybackend.infrastructure.module.grade;
 
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +15,9 @@ import pl.sknikod.kodemybackend.infrastructure.database.entity.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.GradeRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialRepositoryHandler;
-import pl.sknikod.kodemybackend.infrastructure.database.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
-import pl.sknikod.kodemybackend.util.BaseTest;
-import pl.sknikod.kodemybackend.util.WithUserPrincipal;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 
 import java.util.Date;
 import java.util.List;
@@ -29,7 +26,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 class MaterialGradeUseCaseTest extends BaseTest {
     final MaterialGradeUseCase materialGradeUseCase = new MaterialGradeUseCase(

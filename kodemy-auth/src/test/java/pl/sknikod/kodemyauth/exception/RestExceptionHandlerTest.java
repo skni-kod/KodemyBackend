@@ -19,7 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.List;
 import java.util.Locale;

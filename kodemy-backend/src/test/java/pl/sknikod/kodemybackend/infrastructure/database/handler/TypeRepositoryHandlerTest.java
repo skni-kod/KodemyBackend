@@ -5,7 +5,7 @@ import org.mockito.Mockito;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.TypeRepository;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collections;
 import java.util.Optional;

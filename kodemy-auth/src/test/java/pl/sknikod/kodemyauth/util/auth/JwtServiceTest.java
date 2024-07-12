@@ -1,7 +1,7 @@
 package pl.sknikod.kodemyauth.util.auth;
 
 import org.junit.jupiter.api.Test;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.Collections;
 

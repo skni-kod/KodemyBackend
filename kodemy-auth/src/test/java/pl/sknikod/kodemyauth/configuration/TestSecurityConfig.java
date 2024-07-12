@@ -10,19 +10,15 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2SessionAuthReque
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemyauth.util.auth.JwtAuthorizationFilter;
+import pl.sknikod.kodemyauth.util.auth.JwtService;
 import pl.sknikod.kodemyauth.util.auth.handler.AccessControlExceptionHandler;
 import pl.sknikod.kodemyauth.util.data.AuditorAwareAdapter;
 
 @TestConfiguration
-public class SecurityBeanConfig {
+public class TestSecurityConfig {
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         return Mockito.mock(ClientRegistrationRepository.class);
-    }
-
-    @Bean
-    public AuditorAware<?> auditorAware() {
-        return Mockito.mock(AuditorAwareAdapter.class);
     }
 
     @Bean
@@ -47,12 +43,17 @@ public class SecurityBeanConfig {
     }
 
     @Bean
+    public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(){
+        return Mockito.mock(OAuth2LoginSuccessHandler.class);
+    }
+
+    @Bean
     public OAuth2LoginFailureHandler oAuth2FailureProcessHandler() {
         return Mockito.mock(OAuth2LoginFailureHandler.class);
     }
 
     @Bean
-    public OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler() {
-        return Mockito.mock(OAuth2LoginSuccessHandler.class);
+    public JwtService jwtService(){
+        return Mockito.mock(JwtService.class);
     }
 }

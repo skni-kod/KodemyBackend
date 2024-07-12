@@ -2,18 +2,15 @@ package pl.sknikod.kodemybackend.infrastructure.module.category;
 
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.CategoryFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.CategoryMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.CategoryRepositoryHandler;
-import pl.sknikod.kodemybackend.infrastructure.database.repository.CategoryRepository;
 import pl.sknikod.kodemybackend.infrastructure.module.category.model.SingleCategoryResponse;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class CategoryUseCaseTest extends BaseTest {
     final CategoryUseCase categoryUseCase = new CategoryUseCase(new TestCategoryRepositoryHandler(), new CategoryMapperImpl());

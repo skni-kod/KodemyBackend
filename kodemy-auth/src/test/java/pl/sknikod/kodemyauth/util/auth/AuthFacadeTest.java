@@ -6,15 +6,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.sknikod.kodemyauth.util.BaseTest;
-import pl.sknikod.kodemyauth.util.WithUserPrincipal;
+import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemyauth.WithUserPrincipal;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class AuthFacadeTest extends BaseTest {
     private static final String USERNAME = "username";

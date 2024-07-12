@@ -8,7 +8,7 @@ import pl.sknikod.kodemyauth.exception.structure.NotFoundException;
 import pl.sknikod.kodemyauth.factory.RoleFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RoleRepository;
-import pl.sknikod.kodemyauth.util.BaseTest;
+import pl.sknikod.kodemyauth.BaseTest;
 
 import java.util.Optional;
 

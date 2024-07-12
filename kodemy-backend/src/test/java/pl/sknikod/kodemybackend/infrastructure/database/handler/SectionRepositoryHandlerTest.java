@@ -1,10 +1,9 @@
 package pl.sknikod.kodemybackend.infrastructure.database.handler;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.SectionRepository;
-import pl.sknikod.kodemybackend.util.BaseTest;
+import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collections;
 
