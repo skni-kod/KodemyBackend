@@ -58,14 +58,6 @@ opensearch:
       alias: materials-alias
 
 app:
-  rabbit:
-    queues:
-      m-created:
-        name: material.created
-        exchange: direct
-      m-updated:
-        name: material.updated
-        exchange: direct
   security:
     cors:
       allowed-origins:

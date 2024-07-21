@@ -9,4 +9,8 @@ logging.level:
   org.springframework.security: DEBUG
 
 jwt:
-  expiration-mins: 60
+  bearer:
+    expiration-min: 60
+
+redis:
+  host: localhost

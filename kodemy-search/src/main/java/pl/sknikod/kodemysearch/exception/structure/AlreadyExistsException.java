@@ -1,6 +1,6 @@
 package pl.sknikod.kodemysearch.exception.structure;
 
-import org.jetbrains.annotations.Nullable;
+import org.springframework.lang.Nullable;
 import org.springframework.http.HttpStatus;
 
 public class AlreadyExistsException extends ServerProcessingException {

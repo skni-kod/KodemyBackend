@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.exception.structure;
 
-import org.jetbrains.annotations.Nullable;
+import org.springframework.lang.Nullable;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends ServerProcessingException {

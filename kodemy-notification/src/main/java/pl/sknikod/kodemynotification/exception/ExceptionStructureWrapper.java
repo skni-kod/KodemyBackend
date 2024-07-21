@@ -1,4 +1,4 @@
-package pl.sknikod.kodemysearch.exception;
+package pl.sknikod.kodemynotification.exception;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.Nullable;

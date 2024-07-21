@@ -1,9 +1,9 @@
-package pl.sknikod.kodemybackend.exception.structure;
+package pl.sknikod.kodemynotification.exception.structure;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.Nullable;
 import org.springframework.http.HttpStatus;
-import pl.sknikod.kodemybackend.exception.ExceptionStructure;
+import pl.sknikod.kodemynotification.exception.ExceptionStructure;
 
 public class AuthenticationException extends org.springframework.security.core.AuthenticationException implements ExceptionStructure {
 

@@ -1,9 +1,9 @@
-package pl.sknikod.kodemynotification.util;
+package pl.sknikod.kodemynotification.util.web;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import pl.sknikod.kodemybackend.exception.ExceptionRestGenericMessage;
+import pl.sknikod.kodemynotification.exception.ExceptionBody;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @ApiResponse(responseCode = "500", description = "Internal Server Error",
-        content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class)))
+        content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
 public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
@@ -37,7 +37,7 @@ public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "400", description = "Bad Request",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+            content = @Content(schema = @Schema(implementation = ExceptionBody.class))
     )
     @interface BadRequestCode400 {
     }
@@ -45,7 +45,7 @@ public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+            content = @Content(schema = @Schema(implementation = ExceptionBody.class))
     )
     @interface UnauthorizedCode401 {
     }
@@ -53,7 +53,7 @@ public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+            content = @Content(schema = @Schema(implementation = ExceptionBody.class))
     )
     @interface ForbiddenCode403 {
     }
@@ -61,7 +61,7 @@ public @interface SwaggerResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.METHOD})
     @ApiResponse(responseCode = "404", description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ExceptionRestGenericMessage.class))
+            content = @Content(schema = @Schema(implementation = ExceptionBody.class))
     )
     @interface NotFoundCode404 {
     }

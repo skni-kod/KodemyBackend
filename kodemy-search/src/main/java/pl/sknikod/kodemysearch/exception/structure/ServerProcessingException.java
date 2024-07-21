@@ -1,7 +1,7 @@
 package pl.sknikod.kodemysearch.exception.structure;
 
 import jakarta.validation.constraints.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.springframework.lang.Nullable;
 import org.springframework.http.HttpStatus;
 import pl.sknikod.kodemysearch.exception.ExceptionPattern;
 import pl.sknikod.kodemysearch.exception.ExceptionStructureWrapper;

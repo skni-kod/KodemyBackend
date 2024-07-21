@@ -5,13 +5,18 @@ spring:
   banner.location: classpath:banner.txt
   cloud:
     function:
-      definition: test
+      definition: materialCreated,materialUpdated
     stream:
+      default-binder: rabbit
       bindings:
         materialCreated-out-0:
           destination: material-created
         materialUpdated-out-0:
           destination: material-updated
+        notificationCreated-out-0:
+          destination: notification-created
+        notificationUpdated-out-0:
+          destination: notification-updated
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-backend
@@ -50,13 +55,14 @@ management:
       show-details: always
       roles: CAN_USE_ACTUATOR
       show-components: always
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
   tracing:
     sampling:
       probability: 1.0
+  server:
+    port: 8888
+
+jwt:
+  secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
 
 network:
   routes:
@@ -68,6 +74,3 @@ network:
     password: password
     connect-timeout-ms: 3000
     read-timeout-ms: 5000
-
-jwt:
-  secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=

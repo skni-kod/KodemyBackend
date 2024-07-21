@@ -3,6 +3,32 @@ server.port: 8084
 spring:
   application.name: kodemy-notification
   banner.location: classpath:banner.txt
+  cloud:
+    function:
+      definition: notificationCreated;notificationUpdated
+    stream:
+      default-binder: rabbit
+      bindings:
+        notificationCreated-in-0:
+          content-type: application/json
+          destination: notification-created
+          group: kodemy
+        notificationUpdated-in-0:
+          content-type: application/json
+          destination: notification-updated
+          group: kodemy
+      rabbit:
+        bindings:
+          notificationCreated-in-0:
+            consumer:
+              auto-bind-dlq: true
+              dead-letter-exchange:
+              max-length: 3
+          notificationUpdated-in-0:
+            consumer:
+              auto-bind-dlq: true
+              dead-letter-exchange:
+              max-length: 3
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-notification
@@ -11,7 +37,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: validate
     open-in-view: false
     show-sql: true
     properties:
@@ -29,20 +55,46 @@ spring:
 management:
   endpoints:
     web:
-      exposure:
-        include: health,info,metrics
       base-path: /api/actuator
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: always
       roles: CAN_USE_ACTUATOR
       show-components: always
-kodemy:
-  rabbit:
-    queues:
-      notification:
-        name: notification
-        exchange: fanout
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+
+jwt:
+  secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+
+network:
+  routes:
+    front: /
+    auth: http://localhost:8081
+    backend: http://localhost:8082
+  databus:
+    connect-timeout-ms: 3_000
+    read-timeout-ms: 5_000
+
+app:
   security:
-    jwt:
-      secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+      credentials: true
+      mapping: "/**"
+
+redis:
+  host: redis
+  password: password

@@ -9,10 +9,5 @@ logging.level:
   org.springframework.security: DEBUG
 
 jwt:
-  expiration-mins: 60
-
-internal:
-  security:
-    cors:
-      allowedUris:
-        - http://localhost:3000
+  bearer:
+    expiration-min: 60
