@@ -2,16 +2,18 @@ package pl.sknikod.kodemyauth.infrastructure.module.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RoleRepositoryHandler;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.UserRepositoryHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.common.mapper.UserMapper;
+import pl.sknikod.kodemyauth.infrastructure.database.handler.RoleStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.database.handler.UserStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.User;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemycommon.exception.InternalError500Exception;
@@ -24,8 +26,9 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
-    private final RoleRepositoryHandler roleRepositoryHandler;
-    private final UserRepositoryHandler userRepositoryHandler;
+    private final RoleStoreHandler roleStoreHandler;
+    private final UserStoreHandler userStoreHandler;
+    private final AuthService.AuthMapper authMapper;
 
     public static boolean checkPrivilege(String privilege) {
         return AuthFacade.getCurrentUserPrincipal()
@@ -37,7 +40,7 @@ public class UserService {
 
     @Transactional
     public UserInfoResponse getUserInfo(Long userId) {
-        return userRepositoryHandler.findById(userId)
+        return userStoreHandler.findById(userId)
                 .map(userMapper::map)
                 .getOrElseThrow(th -> th instanceof InternalError500Exception ex
                         ? ex : new InternalError500Exception());
@@ -46,21 +49,32 @@ public class UserService {
     public UserInfoResponse getCurrentUserInfo() {
         return AuthFacade.getCurrentUserPrincipal()
                 .map(UserPrincipal::getId)
-                .map(id -> userRepositoryHandler.findById(id).getOrNull())
+                .map(id -> userStoreHandler.findById(id).getOrNull())
                 .map(userMapper::map)
                 .orElseThrow(InternalError500Exception::new);
     }
 
     public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {
-        Role role = roleRepositoryHandler.findByRoleName(searchFields.getRole().name())
-                .getOrNull();
-        Page<User> users = userRepositoryHandler.findByUsernameOrEmailOrRole(
-                searchFields.getUsername(), searchFields.getEmail(), role, pageRequest
+        Page<User> users = userStoreHandler.findByUsernameOrEmailOrRole(
+                searchFields.getUsername(),
+                searchFields.getEmail(),
+                searchFields.getRole() != null ? searchFields.getRole().name() : null,
+                pageRequest
         );
         return new PageImpl<>(
-                users.getContent().parallelStream().map(userMapper::map).toList(),
+                users.getContent().parallelStream().map(authMapper::map).toList(),
                 pageRequest,
                 users.getTotalElements()
         );
+    }
+
+    @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+    public interface RoleMapper {
+        UserInfoResponse.RoleDetails map(Role role);
+    }
+
+    @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {RoleMapper.class})
+    public interface UserMapper {
+        UserInfoResponse map(User user);
     }
 }

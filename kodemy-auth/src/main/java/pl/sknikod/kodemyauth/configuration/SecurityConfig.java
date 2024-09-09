@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,15 +17,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
+import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutRequestHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutSuccessHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizeRequestResolver;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2Service;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2SessionAuthRequestRepository;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizationRequestRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2Constant;
@@ -53,29 +54,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthorizationFilter jwtAuthorizationFilter,
-            OAuth2AuthorizeRequestResolver oAuth2AuthorizeRequestResolver,
-            OAuth2SessionAuthRequestRepository oAuth2SessionAuthRequestRepository,
-            OAuth2PathProperties oAuth2PathProperties,
+            OAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository,
+            OAuth2EndpointsProperties oAuth2EndpointsProperties,
             OAuth2Service oAuth2Service,
             OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler,
             OAuth2LoginFailureHandler oAuth2LoginFailureHandler,
             ServletExceptionHandler servletExceptionHandler,
+            LogoutRequestHandler logoutRequestHandler,
             LogoutSuccessHandler logoutSuccessHandler
     ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthorizationFilter, LogoutFilter.class)
                 .oauth2Login(login -> login
                         .authorizationEndpoint(config -> config
-                                .authorizationRequestResolver(oAuth2AuthorizeRequestResolver)
-                                .authorizationRequestRepository(oAuth2SessionAuthRequestRepository)
+                                .baseUri(oAuth2EndpointsProperties.authorize)
+                                .authorizationRequestRepository(oAuth2AuthorizationRequestRepository)
                         )
-                        .redirectionEndpoint(config -> config.baseUri((
-                                oAuth2PathProperties.callback + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX
-                        )))
+                        .redirectionEndpoint(config -> config.baseUri(
+                                oAuth2EndpointsProperties.callback + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX
+                        ))
                         .userInfoEndpoint(config -> config.userService(oAuth2Service))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
@@ -84,7 +84,13 @@ public class SecurityConfig {
                         .authenticationEntryPoint(servletExceptionHandler::entryPoint)
                         .accessDeniedHandler(servletExceptionHandler::accessDenied)
                 )
-                .logout(config -> config.logoutSuccessHandler(logoutSuccessHandler))
+                .logout(config -> config
+                        .logoutUrl("/api/logout")
+                        .addLogoutHandler(logoutRequestHandler)
+                        .logoutSuccessHandler(logoutSuccessHandler)
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                )
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
@@ -106,29 +112,21 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter(
-            SecurityConfig.OAuth2PathProperties oAuth2PathProperties,
+            OAuth2EndpointsProperties oAuth2EndpointsProperties,
             JwtConfiguration.JwtProperties jwtProperties
-    ){
-        final var permitPaths = List.of(oAuth2PathProperties.getCallback() + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX);
+    ) {
+        final var permitPaths = List.of(
+                oAuth2EndpointsProperties.authorize + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX,
+                oAuth2EndpointsProperties.callback + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX
+        );
         return new JwtAuthorizationFilter(permitPaths, jwtProperties);
     }
 
     @Bean
-    public OAuth2AuthorizeRequestResolver oAuth2AuthorizeRequestResolver(
-            ClientRegistrationRepository clientRegistrationRepository,
-            SecurityConfig.OAuth2PathProperties oAuth2PathProperties
+    public OAuth2AuthorizationRequestRepository oAuth2AuthorizeRequestResolver(
+            StringRedisTemplate stringRedisTemplate
     ) {
-        return new OAuth2AuthorizeRequestResolver(
-                clientRegistrationRepository, oAuth2PathProperties.getAuthorize());
-    }
-
-    @Bean
-    public OAuth2SessionAuthRequestRepository oAuth2SessionAuthRequestRepository(
-            ClientRegistrationRepository clientRegistrationRepository,
-            SecurityConfig.OAuth2PathProperties oAuth2PathProperties
-    ) {
-        return new OAuth2SessionAuthRequestRepository(clientRegistrationRepository,
-                oAuth2PathProperties.getCallback() + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX);
+        return new OAuth2AuthorizationRequestRepository(stringRedisTemplate);
     }
 
     @Bean
@@ -140,8 +138,8 @@ public class SecurityConfig {
     public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(
             RouteRedirectStrategy routeRedirectStrategy,
             JwtProvider jwtProvider,
-            @Value("${network.routes.front}") String frontRouteBaseUrl,
-            RefreshTokenRepositoryHandler refreshTokenRepositoryHandler
+            @Value("${network.route.front}") String frontRouteBaseUrl,
+            RefreshTokenStoreHandler refreshTokenRepositoryHandler
     ) {
         final var handler = new OAuth2LoginSuccessHandler(jwtProvider, frontRouteBaseUrl, refreshTokenRepositoryHandler);
         handler.setRedirectStrategy(routeRedirectStrategy);
@@ -151,19 +149,31 @@ public class SecurityConfig {
     @Bean
     public OAuth2LoginFailureHandler oAuth2FailureProcessHandler(
             RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${network.routes.front}") String frontRouteBaseUrl
+            @Value("${network.route.front}") String frontRouteBaseUrl
     ) {
         final var handler = new OAuth2LoginFailureHandler(frontRouteBaseUrl);
         handler.setRedirectStrategy(routeRedirectStrategy);
         return handler;
     }
 
+    @Bean
+    public LogoutRequestHandler logoutRequestHandler(
+            LogoutService logoutService, JwtProvider jwtProvider) {
+        return new LogoutRequestHandler(logoutService, jwtProvider);
+    }
+
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler(
+            @Value("${network.route.gateway}") String gatewayRoute) {
+        return new LogoutSuccessHandler(gatewayRoute);
+    }
+
     @Getter
     @Setter
     @Component
     @NoArgsConstructor
-    @ConfigurationProperties(prefix = "spring.security.oauth2.path")
-    public static class OAuth2PathProperties {
+    @ConfigurationProperties(prefix = "app.security.oauth2.endpoints")
+    public static class OAuth2EndpointsProperties {
         private String authorize;
         private String callback;
         private String error;

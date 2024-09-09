@@ -2,14 +2,18 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.github;
 
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2RestOperations;
 
 import java.util.Map;
 
 @Component
-public class GithubOAuth2Provider implements OAuth2Provider {
+public class GithubOAuth2Provider extends OAuth2Provider {
     private static final String REGISTRATION_ID = "github";
+
+    public GithubOAuth2Provider(GithubOAuth2Stage githubOAuth2Stage) {
+        super(githubOAuth2Stage);
+    }
 
     @Override
     public String getRegistrationId() {
@@ -22,12 +26,12 @@ public class GithubOAuth2Provider implements OAuth2Provider {
     }
 
     @Override
-    public GithubUser retrieve(
-            OAuth2RestOperations oAuth2RestOperations, OAuth2UserRequest userRequest) {
-        return new GithubUser(new GithubOAuth2Workflow(oAuth2RestOperations, userRequest).retrieve());
+    public GithubUser retrieveUser(RestTemplate oAuth2RestTemplate, OAuth2UserRequest userRequest) {
+        Map<String, Object> attributes = oAuth2Stage.retrieveAttributes(userRequest);
+        return new GithubUser(attributes);
     }
 
-    public static class GithubUser extends OAuth2Provider.User {
+    public static class GithubUser extends User {
         public GithubUser(Map<String, Object> attributes) {
             super(attributes);
         }

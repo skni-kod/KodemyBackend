@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
@@ -23,7 +23,7 @@ import java.util.Set;
 public class UserController implements UserControllerDefinition {
     private final ChangeUserRoleUseCase changeUserRoleUseCase;
     private final UserService userService;
-    private final UsersForLanUseCase usersForLanUseCase;
+    private final UsersBriefUseCase usersBriefUseCase;
 
     @Override
     public ResponseEntity<Void> updateRoles(Long userId, Role.RoleName roleName) {
@@ -57,8 +57,8 @@ public class UserController implements UserControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<List<SimpleUserResponse>> getUsersForLan(Set<Long> ids) {
+    public ResponseEntity<List<SimpleUserResponse>> getUsersBrief(Set<Long> ids) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(usersForLanUseCase.getUsers(ids));
+                .body(usersBriefUseCase.getUserBrief(ids));
     }
 }

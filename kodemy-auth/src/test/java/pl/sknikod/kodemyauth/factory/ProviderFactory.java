@@ -1,7 +1,7 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Provider;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Provider;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
 
 public class ProviderFactory {
     private ProviderFactory(){

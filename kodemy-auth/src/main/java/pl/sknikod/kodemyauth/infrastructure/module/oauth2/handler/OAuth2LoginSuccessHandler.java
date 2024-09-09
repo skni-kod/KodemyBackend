@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
+import pl.sknikod.kodemyauth.infrastructure.database.model.RefreshToken;
+import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 import pl.sknikod.kodemycommon.security.AuthFacade;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 import pl.sknikod.kodemycommon.security.UserPrincipal;
-import pl.sknikod.kodemycommon.security.configuration.JwtConfiguration;
 
 import java.util.Map;
 
@@ -25,7 +24,7 @@ import java.util.Map;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
     private final String frontRouteBaseUrl;
-    private final RefreshTokenRepositoryHandler refreshTokenRepositoryHandler;
+    private final RefreshTokenStoreHandler refreshTokenRepositoryHandler;
 
     @Override
     public void onAuthenticationSuccess(

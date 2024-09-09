@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
 import pl.sknikod.kodemyauth.infrastructure.rest.RoleControllerDefinition;
 
 @RestController

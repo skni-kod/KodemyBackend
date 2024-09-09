@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    private final String frontRouteBaseUrl;
+    private final String gatewayRoute;
     private static final Map<String, String> GENERAL_ERROR_PARAMS = Map.of(
             "error", "authentication_error"
     );
@@ -26,7 +26,7 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
         final var params = postProcess(exception)
                 .fold(th -> GENERAL_ERROR_PARAMS, obj -> GENERAL_ERROR_PARAMS);
         ((RouteRedirectStrategy) getRedirectStrategy())
-                .sendRedirect(request, response, frontRouteBaseUrl, params);
+                .sendRedirect(request, response, gatewayRoute, params);
     }
 
     private Try<Object> postProcess(AuthenticationException exception) {

@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
+import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.rest.AuthInfo;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.rest.AuthResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;

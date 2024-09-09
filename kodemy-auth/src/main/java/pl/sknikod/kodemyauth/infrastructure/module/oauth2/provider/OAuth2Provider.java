@@ -2,25 +2,27 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.github.GithubOAuth2Provider;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2RestOperations;
 
 import java.util.Map;
 
-public interface OAuth2Provider {
-    String getRegistrationId();
-    boolean supports(String registrationId);
+@RequiredArgsConstructor
+public abstract class OAuth2Provider {
+    protected final Stage oAuth2Stage;
 
-    GithubOAuth2Provider.GithubUser retrieve(
-            OAuth2RestOperations oAuth2RestOperations, OAuth2UserRequest userRequest
-    );
+    public abstract String getRegistrationId();
+
+    public abstract boolean supports(String registrationId);
+
+    public abstract GithubOAuth2Provider.GithubUser retrieveUser(RestTemplate oAuth2RestTemplate, OAuth2UserRequest userRequest);
 
     @Getter
-    @Component
     @AllArgsConstructor
-    abstract class User {
+    public static abstract class User {
         protected final Map<String, Object> attributes;
 
         public abstract String getProvider();
@@ -32,5 +34,9 @@ public interface OAuth2Provider {
         public abstract String getEmail();
 
         public abstract String getPhoto();
+    }
+
+    public interface Stage {
+        Map<String, Object> retrieveAttributes(@NonNull OAuth2UserRequest userRequest);
     }
 }

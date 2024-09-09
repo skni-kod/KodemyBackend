@@ -4,13 +4,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizeRequestResolver;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2SessionAuthRequestRepository;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizationRequestRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
-import pl.sknikod.kodemycommon.security.JwtProvider;
 
 @TestConfiguration
 public class TestSecurityConfig {
@@ -31,13 +29,8 @@ public class TestSecurityConfig {
     }
 
     @Bean
-    public OAuth2AuthorizeRequestResolver oAuth2AuthorizeRequestResolver() {
-        return Mockito.mock(OAuth2AuthorizeRequestResolver.class);
-    }
-
-    @Bean
-    public OAuth2SessionAuthRequestRepository oAuth2SessionAuthRequestRepository() {
-        return Mockito.mock(OAuth2SessionAuthRequestRepository.class);
+    public OAuth2AuthorizationRequestRepository oAuth2SessionAuthRequestRepository() {
+        return Mockito.mock(OAuth2AuthorizationRequestRepository.class);
     }
 
     @Bean

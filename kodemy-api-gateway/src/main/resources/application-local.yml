@@ -1,0 +1,6 @@
+network:
+  route:
+    front: http://localhost:3000
+    auth: http://localhost:8081
+    backend: http://localhost:8082
+    search: http://localhost:8083

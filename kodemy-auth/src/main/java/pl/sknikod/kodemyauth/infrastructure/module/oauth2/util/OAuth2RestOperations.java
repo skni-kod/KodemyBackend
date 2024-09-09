@@ -5,21 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-@Component
 @RequiredArgsConstructor
 public class OAuth2RestOperations {
     private static final ParameterizedTypeReference<Map<String, Object>> PARAMETERIZED_RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    private final RestOperations restOperations;
+    private final RestTemplate oAuth2RestTemplate;
 
     public RequestEntity<?> map(@NonNull String url, @NonNull OAuth2UserRequest userRequest) {
         URI uri = UriComponentsBuilder.fromUriString(url)
@@ -36,7 +34,7 @@ public class OAuth2RestOperations {
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUri();
-        return this.restOperations.exchange(map(userInfoUri, userRequest), PARAMETERIZED_RESPONSE_TYPE);
+        return this.oAuth2RestTemplate.exchange(map(userInfoUri, userRequest), PARAMETERIZED_RESPONSE_TYPE);
     }
 
     public <T> ResponseEntity<T> exchange(
@@ -44,7 +42,7 @@ public class OAuth2RestOperations {
             @NonNull Class<T> responseType,
             @NonNull OAuth2UserRequest userRequest
     ) {
-        return this.restOperations.exchange(map(url, userRequest), responseType);
+        return this.oAuth2RestTemplate.exchange(map(url, userRequest), responseType);
     }
 
     public <T> ResponseEntity<T> exchange(
@@ -52,6 +50,6 @@ public class OAuth2RestOperations {
             @NonNull ParameterizedTypeReference<T> responseType,
             @NonNull OAuth2UserRequest userRequest
     ) {
-        return this.restOperations.exchange(map(url, userRequest), responseType);
+        return this.oAuth2RestTemplate.exchange(map(url, userRequest), responseType);
     }
 }
