@@ -14,8 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
-import pl.sknikod.kodemybackend.util.auth.JwtService;
-import pl.sknikod.kodemybackend.util.data.LanRestTemplate;
+import pl.sknikod.kodemycommon.network.LanRestTemplate;
+import pl.sknikod.kodemycommon.security.JwtProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +55,11 @@ public class WebConfig {
     @Bean
     public LanNetworkHandler lanNetworkHandler(
             LanNetworkProperties lanNetworkProperties,
-            JwtService jwtService,
+            JwtProvider jwtProvider,
             @Value("${network.routes.auth}") String authRouteBaseUrl
     ) {
         LanRestTemplate lanRestTemplate = new LanRestTemplate(
-                lanNetworkProperties.connectTimeoutMs, lanNetworkProperties.readTimeoutMs, jwtService
+                lanNetworkProperties.connectTimeoutMs, lanNetworkProperties.readTimeoutMs, jwtProvider
         );
         return new LanNetworkHandler(lanRestTemplate, authRouteBaseUrl);
     }

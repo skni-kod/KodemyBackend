@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.config.Customizer;
@@ -14,10 +15,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.sknikod.kodemybackend.util.auth.JwtAuthorizationFilter;
-import pl.sknikod.kodemybackend.util.auth.JwtService;
-import pl.sknikod.kodemybackend.util.auth.handler.AccessControlExceptionHandler;
 import pl.sknikod.kodemybackend.util.data.AuditorAwareAdapter;
+import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
+import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommon.security.configuration.JwtConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -25,13 +27,14 @@ import pl.sknikod.kodemybackend.util.data.AuditorAwareAdapter;
         securedEnabled = true,
         jsr250Enabled = true)
 @AllArgsConstructor
+@Import({JwtConfiguration.class})
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthorizationFilter jwtAuthorizationFilter,
-            AccessControlExceptionHandler accessControlExceptionHandler
+            ServletExceptionHandler servletExceptionHandler
             //LogoutSuccessHandler logoutSuccessHandler
     ) throws Exception {
         http
@@ -41,8 +44,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(Customizer.withDefaults())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(accessControlExceptionHandler::entryPoint)
-                        .accessDeniedHandler(accessControlExceptionHandler::accessDenied)
+                        .authenticationEntryPoint(servletExceptionHandler::entryPoint)
+                        .accessDeniedHandler(servletExceptionHandler::accessDenied)
                 )
                 //.logout(config -> config.logoutSuccessHandler(logoutSuccessHandler))
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -55,14 +58,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AccessControlExceptionHandler accessControlExceptionHandler(ObjectMapper objectMapper) {
-        return new AccessControlExceptionHandler(objectMapper);
+    public ServletExceptionHandler servletExceptionHandler(ObjectMapper objectMapper) {
+        return new ServletExceptionHandler(objectMapper);
     }
 
     @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter(
-            JwtService jwtService
-    ){
-        return new JwtAuthorizationFilter(jwtService);
+    public JwtConfiguration.JwtProperties jwtProperties() {
+        return new JwtConfiguration.JwtProperties();
+    }
+
+    @Bean
+    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties){
+        return new JwtProvider(jwtProperties);
+    }
+
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter(JwtConfiguration.JwtProperties jwtProperties) {
+        return new JwtAuthorizationFilter(jwtProperties);
     }
 }

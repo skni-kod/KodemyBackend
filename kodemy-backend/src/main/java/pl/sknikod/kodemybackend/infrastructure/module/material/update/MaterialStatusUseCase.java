@@ -2,14 +2,13 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.update;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.exception.structure.ValidationException;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialRepositoryHandler;
-import pl.sknikod.kodemybackend.util.auth.AuthFacade;
-import pl.sknikod.kodemybackend.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.Validation400Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommon.security.AuthFacade;
+import pl.sknikod.kodemycommon.security.UserPrincipal;
 
 import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getAuthorityForStatusChange;
 import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getPossibleStatuses;
@@ -20,7 +19,7 @@ public class MaterialStatusUseCase {
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(ServerProcessingException::new);
+                .orElseThrow(InternalError500Exception::new);
         return materialRepositoryHandler.findById(materialId)
                 .filter(material -> {
                     var possibleStatuses = getPossibleStatuses(material.getStatus());
@@ -30,7 +29,7 @@ public class MaterialStatusUseCase {
                 .peek(m -> m.setStatus(newStatus))
                 .flatMap(materialRepositoryHandler::save)
                 .map(Material::getStatus)
-                .toTry(() -> new ValidationException("Cannot update status of the material"))
+                .toTry(() -> new Validation400Exception("Cannot update status of the material"))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 

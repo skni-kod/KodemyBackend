@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RoleRepositoryHandler;
@@ -15,8 +14,9 @@ import pl.sknikod.kodemyauth.infrastructure.database.handler.UserRepositoryHandl
 import pl.sknikod.kodemyauth.infrastructure.module.common.mapper.UserMapper;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
-import pl.sknikod.kodemyauth.util.auth.AuthFacade;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.security.AuthFacade;
+import pl.sknikod.kodemycommon.security.UserPrincipal;
 
 import java.util.HashSet;
 
@@ -39,8 +39,8 @@ public class UserService {
     public UserInfoResponse getUserInfo(Long userId) {
         return userRepositoryHandler.findById(userId)
                 .map(userMapper::map)
-                .getOrElseThrow(th -> th instanceof ServerProcessingException ex
-                        ? ex : new ServerProcessingException());
+                .getOrElseThrow(th -> th instanceof InternalError500Exception ex
+                        ? ex : new InternalError500Exception());
     }
 
     public UserInfoResponse getCurrentUserInfo() {
@@ -48,7 +48,7 @@ public class UserService {
                 .map(UserPrincipal::getId)
                 .map(id -> userRepositoryHandler.findById(id).getOrNull())
                 .map(userMapper::map)
-                .orElseThrow(ServerProcessingException::new);
+                .orElseThrow(InternalError500Exception::new);
     }
 
     public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {

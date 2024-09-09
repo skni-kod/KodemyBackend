@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddRequest;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
-import pl.sknikod.kodemybackend.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommon.doc.SwaggerResponse;
 
 import java.util.List;
 

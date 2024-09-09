@@ -10,7 +10,7 @@ import org.opensearch.client.opensearch._types.WriteResponseBase;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemysearch.exception.ExceptionUtil;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexEvent;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 

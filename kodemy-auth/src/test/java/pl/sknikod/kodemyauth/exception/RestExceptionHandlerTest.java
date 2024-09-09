@@ -18,8 +18,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionBody;
+import pl.sknikod.kodemycommon.exception.handler.RestExceptionHandler;
 
 import java.util.List;
 import java.util.Locale;
@@ -85,7 +87,7 @@ class RestExceptionHandlerTest extends BaseTest {
     @Test
     void handleServerProcessingException_shouldServerProcessing() {
         // given
-        ServerProcessingException ex = new ServerProcessingException();
+        var ex = new InternalError500Exception();
         // when
         ResponseEntity<Object> result = restExceptionHandler.handleServerProcessingException(ex, request);
         // then

@@ -3,15 +3,15 @@ package pl.sknikod.kodemysearch.configuration;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import pl.sknikod.kodemysearch.util.auth.JwtAuthorizationFilter;
-import pl.sknikod.kodemysearch.util.auth.JwtService;
-import pl.sknikod.kodemysearch.util.auth.handler.AccessControlExceptionHandler;
+import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
+import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommon.security.JwtProvider;
 
 @TestConfiguration
 public class TestSecurityConfig {
     @Bean
-    public AccessControlExceptionHandler accessControlExceptionHandler() {
-        return Mockito.mock(AccessControlExceptionHandler.class);
+    public ServletExceptionHandler servletExceptionHandler() {
+        return Mockito.mock(ServletExceptionHandler.class);
     }
 
     @Bean
@@ -21,7 +21,7 @@ public class TestSecurityConfig {
     }
 
     @Bean
-    public JwtService jwtService(){
-        return Mockito.mock(JwtService.class);
+    public JwtProvider jwtProvider(){
+        return Mockito.mock(JwtProvider.class);
     }
 }

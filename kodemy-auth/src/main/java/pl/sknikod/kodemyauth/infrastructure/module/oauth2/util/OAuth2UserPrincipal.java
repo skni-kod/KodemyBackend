@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommon.security.UserPrincipal;
 
 import java.util.Collection;
 import java.util.Collections;

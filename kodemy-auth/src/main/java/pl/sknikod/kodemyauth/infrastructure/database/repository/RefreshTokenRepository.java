@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 
 import java.util.UUID;
 

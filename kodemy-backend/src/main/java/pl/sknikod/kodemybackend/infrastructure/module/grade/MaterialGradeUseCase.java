@@ -1,7 +1,5 @@
 package pl.sknikod.kodemybackend.infrastructure.module.grade;
 
-import io.vavr.Tuple;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -11,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Grade;
@@ -21,11 +17,12 @@ import pl.sknikod.kodemybackend.infrastructure.database.handler.GradeRepositoryH
 import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
-import pl.sknikod.kodemybackend.util.auth.AuthFacade;
-import pl.sknikod.kodemybackend.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommon.security.AuthFacade;
+import pl.sknikod.kodemycommon.security.UserPrincipal;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -37,7 +34,7 @@ public class MaterialGradeUseCase {
 
     public Grade addGrade(Long materialId, MaterialAddGradeRequest request) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(ServerProcessingException::new);
+                .orElseThrow(InternalError500Exception::new);
         var material = materialRepositoryHandler.findById(materialId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
         return Try.of(() -> this.map(request, material, userPrincipal))

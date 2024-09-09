@@ -4,11 +4,11 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import pl.sknikod.kodemyauth.exception.structure.NotFoundException;
 import pl.sknikod.kodemyauth.factory.RoleFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RoleRepository;
 import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Optional;
 
@@ -48,6 +48,6 @@ class RoleRepositoryHandlerTest extends BaseTest {
         Try<Role> result = roleRepositoryHandler.findByRoleName(Role.RoleName.ROLE_ADMIN.name());
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 }

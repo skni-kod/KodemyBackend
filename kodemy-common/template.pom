@@ -1,0 +1,14 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pl.sknikod</groupId>
+    <artifactId>kodemy-common</artifactId>
+    <version>${version}</version>
+    <packaging>jar</packaging>
+
+    <name>Kodemy Common</name>
+    <description>Common classes for Kodemy Backend</description>
+
+    <dependencies/>
+</project>

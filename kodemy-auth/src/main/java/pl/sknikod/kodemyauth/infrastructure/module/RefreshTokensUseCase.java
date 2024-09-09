@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.rest.model.RefreshTokensResponse;
-import pl.sknikod.kodemyauth.util.auth.JwtService;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.security.JwtProvider;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokensUseCase {
     private final RefreshTokenRepositoryHandler refreshTokenRepositoryHandler;
-    private final JwtService jwtService;
+    private final JwtProvider jwtProvider;
     private final SecurityConfig.RoleProperties roleProperties;
 
     public RefreshTokensResponse refresh(UUID refresh, UUID bearerJti) {
@@ -29,11 +29,11 @@ public class RefreshTokensUseCase {
                 .flatMapTry(this::generateTokensAndInvalidate)
                 .map(tokens -> new RefreshTokensResponse(
                         tokens._2.getToken().toString(), tokens._1.value()))
-                .getOrElseThrow(th -> new ServerProcessingException());
+                .getOrElseThrow(th -> new InternalError500Exception());
     }
 
-    private Try<Tuple2<JwtService.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {
-        return Try.of(() -> jwtService.generateUserToken(map(refreshToken.getUser())))
+    private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {
+        return Try.of(() -> jwtProvider.generateUserToken(map(refreshToken.getUser())))
                 .flatMapTry(bearerToken -> refreshTokenRepositoryHandler
                         .createAndGet(refreshToken.getUser(), bearerToken.id())
                         .map(newRefreshToken -> Tuple.of(bearerToken, newRefreshToken))
@@ -41,8 +41,8 @@ public class RefreshTokensUseCase {
                 .peek(unused -> refreshTokenRepositoryHandler.invalidate(refreshToken));
     }
 
-    private JwtService.Input map(User user) {
-        return new JwtService.Input(
+    private JwtProvider.Input map(User user) {
+        return new JwtProvider.Input(
                 user.getId(),
                 user.getUsername(),
                 user.getIsExpired(),

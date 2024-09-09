@@ -2,11 +2,11 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.get;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.GradeRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 
 @Slf4j
 @RequiredArgsConstructor

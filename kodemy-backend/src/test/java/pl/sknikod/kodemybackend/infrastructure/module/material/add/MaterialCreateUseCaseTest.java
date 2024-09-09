@@ -3,8 +3,6 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.add;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.factory.*;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.CategoryRepositoryHandler;
@@ -15,6 +13,8 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitPro
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducerTest;
 import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.WithUserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Set;
 
@@ -78,7 +78,7 @@ class MaterialCreateUseCaseTest extends BaseTest {
     void create_shouldThrowException_whenNotAuthorize() {
         // given
         // when & then
-        assertThrows(ServerProcessingException.class, () -> materialUseCase.create(REQUEST));
+        assertThrows(InternalError500Exception.class, () -> materialUseCase.create(REQUEST));
     }
 
     @Test
@@ -86,9 +86,9 @@ class MaterialCreateUseCaseTest extends BaseTest {
     void create_shouldThrowException_whenCategoryNotFound() {
         // given
         when(categoryRepositoryHandler.findById(any()))
-                .thenReturn(Try.failure(new NotFoundException("")));
+                .thenReturn(Try.failure(new NotFound404Exception("")));
         // when & then
-        assertThrows(NotFoundException.class, () -> materialUseCase.create(REQUEST));
+        assertThrows(NotFound404Exception.class, () -> materialUseCase.create(REQUEST));
     }
 
     @Test
@@ -98,9 +98,9 @@ class MaterialCreateUseCaseTest extends BaseTest {
         when(categoryRepositoryHandler.findById(REQUEST.getCategoryId()))
                 .thenReturn(Try.success(CategoryFactory.category(1L)));
         when(typeRepositoryHandler.findById(REQUEST.getTypeId()))
-                .thenReturn(Try.failure(new NotFoundException("")));
+                .thenReturn(Try.failure(new NotFound404Exception("")));
         // when & then
-        assertThrows(NotFoundException.class, () -> materialUseCase.create(REQUEST));
+        assertThrows(NotFound404Exception.class, () -> materialUseCase.create(REQUEST));
     }
 
     @Test
@@ -115,9 +115,9 @@ class MaterialCreateUseCaseTest extends BaseTest {
         when(typeRepositoryHandler.findById(REQUEST.getTypeId()))
                 .thenReturn(Try.success(TypeFactory.type()));
         when(tagRepositoryHandler.findAllByIdIn(REQUEST.getTagsIds()))
-                .thenReturn(Try.failure(new NotFoundException("")));
+                .thenReturn(Try.failure(new NotFound404Exception("")));
         // when & then
-        assertThrows(NotFoundException.class, () -> materialUseCase.create(REQUEST));
+        assertThrows(NotFound404Exception.class, () -> materialUseCase.create(REQUEST));
     }
 
     @Test

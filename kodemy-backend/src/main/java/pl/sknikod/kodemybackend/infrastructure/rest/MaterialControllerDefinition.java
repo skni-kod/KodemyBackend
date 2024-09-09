@@ -20,7 +20,7 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialSor
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
 import pl.sknikod.kodemybackend.infrastructure.module.material.update.MaterialUpdateUseCase;
-import pl.sknikod.kodemybackend.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommon.doc.SwaggerResponse;
 
 import java.time.Instant;
 

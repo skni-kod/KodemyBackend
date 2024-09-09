@@ -3,18 +3,17 @@ package pl.sknikod.kodemybackend.infrastructure.module.section;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.factory.SectionFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.SectionMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.SectionRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.section.model.SingleSectionResponse;
 import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
@@ -47,8 +46,8 @@ class SectionUseCaseTest extends BaseTest {
     void getAllSections_shouldThrowException_whenNoSectionsFound() {
         // given
         when(sectionRepositoryHandler.findAll())
-                .thenReturn(Try.failure(new NotFoundException("")));
+                .thenReturn(Try.failure(new NotFound404Exception("")));
         // when & then
-        assertThrows(ServerProcessingException.class, sectionUseCase::getAllSections);
+        assertThrows(InternalError500Exception.class, sectionUseCase::getAllSections);
     }
 }

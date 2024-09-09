@@ -9,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemybackend.util.data.LanRestTemplate;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.network.LanRestTemplate;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,13 +37,13 @@ public class LanNetworkHandler {
                 ))
                 .map(HttpEntity::getBody)
                 .onFailure(th -> log.error(LOG_PROBLEM, th))
-                .toTry(ServerProcessingException::new);
+                .toTry(InternalError500Exception::new);
     }
 
     public Try<SimpleUserResponse> getUser(Long id) {
         return this.getUsers(Set.of(id))
                 .filter(v -> !v.isEmpty())
-                .toTry(ServerProcessingException::new)
+                .toTry(InternalError500Exception::new)
                 .map(v -> v.get(0));
     }
 

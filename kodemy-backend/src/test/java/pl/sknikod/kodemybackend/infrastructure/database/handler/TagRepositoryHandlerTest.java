@@ -3,12 +3,12 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.OptimisticLockingFailureException;
-import pl.sknikod.kodemybackend.exception.structure.AlreadyExistsException;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.TagRepository;
 import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemycommon.exception.AlreadyExists409Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Collections;
 import java.util.Set;
@@ -45,7 +45,7 @@ class TagRepositoryHandlerTest extends BaseTest {
         var result = tagRepositoryHandler.findAllByIdIn(Set.of(1L));
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 
     @Test
@@ -74,7 +74,7 @@ class TagRepositoryHandlerTest extends BaseTest {
         var result = tagRepositoryHandler.save(name);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(AlreadyExistsException.class, result.getCause());
+        assertInstanceOf(AlreadyExists409Exception.class, result.getCause());
     }
 
     @Test

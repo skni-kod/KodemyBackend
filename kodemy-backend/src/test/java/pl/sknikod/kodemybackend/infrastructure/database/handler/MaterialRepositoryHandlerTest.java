@@ -3,10 +3,10 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.OptimisticLockingFailureException;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ class MaterialRepositoryHandlerTest extends BaseTest {
         var result = materialRepositoryHandler.findById(1L);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 
     @Test

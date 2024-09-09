@@ -3,9 +3,9 @@ package pl.sknikod.kodemyauth.infrastructure.module.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.exception.ExceptionUtil;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.UserRepositoryHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 
 import java.util.List;
 import java.util.Set;

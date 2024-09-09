@@ -4,10 +4,10 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.exception.ExceptionPattern;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Type;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.TypeRepository;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class TypeRepositoryHandler {
 
     public Try<Type> findById(Long id) {
         return Try.of(() -> typeRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException(ExceptionPattern.ENTITY_NOT_FOUND_BY_PARAM,
+                        .orElseThrow(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND_BY_PARAM,
                                 Type.class.getSimpleName(), "id", id)))
                 .onFailure(th -> log.error(th.getMessage(), th));
     }

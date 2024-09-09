@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.exception.ExceptionPattern;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class MaterialRepositoryHandler {
 
     public Try<Material> findById(Long id) {
         return Try.of(() -> materialRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException(ExceptionPattern.ENTITY_NOT_FOUND_BY_PARAM, Material.class, "id", id)))
+                        .orElseThrow(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND_BY_PARAM, Material.class, "id", id)))
                 .onFailure(th -> log.error(th.getMessage(), th));
     }
 

@@ -2,10 +2,10 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
 import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.database.repository.TypeRepository;
 import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -43,7 +43,7 @@ class TypeRepositoryHandlerTest extends BaseTest {
         var result = typeRepositoryHandler.findById(1L);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 
     @Test

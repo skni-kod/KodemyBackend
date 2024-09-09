@@ -1,10 +1,10 @@
 package pl.sknikod.kodemybackend.infrastructure.module.section;
 
 import lombok.AllArgsConstructor;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.SectionMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.SectionRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.section.model.SingleSectionResponse;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 
 import java.util.List;
 
@@ -16,6 +16,6 @@ public class SectionUseCase {
     public List<SingleSectionResponse> getAllSections() {
         return sectionRepositoryHandler.findAll()
                 .map(sectionMapper::map)
-                .getOrElseThrow(() -> new ServerProcessingException());
+                .getOrElseThrow(() -> new InternalError500Exception());
     }
 }

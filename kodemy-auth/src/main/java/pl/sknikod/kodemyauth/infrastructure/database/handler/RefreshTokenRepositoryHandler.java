@@ -5,13 +5,13 @@ import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.exception.ExceptionPattern;
-import pl.sknikod.kodemyauth.exception.structure.NotFoundException;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RefreshTokenRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.UserRepository;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class RefreshTokenRepositoryHandler {
     public Try<RefreshToken> createAndGet(long userId, UUID bearerId) {
         return Try.of(() -> userRepository.findById(userId))
                 .map(Optional::get)
-                .toTry(() -> new NotFoundException(ExceptionPattern.ENTITY_NOT_FOUND_BY_PARAM, User.class, "id", userId))
+                .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND_BY_PARAM, User.class, "id", userId))
                 .map(user -> new RefreshToken(
                         UUID.randomUUID(),
                         bearerId,
@@ -45,7 +45,7 @@ public class RefreshTokenRepositoryHandler {
                         user
                 ))
                 .flatMapTry(this::saveEntity)
-                .recoverWith(ex -> Try.failure(new ServerProcessingException()));
+                .recoverWith(ex -> Try.failure(new InternalError500Exception()));
     }
 
     private Try<RefreshToken> saveEntity(RefreshToken refreshToken) {
@@ -61,14 +61,14 @@ public class RefreshTokenRepositoryHandler {
                         user
                 ))
                 .flatMapTry(this::saveEntity)
-                .recoverWith(ex -> Try.failure(new ServerProcessingException()));
+                .recoverWith(ex -> Try.failure(new InternalError500Exception()));
     }
 
     public Try<RefreshToken> findByTokenAndBearerJti(UUID refresh, UUID bearerJti) {
         return Option.of(refreshTokenRepository.findRTByTokenAndBearerJtiWithFetchUser(
                         refresh, bearerJti))
                 .filter(refreshToken -> refreshToken.getExpiredDate().isAfter(LocalDateTime.now()))
-                .toTry(() -> new NotFoundException(ExceptionPattern.ENTITY_NOT_FOUND, RefreshToken.class))
+                .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, RefreshToken.class))
                 .onFailure(th -> log.error(th.getMessage(), th));
     }
 

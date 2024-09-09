@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.MaterialGradeUseCase;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSortField;
-import pl.sknikod.kodemybackend.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommon.doc.SwaggerResponse;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse

@@ -1,12 +1,10 @@
 package pl.sknikod.kodemybackend.infrastructure.module.type;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.TypeMapper;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.TypeRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.type.model.SingleTypeResponse;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 
 import java.util.List;
 

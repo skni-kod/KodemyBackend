@@ -12,9 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.sknikod.kodemycommon.doc.SwaggerResponse;
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchUseCase;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialSearchFields;
-import pl.sknikod.kodemysearch.util.web.SwaggerResponse;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse

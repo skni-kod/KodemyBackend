@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import pl.sknikod.kodemysearch.exception.ExceptionUtil;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialSearchFields;
 

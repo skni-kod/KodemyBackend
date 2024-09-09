@@ -5,13 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.dao.OptimisticLockingFailureException;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.factory.UserFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RefreshTokenRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.UserRepository;
 import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -63,7 +63,7 @@ class RefreshTokenRepositoryHandlerTest extends BaseTest {
         Try<RefreshToken> result = refreshTokenRepositoryHandler.createAndGet(id, uuid);
         //then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test
@@ -79,7 +79,7 @@ class RefreshTokenRepositoryHandlerTest extends BaseTest {
         Try<RefreshToken> result = refreshTokenRepositoryHandler.createAndGet(id, uuid);
         //then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test
@@ -108,7 +108,7 @@ class RefreshTokenRepositoryHandlerTest extends BaseTest {
         Try<RefreshToken> result = refreshTokenRepositoryHandler.createAndGet(UserFactory.userUser, uuid);
         //then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test
@@ -121,6 +121,6 @@ class RefreshTokenRepositoryHandlerTest extends BaseTest {
         Try<RefreshToken> result = refreshTokenRepositoryHandler.createAndGet(UserFactory.userUser, uuid);
         //then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 }

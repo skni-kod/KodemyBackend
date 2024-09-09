@@ -8,7 +8,7 @@ import pl.sknikod.kodemyauth.configuration.SecurityConfig;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
 import pl.sknikod.kodemyauth.BaseTest;
-import pl.sknikod.kodemyauth.util.auth.JwtService;
+import pl.sknikod.kodemycommon.security.JwtProvider;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.*;
 class RefreshTokensUseCaseTest extends BaseTest {
     private final RefreshTokenRepositoryHandler refreshTokenRepositoryHandler =
             Mockito.mock(RefreshTokenRepositoryHandler.class);
-    private final JwtService jwtService =
-            Mockito.mock(JwtService.class);
-    private SecurityConfig.RoleProperties roleProperties =
+    private final JwtProvider jwtProvider =
+            Mockito.mock(JwtProvider.class);
+    private final SecurityConfig.RoleProperties roleProperties =
             Mockito.mock(SecurityConfig.RoleProperties.class);
 
     private final RefreshTokensUseCase refreshTokensUseCase =
-            new RefreshTokensUseCase(refreshTokenRepositoryHandler, jwtService, roleProperties);
+            new RefreshTokensUseCase(refreshTokenRepositoryHandler, jwtProvider, roleProperties);
 
     private static final UUID refresh;
     private static final UUID bearerJti;
@@ -47,14 +47,14 @@ class RefreshTokensUseCaseTest extends BaseTest {
         var refreshToken = TokenFactory.refreshToken();
         when(refreshTokenRepositoryHandler.findByTokenAndBearerJti(eq(refresh), eq(bearerJti)))
                 .thenReturn(Try.success(refreshToken));
-        when(jwtService.generateUserToken(any()))
-                .thenReturn(TokenFactory.jwtServiceToken);
+        when(jwtProvider.generateUserToken(any()))
+                .thenReturn(TokenFactory.jwtProviderToken);
         when(refreshTokenRepositoryHandler.createAndGet(any(), any()))
                 .thenReturn(Try.success(refreshToken));
         // when
         var result = refreshTokensUseCase.refresh(refresh, bearerJti);
         // then
-        assertEquals(TokenFactory.jwtServiceToken.value(), result.token());
+        assertEquals(TokenFactory.jwtProviderToken.value(), result.token());
         assertEquals(refreshToken.getToken().toString(), result.refresh());
     }
 }

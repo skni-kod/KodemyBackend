@@ -3,7 +3,6 @@ package pl.sknikod.kodemyauth.infrastructure.rest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -16,8 +15,8 @@ import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserSortField;
-import pl.sknikod.kodemyauth.util.data.LanRestTemplate;
-import pl.sknikod.kodemyauth.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommon.doc.SwaggerResponse;
+import pl.sknikod.kodemycommon.network.LanRestTemplate;
 
 import java.util.List;
 import java.util.Set;

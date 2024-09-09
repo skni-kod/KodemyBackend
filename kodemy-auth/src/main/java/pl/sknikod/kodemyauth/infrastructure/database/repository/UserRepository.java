@@ -4,11 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 
 import java.util.ArrayList;
 import java.util.HashSet;

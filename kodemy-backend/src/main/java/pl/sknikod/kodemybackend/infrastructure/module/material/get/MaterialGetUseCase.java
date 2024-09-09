@@ -10,14 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialRepositoryHandler;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
-import pl.sknikod.kodemybackend.util.auth.AuthFacade;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommon.security.AuthFacade;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class MaterialGetUseCase {
                         LanNetworkHandler.SimpleUserResponse::getUsername
                 )))
                 .filter(v -> v.size() == userIds.size())
-                .toTry(ServerProcessingException::new)
+                .toTry(InternalError500Exception::new)
                 .map(users -> Tuple.of(page, users));
     }
 
@@ -77,6 +77,5 @@ public class MaterialGetUseCase {
                 .map(principal -> !principal.getAuthorities().contains(CAN_VIEW_ALL_MATERIALS) &&
                         !userId.equals(principal.getId()))
                 .orElse(false);
-
     }
 }

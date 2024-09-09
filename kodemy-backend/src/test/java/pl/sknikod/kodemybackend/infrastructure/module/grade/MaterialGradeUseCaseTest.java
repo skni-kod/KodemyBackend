@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import pl.sknikod.kodemybackend.exception.structure.NotFoundException;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.factory.GradeFactory;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
@@ -18,6 +16,8 @@ import pl.sknikod.kodemybackend.infrastructure.database.handler.MaterialReposito
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
 import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.WithUserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 
 class MaterialGradeUseCaseTest extends BaseTest {
     final MaterialGradeUseCase materialGradeUseCase = new MaterialGradeUseCase(
@@ -54,7 +53,7 @@ class MaterialGradeUseCaseTest extends BaseTest {
     void addGrade_shouldThrowException_whenNotAuthorize() {
         // given
         // when & then
-        assertThrows(ServerProcessingException.class, () -> materialGradeUseCase.addGrade(1L, request));
+        assertThrows(InternalError500Exception.class, () -> materialGradeUseCase.addGrade(1L, request));
     }
 
     @Test
@@ -62,7 +61,7 @@ class MaterialGradeUseCaseTest extends BaseTest {
     void addGrade_shouldThrowException_whenMaterialNotFound() {
         // given
         // when & then
-        assertThrows(NotFoundException.class, () -> materialGradeUseCase.addGrade(2L, request));
+        assertThrows(NotFound404Exception.class, () -> materialGradeUseCase.addGrade(2L, request));
     }
 
     @Test
@@ -125,7 +124,7 @@ class MaterialGradeUseCaseTest extends BaseTest {
         public Try<Material> findById(Long id) {
             if (id == 1L || id == 3L)
                 return Try.success(MaterialFactory.material(id, Material.MaterialStatus.APPROVED));
-            return Try.failure(new NotFoundException(""));
+            return Try.failure(new NotFound404Exception(""));
         }
     }
 

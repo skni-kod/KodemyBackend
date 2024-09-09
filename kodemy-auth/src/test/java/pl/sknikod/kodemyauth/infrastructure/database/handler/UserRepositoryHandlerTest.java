@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import pl.sknikod.kodemyauth.configuration.SecurityConfig;
-import pl.sknikod.kodemyauth.exception.structure.NotFoundException;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemyauth.factory.OAuth2Factory;
 import pl.sknikod.kodemyauth.factory.RoleFactory;
 import pl.sknikod.kodemyauth.factory.UserFactory;
@@ -19,6 +17,8 @@ import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.repository.UserRepository;
 import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.NotFound404Exception;
 
 import java.util.Collections;
 import java.util.List;
@@ -108,7 +108,7 @@ class UserRepositoryHandlerTest extends BaseTest {
         Try<User> result = userRepositoryHandler.findByProviderUser(OAuth2Factory.oAuth2GithubUser());
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 
     @Test
@@ -132,7 +132,7 @@ class UserRepositoryHandlerTest extends BaseTest {
         Try<User> result = userRepositoryHandler.findById(UserFactory.userUser.getId());
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(NotFoundException.class, result.getCause());
+        assertInstanceOf(NotFound404Exception.class, result.getCause());
     }
 
     @Test
@@ -160,7 +160,7 @@ class UserRepositoryHandlerTest extends BaseTest {
         Try<User> result = userRepositoryHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test
@@ -174,7 +174,7 @@ class UserRepositoryHandlerTest extends BaseTest {
         Try<User> result = userRepositoryHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test
@@ -190,7 +190,7 @@ class UserRepositoryHandlerTest extends BaseTest {
         Try<User> result = userRepositoryHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
         // then
         assertTrue(result.isFailure());
-        assertInstanceOf(ServerProcessingException.class, result.getCause());
+        assertInstanceOf(InternalError500Exception.class, result.getCause());
     }
 
     @Test

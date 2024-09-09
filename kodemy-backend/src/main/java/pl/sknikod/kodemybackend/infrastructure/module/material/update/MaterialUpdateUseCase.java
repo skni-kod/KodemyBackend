@@ -10,17 +10,16 @@ import lombok.Data;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.exception.ExceptionUtil;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.entity.Type;
 import pl.sknikod.kodemybackend.infrastructure.database.handler.*;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
-import pl.sknikod.kodemybackend.util.auth.AuthFacade;
-import pl.sknikod.kodemybackend.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommon.security.AuthFacade;
+import pl.sknikod.kodemycommon.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Set;
@@ -42,7 +41,7 @@ public class MaterialUpdateUseCase {
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(ServerProcessingException::new);
+                .orElseThrow(InternalError500Exception::new);
         var material = materialRepositoryHandler.findById(materialId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
         var category = categoryRepositoryHandler.findById(body.categoryId)
