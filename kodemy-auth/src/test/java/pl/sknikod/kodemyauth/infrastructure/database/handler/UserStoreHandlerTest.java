@@ -8,7 +8,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.factory.OAuth2Factory;
 import pl.sknikod.kodemyauth.factory.RoleFactory;
 import pl.sknikod.kodemyauth.factory.UserFactory;
@@ -34,7 +34,7 @@ class UserStoreHandlerTest extends BaseTest {
     @Mock
     private RoleRepository roleRepository;
     @Mock
-    private SecurityConfig.RoleProperties roleProperties;
+    private SecurityConfiguration.RoleProperties roleProperties;
 
     private UserStoreHandler userStoreHandler;
 

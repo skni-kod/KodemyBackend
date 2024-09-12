@@ -23,7 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
-    private final String frontRouteBaseUrl;
+    private final String redirectPath;
     private final RefreshTokenStoreHandler refreshTokenRepositoryHandler;
 
     @Override
@@ -33,10 +33,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         final var params = postProcess(authentication)
                 .<Map<String, String>>fold(
                         th -> Map.of("error", th.getMessage().toLowerCase().replace(" ", "_")),
-                        tokens -> Map.of("token", tokens._1.value(), "refresh", tokens._2.getToken().toString())
+                        tokens -> Map.of("bearer", tokens._1.value(), "refresh", tokens._2.getToken().toString())
                 );
-        ((RouteRedirectStrategy) getRedirectStrategy())
-                .sendRedirect(request, response, frontRouteBaseUrl, params);
+        ((RouteRedirectStrategy) getRedirectStrategy()).sendRedirect(request, response, redirectPath, params);
     }
 
     @SuppressWarnings("unchecked")

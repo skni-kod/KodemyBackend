@@ -19,7 +19,7 @@ public abstract class OAuth2Stage implements OAuth2Provider.Stage {
     public final Map<String, Object> retrieveAttributes(@NonNull OAuth2UserRequest userRequest) {
         attributes.clear();
         processBaseAttributes(userRequest);
-        addAdditionalProcesses(userRequest);
+        addSubProcesses(userRequest);
         return attributes;
     }
 
@@ -29,7 +29,7 @@ public abstract class OAuth2Stage implements OAuth2Provider.Stage {
                 .peek(this.attributes::putAll);
     }
 
-    protected void addAdditionalProcesses(@NonNull OAuth2UserRequest userRequest) {
+    protected void addSubProcesses(@NonNull OAuth2UserRequest userRequest) {
         // placeholder to children
     }
 }

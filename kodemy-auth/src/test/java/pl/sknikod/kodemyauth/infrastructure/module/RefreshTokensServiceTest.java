@@ -4,7 +4,7 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
 import pl.sknikod.kodemyauth.BaseTest;
@@ -22,8 +22,8 @@ class RefreshTokensServiceTest extends BaseTest {
             Mockito.mock(RefreshTokenStoreHandler.class);
     private final JwtProvider jwtProvider =
             Mockito.mock(JwtProvider.class);
-    private final SecurityConfig.RoleProperties roleProperties =
-            Mockito.mock(SecurityConfig.RoleProperties.class);
+    private final SecurityConfiguration.RoleProperties roleProperties =
+            Mockito.mock(SecurityConfiguration.RoleProperties.class);
 
     private final RefreshTokensService refreshTokensService =
             new RefreshTokensService(refreshTokenRepositoryHandler, jwtProvider, roleProperties);

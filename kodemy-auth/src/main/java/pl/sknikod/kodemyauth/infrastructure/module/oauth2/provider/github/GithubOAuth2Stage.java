@@ -20,7 +20,7 @@ public class GithubOAuth2Stage extends OAuth2Stage {
     }
 
     @Override
-    protected void addAdditionalProcesses(@NonNull OAuth2UserRequest userRequest) {
+    protected void addSubProcesses(@NonNull OAuth2UserRequest userRequest) {
         processFixEmailNull(userRequest);
     }
 

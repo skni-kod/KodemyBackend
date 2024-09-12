@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.UserStoreHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
@@ -27,7 +27,7 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     private final RestTemplate oAuth2RestTemplate;
     private final List<OAuth2Provider> oAuth2Providers;
     private final UserStoreHandler userStoreHandler;
-    private final SecurityConfig.RoleProperties roleProperties;
+    private final SecurityConfiguration.RoleProperties roleProperties;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -38,18 +38,21 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     }
 
     private Optional<OAuth2Provider.User> retrieveProviderUser(OAuth2UserRequest userRequest, Iterator<OAuth2Provider> iterator) {
-        if (!iterator.hasNext())
+        if (!iterator.hasNext()) {
+            log.info("No OAuth2Provider found for registration ID: {}", userRequest.getClientRegistration().getRegistrationId());
             return Optional.empty();
+        }
         OAuth2Provider provider = iterator.next();
-        if (provider.supports(userRequest.getClientRegistration().getRegistrationId()))
+        if (provider.supports(userRequest.getClientRegistration().getRegistrationId())) {
+            log.info("Process {} provider class", provider.getClass().getSimpleName());
             return Optional.of(provider.retrieveUser(oAuth2RestTemplate, userRequest));
+        }
         return retrieveProviderUser(userRequest, iterator); // check another one
     }
 
     private Tuple2<User, OAuth2Provider.User> createOrLoadUser(OAuth2Provider.User providerUser) {
         return userStoreHandler.findByProviderUser(providerUser)
-                .fold(unused -> Tuple.of(this.createNewUser(providerUser), providerUser),
-                        user -> Tuple.of(user, providerUser));
+                .fold(unused -> Tuple.of(this.createNewUser(providerUser), providerUser), user -> Tuple.of(user, providerUser));
     }
 
     private User createNewUser(OAuth2Provider.User providerUser) {

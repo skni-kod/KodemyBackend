@@ -3,6 +3,7 @@ package pl.sknikod.kodemygateway.configuration;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
+@Slf4j
 public class WebConfig {
 
     @Bean
     public CorsWebFilter corsFilter(CorsProperties corsProperties) {
+        log.info("Configuring CORS: {}", corsProperties.allowedOrigins);
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(corsProperties.credentials);
         corsConfiguration.setAllowedOrigins(corsProperties.allowedOrigins);

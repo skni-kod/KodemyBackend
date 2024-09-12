@@ -6,7 +6,7 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.model.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class RefreshTokensService {
     private final RefreshTokenStoreHandler refreshTokenRepositoryHandler;
     private final JwtProvider jwtProvider;
-    private final SecurityConfig.RoleProperties roleProperties;
+    private final SecurityConfiguration.RoleProperties roleProperties;
 
     public RefreshTokensResponse refresh(UUID refresh, UUID bearerJti) {
         return refreshTokenRepositoryHandler.findByTokenAndBearerJti(refresh, bearerJti)

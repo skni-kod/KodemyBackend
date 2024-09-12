@@ -27,7 +27,8 @@ public class OAuth2AuthorizationRequestRepository implements
     private static final Duration SESSION_STORE_DURATION = Duration.ofMinutes(5);
     private final StringRedisTemplate redisTemplate;
 
-    private final HttpSessionOAuth2AuthorizationRequestRepository delegate = new HttpSessionOAuth2AuthorizationRequestRepository();
+    private final HttpSessionOAuth2AuthorizationRequestRepository delegate =
+            new HttpSessionOAuth2AuthorizationRequestRepository();
 
     @Override
     @Nullable

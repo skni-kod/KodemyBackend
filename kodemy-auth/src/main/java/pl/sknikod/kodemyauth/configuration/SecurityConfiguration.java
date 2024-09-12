@@ -49,7 +49,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Import({JwtConfiguration.class})
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-public class SecurityConfig {
+public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
@@ -101,12 +101,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ServletExceptionHandler servletExceptionHandler(ObjectMapper objectMapper){
+    public ServletExceptionHandler servletExceptionHandler(ObjectMapper objectMapper) {
         return new ServletExceptionHandler(objectMapper);
     }
 
     @Bean
-    public JwtConfiguration.JwtProperties jwtProperties(){
+    public JwtConfiguration.JwtProperties jwtProperties() {
         return new JwtConfiguration.JwtProperties();
     }
 
@@ -130,18 +130,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties){
+    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties) {
         return new JwtProvider(jwtProperties);
     }
 
     @Bean
     public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(
-            RouteRedirectStrategy routeRedirectStrategy,
             JwtProvider jwtProvider,
-            @Value("${network.route.front}") String frontRouteBaseUrl,
-            RefreshTokenStoreHandler refreshTokenRepositoryHandler
+            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
+            RefreshTokenStoreHandler refreshTokenRepositoryHandler,
+            RouteRedirectStrategy routeRedirectStrategy
     ) {
-        final var handler = new OAuth2LoginSuccessHandler(jwtProvider, frontRouteBaseUrl, refreshTokenRepositoryHandler);
+        var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;
+        final var handler = new OAuth2LoginSuccessHandler(jwtProvider, redirectPath, refreshTokenRepositoryHandler);
         handler.setRedirectStrategy(routeRedirectStrategy);
         return handler;
     }
@@ -149,9 +151,11 @@ public class SecurityConfig {
     @Bean
     public OAuth2LoginFailureHandler oAuth2FailureProcessHandler(
             RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${network.route.front}") String frontRouteBaseUrl
+            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
     ) {
-        final var handler = new OAuth2LoginFailureHandler(frontRouteBaseUrl);
+        var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;
+        final var handler = new OAuth2LoginFailureHandler(redirectPath);
         handler.setRedirectStrategy(routeRedirectStrategy);
         return handler;
     }
@@ -177,6 +181,7 @@ public class SecurityConfig {
         private String authorize;
         private String callback;
         private String error;
+        private String redirect;
     }
 
     @Getter

@@ -7,14 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.configuration.SecurityConfig;
+import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.model.Provider;
 import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.model.UserRepository;
-import pl.sknikod.kodemyauth.infrastructure.database.view.UserAggregateView;
-import pl.sknikod.kodemyauth.infrastructure.database.view.UserAggregateViewRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
 import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 import pl.sknikod.kodemycommon.exception.NotFound404Exception;
@@ -30,8 +28,7 @@ import java.util.Set;
 public class UserStoreHandler {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final SecurityConfig.RoleProperties roleProperties;
-    private final UserAggregateViewRepository userAggregateViewRepository;
+    private final SecurityConfiguration.RoleProperties roleProperties;
 
     public Optional<User> save(OAuth2Provider.User providerUser) {
         return this.fetchRole(Role.RoleName.valueOf(roleProperties.getPrimary()))

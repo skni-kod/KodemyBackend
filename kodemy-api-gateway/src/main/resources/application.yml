@@ -68,6 +68,7 @@ logging:
     org.springframework.cloud.gateway: trace
 
 app:
-  cors:
-    allowed-origins:
-      - ${network.route.front}
+  security:
+    cors:
+      allowed-origins:
+        - ${network.route.front}
