@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SearchBuilder {
+public class SearchRequestBuilder {
+    private static final int MAX_INTEGER = 2147483647;
     private int from = 0;
     private int size = 10;
     private final List<SortOptions> sortOptions = new ArrayList<>();
@@ -25,15 +26,15 @@ public class SearchBuilder {
     private final List<Query> shouldQueries = new ArrayList<>();
     private final List<Query> mustNotQueries = new ArrayList<>();
 
-    private SearchBuilder(SearchCriteria criteria) {
+    public SearchRequestBuilder(SearchCriteria criteria) {
         withContentPhrase(criteria.getContentField());
         withPhraseFields(criteria.getPhraseFields());
         withRangeFields(criteria.getRangeFields());
         withPageable(criteria.getPageable());
     }
 
-    public static SearchBuilder from(SearchCriteria criteria) {
-        return new SearchBuilder(criteria);
+    public static SearchRequestBuilder from(SearchCriteria criteria) {
+        return new SearchRequestBuilder(criteria);
     }
 
     private void withContentPhrase(SearchCriteria.ContentField field) {
@@ -77,11 +78,12 @@ public class SearchBuilder {
         this.from = pageable.getPageNumber() * pageable.getPageSize();
         this.size = pageable.getPageSize();
         pageable.getSort().forEach(order -> {
-            var sortOption = SortOptions.of(s -> s.field(f -> f
-                    .field(order.getProperty())
-                    .order(order.isAscending() ? SortOrder.Asc : SortOrder.Desc)
-            ));
-            sortOptions.add(sortOption);
+            sortOptions.add(new SortOptions.Builder()
+                    .field(builder -> builder
+                            .field(order.getProperty())
+                            .order(order.isAscending() ? SortOrder.Asc : SortOrder.Desc))
+                    .build()
+            );
         });
     }
 
@@ -97,6 +99,7 @@ public class SearchBuilder {
                 .query(query)
                 .from(from).size(size)
                 .sort(sortOptions)
+                .trackTotalHits(builder -> builder.count(MAX_INTEGER))
                 .build();
     }
 }

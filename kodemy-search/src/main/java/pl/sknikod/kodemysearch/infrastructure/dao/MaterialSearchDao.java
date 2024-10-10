@@ -8,8 +8,8 @@ import org.opensearch.client.opensearch.core.*;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemysearch.infrastructure.module.material.SearchBuilder;
 import pl.sknikod.kodemysearch.infrastructure.module.material.SearchCriteria;
+import pl.sknikod.kodemysearch.infrastructure.module.material.SearchRequestBuilder;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialStatus;
 import pl.sknikod.kodemysearch.util.data.SearchHandler;
@@ -69,7 +69,7 @@ public class MaterialSearchDao implements SearchHandler<MaterialIndexData> {
 
     public Try<PageImpl<MaterialIndexData>> search(SearchCriteria criteria) {
         return Try.of(() -> openSearchClient.search(
-                SearchBuilder.from(criteria).toSearchRequest(INDEX), MaterialIndexData.class
+                SearchRequestBuilder.from(criteria).toSearchRequest(INDEX), MaterialIndexData.class
         ))
                 .mapTry(response -> {
                     final var hits = response.hits();

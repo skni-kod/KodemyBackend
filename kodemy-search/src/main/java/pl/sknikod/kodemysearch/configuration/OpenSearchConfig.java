@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemysearch.util.opensearch.OpenSearchFactory;
+import pl.sknikod.kodemysearch.util.opensearch.OpenSearchClientEnhanced;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class OpenSearchConfig {
         final var restClient = RestClient.builder(httpHost).build();/*) {*/
         final var transport = new RestClientTransport(restClient, new JsonbJsonpMapper());
         var client = new OpenSearchClient(transport);
-        OpenSearchFactory.of(client).initialize(openSearchProperties.indices);
+        OpenSearchClientEnhanced.of(client).initialize(openSearchProperties.indices);
         return client;
     }
 

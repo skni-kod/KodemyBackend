@@ -14,11 +14,11 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class OpenSearchFactory {
+public class OpenSearchClientEnhanced {
     private final OpenSearchClient openSearchClient;
 
-    public static OpenSearchFactory of(OpenSearchClient client) {
-        return new OpenSearchFactory(client);
+    public static OpenSearchClientEnhanced of(OpenSearchClient client) {
+        return new OpenSearchClientEnhanced(client);
     }
 
     public void initialize(Map<String, OpenSearchConfig.OpenSearchProperties.IndexDetails> indices) {
