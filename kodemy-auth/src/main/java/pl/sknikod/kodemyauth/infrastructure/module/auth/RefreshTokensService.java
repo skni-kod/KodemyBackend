@@ -8,26 +8,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
-import pl.sknikod.kodemyauth.infrastructure.database.model.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
-import pl.sknikod.kodemyauth.infrastructure.database.model.User;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.rest.model.RefreshTokensResponse;
+import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
+import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
 import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RefreshTokensService {
     private final RoleRepository roleRepository;
-    private final RefreshTokenStoreHandler refreshTokenRepositoryHandler;
+    private final RefreshTokenDao refreshTokenRepositoryHandler;
     private final JwtProvider jwtProvider;
     private final SecurityConfiguration.RoleProperties roleProperties;
 

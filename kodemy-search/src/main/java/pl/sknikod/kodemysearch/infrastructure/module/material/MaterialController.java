@@ -15,16 +15,16 @@ import java.util.Objects;
 @RestController
 @AllArgsConstructor
 public class MaterialController implements MaterialControllerDefinition {
-    private final MaterialSearchUseCase materialSearchUseCase;
+    private final MaterialSearchService materialSearchService;
 
     @Override
-    public ResponseEntity<Page<MaterialSearchUseCase.MaterialPageable>> search(
+    public ResponseEntity<Page<MaterialSearchService.MaterialPageable>> search(
             int size, int page,
-            MaterialSearchUseCase.MaterialSortField sortField, Sort.Direction sortDirection,
+            MaterialSearchService.MaterialSortField sortField, Sort.Direction sortDirection,
             MaterialSearchFields searchFields
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(materialSearchUseCase.search(
+                .body(materialSearchService.search(
                         Objects.requireNonNullElse(searchFields, new MaterialSearchFields()),
                         PageRequest.of(page, size, sortDirection, sortField.getField())
                 ));

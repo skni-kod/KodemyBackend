@@ -10,13 +10,12 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Permission;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
-import pl.sknikod.kodemyauth.infrastructure.database.model.User;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.UserStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.database.Permission;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
+import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2UserPrincipal;
 
@@ -28,7 +27,7 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     private final RoleRepository roleRepository;
     private final RestTemplate oAuth2RestTemplate;
     private final List<OAuth2Provider> oAuth2Providers;
-    private final UserStoreHandler userStoreHandler;
+    private final UserDao userDao;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -52,12 +51,12 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     }
 
     private Tuple2<User, OAuth2Provider.User> createOrLoadUser(OAuth2Provider.User providerUser) {
-        return userStoreHandler.findByProviderUser(providerUser)
+        return userDao.findByProviderUser(providerUser)
                 .fold(unused -> Tuple.of(this.createNewUser(providerUser), providerUser), user -> Tuple.of(user, providerUser));
     }
 
     private User createNewUser(OAuth2Provider.User providerUser) {
-        return userStoreHandler.save(providerUser)
+        return userDao.save(providerUser)
                 .orElse(null);
     }
 

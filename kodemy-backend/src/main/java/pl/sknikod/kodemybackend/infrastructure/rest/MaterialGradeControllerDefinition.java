@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.sknikod.kodemybackend.infrastructure.module.grade.MaterialGradeUseCase;
+import pl.sknikod.kodemybackend.infrastructure.module.grade.MaterialGradeService;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSortField;
 import pl.sknikod.kodemycommon.doc.SwaggerResponse;
@@ -24,7 +24,7 @@ public interface MaterialGradeControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @PostMapping("/{materialId}/grades")
     void addGrade(
-            @RequestBody @Valid MaterialGradeUseCase.MaterialAddGradeRequest body,
+            @RequestBody @Valid MaterialGradeService.MaterialAddGradeRequest body,
             @PathVariable Long materialId);
 
     @Operation(summary = "Show all Material's grades")
@@ -33,7 +33,7 @@ public interface MaterialGradeControllerDefinition {
     @SwaggerResponse.ForbiddenCode403
     @SwaggerResponse.NotFoundCode404
     @GetMapping("/{materialId}/grades")
-    ResponseEntity<Page<MaterialGradeUseCase.GradePageable>> showGrades(
+    ResponseEntity<Page<MaterialGradeService.GradePageable>> showGrades(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
             @PathVariable Long materialId,

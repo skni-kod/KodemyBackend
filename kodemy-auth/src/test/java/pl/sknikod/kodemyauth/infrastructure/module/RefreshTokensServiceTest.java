@@ -6,21 +6,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.BaseTest;
-import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
+import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.RefreshTokensService;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class RefreshTokensServiceTest extends BaseTest {
-    private final RefreshTokenStoreHandler refreshTokenRepositoryHandler =
-            Mockito.mock(RefreshTokenStoreHandler.class);
+    private final RefreshTokenDao refreshTokenRepositoryHandler =
+            Mockito.mock(RefreshTokenDao.class);
     private final JwtProvider jwtProvider =
             Mockito.mock(JwtProvider.class);
     private final SecurityConfiguration.RoleProperties roleProperties =

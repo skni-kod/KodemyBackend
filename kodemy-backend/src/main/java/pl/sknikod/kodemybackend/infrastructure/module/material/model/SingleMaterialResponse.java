@@ -6,7 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 import java.time.LocalDateTime;
 import java.util.List;

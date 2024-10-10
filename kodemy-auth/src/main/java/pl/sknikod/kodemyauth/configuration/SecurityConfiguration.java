@@ -1,13 +1,15 @@
 package pl.sknikod.kodemyauth.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.config.Customizer;
@@ -16,30 +18,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
+import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutRequestHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutSuccessHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2Service;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizationRequestRepository;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2Service;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2Constant;
-import pl.sknikod.kodemyauth.util.data.AuditorAwareAdapter;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 import pl.sknikod.kodemycommon.security.configuration.JwtConfiguration;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +45,6 @@ import java.util.Set;
         jsr250Enabled = true)
 @RequiredArgsConstructor
 @Import({JwtConfiguration.class})
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -96,11 +92,6 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuditorAware<?> auditorAware() {
-        return new AuditorAwareAdapter();
-    }
-
-    @Bean
     public ServletExceptionHandler servletExceptionHandler(ObjectMapper objectMapper) {
         return new ServletExceptionHandler(objectMapper);
     }
@@ -139,7 +130,7 @@ public class SecurityConfiguration {
             JwtProvider jwtProvider,
             @Value("${app.security.oauth2.route.redirect}") String frontRoute,
             @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
-            RefreshTokenStoreHandler refreshTokenRepositoryHandler,
+            RefreshTokenDao refreshTokenRepositoryHandler,
             RouteRedirectStrategy routeRedirectStrategy
     ) {
         var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;

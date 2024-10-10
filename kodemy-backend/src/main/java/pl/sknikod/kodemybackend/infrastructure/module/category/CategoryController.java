@@ -10,10 +10,10 @@ import pl.sknikod.kodemybackend.infrastructure.rest.CategoryControllerDefinition
 @RestController
 @AllArgsConstructor
 public class CategoryController implements CategoryControllerDefinition {
-    private final CategoryUseCase categoryUseCase;
+    private final CategoryService categoryService;
 
     public ResponseEntity<SingleCategoryResponse> getCategoryDetails(Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(categoryUseCase.showCategoryInfo(categoryId));
+                .body(categoryService.showCategoryInfo(categoryId));
     }
 }

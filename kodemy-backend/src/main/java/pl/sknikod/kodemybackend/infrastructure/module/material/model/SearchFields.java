@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemycommon.exception.Validation400Exception;
 
 import java.time.LocalDateTime;

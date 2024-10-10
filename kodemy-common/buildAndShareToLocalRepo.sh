@@ -31,4 +31,4 @@ for SUB_PROJECT in "${SUB_PROJECTS[@]}"; do
 
 done
 
-echo "Built and shared kodemy-common-$VERSION.jar and kodemy-common-$VERSION.pom to all $LOCAL_REPO_DIR"
+echo "Built and shared kodemy-common-$VERSION.jar and kodemy-common-$VERSION.pom to all /local-repo"

@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Section;
+import pl.sknikod.kodemybackend.infrastructure.database.Section;
 
 public class SectionFactory {
     private SectionFactory() {

@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
+import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 
 public class TagFactory {
     private TagFactory() {

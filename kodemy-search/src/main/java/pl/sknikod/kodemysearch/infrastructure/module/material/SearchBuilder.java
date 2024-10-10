@@ -10,7 +10,6 @@ import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.query_dsl.*;
 import org.opensearch.client.opensearch.core.SearchRequest;
-import org.opensearch.client.opensearch.core.msearch.RequestItem;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
@@ -26,14 +25,14 @@ public class SearchBuilder {
     private final List<Query> shouldQueries = new ArrayList<>();
     private final List<Query> mustNotQueries = new ArrayList<>();
 
-    public SearchBuilder(SearchCriteria criteria) {
+    private SearchBuilder(SearchCriteria criteria) {
         withContentPhrase(criteria.getContentField());
         withPhraseFields(criteria.getPhraseFields());
         withRangeFields(criteria.getRangeFields());
         withPageable(criteria.getPageable());
     }
 
-    public static SearchBuilder of(SearchCriteria criteria) {
+    public static SearchBuilder from(SearchCriteria criteria) {
         return new SearchBuilder(criteria);
     }
 

@@ -1,6 +1,6 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
 
 public class RoleFactory {
     private RoleFactory() {

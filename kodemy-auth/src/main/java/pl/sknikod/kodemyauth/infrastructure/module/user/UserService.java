@@ -9,10 +9,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RoleStoreHandler;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.UserStoreHandler;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.model.User;
+import pl.sknikod.kodemyauth.infrastructure.dao.RoleDao;
+import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
@@ -26,8 +26,8 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
-    private final RoleStoreHandler roleStoreHandler;
-    private final UserStoreHandler userStoreHandler;
+    private final RoleDao roleDao;
+    private final UserDao userDao;
     private final AuthService.AuthMapper authMapper;
 
     public static boolean checkPrivilege(String privilege) {
@@ -40,7 +40,7 @@ public class UserService {
 
     @Transactional
     public UserInfoResponse getUserInfo(Long userId) {
-        return userStoreHandler.findById(userId)
+        return userDao.findById(userId)
                 .map(userMapper::map)
                 .getOrElseThrow(th -> th instanceof InternalError500Exception ex
                         ? ex : new InternalError500Exception());
@@ -49,13 +49,13 @@ public class UserService {
     public UserInfoResponse getCurrentUserInfo() {
         return AuthFacade.getCurrentUserPrincipal()
                 .map(UserPrincipal::getId)
-                .map(id -> userStoreHandler.findById(id).getOrNull())
+                .map(id -> userDao.findById(id).getOrNull())
                 .map(userMapper::map)
                 .orElseThrow(InternalError500Exception::new);
     }
 
     public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {
-        Page<User> users = userStoreHandler.findByUsernameOrEmailOrRole(
+        Page<User> users = userDao.findByUsernameOrEmailOrRole(
                 searchFields.getUsername(),
                 searchFields.getEmail(),
                 searchFields.getRoleName() != null ? searchFields.getRoleName() : null,

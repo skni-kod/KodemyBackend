@@ -1,7 +1,6 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.model.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 
 import java.util.Collections;

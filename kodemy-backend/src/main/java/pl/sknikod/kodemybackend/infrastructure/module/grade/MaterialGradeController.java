@@ -17,19 +17,19 @@ import java.util.Objects;
 @RestController
 @AllArgsConstructor
 public class MaterialGradeController implements MaterialGradeControllerDefinition {
-    private final MaterialGradeUseCase materialGradeUseCase;
+    private final MaterialGradeService materialGradeService;
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public void addGrade(MaterialGradeUseCase.MaterialAddGradeRequest body, Long materialId) {
-        materialGradeUseCase.addGrade(materialId, body);
+    public void addGrade(MaterialGradeService.MaterialAddGradeRequest body, Long materialId) {
+        materialGradeService.addGrade(materialId, body);
     }
 
     @Override
-    public ResponseEntity<Page<MaterialGradeUseCase.GradePageable>> showGrades(int size, int page, Long materialId, GradeMaterialSortField sortField, Sort.Direction sortDirection, GradeMaterialSearchFields searchFields) {
+    public ResponseEntity<Page<MaterialGradeService.GradePageable>> showGrades(int size, int page, Long materialId, GradeMaterialSortField sortField, Sort.Direction sortDirection, GradeMaterialSearchFields searchFields) {
         var pageRequest = PageRequest.of(page, size, sortDirection, sortField.getField());
         var searchFieldsParam = Objects.isNull(searchFields) ? new GradeMaterialSearchFields() : searchFields;
         return ResponseEntity.status(HttpStatus.OK)
-                .body(materialGradeUseCase.showGrades(pageRequest, searchFieldsParam, materialId));
+                .body(materialGradeService.showGrades(pageRequest, searchFieldsParam, materialId));
     }
 }

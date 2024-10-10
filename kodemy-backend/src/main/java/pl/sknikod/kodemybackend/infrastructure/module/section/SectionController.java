@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 public class SectionController implements SectionControllerDefinition {
 
-    private final SectionUseCase sectionUseCase;
+    private final SectionService sectionService;
 
     @Override
     public ResponseEntity<List<SingleSectionResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(sectionUseCase.getAllSections());
+                .body(sectionService.getAllSections());
     }
 }

@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Category;
+import pl.sknikod.kodemybackend.infrastructure.database.Category;
 
 public class CategoryFactory {
     private CategoryFactory() {

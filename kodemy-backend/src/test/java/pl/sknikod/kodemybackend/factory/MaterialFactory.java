@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 public class MaterialFactory {
     public static Material material(){

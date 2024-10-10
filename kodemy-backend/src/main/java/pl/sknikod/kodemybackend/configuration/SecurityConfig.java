@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.sknikod.kodemybackend.util.data.AuditorAwareAdapter;
 import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
 import pl.sknikod.kodemycommon.security.JwtProvider;
@@ -28,7 +27,7 @@ import pl.sknikod.kodemycommon.security.configuration.JwtConfiguration;
         jsr250Enabled = true)
 @AllArgsConstructor
 @Import({JwtConfiguration.class})
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
+//@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -50,11 +49,6 @@ public class SecurityConfig {
                 //.logout(config -> config.logoutSuccessHandler(logoutSuccessHandler))
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
-    }
-
-    @Bean
-    public AuditorAware<?> auditorAware() {
-        return new AuditorAwareAdapter();
     }
 
     @Bean
