@@ -19,9 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionBody;
-import pl.sknikod.kodemycommon.exception.handler.RestExceptionHandler;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionBody;
+import pl.sknikod.kodemycommons.exception.handler.RestExceptionHandler;
 
 import java.util.List;
 import java.util.Locale;

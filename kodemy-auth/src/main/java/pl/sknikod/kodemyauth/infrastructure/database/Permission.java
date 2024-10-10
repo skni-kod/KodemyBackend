@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.sknikod.kodemycommon.data.BaseEntity;
+import pl.sknikod.kodemycommons.data.BaseEntity;
 
 import java.util.Objects;
 

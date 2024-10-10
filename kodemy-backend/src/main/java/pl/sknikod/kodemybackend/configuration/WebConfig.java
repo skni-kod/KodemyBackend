@@ -14,8 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
-import pl.sknikod.kodemycommon.network.LanRestTemplate;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.network.LanRestTemplate;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,65 +1,75 @@
 package pl.sknikod.kodemysearch.util.opensearch;
 
 import io.vavr.control.Try;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch.indices.*;
+import org.opensearch.client.opensearch.indices.CreateIndexRequest;
+import org.opensearch.client.opensearch.indices.UpdateAliasesRequest;
+import org.opensearch.client.transport.OpenSearchTransport;
 import org.opensearch.client.transport.endpoints.BooleanResponse;
 import org.springframework.util.Assert;
-import pl.sknikod.kodemysearch.configuration.OpenSearchConfig;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
-@RequiredArgsConstructor
-public class OpenSearchClientEnhanced {
-    private final OpenSearchClient openSearchClient;
-
-    public static OpenSearchClientEnhanced of(OpenSearchClient client) {
-        return new OpenSearchClientEnhanced(client);
+public class OpenSearchClientEnhanced extends OpenSearchClient {
+    public OpenSearchClientEnhanced(OpenSearchTransport transport) {
+        super(transport);
     }
 
-    public void initialize(Map<String, OpenSearchConfig.OpenSearchProperties.IndexDetails> indices) {
-        extractIndices(indices).forEach(this::createIndexIfNotExists);
+    public void initializeIndex(Index index) {
+        createIndex(index).flatMap(this::createAlias).getOrElseThrow(th -> new RuntimeException(th));
     }
 
-    private List<OpenSearchConfig.OpenSearchProperties.IndexDetails> extractIndices(
-            Map<String, OpenSearchConfig.OpenSearchProperties.IndexDetails> indices) {
-        return indices.values().stream().toList();
+    private Try<Index> createIndex(Index index) {
+        Assert.notNull(index, "indexDetails cannot be null");
+        return isIndexExists(index.name)
+                .flatMapTry(isExists -> {
+                    if (isExists) return Try.success(index);
+                    var requestBuilder = new CreateIndexRequest.Builder()
+                            .index(index.name).aliases(index.alias, alias -> alias);
+                    return Try.of(() -> super.indices().create(builder -> requestBuilder))
+                            .onSuccess(response -> log.info("Index was created: {}({})", response.index(), index.alias))
+                            .onFailure(th -> log.error("Index cannot be created: {}({})", index.name, index.alias, th))
+                            .map(unused -> index);
+                });
     }
 
-    private void createIndexIfNotExists(OpenSearchConfig.OpenSearchProperties.IndexDetails index) {
-        var isExists = checkExists(index.getName())
-                .getOrElseThrow(th -> new RuntimeException(th));
-        if (isExists) return;
-        log.warn("Index does not exist: {}", index.getName());
-        this.createIndex(index).getOrElseThrow(th -> new RuntimeException(th));
-    }
-
-    private Try<Boolean> checkExists(String indexName) {
+    private Try<Boolean> isIndexExists(String indexName) {
         Assert.notNull(indexName, "indexName cannot be null");
-        return Try.of(() -> openSearchClient.indices().exists(builder -> builder.index(indexName)))
-                .onFailure(th -> log.error("Index could not be checked: {}", indexName, th))
-                .map(BooleanResponse::value);
+        return Try.of(() -> super.indices().exists(builder -> builder.index(indexName)))
+                .map(BooleanResponse::value)
+                .onFailure(th -> log.error("Index could not be checked: {}", indexName, th));
     }
 
-    private Try<CreateIndexResponse> createIndex(OpenSearchConfig.OpenSearchProperties.IndexDetails index) {
-        final var createIndexRequest = new CreateIndexRequest.Builder()
-                .index(index.getName()).build();
-        final var indexSettings = new IndexSettings.Builder().autoExpandReplicas("0-all").build();
-        final var putIndicesSettingsRequest = new PutIndicesSettingsRequest.Builder()
-                .index(index.getName()).settings(indexSettings).build();
-        final var putAliasRequest = new PutAliasRequest.Builder()
-                .index(index.getName()).name(index.getAlias()).build();
-        return Try.of(() -> {
-                    var response = openSearchClient.indices().create(createIndexRequest);
-                    openSearchClient.indices().putSettings(putIndicesSettingsRequest);
-                    openSearchClient.indices().putAlias(putAliasRequest);
-                    return response;
-                })
-                .onSuccess(response -> log.info("Index was created: {}", response.index()))
-                .onFailure(th -> log.error("Index cannot be created: {}", index.getName(), th));
+    private Try<Index> createAlias(Index index) {
+        Assert.notNull(index, "indexDetails cannot be null");
+        return isAliasExists(index.alias, index.name)
+                .flatMapTry(isExists -> {
+                    if (isExists) return Try.success(index);
+                    var requestBuilder = new UpdateAliasesRequest.Builder()
+                            .actions(builder -> builder.add(builder1 -> builder1.index(index.name).alias(index.alias)));
+                    return Try.of(() -> super.indices().updateAliases(builder -> requestBuilder))
+                            .onSuccess(response -> log.info("Alias was created: {}", index.alias))
+                            .onFailure(th -> log.error("Alias cannot be created: {}", index.alias, th))
+                            .map(unused -> index);
+                });
+    }
+
+    private Try<Boolean> isAliasExists(String aliasName, String indexName) {
+        Assert.notNull(aliasName, "aliasName cannot be null");
+        Assert.notNull(indexName, "indexName cannot be null");
+        return Try.of(() -> super.indices().existsAlias(builder -> builder.name(aliasName).index(indexName)))
+                .map(BooleanResponse::value)
+                .onFailure(th -> log.error("Alias could not be checked: {}", aliasName, th));
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Index {
+        private String name;
+        private String alias;
     }
 }

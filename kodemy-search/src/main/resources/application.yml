@@ -10,15 +10,15 @@ spring:
       default-binder: rabbit
       bindings:
         materialCreated-in-0:
-          content-type: application/json
+          contentType: application/json
           destination: material-created
           group: kodemy
         materialUpdated-in-0:
-          content-type: application/json
+          contentType: application/json
           destination: material-updated
           group: kodemy
         materialStatusUpdated-in-0:
-          content-type: application/json
+          contentType: application/json
           destination: material-status-updated
           group: kodemy
       rabbit:
@@ -26,18 +26,21 @@ spring:
           materialCreated-in-0:
             consumer:
               auto-bind-dlq: true
-              dead-letter-exchange:
-              max-length: 3
+              dlqTtl: 5000
+              dlqDeadLetterExchange:
+              maxLength: 3
           materialUpdated-in-0:
             consumer:
               auto-bind-dlq: true
-              dead-letter-exchange:
-              max-length: 3
+              dlqTtl: 5000
+              dlqDeadLetterExchange:
+              maxLength: 3
           materialStatusUpdated-in-0:
             consumer:
               auto-bind-dlq: true
-              dead-letter-exchange:
-              max-length: 3
+              dlqTtl: 5000
+              dlqDeadLetterExchange:
+              maxLength: 3
   rabbitmq:
     host: rabbitmq
     username: rabbitmq
@@ -56,25 +59,35 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
+logging:
+  level:
+    org.zalando.logbook: TRACE
+
+logbook:
+  filter:
+    enabled: true
+  predicate:
+    exclude:
+      - path: /swagger-ui/**
+        methods: "*"
+      - path: /actuator/info
+        methods: "*"
+      - path: /actuator/health
+        methods: "*"
+
 jwt:
   secret-key: P8K53KMRFBWDRH3EBWYV3B9MQG6QU8V59PYRWGDG96MNDCYBQCJ5EEGXT5ZF76E6
 
 opensearch:
-  host: opensearch
+  host: http://opensearch:9200
   indices:
     materials:
       name: materials
       alias: materials-alias
+  username: admin
+  password: admin
 
 app:
-  rabbit:
-    queues:
-      m-created:
-        name: material.created
-        exchange: direct
-      m-updated:
-        name: material.updated
-        exchange: direct
   security:
     cors:
       allowed-origins:

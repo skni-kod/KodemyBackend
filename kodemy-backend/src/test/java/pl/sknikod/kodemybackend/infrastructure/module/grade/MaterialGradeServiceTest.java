@@ -13,11 +13,11 @@ import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.GradeDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
-import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
+import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
 import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.WithUserPrincipal;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Date;
 import java.util.List;
@@ -76,7 +76,7 @@ class MaterialGradeServiceTest extends BaseTest {
     void showGrades_shouldSuccess(){
         //given
         //when
-        var result = materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialSearchFields(), 1L);
+        var result = materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialFilterSearchParams(), 1L);
         //then
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
@@ -86,7 +86,7 @@ class MaterialGradeServiceTest extends BaseTest {
     void showGrades_shouldThrowException_whenRepoError(){
         //given
         //when & then
-        assertThrows(RuntimeException.class, () -> materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialSearchFields(), 2L));
+        assertThrows(RuntimeException.class, () -> materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialFilterSearchParams(), 2L));
     }
 
     static class TestGradeDao extends GradeDao {

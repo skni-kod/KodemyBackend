@@ -12,7 +12,7 @@ import pl.sknikod.kodemyauth.infrastructure.database.RefreshTokenRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.UserRepository;
 import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 
 import java.util.Optional;
 import java.util.UUID;

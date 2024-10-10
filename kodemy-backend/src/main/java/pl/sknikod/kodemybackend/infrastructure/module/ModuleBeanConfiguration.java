@@ -1,7 +1,12 @@
 package pl.sknikod.kodemybackend.infrastructure.module;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.*;
 import pl.sknikod.kodemybackend.infrastructure.dao.*;
@@ -24,6 +29,14 @@ import pl.sknikod.kodemybackend.infrastructure.module.type.TypeService;
 
 @Configuration
 public class ModuleBeanConfiguration {
+    @Bean
+    @Primary
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
+
     @Bean
     public CategoryService categoryService(
             CategoryDao categoryDao, CategoryMapper categoryMapper) {

@@ -1,13 +1,13 @@
 package pl.sknikod.kodemybackend.infrastructure.module.material.producer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 @Component
@@ -34,8 +34,7 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
         boolean isActive;
         double avgGrade;
         Author author;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        LocalDateTime createdDate;
+        Instant createdDate;
         Long sectionId;
         Long categoryId;
         List<Tag> tags;
@@ -68,7 +67,8 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
                     material.isActive(),
                     grade,
                     null,
-                    material.getCreatedDate(),
+                    material.getCreatedDate()
+                            .toInstant(ZoneId.systemDefault().getRules().getOffset(material.getCreatedDate())),
                     category.getSection().getId(),
                     category.getId(),
                     material.getTags().stream().map(tag -> new Message.Tag(tag.getId(), tag.getName())).toList()

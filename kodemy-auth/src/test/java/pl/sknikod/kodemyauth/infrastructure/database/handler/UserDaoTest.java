@@ -17,8 +17,8 @@ import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.UserRepository;
 import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Collections;
 import java.util.List;

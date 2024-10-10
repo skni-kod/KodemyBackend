@@ -7,9 +7,9 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizationRequestRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
-import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
-import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
+import pl.sknikod.kodemycommons.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 @TestConfiguration
 public class TestSecurityConfig {

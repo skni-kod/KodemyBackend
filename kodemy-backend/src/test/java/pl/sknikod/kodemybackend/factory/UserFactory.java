@@ -1,7 +1,7 @@
 package pl.sknikod.kodemybackend.factory;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Collections;
 import java.util.List;

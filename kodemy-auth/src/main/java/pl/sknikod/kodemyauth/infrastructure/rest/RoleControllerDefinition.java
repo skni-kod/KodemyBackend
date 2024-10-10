@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.sknikod.kodemycommon.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 @RequestMapping("/api/roles")
 @SwaggerResponse

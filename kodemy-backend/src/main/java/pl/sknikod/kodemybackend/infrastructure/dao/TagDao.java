@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.TagRepository;
-import pl.sknikod.kodemycommon.exception.AlreadyExists409Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.AlreadyExists409Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 
 import java.util.Collection;
 import java.util.List;

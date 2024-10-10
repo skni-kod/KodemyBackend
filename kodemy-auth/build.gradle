@@ -50,7 +50,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'pl.sknikod:kodemy-common:1.1'
+    implementation 'pl.sknikod:kodemy-commons:1.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'

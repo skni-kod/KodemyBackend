@@ -14,9 +14,9 @@ import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.UserRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 
 import java.util.List;
 import java.util.Optional;

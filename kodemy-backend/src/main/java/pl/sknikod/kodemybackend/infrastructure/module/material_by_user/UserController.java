@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialSortField;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.FilterSearchParams;
 import pl.sknikod.kodemybackend.infrastructure.rest.UserControllerDefinition;
 
 import java.util.Objects;
@@ -23,12 +23,12 @@ public class UserController implements UserControllerDefinition {
     public ResponseEntity<Page<MaterialPageable>> usersMaterials(
             Long authorId, int size, int page,
             MaterialSortField sortField, Sort.Direction sortDirection,
-            SearchFields searchFields
+            FilterSearchParams filterSearchParams
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialGetByUserService.getPersonalMaterials(
                         authorId,
-                        Objects.requireNonNullElse(searchFields, new SearchFields()),
+                        Objects.requireNonNullElse(filterSearchParams, new FilterSearchParams()),
                         PageRequest.of(page, size, sortDirection, sortField.toString())
                 ));
     }

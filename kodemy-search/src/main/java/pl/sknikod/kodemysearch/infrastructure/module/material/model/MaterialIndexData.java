@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import pl.sknikod.kodemysearch.util.data.IndexData;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,8 +20,7 @@ public class MaterialIndexData extends IndexData {
     boolean isActive;
     double avgGrade;
     User user;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime createdDate;
+    Instant createdDate;
     Long sectionId;
     Long categoryId;
     List<Tag> tags;
@@ -28,7 +28,7 @@ public class MaterialIndexData extends IndexData {
     public MaterialIndexData(
             Long id, String title, String description,
             MaterialStatus status, boolean isActive, double avgGrade,
-            User user, LocalDateTime createdDate,
+            User user, Instant createdDate,
             Long sectionId, Long categoryId, List<Tag> tags
     ) {
         super(id);

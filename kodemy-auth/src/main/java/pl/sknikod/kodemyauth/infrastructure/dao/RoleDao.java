@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 
 import java.util.Optional;
 

@@ -23,10 +23,10 @@ import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.TypeDao;
 import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialCreatedProducer;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommon.security.AuthFacade;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Set;
@@ -43,8 +43,6 @@ public class MaterialCreateService {
     private final CategoryDao categoryDao;
     private final TagDao tagDao;
     private final MaterialCreatedProducer materialCreatedProducer;
-    private static final SimpleGrantedAuthority CAN_AUTO_APPROVED_MATERIAL =
-            new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL");
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
@@ -82,7 +80,7 @@ public class MaterialCreateService {
         material.setType(type);
         material.setTags(tags);
         material.setUserId(userPrincipal.getId());
-        var isApprovedMaterial = userPrincipal.getAuthorities().contains(CAN_AUTO_APPROVED_MATERIAL)
+        var isApprovedMaterial = userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                 ? APPROVED : PENDING;
         material.setStatus(isApprovedMaterial);
         return material;

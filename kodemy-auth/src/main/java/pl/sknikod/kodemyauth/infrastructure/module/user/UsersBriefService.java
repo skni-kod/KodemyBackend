@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import java.util.List;
 import java.util.Set;

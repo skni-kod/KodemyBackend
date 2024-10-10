@@ -30,6 +30,11 @@ spring:
             - Path=/api/materials
             - Method=POST
 
+        - id: users-materials
+          uri: ${network.route.auth}
+          predicates:
+            - Path=/api/users/{userId}/materials
+
         - id: users_roles
           uri: ${network.route.auth}
           predicates:

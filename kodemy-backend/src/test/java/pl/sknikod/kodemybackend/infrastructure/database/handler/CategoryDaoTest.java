@@ -8,7 +8,7 @@ import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.CategoryRepository;
 import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Optional;
 

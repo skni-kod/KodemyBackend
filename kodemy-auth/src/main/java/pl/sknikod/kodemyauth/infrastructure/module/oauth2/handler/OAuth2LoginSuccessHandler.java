@@ -12,10 +12,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.security.AuthFacade;
-import pl.sknikod.kodemycommon.security.JwtProvider;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Map;
 

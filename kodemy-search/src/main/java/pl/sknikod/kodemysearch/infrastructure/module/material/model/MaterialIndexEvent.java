@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Setter
@@ -17,8 +17,8 @@ public class MaterialIndexEvent {
     String status;
     boolean isActive;
     double avgGrade;
-    User user;
-    LocalDateTime createdDate;
+    //User user;
+    Instant createdDate;
     Long sectionId;
     Long categoryId;
     List<Tag> tags;

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2ProviderService;
-import pl.sknikod.kodemycommon.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 import java.util.List;
 

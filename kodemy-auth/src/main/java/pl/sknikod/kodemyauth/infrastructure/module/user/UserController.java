@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserSortField;
@@ -46,12 +46,12 @@ public class UserController implements UserControllerDefinition {
             int page,
             UserSortField sortField,
             Sort.Direction sortDirection,
-            SearchFields searchFields
+            FilterSearchParams filterSearchParams
     ) {
         var pageRequest = PageRequest.of(page, size, sortDirection, sortField.getField());
-        var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        var filterSearchParamsParam = Objects.isNull(filterSearchParams) ? new FilterSearchParams() : filterSearchParams;
         return ResponseEntity.status(HttpStatus.OK).body(
-                userService.searchUsers(pageRequest, searchFieldsParam)
+                userService.searchUsers(pageRequest, filterSearchParamsParam)
         );
     }
 

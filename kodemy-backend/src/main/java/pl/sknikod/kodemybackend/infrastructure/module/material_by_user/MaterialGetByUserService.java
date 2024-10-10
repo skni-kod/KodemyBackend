@@ -14,10 +14,10 @@ import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.SearchFields;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommon.security.AuthFacade;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.FilterSearchParams;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.AuthFacade;
 
 import java.util.List;
 import java.util.Map;
@@ -31,9 +31,9 @@ public class MaterialGetByUserService {
     private static final SimpleGrantedAuthority CAN_VIEW_ALL_MATERIALS =
             new SimpleGrantedAuthority("CAN_VIEW_ALL_MATERIALS");
 
-    public Page<MaterialPageable> manage(@NotNull SearchFields searchFields, PageRequest pageRequest) {
+    public Page<MaterialPageable> manage(@NotNull FilterSearchParams filterSearchParams, PageRequest pageRequest) {
         var material = materialDao.searchMaterialsWithAvgGrades(
-                searchFields, searchFields.getStatuses(), searchFields.getUserId(), pageRequest);
+                filterSearchParams, filterSearchParams.getStatuses(), filterSearchParams.getUserId(), pageRequest);
         return material
                 .flatMap(this::fetchUsers)
                 .mapTry(tuple -> toPage(tuple._1, tuple._2))
@@ -63,10 +63,10 @@ public class MaterialGetByUserService {
         return new PageImpl<>(list, page.getPageable(), page.getTotalElements());
     }
 
-    public Page<MaterialPageable> getPersonalMaterials(Long userId, SearchFields searchFields, PageRequest pageRequest) {
+    public Page<MaterialPageable> getPersonalMaterials(Long userId, FilterSearchParams filterSearchParams, PageRequest pageRequest) {
         var statuses = (userCannotViewNotApprovedMaterials(userId))
-                ? List.of(Material.MaterialStatus.APPROVED) : searchFields.getStatuses();
-        return materialDao.searchMaterialsWithAvgGrades(searchFields, statuses, userId, pageRequest)
+                ? List.of(Material.MaterialStatus.APPROVED) : filterSearchParams.getStatuses();
+        return materialDao.searchMaterialsWithAvgGrades(filterSearchParams, statuses, userId, pageRequest)
                 .flatMap(this::fetchUsers)
                 .mapTry(tuple -> toPage(tuple._1, tuple._2))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);

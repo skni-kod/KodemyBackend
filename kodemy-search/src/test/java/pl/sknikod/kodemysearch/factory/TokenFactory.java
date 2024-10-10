@@ -1,7 +1,7 @@
 
 package pl.sknikod.kodemysearch.factory;
 
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collections;
 import java.util.Date;

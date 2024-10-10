@@ -12,7 +12,7 @@ import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialCreateService;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialUpdateService;
-import pl.sknikod.kodemycommon.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 import java.time.Instant;
 

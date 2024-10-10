@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.MaterialGradeService;
-import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
+import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSortField;
-import pl.sknikod.kodemycommon.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -40,6 +40,6 @@ public interface MaterialGradeControllerDefinition {
             @RequestParam(value = "sort", defaultValue = "created_date") GradeMaterialSortField sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\"}")
-            @RequestParam(value = "search_fields", required = false) GradeMaterialSearchFields searchFields
+            @RequestParam(value = "filters", required = false) GradeMaterialFilterSearchParams filterSearchParams
     );
 }

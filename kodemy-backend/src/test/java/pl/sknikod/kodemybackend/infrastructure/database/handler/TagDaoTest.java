@@ -8,8 +8,8 @@ import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.TagRepository;
 import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemycommon.exception.AlreadyExists409Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.AlreadyExists409Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Collections;
 import java.util.Set;

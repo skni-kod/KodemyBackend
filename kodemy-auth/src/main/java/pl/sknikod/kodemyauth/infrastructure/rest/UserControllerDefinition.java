@@ -10,12 +10,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserSortField;
-import pl.sknikod.kodemycommon.doc.SwaggerResponse;
-import pl.sknikod.kodemycommon.network.LanRestTemplate;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.network.LanRestTemplate;
 
 import java.util.List;
 import java.util.Set;
@@ -62,7 +62,7 @@ public interface UserControllerDefinition {
             @RequestParam(value = "sort", defaultValue = "ID") UserSortField sortField,
             @RequestParam(value = "sort_direction", defaultValue = "ASC") Sort.Direction sortDirection,
             @Parameter(description = "{\"username\": \"username\", \"email\": \"email@example.com\", \"role\": \"ROLE_USER\"}")
-            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
+            @RequestParam(value = "filters", required = false) FilterSearchParams filterSearchParams
     );
 
     @Hidden

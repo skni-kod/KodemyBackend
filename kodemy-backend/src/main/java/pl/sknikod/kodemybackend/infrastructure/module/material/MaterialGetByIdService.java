@@ -6,7 +6,7 @@ import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.dao.GradeDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 @Slf4j
 @RequiredArgsConstructor

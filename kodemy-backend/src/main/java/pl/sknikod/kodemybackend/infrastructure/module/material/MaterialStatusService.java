@@ -6,11 +6,11 @@ import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialStatusUpdatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialUpdatedProducer;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.Validation400Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommon.security.AuthFacade;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.Validation400Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getAuthorityForStatusChange;
 import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getPossibleStatuses;

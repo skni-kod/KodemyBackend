@@ -2,9 +2,9 @@ package pl.sknikod.kodemybackend.exception;
 
 import org.junit.jupiter.api.Test;
 import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

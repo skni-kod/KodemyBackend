@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +33,10 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFai
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2Constant;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
-import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
-import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
-import pl.sknikod.kodemycommon.security.JwtProvider;
-import pl.sknikod.kodemycommon.security.configuration.JwtConfiguration;
+import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
+import pl.sknikod.kodemycommons.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommons.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ import java.util.List;
         jsr250Enabled = true)
 @RequiredArgsConstructor
 @Import({JwtConfiguration.class})
+@EnableAutoConfiguration(exclude = UserDetailsServiceAutoConfiguration.class)
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(

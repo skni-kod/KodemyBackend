@@ -3,9 +3,9 @@ package pl.sknikod.kodemybackend.configuration;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
-import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
+import pl.sknikod.kodemycommons.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 @TestConfiguration
 public class TestSecurityConfig {

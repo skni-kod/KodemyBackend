@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.TypeMapper;
 import pl.sknikod.kodemybackend.infrastructure.dao.TypeDao;
 import pl.sknikod.kodemybackend.infrastructure.module.type.model.SingleTypeResponse;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import java.util.List;
 

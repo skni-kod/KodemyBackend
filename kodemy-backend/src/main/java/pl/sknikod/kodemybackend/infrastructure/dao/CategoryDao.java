@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.CategoryRepository;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 
 @Slf4j
 @Component

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.CategoryMapper;
 import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
 import pl.sknikod.kodemybackend.infrastructure.module.category.model.SingleCategoryResponse;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 @AllArgsConstructor
 public class CategoryService {

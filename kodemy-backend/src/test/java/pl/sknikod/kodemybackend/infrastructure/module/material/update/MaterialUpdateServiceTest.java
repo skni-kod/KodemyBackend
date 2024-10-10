@@ -15,8 +15,8 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitPro
 import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialUpdateService;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Set;
 

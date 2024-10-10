@@ -14,11 +14,11 @@ import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.security.AuthFacade;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.HashSet;
 
@@ -54,11 +54,11 @@ public class UserService {
                 .orElseThrow(InternalError500Exception::new);
     }
 
-    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {
+    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, FilterSearchParams filterSearchParams) {
         Page<User> users = userDao.findByUsernameOrEmailOrRole(
-                searchFields.getUsername(),
-                searchFields.getEmail(),
-                searchFields.getRoleName() != null ? searchFields.getRoleName() : null,
+                filterSearchParams.getUsername(),
+                filterSearchParams.getEmail(),
+                filterSearchParams.getRoleName() != null ? filterSearchParams.getRoleName() : null,
                 pageRequest
         );
         return new PageImpl<>(

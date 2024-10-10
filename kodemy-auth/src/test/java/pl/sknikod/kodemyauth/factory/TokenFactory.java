@@ -1,7 +1,7 @@
 package pl.sknikod.kodemyauth.factory;
 
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collections;
 import java.util.Date;

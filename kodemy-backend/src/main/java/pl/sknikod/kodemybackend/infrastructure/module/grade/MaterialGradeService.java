@@ -16,11 +16,11 @@ import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.GradeDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
-import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialSearchFields;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommon.security.AuthFacade;
-import pl.sknikod.kodemycommon.security.UserPrincipal;
+import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Date;
 import java.util.Objects;
@@ -50,11 +50,11 @@ public class MaterialGradeService {
         return grade;
     }
 
-    public Page<GradePageable> showGrades(PageRequest pageRequest, GradeMaterialSearchFields searchFields, Long materialId) {
+    public Page<GradePageable> showGrades(PageRequest pageRequest, GradeMaterialFilterSearchParams filterSearchParams, Long materialId) {
         Date minDate = Objects.requireNonNullElse(
-                searchFields.getCreatedDateFrom(), GradeRepository.DATE_MIN);
+                filterSearchParams.getCreatedDateFrom(), GradeRepository.DATE_MIN);
         Date maxDate = Objects.requireNonNullElse(
-                searchFields.getCreatedDateTo(), GradeRepository.DATE_MAX);
+                filterSearchParams.getCreatedDateTo(), GradeRepository.DATE_MAX);
         return gradeDao.findGradesByMaterialInDateRange(materialId, minDate, maxDate, pageRequest)
                 .map(page -> {
                     var list = page.getContent().stream().map(gradeMapper::map).toList();

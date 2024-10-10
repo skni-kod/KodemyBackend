@@ -9,7 +9,7 @@ import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.infrastructure.dao.RoleDao;
-import pl.sknikod.kodemycommon.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Optional;
 

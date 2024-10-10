@@ -10,10 +10,10 @@ import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemysearch.infrastructure.dao.MaterialSearchDao;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
-import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialSearchFields;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 
 import java.util.Date;
 import java.util.List;
@@ -25,64 +25,64 @@ public class MaterialSearchService {
     private final MaterialSearchDao materialSearchDao;
     private final MaterialSearchMapper mapper;
 
-    public Page<MaterialPageable> search(MaterialSearchFields searchFields, Pageable pageRequest) {
-        return materialSearchDao.search(mapToSearchCriteria(searchFields, pageRequest))
+    public Page<MaterialPageable> search(MaterialFilterSearchParams filterSearchParams, Pageable pageRequest) {
+        return materialSearchDao.search(mapToSearchCriteria(filterSearchParams, pageRequest))
                 .map(page -> new PageImpl<>(mapper.map(page.getContent()), page.getPageable(), page.getTotalElements()))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
-    private SearchCriteria mapToSearchCriteria(@NonNull MaterialSearchFields searchFields, @NonNull Pageable pageable) {
-        var criteria = new SearchCriteria(searchFields.getPhrase(), pageable);
+    private SearchCriteria mapToSearchCriteria(@NonNull MaterialFilterSearchParams filterSearchParams, @NonNull Pageable pageable) {
+        var criteria = new SearchCriteria(filterSearchParams.getPhrase(), pageable);
 
-        if (Objects.nonNull(searchFields.getId()))
+        if (Objects.nonNull(filterSearchParams.getId()))
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "id", searchFields.getId().toString(), false, false
+                    "id", filterSearchParams.getId().toString(), false, false
             ));
-        if (Objects.nonNull(searchFields.getTitle()))
+        if (Objects.nonNull(filterSearchParams.getTitle()))
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "title", searchFields.getTitle(), false, false
+                    "title", filterSearchParams.getTitle(), false, false
             ));
-        if (Objects.nonNull(searchFields.getStatus()))
+        if (Objects.nonNull(filterSearchParams.getStatus()))
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "status", searchFields.getStatus(), false, false
+                    "status", filterSearchParams.getStatus(), false, false
             ));
-        if (Objects.nonNull(searchFields.getCreatedBy()))
+        if (Objects.nonNull(filterSearchParams.getCreatedBy()))
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "createdBy", searchFields.getCreatedBy(), false, false
+                    "createdBy", filterSearchParams.getCreatedBy(), false, false
             ));
-        if (Objects.nonNull(searchFields.getSectionId()))
+        if (Objects.nonNull(filterSearchParams.getSectionId()))
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "sectionId", searchFields.getSectionId().toString(), false, false
+                    "sectionId", filterSearchParams.getSectionId().toString(), false, false
             ));
-        var categoryIds = searchFields.getCategoryIds();
+        var categoryIds = filterSearchParams.getCategoryIds();
         if (Objects.nonNull(categoryIds) && categoryIds.length != 0) {
             criteria.addPhraseField(new SearchCriteria.PhraseField(
                     "categoryIds", StringUtils.join(categoryIds, ' '), false, false
             ));
         }
-        var tagIds = searchFields.getTagIds();
+        var tagIds = filterSearchParams.getTagIds();
         if (Objects.nonNull(tagIds) && tagIds.length != 0) {
             criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "tagIds", StringUtils.join(searchFields.getTagIds(), ' '), false, false
+                    "tagIds", StringUtils.join(filterSearchParams.getTagIds(), ' '), false, false
             ));
         }
 
-        if (Objects.nonNull(searchFields.getCreatedDateFrom()) || Objects.nonNull(searchFields.getCreatedDateTo()))
+        if (Objects.nonNull(filterSearchParams.getCreatedDateFrom()) || Objects.nonNull(filterSearchParams.getCreatedDateTo()))
             criteria.addRangeField(new SearchCriteria.RangeField<>(
-                    "createdDate", searchFields.getCreatedDateFrom(), searchFields.getCreatedDateTo()
+                    "createdDate", filterSearchParams.getCreatedDateFrom(), filterSearchParams.getCreatedDateTo()
             ));
-        if (Objects.nonNull(searchFields.getMinAvgGrade()) || Objects.nonNull(searchFields.getMaxAvgGrade()))
+        if (Objects.nonNull(filterSearchParams.getMinAvgGrade()) || Objects.nonNull(filterSearchParams.getMaxAvgGrade()))
             criteria.addRangeField(new SearchCriteria.RangeField<>(
-                    "avgGrade", searchFields.getMinAvgGrade(), searchFields.getMaxAvgGrade()
+                    "avgGrade", filterSearchParams.getMinAvgGrade(), filterSearchParams.getMaxAvgGrade()
             ));
 
         return criteria;
     }
 
-    private boolean filterByAvgGrade(MaterialSearchFields searchFields, MaterialPageable m) {
+    private boolean filterByAvgGrade(MaterialFilterSearchParams filterSearchParams, MaterialPageable m) {
         double gradeAvg = m.avgGrade;
-        return (searchFields.getMinAvgGrade() == null || gradeAvg >= searchFields.getMinAvgGrade()) &&
-                (searchFields.getMaxAvgGrade() == null || gradeAvg <= searchFields.getMaxAvgGrade());
+        return (filterSearchParams.getMinAvgGrade() == null || gradeAvg >= filterSearchParams.getMinAvgGrade()) &&
+                (filterSearchParams.getMaxAvgGrade() == null || gradeAvg <= filterSearchParams.getMaxAvgGrade());
     }
 
     @Getter

@@ -10,7 +10,7 @@ import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.RefreshTokensService;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.UUID;
 

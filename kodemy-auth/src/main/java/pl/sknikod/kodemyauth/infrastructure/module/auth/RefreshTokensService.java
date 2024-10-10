@@ -14,8 +14,8 @@ import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
-import pl.sknikod.kodemycommon.exception.InternalError500Exception;
-import pl.sknikod.kodemycommon.security.JwtProvider;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collection;
 import java.util.UUID;

@@ -58,7 +58,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
-    implementation 'pl.sknikod:kodemy-common:1.1'
+    implementation 'pl.sknikod:kodemy-commons:1.0'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 

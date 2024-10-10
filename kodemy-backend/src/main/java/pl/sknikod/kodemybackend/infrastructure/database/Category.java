@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.sknikod.kodemycommon.data.BaseEntity;
+import pl.sknikod.kodemycommons.data.BaseEntity;
 
 import java.util.HashSet;
 import java.util.Objects;
