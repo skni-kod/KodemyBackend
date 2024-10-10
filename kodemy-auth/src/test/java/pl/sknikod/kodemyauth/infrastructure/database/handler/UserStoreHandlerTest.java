@@ -47,7 +47,7 @@ class UserStoreHandlerTest extends BaseTest {
     void save_shouldSucceed() {
         // given
         when(roleProperties.getPrimary())
-                .thenReturn(Role.RoleName.ROLE_USER.name());
+                .thenReturn("ROLE_USER");
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.of(RoleFactory.roleUser));
         when(userRepository.save(any()))
@@ -63,7 +63,7 @@ class UserStoreHandlerTest extends BaseTest {
     void save_shouldEmpty_whenRoleNotFound() {
         // given
         when(roleProperties.getPrimary())
-                .thenReturn(Role.RoleName.ROLE_USER.name());
+                .thenReturn("ROLE_USER");
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.empty());
         // when
@@ -76,7 +76,7 @@ class UserStoreHandlerTest extends BaseTest {
     void save_shouldEmpty_whenSaveFails() {
         // given
         when(roleProperties.getPrimary())
-                .thenReturn(Role.RoleName.ROLE_USER.name());
+                .thenReturn("ROLE_USER");
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.of(RoleFactory.roleUser));
         when(userRepository.save(any()))
@@ -90,7 +90,7 @@ class UserStoreHandlerTest extends BaseTest {
     @Test
     void findByProviderUser_shouldSucceed() {
         // given
-        when(userRepository.findUserByPrincipalIdAndAuthProviderWithFetchRole(any(), any()))
+        when(userRepository.findUserByPrincipalIdAndAuthProvider(any(), any()))
                 .thenReturn(UserFactory.userUser);
         // when
         Try<User> result = userStoreHandler.findByProviderUser(OAuth2Factory.oAuth2GithubUser());
@@ -102,7 +102,7 @@ class UserStoreHandlerTest extends BaseTest {
     @Test
     void findUserByProvider_shouldFailure_whenUserNotFound() {
         // given
-        when(userRepository.findUserByPrincipalIdAndAuthProviderWithFetchRole(any(), any()))
+        when(userRepository.findUserByPrincipalIdAndAuthProvider(any(), any()))
                 .thenReturn(null);
         // when
         Try<User> result = userStoreHandler.findByProviderUser(OAuth2Factory.oAuth2GithubUser());
@@ -145,7 +145,7 @@ class UserStoreHandlerTest extends BaseTest {
         when(userRepository.save(any()))
                 .thenReturn(UserFactory.userAdmin);
         // when
-        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
+        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), "ROLE_ADMIN");
         // then
         assertTrue(result.isSuccess());
         assertEquals(RoleFactory.roleAdmin, result.get().getRole());
@@ -157,7 +157,7 @@ class UserStoreHandlerTest extends BaseTest {
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.empty());
         // when
-        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
+        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), "ROLE_ADMIN");
         // then
         assertTrue(result.isFailure());
         assertInstanceOf(InternalError500Exception.class, result.getCause());
@@ -171,7 +171,7 @@ class UserStoreHandlerTest extends BaseTest {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.empty());
         // when
-        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
+        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), "ROLE_ADMIN");
         // then
         assertTrue(result.isFailure());
         assertInstanceOf(InternalError500Exception.class, result.getCause());
@@ -187,7 +187,7 @@ class UserStoreHandlerTest extends BaseTest {
         when(userRepository.save(any()))
                 .thenThrow(new OptimisticLockingFailureException(""));
         // when
-        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), Role.RoleName.ROLE_ADMIN);
+        Try<User> result = userStoreHandler.updateRole(UserFactory.userUser.getId(), "ROLE_ADMIN");
         // then
         assertTrue(result.isFailure());
         assertInstanceOf(InternalError500Exception.class, result.getCause());

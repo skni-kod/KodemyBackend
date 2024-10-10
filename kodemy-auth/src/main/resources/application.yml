@@ -85,37 +85,3 @@ app:
         redirect: /api/callback
     roles:
       primary: ROLE_USER
-      authorities:
-        ROLE_MODERATOR:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_GET_USER_INFO
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-        ROLE_ADMIN:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_AUTO_APPROVED_MATERIAL
-          - CAN_GET_USERS
-          - CAN_BANNING_USERS
-          - CAN_ASSIGN_ROLES
-          - CAN_GET_USER_INFO
-          - CAN_READ_NOTIFICATIONS
-          - CAN_INDEX
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-        ROLE_SUPERADMIN:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_AUTO_APPROVED_MATERIAL
-          - CAN_GET_USERS
-          - CAN_BANNING_USERS
-          - CAN_ASSIGN_ROLES
-          - CAN_USE_ACTUATOR
-          - CAN_GET_USER_INFO
-          - CAN_READ_NOTIFICATIONS
-          - CAN_INDEX
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-          - CAN_BAN_MATERIAL
-          - CAN_UNBAN_MATERIAL

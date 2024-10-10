@@ -22,6 +22,6 @@ public interface RoleControllerDefinition {
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.NotFoundCode404
     @PreAuthorize("isAuthenticated()")
-    ResponseEntity<Role.RoleName[]> getRoles();
+    ResponseEntity<String[]> getRoles();
 
 }

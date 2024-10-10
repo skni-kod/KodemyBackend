@@ -191,10 +191,5 @@ public class SecurityConfiguration {
     @ConfigurationProperties(prefix = "app.security.roles")
     public static class RoleProperties {
         private String primary;
-        private LinkedHashMap<String, Set<SimpleGrantedAuthority>> authorities = new LinkedHashMap<>();
-
-        public Set<SimpleGrantedAuthority> getAuthorities(String role) {
-            return authorities.getOrDefault(role, Collections.emptySet());
-        }
     }
 }

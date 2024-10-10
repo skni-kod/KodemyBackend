@@ -5,21 +5,28 @@ import io.vavr.Tuple2;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.model.RefreshToken;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.rest.model.RefreshTokensResponse;
 import pl.sknikod.kodemycommon.exception.InternalError500Exception;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 
+import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RefreshTokensService {
+    private final RoleRepository roleRepository;
     private final RefreshTokenStoreHandler refreshTokenRepositoryHandler;
     private final JwtProvider jwtProvider;
     private final SecurityConfiguration.RoleProperties roleProperties;
@@ -49,7 +56,10 @@ public class RefreshTokensService {
                 user.getIsLocked(),
                 user.getIsCredentialsExpired(),
                 user.getIsEnabled(),
-                roleProperties.getAuthorities(user.getRole().getName().name())
+                roleRepository.findById(user.getRole().getId()).map(Role::getPermissions)
+                        .stream().flatMap(Collection::stream)
+                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                        .collect(Collectors.toSet())
         );
     }
 }

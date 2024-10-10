@@ -18,7 +18,7 @@ public class RoleStoreHandler {
     private final RoleRepository roleRepository;
 
     public Try<Role> findByRoleName(String roleName) throws RuntimeException {
-        return Try.of(() -> roleRepository.findByName(Role.RoleName.valueOf(roleName)))
+        return Try.of(() -> roleRepository.findByName(roleName))
                 .map(Optional::get)
                 .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, Role.class))
                 .onFailure(th -> log.error(th.getMessage(), roleName));

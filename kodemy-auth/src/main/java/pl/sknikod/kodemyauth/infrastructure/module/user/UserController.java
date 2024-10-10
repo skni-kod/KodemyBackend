@@ -26,7 +26,7 @@ public class UserController implements UserControllerDefinition {
     private final UsersBriefUseCase usersBriefUseCase;
 
     @Override
-    public ResponseEntity<Void> updateRoles(Long userId, Role.RoleName roleName) {
+    public ResponseEntity<Void> updateRoles(Long userId, String roleName) {
         changeUserRoleUseCase.change(userId, roleName);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

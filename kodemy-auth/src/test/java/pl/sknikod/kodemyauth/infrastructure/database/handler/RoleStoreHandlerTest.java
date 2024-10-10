@@ -33,7 +33,7 @@ class RoleStoreHandlerTest extends BaseTest {
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.of(RoleFactory.roleUser));
         // when
-        Try<Role> result = roleStoreHandler.findByRoleName(Role.RoleName.ROLE_ADMIN.name());
+        Try<Role> result = roleStoreHandler.findByRoleName("ROLE_ADMIN");
         // then
         assertTrue(result.isSuccess());
         assertEquals(RoleFactory.roleUser.getName(), result.get().getName());
@@ -45,7 +45,7 @@ class RoleStoreHandlerTest extends BaseTest {
         when(roleRepository.findByName(any()))
                 .thenReturn(Optional.empty());
         // when
-        Try<Role> result = roleStoreHandler.findByRoleName(Role.RoleName.ROLE_ADMIN.name());
+        Try<Role> result = roleStoreHandler.findByRoleName("ROLE_ADMIN");
         // then
         assertTrue(result.isFailure());
         assertInstanceOf(NotFound404Exception.class, result.getCause());

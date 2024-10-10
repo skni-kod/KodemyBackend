@@ -9,6 +9,7 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFai
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemycommon.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommon.security.JwtAuthorizationFilter;
+import pl.sknikod.kodemycommon.security.JwtProvider;
 
 @TestConfiguration
 public class TestSecurityConfig {
@@ -26,6 +27,11 @@ public class TestSecurityConfig {
     public JwtAuthorizationFilter jwtAuthorizationFilter(
     ) {
         return Mockito.mock(JwtAuthorizationFilter.class);
+    }
+
+    @Bean
+    public JwtProvider jwtProvider() {
+        return Mockito.mock(JwtProvider.class);
     }
 
     @Bean

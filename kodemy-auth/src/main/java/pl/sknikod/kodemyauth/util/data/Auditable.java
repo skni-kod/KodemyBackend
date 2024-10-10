@@ -24,9 +24,9 @@ public abstract class Auditable<U> {
     protected LocalDateTime createdDate;
 
     @LastModifiedBy
-    protected U lastModifiedBy;
+    protected U modifiedBy;
 
     @LastModifiedDate
-    protected LocalDateTime lastModifiedDate;
+    protected LocalDateTime modifiedDate;
 
 }

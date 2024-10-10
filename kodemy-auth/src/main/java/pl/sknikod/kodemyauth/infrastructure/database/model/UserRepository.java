@@ -17,11 +17,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             value = """
                     SELECT u FROM User u \
                     INNER JOIN Provider up ON u = up.user \
-                    LEFT JOIN FETCH u.role \
                     WHERE up.principalId = :principalId AND up.providerType = :registrationId\
                     """
     )
-    User findUserByPrincipalIdAndAuthProviderWithFetchRole(String principalId, String registrationId);
+    User findUserByPrincipalIdAndAuthProvider(String principalId, String registrationId);
 
     @Query(
             value = """
@@ -30,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     and u.isCredentialsExpired = false and u.isExpired = false\
                     """
     )
-    HashSet<User> findUsersByRoleAdmin(Set<Role.RoleName> roles);
+    HashSet<User> findUsersByRoleAdmin(Set<String> roles);
 
     ArrayList<User> findByUsernameContainingOrEmailContaining(String username, String email);
 

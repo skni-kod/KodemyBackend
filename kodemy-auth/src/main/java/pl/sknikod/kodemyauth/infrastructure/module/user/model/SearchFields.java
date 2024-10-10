@@ -8,7 +8,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
 import pl.sknikod.kodemycommon.exception.Validation400Exception;
 
 @Data
@@ -16,7 +15,7 @@ import pl.sknikod.kodemycommon.exception.Validation400Exception;
 public class SearchFields {
     String username;
     String email;
-    Role.RoleName role;
+    String roleName;
 
     @Component
     @RequiredArgsConstructor

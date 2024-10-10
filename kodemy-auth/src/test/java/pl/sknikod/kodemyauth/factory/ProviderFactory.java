@@ -11,7 +11,7 @@ public class ProviderFactory {
         var provider = new Provider();
         provider.setId(1L);
         provider.setProviderType(providerType);
-        provider.setUser(UserFactory.user(RoleFactory.role(Role.RoleName.ROLE_USER)));
+        provider.setUser(UserFactory.user(RoleFactory.role("ROLE_USER")));
         return provider;
     }
 }

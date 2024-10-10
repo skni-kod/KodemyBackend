@@ -58,7 +58,7 @@ public class UserService {
         Page<User> users = userStoreHandler.findByUsernameOrEmailOrRole(
                 searchFields.getUsername(),
                 searchFields.getEmail(),
-                searchFields.getRole() != null ? searchFields.getRole().name() : null,
+                searchFields.getRoleName() != null ? searchFields.getRoleName() : null,
                 pageRequest
         );
         return new PageImpl<>(

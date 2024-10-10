@@ -14,7 +14,7 @@ import java.util.Objects;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class BaseEntity extends Auditable<String> implements Serializable {
+public abstract class BaseEntity extends Auditable<Long> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

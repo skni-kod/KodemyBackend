@@ -16,29 +16,31 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role extends BaseEntity {
-    @Column(unique = true, nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoleName name;
-    @OneToMany(mappedBy = "role")
-    private Set<User> users = new HashSet<>();
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "roles_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof Role role)) return false;
-        if (!super.equals(object)) return false;
-        return name == role.name;
+        return Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name);
-    }
-
-    public enum RoleName {
-        ROLE_USER,
-        ROLE_MODERATOR,
-        ROLE_ADMIN,
-        ROLE_SUPERADMIN
+        return Objects.hash(name);
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Permission;
+import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.model.User;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.UserStoreHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
@@ -21,13 +23,12 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2UserPrincip
 import java.util.*;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+    private final RoleRepository roleRepository;
     private final RestTemplate oAuth2RestTemplate;
     private final List<OAuth2Provider> oAuth2Providers;
     private final UserStoreHandler userStoreHandler;
-    private final SecurityConfiguration.RoleProperties roleProperties;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -61,15 +62,18 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     }
 
     private OAuth2UserPrincipal toUserPrincipal(Tuple2<User, OAuth2Provider.User> userTuple2) {
-        return Try.of(() -> roleProperties.getAuthorities(userTuple2._1.getRole().getName().name()))
+        return Try.of(() -> roleRepository.findById(userTuple2._1.getRole().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Role::getPermissions)
                 .onFailure(th -> log.error("Cannot retrieve authorities for role", th))
                 .fold(
                         unused -> map(userTuple2._1, Collections.emptySet(), userTuple2._2.getAttributes()),
-                        authorities -> map(userTuple2._1, authorities, userTuple2._2.getAttributes())
+                        permissions -> map(userTuple2._1, permissions, userTuple2._2.getAttributes())
                 );
     }
 
-    private OAuth2UserPrincipal map(User user, Set<SimpleGrantedAuthority> authorities, Map<String, Object> attributes) {
+    private OAuth2UserPrincipal map(User user, Set<Permission> permissions, Map<String, Object> attributes) {
         return new OAuth2UserPrincipal(
                 user.getId(),
                 user.getUsername(),
@@ -77,7 +81,7 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
                 user.getIsLocked(),
                 user.getIsCredentialsExpired(),
                 user.getIsEnabled(),
-                authorities,
+                permissions.stream().map(Permission::getName).map(SimpleGrantedAuthority::new).toList(),
                 attributes
         );
     }

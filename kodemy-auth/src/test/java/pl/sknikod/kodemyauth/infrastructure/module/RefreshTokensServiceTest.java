@@ -8,6 +8,7 @@ import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenStoreHandler;
 import pl.sknikod.kodemyauth.BaseTest;
+import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.RefreshTokensService;
 import pl.sknikod.kodemycommon.security.JwtProvider;
 
@@ -24,9 +25,11 @@ class RefreshTokensServiceTest extends BaseTest {
             Mockito.mock(JwtProvider.class);
     private final SecurityConfiguration.RoleProperties roleProperties =
             Mockito.mock(SecurityConfiguration.RoleProperties.class);
+    private final RoleRepository roleRepository =
+            Mockito.mock(RoleRepository.class);
 
     private final RefreshTokensService refreshTokensService =
-            new RefreshTokensService(refreshTokenRepositoryHandler, jwtProvider, roleProperties);
+            new RefreshTokensService(roleRepository, refreshTokenRepositoryHandler, jwtProvider, roleProperties);
 
     private static final UUID refresh;
     private static final UUID bearerJti;
@@ -38,8 +41,8 @@ class RefreshTokensServiceTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        when(roleProperties.getAuthorities(any()))
-                .thenReturn(Collections.emptySet());
+        /*when(roleProperties.getAuthorities(any()))
+                .thenReturn(Collections.emptySet());*/
     }
 
     @Test

@@ -20,7 +20,7 @@ public class TokenFactory {
                 UUID.randomUUID(),
                 null,
                 null,
-                UserFactory.user(RoleFactory.role(Role.RoleName.ROLE_USER))
+                UserFactory.user(RoleFactory.role("ROLE_USER"))
         );
         token.setId(1L);
         return token;

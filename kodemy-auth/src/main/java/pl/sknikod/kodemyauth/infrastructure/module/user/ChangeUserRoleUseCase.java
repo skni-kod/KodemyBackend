@@ -14,7 +14,7 @@ import pl.sknikod.kodemycommon.exception.content.ExceptionUtil;
 public class ChangeUserRoleUseCase {
     private final UserStoreHandler userStoreHandler;
 
-    public void change(Long userId, Role.RoleName roleName) {
+    public void change(Long userId, String roleName) {
         userStoreHandler.updateRole(userId, roleName)
                 .onFailure(th -> {
                     throw new InternalError500Exception(ExceptionMsgPattern.PROCESS_FAILED_ENTITY, User.class);

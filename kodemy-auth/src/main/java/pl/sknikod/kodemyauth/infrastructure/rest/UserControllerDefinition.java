@@ -34,7 +34,10 @@ public interface UserControllerDefinition {
     @SwaggerResponse.BadRequestCode400
     @SwaggerResponse.NotFoundCode404
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_ASSIGN_ROLES')")
-    ResponseEntity<Void> updateRoles(@PathVariable Long userId, @RequestBody @Valid Role.RoleName roleName);
+    ResponseEntity<Void> updateRoles(
+            @PathVariable Long userId,
+            @RequestBody @Valid @RequestParam(defaultValue = "ROLE_USER") String roleName
+    );
 
     @GetMapping("/{userId}")
     @Operation(summary = "Show information about user")

@@ -7,13 +7,10 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provide
 
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 public class OAuth2ProviderService {
     private final List<OAuth2Provider> oAuth2Providers;
-
-    @Value("${app.security.oauth2.endpoints.authorize}")
-    private String authorizeEndpoint;
+    private final String authorizeEndpoint;
 
     public List<ProviderResponse> getProviders() {
         return oAuth2Providers

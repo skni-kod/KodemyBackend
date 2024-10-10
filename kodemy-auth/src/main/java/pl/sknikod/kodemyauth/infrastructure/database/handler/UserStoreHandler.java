@@ -31,7 +31,7 @@ public class UserStoreHandler {
     private final SecurityConfiguration.RoleProperties roleProperties;
 
     public Optional<User> save(OAuth2Provider.User providerUser) {
-        return this.fetchRole(Role.RoleName.valueOf(roleProperties.getPrimary()))
+        return this.fetchRole(roleProperties.getPrimary())
                 .map(role -> new User(
                         providerUser.getUsername(), providerUser.getEmail(),
                         providerUser.getPhoto(), role))
@@ -49,7 +49,7 @@ public class UserStoreHandler {
                 .toJavaOptional();
     }
 
-    private Try<Role> fetchRole(Role.RoleName roleName) {
+    private Try<Role> fetchRole(String roleName) {
         return Try.of(() -> roleRepository.findByName(roleName))
                 .map(Optional::get)
                 .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, Role.class))
@@ -57,10 +57,10 @@ public class UserStoreHandler {
     }
 
     public Try<User> findByProviderUser(OAuth2Provider.User providerUser) {
-        return Option.of(userRepository.findUserByPrincipalIdAndAuthProviderWithFetchRole(
-                        providerUser.getPrincipalId(), providerUser.getProvider()))
-                .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, User.class))
-                .onFailure(th -> log.error(th.getMessage(), th));
+        return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
+                        providerUser.getPrincipalId(), providerUser.getProvider()
+                ))
+                .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, User.class));
     }
 
     public Try<User> findById(Long id) {
@@ -70,7 +70,7 @@ public class UserStoreHandler {
                 .onFailure(th -> log.error(th.getMessage(), th));
     }
 
-    public Try<User> updateRole(Long userId, Role.RoleName roleName) {
+    public Try<User> updateRole(Long userId, String roleName) {
         Try<Role> role = this.fetchRole(roleName);
         if (role.isFailure())
             return Try.failure(new InternalError500Exception());

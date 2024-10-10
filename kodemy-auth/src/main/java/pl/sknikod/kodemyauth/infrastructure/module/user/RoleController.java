@@ -5,13 +5,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemyauth.infrastructure.database.model.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.model.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.rest.RoleControllerDefinition;
 
 @RestController
 @AllArgsConstructor
 public class RoleController implements RoleControllerDefinition {
+
+    private final RoleRepository roleRepository;
+
     @Override
-    public ResponseEntity<Role.RoleName[]> getRoles() {
-        return ResponseEntity.status(HttpStatus.OK).body(Role.RoleName.values());
+    public ResponseEntity<String[]> getRoles() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(roleRepository.findAll().stream().map(Role::getName).toArray(String[]::new));
     }
 }
