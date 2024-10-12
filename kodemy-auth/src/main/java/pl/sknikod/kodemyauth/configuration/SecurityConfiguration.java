@@ -64,7 +64,7 @@ public class SecurityConfiguration {
     ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
                 .addFilterBefore(jwtAuthorizationFilter, LogoutFilter.class)
                 .oauth2Login(login -> login

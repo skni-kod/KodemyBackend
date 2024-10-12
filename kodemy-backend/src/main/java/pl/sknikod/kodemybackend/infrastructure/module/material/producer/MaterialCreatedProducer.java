@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -57,7 +58,7 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
             String username;
         }
 
-        public static Message map(Material material, double grade) {
+        public static Message map(Material material, double grade, UserPrincipal userPrincipal) {
             final var category = material.getCategory();
             return new Message(
                     material.getId(),
@@ -66,12 +67,14 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
                     material.getStatus(),
                     material.isActive(),
                     grade,
-                    null,
+                    new Author(userPrincipal.getId(), userPrincipal.getUsername()),
                     material.getCreatedDate()
                             .toInstant(ZoneId.systemDefault().getRules().getOffset(material.getCreatedDate())),
                     category.getSection().getId(),
                     category.getId(),
-                    material.getTags().stream().map(tag -> new Message.Tag(tag.getId(), tag.getName())).toList()
+                    material.getTags().stream()
+                            .map(tag -> new MaterialCreatedProducer.Message.Tag(tag.getId(), tag.getName()))
+                            .toList()
             );
         }
     }

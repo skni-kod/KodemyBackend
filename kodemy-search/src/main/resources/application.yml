@@ -86,11 +86,3 @@ opensearch:
       alias: materials-alias
   username: admin
   password: admin
-
-app:
-  security:
-    cors:
-      allowed-origins:
-        - http://localhost:3000
-      credentials: true
-      mapping: "/**"

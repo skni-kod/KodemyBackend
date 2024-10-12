@@ -32,7 +32,7 @@ public class LanNetworkHandler {
                 .collect(Collectors.joining("&"));
 
         return Try.of(() -> lanRestTemplate.exchange(
-                        this.authRouteBaseUrl + "/api/users/simple?" + queryString,
+                        this.authRouteBaseUrl + "/api/users/brief?" + queryString,
                         HttpMethod.GET, null, USERS_LIST_TYPE
                 ))
                 .map(HttpEntity::getBody)

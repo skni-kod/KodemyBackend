@@ -17,7 +17,7 @@ import java.util.List;
 
 @Configuration
 @Slf4j
-public class WebConfig {
+public class WebConfiguration {
 
     @Bean
     public CorsWebFilter corsFilter(CorsProperties corsProperties) {

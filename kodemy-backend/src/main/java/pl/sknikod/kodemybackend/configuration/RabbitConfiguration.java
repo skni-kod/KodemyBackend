@@ -27,11 +27,11 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-public class RabbitConfig {
+public class RabbitConfiguration {
     private static final String PARKING_LOT_BEAN_SUFFIX = "ParkingLot";
     public static final String PARKING_LOT_SUFFIX = ".parking-lot";
 
-    public RabbitConfig(GenericApplicationContext context, BindingServiceProperties bindingServiceProperties) {
+    public RabbitConfiguration(GenericApplicationContext context, BindingServiceProperties bindingServiceProperties) {
         this.declareAdditionalQueues(context, bindingServiceProperties.getBindings());
     }
 
@@ -77,7 +77,7 @@ public class RabbitConfig {
     }
 
     @Component
-    @DependsOn("rabbitConfig")
+    @DependsOn("rabbitConfiguration")
     @RequiredArgsConstructor
     public static class RabbitDlqErrorSwitch implements RabbitListenerConfigurer {
         public static final String DLQ_SUFFIX = ".dlq";

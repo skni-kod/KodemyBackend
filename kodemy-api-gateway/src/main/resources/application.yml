@@ -71,9 +71,3 @@ logging:
     root: info
     org.springframework.cloud.gateway.route.RouteDefinitionLocator: info
     org.springframework.cloud.gateway: trace
-
-app:
-  security:
-    cors:
-      allowed-origins:
-        - ${network.route.front}

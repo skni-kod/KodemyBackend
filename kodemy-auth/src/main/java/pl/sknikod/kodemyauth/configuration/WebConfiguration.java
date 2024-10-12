@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,37 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
+@Slf4j
 public class WebConfiguration {
-    @Bean
-    public WebMvcConfigurer webSecurityConfigurer(CorsProperties corsProperties) {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping(corsProperties.mapping)
-                        .allowedOrigins(corsProperties.allowedOrigins.toArray(String[]::new))
-                        .allowCredentials(corsProperties.credentials);
-            }
-        };
-    }
-
-    @Getter
-    @Setter
-    @Component
-    @NoArgsConstructor
-    @ConfigurationProperties(prefix = "app.security.cors")
-    public static class CorsProperties {
-        private List<String> allowedOrigins = new ArrayList<>();
-        private String mapping = "/**";
-        private boolean credentials = true;
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-        return restTemplate;
-    }
-
     @Getter
     @Setter
     @Component
@@ -57,6 +29,4 @@ public class WebConfiguration {
         private int connectTimeoutMs;
         private int readTimeoutMs;
     }
-
-
 }

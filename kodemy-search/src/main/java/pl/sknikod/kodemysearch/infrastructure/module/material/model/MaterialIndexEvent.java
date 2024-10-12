@@ -17,7 +17,7 @@ public class MaterialIndexEvent {
     String status;
     boolean isActive;
     double avgGrade;
-    //User user;
+    User author;
     Instant createdDate;
     Long sectionId;
     Long categoryId;

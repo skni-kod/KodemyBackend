@@ -20,12 +20,6 @@ jwt:
 
 app:
   security:
-    cors:
-      allowed-origins: "*"
-      credentials: false
-      mapping: "/**"
     oauth2:
       route:
         redirect: http://localhost:3000
-
-

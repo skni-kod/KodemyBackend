@@ -10,6 +10,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.json.jsonb.JsonbJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -41,12 +42,12 @@ public class OpenSearchConfiguration {
 
         final var restClient = RestClient.builder(httpHost)
                 .setHttpClientConfigCallback(config -> config
-                        .setDefaultCredentialsProvider(new BasicCredentialsProvider())
+                        .setDefaultCredentialsProvider(credentials)
                         .addInterceptorFirst(new LogbookHttpRequestInterceptor(logbook))
                 )
                 .build();
 
-        var openSearchClient = new OpenSearchClientEnhanced(new RestClientTransport(restClient, new JacksonJsonpMapper()));
+        var openSearchClient = new OpenSearchClientEnhanced(new RestClientTransport(restClient, new JsonbJsonpMapper()));
         openSearchProperties.indices.values().forEach(openSearchClient::initializeIndex);
         return openSearchClient;
     }
