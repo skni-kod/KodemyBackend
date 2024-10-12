@@ -58,7 +58,7 @@ public class MaterialCreateService {
                 .flatMap(materialDao::save)
                 .peek(material -> {
                     if (material.getStatus() == APPROVED)
-                        materialCreatedProducer.publish(MaterialCreatedProducer.Message.map(material, 0.00, userPrincipal));
+                        materialCreatedProducer.publish(MaterialCreatedProducer.Message.map(material, userPrincipal));
                 })
                 .map(createMaterialMapper::map)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);

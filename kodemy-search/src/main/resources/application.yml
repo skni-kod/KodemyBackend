@@ -21,6 +21,10 @@ spring:
           contentType: application/json
           destination: material-status-updated
           group: kodemy
+        materialTagsUpdated-in-0:
+          contentType: application/json
+          destination: material-tags-updated
+          group: kodemy
       rabbit:
         bindings:
           materialCreated-in-0:
@@ -36,6 +40,12 @@ spring:
               dlqDeadLetterExchange:
               maxLength: 3
           materialStatusUpdated-in-0:
+            consumer:
+              auto-bind-dlq: true
+              dlqTtl: 5000
+              dlqDeadLetterExchange:
+              maxLength: 3
+          materialTagsUpdated-in-0:
             consumer:
               auto-bind-dlq: true
               dlqTtl: 5000

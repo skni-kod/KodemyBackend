@@ -58,7 +58,7 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
             String username;
         }
 
-        public static Message map(Material material, double grade, UserPrincipal userPrincipal) {
+        public static Message map(Material material, UserPrincipal userPrincipal) {
             final var category = material.getCategory();
             return new Message(
                     material.getId(),
@@ -66,7 +66,7 @@ public class MaterialCreatedProducer implements Producer<MaterialCreatedProducer
                     material.getDescription(),
                     material.getStatus(),
                     material.isActive(),
-                    grade,
+                    0.00,
                     new Author(userPrincipal.getId(), userPrincipal.getUsername()),
                     material.getCreatedDate()
                             .toInstant(ZoneId.systemDefault().getRules().getOffset(material.getCreatedDate())),

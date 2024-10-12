@@ -17,7 +17,7 @@ public class MaterialIndexEvent {
     String status;
     boolean isActive;
     double avgGrade;
-    User author;
+    Author author;
     Instant createdDate;
     Long sectionId;
     Long categoryId;
@@ -26,7 +26,7 @@ public class MaterialIndexEvent {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class User {
+    public static class Author {
         Long id;
         String username;
     }
