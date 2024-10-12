@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialSearchFields;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 import pl.sknikod.kodemysearch.infrastructure.rest.MaterialControllerDefinition;
 
 import java.util.Objects;
@@ -15,17 +15,17 @@ import java.util.Objects;
 @RestController
 @AllArgsConstructor
 public class MaterialController implements MaterialControllerDefinition {
-    private final MaterialSearchUseCase materialSearchUseCase;
+    private final MaterialSearchService materialSearchService;
 
     @Override
-    public ResponseEntity<Page<MaterialSearchUseCase.MaterialPageable>> search(
+    public ResponseEntity<Page<MaterialSearchService.MaterialPageable>> search(
             int size, int page,
-            MaterialSearchUseCase.MaterialSortField sortField, Sort.Direction sortDirection,
-            MaterialSearchFields searchFields
+            MaterialSearchService.MaterialSortField sortField, Sort.Direction sortDirection,
+            MaterialFilterSearchParams filterSearchParams
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(materialSearchUseCase.search(
-                        Objects.requireNonNullElse(searchFields, new MaterialSearchFields()),
+                .body(materialSearchService.search(
+                        Objects.requireNonNullElse(filterSearchParams, new MaterialFilterSearchParams()),
                         PageRequest.of(page, size, sortDirection, sortField.getField())
                 ));
     }

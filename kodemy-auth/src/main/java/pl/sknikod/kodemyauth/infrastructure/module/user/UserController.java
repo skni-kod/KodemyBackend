@@ -7,8 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserSortField;
@@ -21,13 +20,13 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserControllerDefinition {
-    private final ChangeUserRoleUseCase changeUserRoleUseCase;
+    private final ChangeUserRoleService changeUserRoleService;
     private final UserService userService;
-    private final UsersForLanUseCase usersForLanUseCase;
+    private final UsersBriefService usersBriefService;
 
     @Override
-    public ResponseEntity<Void> updateRoles(Long userId, Role.RoleName roleName) {
-        changeUserRoleUseCase.change(userId, roleName);
+    public ResponseEntity<Void> updateRoles(Long userId, String roleName) {
+        changeUserRoleService.change(userId, roleName);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
@@ -47,18 +46,18 @@ public class UserController implements UserControllerDefinition {
             int page,
             UserSortField sortField,
             Sort.Direction sortDirection,
-            SearchFields searchFields
+            FilterSearchParams filterSearchParams
     ) {
         var pageRequest = PageRequest.of(page, size, sortDirection, sortField.getField());
-        var searchFieldsParam = Objects.isNull(searchFields) ? new SearchFields() : searchFields;
+        var filterSearchParamsParam = Objects.isNull(filterSearchParams) ? new FilterSearchParams() : filterSearchParams;
         return ResponseEntity.status(HttpStatus.OK).body(
-                userService.searchUsers(pageRequest, searchFieldsParam)
+                userService.searchUsers(pageRequest, filterSearchParamsParam)
         );
     }
 
     @Override
-    public ResponseEntity<List<SimpleUserResponse>> getUsersForLan(Set<Long> ids) {
+    public ResponseEntity<List<SimpleUserResponse>> getUsersBrief(Set<Long> ids) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(usersForLanUseCase.getUsers(ids));
+                .body(usersBriefService.getUserBrief(ids));
     }
 }

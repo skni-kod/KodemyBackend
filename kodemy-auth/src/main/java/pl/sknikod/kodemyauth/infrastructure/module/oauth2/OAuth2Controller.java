@@ -6,14 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemyauth.infrastructure.rest.OAuth2ControllerDefinition;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class OAuth2Controller implements OAuth2ControllerDefinition {
-    private final OAuth2ProviderUseCase oAuth2ProviderUseCase;
+    private final OAuth2ProviderService oAuth2ProviderService;
 
     @Override
-    public ResponseEntity<String[]> getProvidersList() {
+    public ResponseEntity<List<OAuth2ProviderService.ProviderResponse>> getProvidersList() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(oAuth2ProviderUseCase.getProviders());
+                .body(oAuth2ProviderService.getProviders());
     }
 }

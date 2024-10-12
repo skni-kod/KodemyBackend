@@ -1,18 +1,18 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
 
 public class RoleFactory {
     private RoleFactory() {
     }
 
-    public static Role roleUser = role(Role.RoleName.ROLE_USER);
-    public static Role roleAdmin = role(Role.RoleName.ROLE_ADMIN);
+    public static Role roleUser = role("ROLE_USER");
+    public static Role roleAdmin = role("ROLE_ADMIN");
 
-    public static Role role(Role.RoleName roleEnum){
+    public static Role role(String roleName){
         Role role = new Role();
         role.setId(1L);
-        role.setName(roleEnum);
+        role.setName(roleName);
         return role;
     }
 }

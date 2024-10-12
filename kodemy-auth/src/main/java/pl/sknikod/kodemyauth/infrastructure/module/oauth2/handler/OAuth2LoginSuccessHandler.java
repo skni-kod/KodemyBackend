@@ -9,22 +9,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RefreshTokenRepositoryHandler;
-import pl.sknikod.kodemyauth.util.auth.AuthFacade;
-import pl.sknikod.kodemyauth.util.auth.JwtService;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
+import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtService jwtService;
-    private final String frontRouteBaseUrl;
-    private final RefreshTokenRepositoryHandler refreshTokenRepositoryHandler;
+    private final JwtProvider jwtProvider;
+    private final String redirectPath;
+    private final RefreshTokenDao refreshTokenRepositoryHandler;
 
     @Override
     public void onAuthenticationSuccess(
@@ -33,31 +33,30 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         final var params = postProcess(authentication)
                 .<Map<String, String>>fold(
                         th -> Map.of("error", th.getMessage().toLowerCase().replace(" ", "_")),
-                        tokens -> Map.of("token", tokens._1.value(), "refresh", tokens._2.getToken().toString())
+                        tokens -> Map.of("bearer", tokens._1.value(), "refresh", tokens._2.getToken().toString())
                 );
-        ((RouteRedirectStrategy) getRedirectStrategy())
-                .sendRedirect(request, response, frontRouteBaseUrl, params);
+        ((RouteRedirectStrategy) getRedirectStrategy()).sendRedirect(request, response, redirectPath, params);
     }
 
     @SuppressWarnings("unchecked")
-    private Try<Tuple2<JwtService.Token, RefreshToken>> postProcess(Authentication authentication) {
+    private Try<Tuple2<JwtProvider.Token, RefreshToken>> postProcess(Authentication authentication) {
         return Try.of(() -> AuthFacade.getCurrentUserPrincipal(authentication)
-                        .orElseThrow(ServerProcessingException::new))
+                        .orElseThrow(InternalError500Exception::new))
                 .onFailure(th -> log.error("Cannot get user principal", th))
                 .flatMapTry(this::generateTokens)
-                .recoverWith(th -> Try.failure(new ServerProcessingException()));
+                .recoverWith(th -> Try.failure(new InternalError500Exception()));
     }
 
-    private Try<Tuple2<JwtService.Token, RefreshToken>> generateTokens(UserPrincipal userPrincipal) {
-        return Try.of(() -> jwtService.generateUserToken(map(userPrincipal)))
+    private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokens(UserPrincipal userPrincipal) {
+        return Try.of(() -> jwtProvider.generateUserToken(map(userPrincipal)))
                 .flatMapTry(bearerToken -> refreshTokenRepositoryHandler
                         .createAndGet(userPrincipal.getId(), bearerToken.id())
                         .map(refreshToken -> Tuple.of(bearerToken, refreshToken)))
                 .onFailure(th -> log.error("Error during tokens generation", th));
     }
 
-    private JwtService.Input map(UserPrincipal user) {
-        return new JwtService.Input(
+    private JwtProvider.Input map(UserPrincipal user) {
+        return new JwtProvider.Input(
                 user.getId(),
                 user.getUsername(),
                 !user.isAccountNonExpired(),

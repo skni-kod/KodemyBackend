@@ -1,7 +1,7 @@
 package pl.sknikod.kodemybackend.infrastructure.common.model;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 import java.util.Collections;
 import java.util.List;

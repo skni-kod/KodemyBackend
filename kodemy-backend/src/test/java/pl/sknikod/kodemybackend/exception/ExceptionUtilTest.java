@@ -1,8 +1,10 @@
 package pl.sknikod.kodemybackend.exception;
 
 import org.junit.jupiter.api.Test;
-import pl.sknikod.kodemybackend.exception.structure.ServerProcessingException;
 import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -29,8 +31,8 @@ class ExceptionUtilTest extends BaseTest {
         // when
         var ex = ExceptionUtil.throwIfFailure(th);
         // then
-        assertInstanceOf(ServerProcessingException.class, ex);
-        assertEquals(ExceptionPattern.INTERNAL_ERROR, ex.getMessage());
+        assertInstanceOf(InternalError500Exception.class, ex);
+        assertEquals(ExceptionMsgPattern.INTERNAL_ERROR, ex.getMessage());
     }
 
     @Test
@@ -53,7 +55,7 @@ class ExceptionUtilTest extends BaseTest {
         // when
         var ex = ExceptionUtil.throwIfFailure(th, PATTERN, arg);
         // then
-        assertInstanceOf(ServerProcessingException.class, ex);
+        assertInstanceOf(InternalError500Exception.class, ex);
         assertEquals(String.format(PATTERN, arg), ex.getMessage());
     }
 }

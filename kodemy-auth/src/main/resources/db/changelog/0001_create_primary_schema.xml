@@ -15,6 +15,25 @@
         </createTable>
         <addUniqueConstraint columnNames="name" constraintName="uc_roles_name" tableName="roles"/>
 
+        <createTable tableName="permissions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_permissions"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_permissions_name" tableName="permissions"/>
+
+        <createTable tableName="roles_permissions">
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_roles_permissions_permission" references="permissions(id)"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_roles_permissions_role" references="roles(id)"/>
+            </column>
+        </createTable>
+
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
@@ -58,14 +77,70 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="0001-2" author="KartVen" labels="primary_roles_records">
-        <sql>
+    <changeSet id="0001-2" author="KartVen" labels="primary_authority_records">
+        <sql><![CDATA[
             insert into ROLES (id, name)
             values (1, 'ROLE_USER'),
                    (2, 'ROLE_MODERATOR'),
                    (3, 'ROLE_ADMIN'),
                    (4, 'ROLE_SUPERADMIN');
-        </sql>
+        ]]></sql>
+
+        <sql><![CDATA[
+            INSERT INTO permissions (id, name)
+            VALUES (1, 'CAN_MODIFY_TAGS'),
+                   (2, 'CAN_APPROVED_MATERIAL'),
+                   (3, 'CAN_GET_USER_INFO'),
+                   (4, 'CAN_VIEW_ALL_MATERIALS'),
+                   (5, 'CAN_DEPRECATE_MATERIAL'),
+                   (6, 'CAN_AUTO_APPROVED_MATERIAL'),
+                   (7, 'CAN_GET_USERS'),
+                   (8, 'CAN_BANNING_USERS'),
+                   (9, 'CAN_ASSIGN_ROLES'),
+                   (10, 'CAN_READ_NOTIFICATIONS'),
+                   (11, 'CAN_INDEX'),
+                   (12, 'CAN_BAN_MATERIAL'),
+                   (13, 'CAN_UNBAN_MATERIAL'),
+                   (14, 'CAN_USE_ACTUATOR');
+            ]]></sql>
+
+        <sql><![CDATA[
+            -- ROLE_MODERATOR
+            INSERT INTO roles_permissions (role_id, permission_id)
+            VALUES (2, 1),  -- CAN_MODIFY_TAGS
+                   (2, 2),  -- CAN_APPROVED_MATERIAL
+                   (2, 3),  -- CAN_GET_USER_INFO
+                   (2, 4),  -- CAN_VIEW_ALL_MATERIALS
+                   (2, 5);  -- CAN_DEPRECATE_MATERIAL
+
+            -- ROLE_ADMIN
+            INSERT INTO roles_permissions (role_id, permission_id)
+            VALUES (3, 1),  -- CAN_MODIFY_TAGS
+                   (3, 2),  -- CAN_APPROVED_MATERIAL
+                   (3, 6),  -- CAN_AUTO_APPROVED_MATERIAL
+                   (3, 7),  -- CAN_GET_USERS
+                   (3, 8),  -- CAN_BANNING_USERS
+                   (3, 3),  -- CAN_GET_USER_INFO
+                   (3, 4),  -- CAN_VIEW_ALL_MATERIALS
+                   (3, 5);  -- CAN_DEPRECATE_MATERIAL
+
+            -- ROLE_SUPERADMIN
+            INSERT INTO roles_permissions (role_id, permission_id)
+            VALUES (4, 1),  -- CAN_MODIFY_TAGS
+                   (4, 2),  -- CAN_APPROVED_MATERIAL
+                   (4, 6),  -- CAN_AUTO_APPROVED_MATERIAL
+                   (4, 7),  -- CAN_GET_USERS
+                   (4, 8),  -- CAN_BANNING_USERS
+                   (4, 9),  -- CAN_ASSIGN_ROLES
+                   (4, 13), -- CAN_USE_ACTUATOR
+                   (4, 3),  -- CAN_GET_USER_INFO
+                   (4, 10), -- CAN_READ_NOTIFICATIONS
+                   (4, 11), -- CAN_INDEX
+                   (4, 4),  -- CAN_VIEW_ALL_MATERIALS
+                   (4, 5),  -- CAN_DEPRECATE_MATERIAL
+                   (4, 12), -- CAN_BAN_MATERIAL
+                   (4, 13); -- CAN_UNBAN_MATERIAL
+        ]]></sql>
     </changeSet>
 
     <changeSet id="0001-3" author="MarcinBator">

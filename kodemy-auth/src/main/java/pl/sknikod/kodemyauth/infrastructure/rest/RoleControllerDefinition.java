@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 @RequestMapping("/api/roles")
 @SwaggerResponse
@@ -22,6 +21,6 @@ public interface RoleControllerDefinition {
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.NotFoundCode404
     @PreAuthorize("isAuthenticated()")
-    ResponseEntity<Role.RoleName[]> getRoles();
+    ResponseEntity<String[]> getRoles();
 
 }

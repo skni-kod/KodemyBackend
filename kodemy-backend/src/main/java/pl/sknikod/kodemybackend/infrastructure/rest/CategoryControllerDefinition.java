@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sknikod.kodemybackend.infrastructure.module.category.model.SingleCategoryResponse;
-import pl.sknikod.kodemybackend.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 @RequestMapping("/api/categories")
 @SwaggerResponse

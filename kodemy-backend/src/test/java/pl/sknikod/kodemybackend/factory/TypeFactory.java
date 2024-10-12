@@ -1,6 +1,6 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Type;
+import pl.sknikod.kodemybackend.infrastructure.database.Type;
 
 public class TypeFactory {
     private TypeFactory() {

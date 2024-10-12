@@ -1,8 +1,7 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.entity.RefreshToken;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.util.auth.JwtService;
+import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collections;
 import java.util.Date;
@@ -12,30 +11,30 @@ public class TokenFactory {
     private TokenFactory() {}
 
     public static RefreshToken refreshToken = refreshToken();
-    public static JwtService.Token jwtServiceToken = jwtServiceToken();
-    public static JwtService.Token.Deserialize jwtServiceTokenDeserialize = jwtServiceTokenDeserialize();
+    public static JwtProvider.Token jwtProviderToken = jwtProviderToken();
+    public static JwtProvider.Token.Deserialize jwtProviderTokenDeserialize = jwtProviderTokenDeserialize();
 
     public static RefreshToken refreshToken() {
         var token = new RefreshToken(
                 UUID.randomUUID(),
                 null,
                 null,
-                UserFactory.user(RoleFactory.role(Role.RoleName.ROLE_USER))
+                UserFactory.user(RoleFactory.role("ROLE_USER"))
         );
         token.setId(1L);
         return token;
     }
 
-    private static JwtService.Token jwtServiceToken() {
-        return new JwtService.Token(
+    private static JwtProvider.Token jwtProviderToken() {
+        return new JwtProvider.Token(
                 UUID.randomUUID(),
                 "header.payload.signature",
                 new Date()
         );
     }
 
-    private static JwtService.Token.Deserialize jwtServiceTokenDeserialize() {
-        return new JwtService.Token.Deserialize(
+    private static JwtProvider.Token.Deserialize jwtProviderTokenDeserialize() {
+        return new JwtProvider.Token.Deserialize(
                 1L,
                 "username",
                 1,

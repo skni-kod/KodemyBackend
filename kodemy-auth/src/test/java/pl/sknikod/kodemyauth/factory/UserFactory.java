@@ -1,8 +1,8 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Collections;
 

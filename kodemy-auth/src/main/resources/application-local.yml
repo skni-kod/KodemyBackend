@@ -5,12 +5,21 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
 
+logbook:
+  obfuscate:
+    headers:
+      - Authorization
+
+network:
+  route:
+    gateway: http://localhost:8080
+
+jwt:
+  bearer:
+    expiration-min: 720
+
 app:
-  opensearch:
-    host: http://localhost:9200
   security:
-    cors:
-      allowed-origins:
-        - http://localhost:3000
-      credentials: true
-      mapping: "/**"
+    oauth2:
+      route:
+        redirect: http://localhost:3000

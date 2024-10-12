@@ -2,7 +2,7 @@ package pl.sknikod.kodemybackend.infrastructure.common.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Type;
+import pl.sknikod.kodemybackend.infrastructure.database.Type;
 import pl.sknikod.kodemybackend.infrastructure.module.type.model.SingleTypeResponse;
 
 import java.util.List;

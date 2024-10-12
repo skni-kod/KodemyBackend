@@ -10,9 +10,3 @@ logging.level:
 
 jwt:
   expiration-mins: 60
-
-internal:
-  security:
-    cors:
-      allowedUris:
-        - http://localhost:3000

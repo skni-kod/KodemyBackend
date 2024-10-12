@@ -2,21 +2,23 @@ package pl.sknikod.kodemyauth.infrastructure.module.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.exception.structure.ServerProcessingException;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.User;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.RoleRepositoryHandler;
-import pl.sknikod.kodemyauth.infrastructure.database.handler.UserRepositoryHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.common.mapper.UserMapper;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.dao.RoleDao;
+import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
+import pl.sknikod.kodemyauth.infrastructure.database.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
-import pl.sknikod.kodemyauth.util.auth.AuthFacade;
-import pl.sknikod.kodemyauth.util.auth.UserPrincipal;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.HashSet;
 
@@ -24,8 +26,9 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
-    private final RoleRepositoryHandler roleRepositoryHandler;
-    private final UserRepositoryHandler userRepositoryHandler;
+    private final RoleDao roleDao;
+    private final UserDao userDao;
+    private final AuthService.AuthMapper authMapper;
 
     public static boolean checkPrivilege(String privilege) {
         return AuthFacade.getCurrentUserPrincipal()
@@ -37,30 +40,41 @@ public class UserService {
 
     @Transactional
     public UserInfoResponse getUserInfo(Long userId) {
-        return userRepositoryHandler.findById(userId)
+        return userDao.findById(userId)
                 .map(userMapper::map)
-                .getOrElseThrow(th -> th instanceof ServerProcessingException ex
-                        ? ex : new ServerProcessingException());
+                .getOrElseThrow(th -> th instanceof InternalError500Exception ex
+                        ? ex : new InternalError500Exception());
     }
 
     public UserInfoResponse getCurrentUserInfo() {
         return AuthFacade.getCurrentUserPrincipal()
                 .map(UserPrincipal::getId)
-                .map(id -> userRepositoryHandler.findById(id).getOrNull())
+                .map(id -> userDao.findById(id).getOrNull())
                 .map(userMapper::map)
-                .orElseThrow(ServerProcessingException::new);
+                .orElseThrow(InternalError500Exception::new);
     }
 
-    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, SearchFields searchFields) {
-        Role role = roleRepositoryHandler.findByRoleName(searchFields.getRole().name())
-                .getOrNull();
-        Page<User> users = userRepositoryHandler.findByUsernameOrEmailOrRole(
-                searchFields.getUsername(), searchFields.getEmail(), role, pageRequest
+    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, FilterSearchParams filterSearchParams) {
+        Page<User> users = userDao.findByUsernameOrEmailOrRole(
+                filterSearchParams.getUsername(),
+                filterSearchParams.getEmail(),
+                filterSearchParams.getRoleName() != null ? filterSearchParams.getRoleName() : null,
+                pageRequest
         );
         return new PageImpl<>(
-                users.getContent().parallelStream().map(userMapper::map).toList(),
+                users.getContent().parallelStream().map(authMapper::map).toList(),
                 pageRequest,
                 users.getTotalElements()
         );
+    }
+
+    @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+    public interface RoleMapper {
+        UserInfoResponse.RoleDetails map(Role role);
+    }
+
+    @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {RoleMapper.class})
+    public interface UserMapper {
+        UserInfoResponse map(User user);
     }
 }

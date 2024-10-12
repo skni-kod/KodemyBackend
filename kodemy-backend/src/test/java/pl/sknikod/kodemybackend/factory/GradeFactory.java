@@ -1,7 +1,7 @@
 package pl.sknikod.kodemybackend.factory;
 
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Grade;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.Grade;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 public class GradeFactory {
     private GradeFactory() {

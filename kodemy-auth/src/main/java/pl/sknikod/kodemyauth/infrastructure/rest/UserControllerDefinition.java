@@ -3,7 +3,6 @@ package pl.sknikod.kodemyauth.infrastructure.rest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -11,13 +10,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.SearchFields;
+import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserSortField;
-import pl.sknikod.kodemyauth.util.data.LanRestTemplate;
-import pl.sknikod.kodemyauth.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
+import pl.sknikod.kodemycommons.network.LanRestTemplate;
 
 import java.util.List;
 import java.util.Set;
@@ -35,7 +33,10 @@ public interface UserControllerDefinition {
     @SwaggerResponse.BadRequestCode400
     @SwaggerResponse.NotFoundCode404
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_ASSIGN_ROLES')")
-    ResponseEntity<Void> updateRoles(@PathVariable Long userId, @RequestBody @Valid Role.RoleName roleName);
+    ResponseEntity<Void> updateRoles(
+            @PathVariable Long userId,
+            @RequestBody @Valid @RequestParam(defaultValue = "ROLE_USER") String roleName
+    );
 
     @GetMapping("/{userId}")
     @Operation(summary = "Show information about user")
@@ -61,13 +62,13 @@ public interface UserControllerDefinition {
             @RequestParam(value = "sort", defaultValue = "ID") UserSortField sortField,
             @RequestParam(value = "sort_direction", defaultValue = "ASC") Sort.Direction sortDirection,
             @Parameter(description = "{\"username\": \"username\", \"email\": \"email@example.com\", \"role\": \"ROLE_USER\"}")
-            @RequestParam(value = "search_fields", required = false) SearchFields searchFields
+            @RequestParam(value = "filters", required = false) FilterSearchParams filterSearchParams
     );
 
     @Hidden
-    @GetMapping("/simple")
+    @GetMapping("/brief")
     @LanRestTemplate.PreAuthorize
-    ResponseEntity<List<SimpleUserResponse>> getUsersForLan(
+    ResponseEntity<List<SimpleUserResponse>> getUsersBrief(
             @RequestParam("user") Set<Long> ids
     );
 }

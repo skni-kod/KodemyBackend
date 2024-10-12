@@ -8,6 +8,10 @@ spring:
     url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-auth
     username: postgres
     password: postgres
+  data:
+    redis:
+      host: redis
+      port: 6379
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
@@ -22,19 +26,13 @@ spring:
     enabled: true
   security:
     oauth2:
-      path:
-        authorize: /api/oauth2/authorize
-        callback: /api/oauth2/callback
-        error: /
       client:
         registration:
           github:
             clientId: Ov23liqWT50Vtt0A0uIg
             clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
-            redirect-uri: ${routes.gateway}${spring.security.oauth2.path.callback}/github
-            scope:
-              - user:email
-              - read:user
+            redirect-uri: ${network.route.gateway}${app.security.oauth2.endpoints.callback}/github
+            scope: ['user:email', 'read:user']
 
 management:
   endpoints:
@@ -50,65 +48,40 @@ management:
       roles: CAN_USE_ACTUATOR
       show-components: always
 
+logging:
+  level:
+    org.zalando.logbook: TRACE
+
+logbook:
+  filter:
+    enabled: true
+  predicate:
+    exclude:
+      - path: /swagger-ui/**
+        methods: "*"
+      - path: /actuator/info
+        methods: "*"
+      - path: /actuator/health
+        methods: "*"
+
 network:
-  routes:
-    front: /
-    backend: http://localhost:8082
-    search: http://localhost:8083
-  databus:
-    username: user
-    password: password
-    connect-timeout-ms: 3000
-    read-timeout-ms: 5000
+  route:
+    gateway: http://kodemy-api-gateway:8080
 
 jwt:
   secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
 
 app:
-  opensearch:
-    host: opensearch
-    index:
-      name: materials
-      alias: materials-alias
   security:
     cors:
-      allowed-origins:
-        - http://localhost:3000
       credentials: true
       mapping: "/**"
+    oauth2:
+      route:
+        redirect: /
+      endpoints:
+        authorize: /api/oauth2/authorize
+        callback: /api/oauth2/callback
+        redirect: /api/callback
     roles:
       primary: ROLE_USER
-      authorities:
-        ROLE_MODERATOR:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_GET_USER_INFO
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-        ROLE_ADMIN:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_AUTO_APPROVED_MATERIAL
-          - CAN_GET_USERS
-          - CAN_BANNING_USERS
-          - CAN_ASSIGN_ROLES
-          - CAN_GET_USER_INFO
-          - CAN_READ_NOTIFICATIONS
-          - CAN_INDEX
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-        ROLE_SUPERADMIN:
-          - CAN_MODIFY_TAGS
-          - CAN_APPROVED_MATERIAL
-          - CAN_AUTO_APPROVED_MATERIAL
-          - CAN_GET_USERS
-          - CAN_BANNING_USERS
-          - CAN_ASSIGN_ROLES
-          - CAN_USE_ACTUATOR
-          - CAN_GET_USER_INFO
-          - CAN_READ_NOTIFICATIONS
-          - CAN_INDEX
-          - CAN_VIEW_ALL_MATERIALS
-          - CAN_DEPRECATE_MATERIAL
-          - CAN_BAN_MATERIAL
-          - CAN_UNBAN_MATERIAL

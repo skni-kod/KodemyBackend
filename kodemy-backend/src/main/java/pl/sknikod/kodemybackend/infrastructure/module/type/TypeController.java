@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 public class TypeController implements TypeControllerDefinition {
 
-    private final TypeUseCase typeUseCase;
+    private final TypeService typeService;
 
     @Override
     public ResponseEntity<List<SingleTypeResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(typeUseCase.getAllTypes());
+                .body(typeService.getAllTypes());
     }
 }

@@ -1,7 +1,6 @@
 package pl.sknikod.kodemyauth.factory;
 
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Provider;
-import pl.sknikod.kodemyauth.infrastructure.database.entity.Role;
+import pl.sknikod.kodemyauth.infrastructure.database.Provider;
 
 public class ProviderFactory {
     private ProviderFactory(){
@@ -11,7 +10,7 @@ public class ProviderFactory {
         var provider = new Provider();
         provider.setId(1L);
         provider.setProviderType(providerType);
-        provider.setUser(UserFactory.user(RoleFactory.role(Role.RoleName.ROLE_USER)));
+        provider.setUser(UserFactory.user(RoleFactory.role("ROLE_USER")));
         return provider;
     }
 }

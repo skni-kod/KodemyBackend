@@ -4,14 +4,16 @@ spring:
   application.name: kodemy-backend
   banner.location: classpath:banner.txt
   cloud:
-    function:
-      definition: test
     stream:
       bindings:
         materialCreated-out-0:
           destination: material-created
         materialUpdated-out-0:
           destination: material-updated
+        materialStatusUpdated-out-0:
+          destination: material-status-updated
+        materialTagsUpdated-out-0:
+          destination: material-tags-updated
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-backend

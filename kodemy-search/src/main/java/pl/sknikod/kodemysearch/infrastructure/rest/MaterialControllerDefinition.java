@@ -12,9 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchUseCase;
-import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialSearchFields;
-import pl.sknikod.kodemysearch.util.web.SwaggerResponse;
+import pl.sknikod.kodemycommons.doc.SwaggerResponse;
+import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -23,12 +23,12 @@ public interface MaterialControllerDefinition {
     @Operation(summary = "Show all materials")
     @SwaggerResponse.SuccessCode200
     @GetMapping
-    ResponseEntity<Page<MaterialSearchUseCase.MaterialPageable>> search(
+    ResponseEntity<Page<MaterialSearchService.MaterialPageable>> search(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sortField", defaultValue = "CREATED_DATE") MaterialSearchUseCase.MaterialSortField sortField,
+            @RequestParam(value = "sortField", defaultValue = "CREATED_DATE") MaterialSearchService.MaterialSortField sortField,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
-            @Parameter(description = MaterialSearchFields.SEARCH_FIELDS_DOC)
-            @RequestParam(value = "search_fields", required = false) MaterialSearchFields searchFields
+            @Parameter(description = MaterialFilterSearchParams.SEARCH_FIELDS_DOC)
+            @RequestParam(value = "filters", required = false) MaterialFilterSearchParams filterSearchParams
     );
 }

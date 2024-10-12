@@ -3,58 +3,47 @@ server:
 
 spring:
   application.name: kodemy-api-gateway
+  banner.location: classpath:banner.txt
   cloud:
     gateway:
       routes:
         - id: oauth2_auth
-          uri: ${network.routes.auth}
+          uri: ${network.route.auth}
           predicates:
-            - Path=/api/oauth2/**,/api/auth/**
+            - Path=/api/oauth2/**,/api/auth/**,/api/logout
 
         - id: search-materials
-          uri: ${network.routes.search}
+          uri: ${network.route.search}
           predicates:
             - Path=/api/materials
             - Method=GET
 
         - id: materials-get
-          uri: ${network.routes.backend}
+          uri: ${network.route.backend}
           predicates:
             - Path=/api/materials/{materialId}/**
             - Method=GET
 
         - id: materials-post
-          uri: ${network.routes.backend}
+          uri: ${network.route.backend}
           predicates:
             - Path=/api/materials
             - Method=POST
 
+        - id: users-materials
+          uri: ${network.route.auth}
+          predicates:
+            - Path=/api/users/{userId}/materials
+
         - id: users_roles
-          uri: ${network.routes.auth}
+          uri: ${network.route.auth}
           predicates:
             - Path=/api/users/**,/api/roles
 
         - id: tags_types_sections_categories_admin
-          uri: ${network.routes.backend}
+          uri: ${network.route.backend}
           predicates:
             - Path=/api/tags,/api/types,/api/sections,/api/categories/{categoryId},/api/admin/**
-
-  security:
-    oauth2:
-      path:
-        authorize: /api/oauth2/authorize
-        callback: /api/oauth2/callback
-        error: /
-      client:
-        redirectUri: "{baseUrl}${spring.security.oauth2.path.callback}/{registrationId}"
-        registration:
-          github:
-            clientId: Ov23liqWT50Vtt0A0uIg
-            clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
-            redirectUri: ${spring.security.oauth2.client.redirectUri}
-            scope:
-              - user:email
-              - read:user
 
 management:
   endpoints:
@@ -71,14 +60,11 @@ management:
       show-components: always
 
 network:
-  routes:
+  route:
     front: /
-    auth: http://localhost:8081
-    backend: http://localhost:8082
-    search: http://localhost:8083
-  databus:
-    username: user
-    password: password
+    auth: http://kodemy-auth:8080
+    backend: http://kodemy-backend:8080
+    search: http://kodemy-search:8080
 
 logging:
   level:

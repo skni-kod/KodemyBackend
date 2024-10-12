@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.TagMapper;
-import pl.sknikod.kodemybackend.infrastructure.database.entity.Tag;
-import pl.sknikod.kodemybackend.infrastructure.database.handler.TagRepositoryHandler;
+import pl.sknikod.kodemybackend.infrastructure.database.Tag;
+import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddRequest;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
 import pl.sknikod.kodemybackend.BaseTest;
@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-class TagUseCaseTest extends BaseTest {
+class TagServiceTest extends BaseTest {
 
-    final TagRepositoryHandler tagRepositoryHandler = Mockito.mock(TagRepositoryHandler.class);
-    final TagUseCase tagUseCase = new TagUseCase(tagRepositoryHandler, new TagMapperImpl());
+    final TagDao tagDao = Mockito.mock(TagDao.class);
+    final TagService tagService = new TagService(tagDao, new TagMapperImpl());
 
     static final TagAddRequest request = new TagAddRequest();
     static {
@@ -33,10 +33,10 @@ class TagUseCaseTest extends BaseTest {
         // given
         var tag = new Tag();
         tag.setName(request.getName());
-        when(tagRepositoryHandler.save(any()))
+        when(tagDao.save(any()))
                 .thenReturn(Try.success(tag));
         // when
-        var result = tagUseCase.addTag(request);
+        var result = tagService.addTag(request);
         // then
         assertNotNull(result);
         assertEquals(tag.getName(), result.name());
@@ -45,20 +45,20 @@ class TagUseCaseTest extends BaseTest {
     @Test
     void addTags_shouldFailure_whenSaveFails() {
         // given
-        when(tagRepositoryHandler.save(any()))
+        when(tagDao.save(any()))
                 .thenReturn(Try.failure(new RuntimeException()));
         // when & then
-        assertThrows(RuntimeException.class, () -> tagUseCase.addTag(request));
+        assertThrows(RuntimeException.class, () -> tagService.addTag(request));
     }
 
     @Test
     void showTags_shouldSucceed() {
         // given
         var tags = List.of(TagFactory.tag());
-        when(tagRepositoryHandler.findAll())
+        when(tagDao.findAll())
                 .thenReturn(Try.success(tags));
         // when
-        var result = tagUseCase.showTags();
+        var result = tagService.showTags();
         // then
         assertNotNull(result);
         assertEquals(tags.size(), result.size());
@@ -68,10 +68,10 @@ class TagUseCaseTest extends BaseTest {
     @Test
     void showTags_shouldThrowException_whenNoTagsFound() {
         // given
-        when(tagRepositoryHandler.findAll())
+        when(tagDao.findAll())
                 .thenReturn(Try.failure(new RuntimeException()));
         // when & then
-        assertThrows(RuntimeException.class, tagUseCase::showTags);
+        assertThrows(RuntimeException.class, tagService::showTags);
     }
 
     static class TagMapperImpl implements TagMapper {

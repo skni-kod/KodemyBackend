@@ -14,12 +14,12 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class TagController implements TagControllerDefinition {
-    private TagUseCase tagUseCase;
+    private TagService tagService;
 
     @Override
     @PreAuthorize("isAuthenticated() and hasAuthority('CAN_MODIFY_TAGS')")
     public ResponseEntity<TagAddResponse> addTag(TagAddRequest tag) {
-        var tagResponse = tagUseCase.addTag(tag);
+        var tagResponse = tagService.addTag(tag);
         return ResponseEntity
                 .created(URI.create("/api/tags/" + tagResponse.id()))
                 .body(tagResponse);
@@ -28,6 +28,6 @@ public class TagController implements TagControllerDefinition {
     @Override
     public ResponseEntity<List<TagAddResponse>> showTags() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(tagUseCase.showTags());
+                .body(tagService.showTags());
     }
 }
