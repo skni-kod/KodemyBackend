@@ -12,7 +12,7 @@ import pl.sknikod.kodemysearch.infrastructure.module.material.SearchCriteria;
 import pl.sknikod.kodemysearch.infrastructure.module.material.SearchRequestBuilder;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialStatus;
-import pl.sknikod.kodemysearch.util.data.SearchHandler;
+import pl.sknikod.kodemysearch.util.data.SearchDao;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +20,7 @@ import java.util.Set;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MaterialSearchDao implements SearchHandler<MaterialIndexData> {
+public class MaterialSearchDao implements SearchDao<MaterialIndexData> {
     private final String INDEX = "materials";
     private final OpenSearchClient openSearchClient;
 
@@ -73,7 +73,7 @@ public class MaterialSearchDao implements SearchHandler<MaterialIndexData> {
         ))
                 .mapTry(response -> {
                     final var hits = response.hits();
-                    return new PageImpl<>(
+                    return new PageImpl<MaterialIndexData>(
                             hits.hits().stream().map(Hit::source).toList(),
                             criteria.getPageable(),
                             hits.total().value()

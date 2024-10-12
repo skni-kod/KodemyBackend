@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
@@ -91,6 +92,7 @@ public class MaterialCreateService {
         MaterialCreateResponse map(Material material);
     }
 
+    @NoArgsConstructor
     @Data
     @AllArgsConstructor
     public static class MaterialCreateRequest {

@@ -15,7 +15,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
     @Query(
             value = "SELECT m FROM Material m LEFT JOIN FETCH m.tags WHERE m.createdDate BETWEEN :from AND :to",
             countQuery = "SELECT COUNT(m) FROM Material m WHERE m.createdDate BETWEEN :from AND :to")
-    Page<Material> findMaterialsInDateRangeWithPage(Date from, Date to, Pageable pageable);
+    Page<Material> findMaterialsInDateRangeWithPage(LocalDateTime from, LocalDateTime to, Pageable pageable);
 
     @Query("SELECT m, COALESCE(AVG(g.value), 0.0) " +
             "FROM Material m " +

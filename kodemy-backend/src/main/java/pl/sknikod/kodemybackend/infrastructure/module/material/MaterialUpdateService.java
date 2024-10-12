@@ -10,6 +10,7 @@ import lombok.Data;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.dao.*;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
@@ -21,8 +22,12 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.APPROVED;
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.PENDING;
@@ -38,6 +43,7 @@ public class MaterialUpdateService {
     private final GradeDao gradeDao;
     private static final SimpleGrantedAuthority CAN_AUTO_APPROVED_MATERIAL =
             new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL");
+    private final LanNetworkHandler lanNetworkHandler;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
@@ -52,11 +58,13 @@ public class MaterialUpdateService {
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
         var avgGrade = gradeDao.findAvgGradeByMaterial(material.getId())
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
+        final var userUsername = lanNetworkHandler.getUser(material.getUserId())
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
 
         return Try.of(() -> updateEntity(material, body, userPrincipal, category, type, tags))
                 .flatMap(materialDao::save)
-                .peek(entity -> materialUpdatedProducer.publish(
-                        MaterialUpdatedProducer.Message.map(material, avgGrade)))
+                .peek(entity -> materialUpdatedProducer.publish(MaterialUpdatedProducer.Message.map(
+                        material, avgGrade, new MaterialUpdatedProducer.Message.Author(material.getUserId(), userUsername))))
                 .map(updateMaterialMapper::map)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }

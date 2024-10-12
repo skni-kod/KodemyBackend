@@ -81,9 +81,10 @@ public class ModuleBeanConfiguration {
 
     @Bean
     public MaterialIndexService materialOSearchService(
-            GradeRepository gradeRepository, MaterialRepository materialRepository, MaterialUpdatedProducer materialUpdatedProducer
+            GradeRepository gradeRepository, MaterialRepository materialRepository, MaterialUpdatedProducer materialUpdatedProducer,
+            LanNetworkHandler lanNetworkHandler
     ) {
-        return new MaterialIndexService(gradeRepository, materialRepository, materialUpdatedProducer);
+        return new MaterialIndexService(gradeRepository, materialRepository, materialUpdatedProducer, lanNetworkHandler);
     }
 
     @Bean
@@ -99,11 +100,13 @@ public class ModuleBeanConfiguration {
             TagDao tagDao,
             MaterialDao materialDao,
             MaterialUpdatedProducer materialUpdatedProducer,
-            GradeDao gradeDao
+            GradeDao gradeDao,
+            LanNetworkHandler lanNetworkHandler
     ) {
         return new MaterialUpdateService(
                 updateMaterialMapper, categoryDao, typeDao,
-                tagDao, materialDao, materialUpdatedProducer, gradeDao
+                tagDao, materialDao, materialUpdatedProducer, gradeDao,
+                lanNetworkHandler
         );
     }
 

@@ -46,10 +46,6 @@ public class MaterialGetByUserService {
                 .map(Material::getUserId)
                 .collect(Collectors.toSet());
         return lanNetworkHandler.getUsers(userIds)
-                .map(ids -> ids.stream().collect(Collectors.toMap(
-                        LanNetworkHandler.SimpleUserResponse::getId,
-                        LanNetworkHandler.SimpleUserResponse::getUsername
-                )))
                 .filter(v -> v.size() == userIds.size())
                 .toTry(InternalError500Exception::new)
                 .map(users -> Tuple.of(page, users));

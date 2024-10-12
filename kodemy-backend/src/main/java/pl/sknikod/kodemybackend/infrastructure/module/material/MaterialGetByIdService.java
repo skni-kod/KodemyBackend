@@ -24,7 +24,6 @@ public class MaterialGetByIdService {
                         gradeDao.getGradeStats(materialId)
                                 .getOrElseThrow(ExceptionUtil::throwIfFailure),
                         lanNetworkHandler.getUser(materialEnt.getUserId())
-                                .map(LanNetworkHandler.SimpleUserResponse::getUsername)
                                 .getOrElseThrow(ExceptionUtil::throwIfFailure)
                 ))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);

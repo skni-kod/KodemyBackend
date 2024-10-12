@@ -61,6 +61,8 @@ dependencies {
     implementation 'pl.sknikod:kodemy-commons:1.0'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
+    implementation 'org.zalando:logbook-httpclient:3.9.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'

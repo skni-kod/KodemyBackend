@@ -64,8 +64,8 @@ public interface MaterialControllerDefinition {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ssZ")
             @RequestParam(value = "from") Instant from,
-            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ssZ")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @Parameter(description = "Format: yyyy-MM-ddTHH:mm:ssZ")
             @RequestParam(value = "to") Instant to
     );
 
