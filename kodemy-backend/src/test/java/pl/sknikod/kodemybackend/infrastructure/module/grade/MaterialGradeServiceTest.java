@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MaterialGradeServiceTest extends BaseTest {
     final MaterialGradeService materialGradeService = new MaterialGradeService(
-            new TestMaterialDao(), new GradeMapperImpl(), new TestGradeDao()
+            new TestMaterialDao(), new GradeMapperImpl(), new TestGradeDao(), null
     );
 
     static final MaterialGradeService.MaterialAddGradeRequest request = new MaterialGradeService.MaterialAddGradeRequest();
@@ -129,7 +129,6 @@ class MaterialGradeServiceTest extends BaseTest {
     }
 
     static class GradeMapperImpl implements GradeMapper {
-        @Override
         public MaterialGradeService.GradePageable map(Grade grade) {
             return new MaterialGradeService.GradePageable(grade.getId(), null, null);
         }

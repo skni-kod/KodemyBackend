@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.database.Grade;
@@ -31,6 +32,7 @@ public class MaterialGradeService {
     private final MaterialDao materialDao;
     private final GradeMapper gradeMapper;
     private final GradeDao gradeDao;
+    private final LanNetworkHandler lanNetworkHandler;
 
     public Grade addGrade(Long materialId, MaterialAddGradeRequest request) {
         var userPrincipal = AuthFacade.getCurrentUserPrincipal()
@@ -57,7 +59,14 @@ public class MaterialGradeService {
                 filterSearchParams.getCreatedDateTo(), GradeRepository.DATE_MAX);
         return gradeDao.findGradesByMaterialInDateRange(materialId, minDate, maxDate, pageRequest)
                 .map(page -> {
-                    var list = page.getContent().stream().map(gradeMapper::map).toList();
+                    var list = page.getContent()
+                            .stream()
+                            .map(g->{
+                                var username = lanNetworkHandler.getUser(g.getUserId())
+                                        .getOrElseThrow(ExceptionUtil::throwIfFailure);
+                                return gradeMapper.map(g, username);
+                            })
+                            .toList();
                     return new PageImpl<>(list, page.getPageable(), page.getTotalElements());
                 })
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);

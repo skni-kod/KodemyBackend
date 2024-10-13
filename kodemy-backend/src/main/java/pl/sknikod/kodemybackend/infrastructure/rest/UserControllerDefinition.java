@@ -25,8 +25,8 @@ public interface UserControllerDefinition {
             @PathVariable Long userId,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "CREATED_DATE") MaterialSortField sortField,
-            @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
+            @RequestParam(value = "sort", defaultValue = "ID") MaterialSortField sortField,
+            @RequestParam(value = "sort_direction", defaultValue = "ASC") Sort.Direction sortDirection,
             @Parameter(description = FilterSearchParams.SEARCH_FIELDS_DOC)
             @RequestParam(value = "filters", required = false) FilterSearchParams filterSearchParams
     );

@@ -1,12 +1,10 @@
 package pl.sknikod.kodemybackend.infrastructure.module;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.*;
 import pl.sknikod.kodemybackend.infrastructure.dao.*;
@@ -45,9 +43,9 @@ public class ModuleBeanConfiguration {
 
     @Bean
     public MaterialGradeService materialGradeService(
-            MaterialDao materialDao, GradeMapper gradeMapper, GradeDao gradeDao
+            MaterialDao materialDao, GradeMapper gradeMapper, GradeDao gradeDao, LanNetworkHandler lanNetworkHandler
     ) {
-        return new MaterialGradeService(materialDao, gradeMapper, gradeDao);
+        return new MaterialGradeService(materialDao, gradeMapper, gradeDao, lanNetworkHandler);
     }
 
     @Bean

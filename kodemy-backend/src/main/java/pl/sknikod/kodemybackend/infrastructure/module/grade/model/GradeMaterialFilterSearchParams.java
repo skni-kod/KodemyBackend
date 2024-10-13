@@ -8,7 +8,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.FilterSearchParams;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 
 import java.util.Date;
@@ -21,12 +20,12 @@ public class GradeMaterialFilterSearchParams {
 
     @Component
     @RequiredArgsConstructor
-    public static class MaterialFilterSearchParamsConverter implements Converter<String, FilterSearchParams> {
+    public static class MaterialFilterSearchParamsConverter implements Converter<String, GradeMaterialFilterSearchParams> {
         private final ObjectMapper objectMapper;
 
         @Override
-        public FilterSearchParams convert(@NonNull String source) {
-            return Try.of(() -> objectMapper.readValue(source, FilterSearchParams.class))
+        public GradeMaterialFilterSearchParams convert(@NonNull String source) {
+            return Try.of(() -> objectMapper.readValue(source, GradeMaterialFilterSearchParams.class))
                     .getOrElseThrow(() -> new Validation400Exception("Can't parse " + getClass().getSimpleName() + " params: " + source));
         }
     }
