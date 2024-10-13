@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -41,9 +43,12 @@ public class GradeDao {
             Date maxDate,
             PageRequest pageRequest
     ) {
+        LocalDateTime fromDateTime = minDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime toDateTime = maxDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        
         return Try.of(() -> gradeRepository.findGradesByMaterialInDateRange(
                 materialId,
-                minDate, maxDate,
+                fromDateTime, toDateTime,
                 PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(), pageRequest.getSort())
         ));
     }
