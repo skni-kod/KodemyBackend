@@ -12,10 +12,7 @@ public enum MaterialSortField {
     STATUS("status"),
     IS_ACTIVE("isActive"),
     AVG_GRADE("avgGrade"),
-    AUTHOR("author"),
-    CREATED_DATE("createdDate"),
-    SECTION_ID("sectionId"),
-    CATEGORY_ID("categoryId");
+    CREATED_DATE("createdDate");
 
     private final String field;
 }

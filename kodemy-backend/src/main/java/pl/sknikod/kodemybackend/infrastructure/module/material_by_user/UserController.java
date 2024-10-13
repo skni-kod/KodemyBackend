@@ -21,15 +21,15 @@ public class UserController implements UserControllerDefinition {
 
     @Override
     public ResponseEntity<Page<MaterialPageable>> usersMaterials(
-            Long authorId, int size, int page,
+            Long userId, int size, int page,
             MaterialSortField sortField, Sort.Direction sortDirection,
             FilterSearchParams filterSearchParams
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialGetByUserService.getPersonalMaterials(
-                        authorId,
+                        userId,
                         Objects.requireNonNullElse(filterSearchParams, new FilterSearchParams()),
-                        PageRequest.of(page, size, sortDirection, sortField.toString())
+                        PageRequest.of(page, size, sortDirection, sortField.getField())
                 ));
     }
 }
