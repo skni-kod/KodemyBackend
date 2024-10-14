@@ -42,7 +42,6 @@ public interface UserControllerDefinition {
     @Operation(summary = "Show information about user")
     @SwaggerResponse.SuccessCode200
     @SwaggerResponse.NotFoundCode404
-    @PreAuthorize("isAuthenticated() and hasAuthority('CAN_GET_USER_INFO')")
     ResponseEntity<UserInfoResponse> getUserInfo(@PathVariable Long userId);
 
     @GetMapping("/me")
