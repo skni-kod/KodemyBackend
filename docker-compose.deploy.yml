@@ -1,0 +1,119 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - kodemy
+
+  opensearch:
+    image: opensearchproject/opensearch:2.15.0
+    environment:
+      OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      cluster.name: kodemy-os-cluster
+      node.name: kodemy-os-n1
+      discovery.seed_hosts: kodemy-os-n1
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch_vol:/usr/share/opensearch/data
+      - ./opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+    networks:
+      - kodemy
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.15.0
+    environment:
+      OPENSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+    ports:
+      - "5601:5601"
+    networks:
+      - kodemy
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_vol:/data
+    networks:
+      - kodemy
+
+  kodemy-api-gateway:
+    image: kodemy-api-gateway:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - kodemy
+    deploy:
+      replicas: 2
+
+  kodemy-auth:
+    image: kodemy-auth:latest
+    networks:
+      - kodemy
+    environment:
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+    deploy:
+      replicas: 2
+    depends_on:
+      - redis
+
+  kodemy-backend:
+    image: kodemy-backend:latest
+    networks:
+      - kodemy
+    environment:
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    deploy:
+      replicas: 2
+    depends_on:
+      - rabbitmq
+
+  kodemy-search:
+    image: kodemy-search:latest
+    networks:
+      - kodemy
+    environment:
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    deploy:
+      replicas: 2
+    depends_on:
+      - opensearch
+      - rabbitmq
+      - opensearch-dashboards
+
+networks:
+  kodemy:
+
+volumes:
+  rabbitmq_vol:
+    driver: local
+  opensearch_vol:
+    driver: local
+  redis_vol:
+    driver: local
