@@ -12,9 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -131,7 +129,7 @@ public class SecurityConfiguration {
     @Bean
     public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(
             JwtProvider jwtProvider,
-            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.route.front}") String frontRoute,
             @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
             RefreshTokenDao refreshTokenRepositoryHandler,
             RouteRedirectStrategy routeRedirectStrategy
@@ -145,7 +143,7 @@ public class SecurityConfiguration {
     @Bean
     public OAuth2LoginFailureHandler oAuth2FailureProcessHandler(
             RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.route.front}") String frontRoute,
             @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
     ) {
         var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;

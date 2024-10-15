@@ -1,11 +1,9 @@
-server.port: 8083
-
 spring:
   application.name: kodemy-search
   banner.location: classpath:banner.txt
   cloud:
     function:
-      definition: materialCreated;materialUpdated;materialStatusUpdated
+      definition: materialCreated;materialUpdated;materialStatusUpdated;materialTagsUpdated
     stream:
       default-binder: rabbit
       bindings:
@@ -64,6 +62,8 @@ management:
       show-details: when_authorized
       roles: CAN_USE_ACTUATOR
       show-components: always
+  server:
+    port: 9000
 
 logging:
   level:
