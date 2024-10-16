@@ -16,11 +16,6 @@ services:
     image: opensearchproject/opensearch:2.15.0
     environment:
       OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
-      cluster.name: kodemy-os-cluster
-      node.name: kodemy-os-n1
-      discovery.seed_hosts: kodemy-os-n1
-      discovery.type: single-node
-      bootstrap.memory_lock: "true"
     ulimits:
       memlock:
         soft: -1
@@ -30,7 +25,8 @@ services:
         hard: 65536
     volumes:
       - opensearch_vol:/usr/share/opensearch/data
-      - ./opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+      - ./config/opensearch-security:/usr/share/opensearch/config/opensearch-security
+      - ./config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
     networks:
       - kodemy
 

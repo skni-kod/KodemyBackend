@@ -1,0 +1,18 @@
+---
+cluster.name: kodemy-os-cluster
+
+# Specify the name of the node
+node.name: kodemy-os-n1
+
+# Comma-separated list of hostnames or IP addresses of nodes in the cluster
+discovery.seed_hosts: ["kodemy-os-n1"]
+
+# Discovery type for single-node configuration
+discovery.type: single-node
+
+# Enable memory locking
+bootstrap.memory_lock: true
+
+# Minimum master nodes need to be explicitly set when bound on a public IP
+# set to 1 to allow single node clusters
+# discovery.zen.minimum_master_nodes: 1
