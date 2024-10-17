@@ -131,7 +131,7 @@ public class SecurityConfiguration {
     @Bean
     public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(
             JwtProvider jwtProvider,
-            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.route.gateway}") String frontRoute,
             @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
             RefreshTokenDao refreshTokenRepositoryHandler,
             RouteRedirectStrategy routeRedirectStrategy
@@ -145,7 +145,7 @@ public class SecurityConfiguration {
     @Bean
     public OAuth2LoginFailureHandler oAuth2FailureProcessHandler(
             RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${app.security.oauth2.route.redirect}") String frontRoute,
+            @Value("${app.security.oauth2.route.gateway}") String frontRoute,
             @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
     ) {
         var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;
