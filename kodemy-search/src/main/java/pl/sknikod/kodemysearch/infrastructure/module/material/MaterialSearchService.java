@@ -107,7 +107,6 @@ public class MaterialSearchService {
         List<MaterialPageable> map(List<MaterialIndexData> indexData);
 
         @Mapping(target = "isActive", source = "active")
-        @Mapping(target = "author", source = "user")
         MaterialPageable map(MaterialIndexData indexData);
     }
 

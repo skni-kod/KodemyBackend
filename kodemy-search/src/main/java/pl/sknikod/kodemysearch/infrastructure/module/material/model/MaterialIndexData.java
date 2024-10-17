@@ -1,12 +1,10 @@
 package pl.sknikod.kodemysearch.infrastructure.module.material.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import pl.sknikod.kodemysearch.util.data.IndexData;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,7 +17,7 @@ public class MaterialIndexData extends IndexData {
     MaterialStatus status;
     boolean isActive;
     double avgGrade;
-    User user;
+    MaterialIndexEvent.Author author;
     Instant createdDate;
     Long sectionId;
     Long categoryId;
@@ -28,7 +26,7 @@ public class MaterialIndexData extends IndexData {
     public MaterialIndexData(
             Long id, String title, String description,
             MaterialStatus status, boolean isActive, double avgGrade,
-            User user, Instant createdDate,
+            MaterialIndexEvent.Author author, Instant createdDate,
             Long sectionId, Long categoryId, List<Tag> tags
     ) {
         super(id);
@@ -37,7 +35,7 @@ public class MaterialIndexData extends IndexData {
         this.status = status;
         this.isActive = isActive;
         this.avgGrade = avgGrade;
-        this.user = user;
+        this.author = author;
         this.createdDate = createdDate;
         this.sectionId = sectionId;
         this.categoryId = categoryId;
