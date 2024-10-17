@@ -3,7 +3,7 @@ spring:
   banner.location: classpath:banner.txt
   cloud:
     function:
-      definition: materialCreated;materialUpdated;materialStatusUpdated
+      definition: materialCreated;materialUpdated;materialStatusUpdated;materialTagsUpdated
     stream:
       default-binder: rabbit
       bindings:

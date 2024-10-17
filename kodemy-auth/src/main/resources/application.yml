@@ -78,7 +78,8 @@ app:
       mapping: "/**"
     oauth2:
       route:
-        gateway: http://localhost:8080
+        front: ${FRONTEND_PUBLIC_HOST}
+        gateway: ${GATEWAY_PUBLIC_HOST}
       endpoints:
         authorize: /api/oauth2/authorize
         callback: /api/oauth2/callback

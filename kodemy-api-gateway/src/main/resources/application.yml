@@ -60,7 +60,7 @@ management:
 
 network:
   route:
-    front: http://localhost:3000
+    front: ${FRONTEND_PUBLIC_HOST}
     auth: http://kodemy-auth:8080
     backend: http://kodemy-backend:8080
     search: http://kodemy-search:8080
@@ -70,3 +70,9 @@ logging:
     root: info
     org.springframework.cloud.gateway.route.RouteDefinitionLocator: info
     org.springframework.cloud.gateway: trace
+
+app:
+  security:
+    cors:
+      allowed-origins:
+        - ${network.route.front}
