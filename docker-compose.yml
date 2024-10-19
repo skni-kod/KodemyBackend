@@ -3,11 +3,11 @@ services:
     image: postgres:14.1-alpine
     container_name: kodemy_postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: kodemy
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5435:5432"
+      - ${POSTGRES_PORT}:5432
     volumes:
       - postgres_vol:/var/lib/postgresql/data
     networks:
@@ -17,8 +17,8 @@ services:
     image: rabbitmq:3.8-management-alpine
     container_name: kodemy_rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -31,12 +31,13 @@ services:
     image: opensearchproject/opensearch:latest
     container_name: kodemy_opensearch
     environment:
+      OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      cluster.name: kodemy-os-cluster
+      node.name: kodemy-os-n1
+      discovery.seed_hosts: kodemy-os-n1
       discovery.type: single-node
-      node.name: kodemy_opensearch
-      bootstrap.memory_lock: true
-      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
-      #OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
-      DISABLE_SECURITY_PLUGIN: true
+      DISABLE_SECURITY_PLUGIN: "true"
+      bootstrap.memory_lock: "true"
     ulimits:
       memlock:
         soft: -1
@@ -56,7 +57,7 @@ services:
     image: opensearchproject/opensearch-dashboards:latest
     container_name: kodemy_opensearch-dashboards
     environment:
-      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
+      OPENSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: true
     ports:
       - "5601:5601"

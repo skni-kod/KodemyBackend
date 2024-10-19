@@ -37,7 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             SELECT u FROM User u \
             WHERE (:username IS NULL OR u.username = :username) \
             AND (:email IS NULL OR u.email = :email) \
-            AND (:roleName IS NULL OR u.role.name = :roleName)\
+            AND (:roleName IS NULL OR u.role.name = :roleName) \
             """)
     Page<User> findByUsernameOrEmailOrRole(
             String username,

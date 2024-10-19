@@ -1,9 +1,15 @@
+server.port: 8081
+
 spring:
   data:
     redis:
       host: localhost
   datasource:
     url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
+
+management:
+  server:
+    port: ${server.port}
 
 logbook:
   obfuscate:
@@ -22,4 +28,5 @@ app:
   security:
     oauth2:
       route:
-        redirect: http://localhost:3000
+        front: http://localhost:3000
+        gateway: ${network.route.gateway}
