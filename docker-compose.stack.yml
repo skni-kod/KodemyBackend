@@ -2,13 +2,13 @@ services:
   postgres:
     image: postgres:14.1-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: kodemy
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_vol:/var/lib/postgresql/data
     ports:
-      - "5435:5432"
+      - 5435:${POSTGRES_PORT}
     networks:
       - kodemy
     deploy:
@@ -17,8 +17,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_vol:/var/lib/rabbitmq
     ports:
@@ -48,22 +48,21 @@ services:
         hard: 65536
     volumes:
       - opensearch_vol:/usr/share/opensearch/data
+      #- ./config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
     networks:
       - kodemy
-    deploy:
-      replicas: 1
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.15.0
     environment:
-      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
-      DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+      OPENSEARCH_HOSTS: ${OPENSEARCH_HOSTS}
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: true
+      #ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      #ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
     ports:
       - "5601:5601"
     networks:
       - kodemy
-    deploy:
-      replicas: 1
     depends_on:
       - opensearch
 
@@ -77,44 +76,64 @@ services:
       replicas: 1
 
   kodemy-api-gateway:
-    image: kodemy-api-gateway:1.0
+    image: kodemy-api-gateway:latest
     ports:
       - "8080:8080"
     networks:
       - kodemy
+    environment:
+      FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
     deploy:
-      replicas: 3
+      replicas: 1
 
   kodemy-auth:
-    image: kodemy-auth:1.1
+    image: kodemy-auth:latest
     networks:
       - kodemy
+    environment:
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
+      GATEWAY_PUBLIC_HOST: ${GATEWAY_PUBLIC_HOST}
     deploy:
-      replicas: 2
+      replicas: 1
     depends_on:
       - postgres
       - redis
 
   kodemy-backend:
-    image: kodemy-backend:1.0
+    image: kodemy-backend:latest
     networks:
       - kodemy
+    environment:
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
     deploy:
-      replicas: 2
+      replicas: 1
     depends_on:
       - postgres
       - rabbitmq
 
   kodemy-search:
-    image: kodemy-search:1.0
+    image: kodemy-search:latest
     networks:
       - kodemy
+    environment:
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
     deploy:
-      replicas: 3
+      replicas: 1
     depends_on:
       - opensearch
       - rabbitmq
-      - opensearch-dashboards
 
 networks:
   kodemy:

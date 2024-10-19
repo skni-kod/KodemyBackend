@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RefreshTokensService {
     private final RoleRepository roleRepository;
-    private final RefreshTokenDao refreshTokenRepositoryHandler;
+    private final RefreshTokenDao refreshTokenDao;
     private final JwtProvider jwtProvider;
     private final SecurityConfiguration.RoleProperties roleProperties;
 
     public RefreshTokensResponse refresh(UUID refresh, UUID bearerJti) {
-        return refreshTokenRepositoryHandler.findByTokenAndBearerJti(refresh, bearerJti)
+        return refreshTokenDao.findByTokenAndBearerJti(refresh, bearerJti)
                 .flatMapTry(this::generateTokensAndInvalidate)
                 .map(tokens -> new RefreshTokensResponse(
                         tokens._2.getToken().toString(), tokens._1.value()))
@@ -40,11 +40,11 @@ public class RefreshTokensService {
 
     private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {
         return Try.of(() -> jwtProvider.generateUserToken(map(refreshToken.getUser())))
-                .flatMapTry(bearerToken -> refreshTokenRepositoryHandler
+                .flatMapTry(bearerToken -> refreshTokenDao
                         .createAndGet(refreshToken.getUser(), bearerToken.id())
                         .map(newRefreshToken -> Tuple.of(bearerToken, newRefreshToken))
                         .onFailure(th -> log.error("Error during tokens generation", th)))
-                .peek(unused -> refreshTokenRepositoryHandler.invalidate(refreshToken));
+                .peek(unused -> refreshTokenDao.invalidate(refreshToken));
     }
 
     private JwtProvider.Input map(User user) {

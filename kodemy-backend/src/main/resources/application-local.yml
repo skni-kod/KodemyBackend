@@ -5,6 +5,10 @@ spring:
   rabbitmq:
     host: localhost
 
+management:
+  server:
+    port: ${server.port}
+
 logging.level:
   org.springframework.security: DEBUG
 
