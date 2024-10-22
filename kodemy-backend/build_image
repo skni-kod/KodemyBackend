@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <version>"
+    exit 1
+fi
+
+VERSION=$1
+IMAGE_NAME=$(basename "$PWD")
+docker build -t "${IMAGE_NAME}:${VERSION}" .
+
+if [ $? -eq 0 ]; then
+    echo "Image ${IMAGE_NAME}:${VERSION} built."
+else
+    echo "Building image error"
+    exit 1
+fi

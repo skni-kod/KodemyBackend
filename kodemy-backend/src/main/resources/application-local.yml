@@ -1,3 +1,5 @@
+server.port: 8082
+
 spring:
   datasource.url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-backend
   jpa.show-sql: true
@@ -11,6 +13,10 @@ management:
 
 logging.level:
   org.springframework.security: DEBUG
+
+network:
+  route:
+    auth: http://localhost:8080
 
 jwt:
   expiration-mins: 60

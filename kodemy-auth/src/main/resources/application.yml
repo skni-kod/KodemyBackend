@@ -1,5 +1,3 @@
-server.port: 8081
-
 spring:
   application.name: kodemy-auth
   banner.location: classpath:banner.txt
@@ -31,7 +29,7 @@ spring:
           github:
             clientId: Ov23liqWT50Vtt0A0uIg
             clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
-            redirect-uri: ${network.route.gateway}${app.security.oauth2.endpoints.callback}/github
+            redirect-uri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
             scope: ['user:email', 'read:user']
 
 management:
@@ -47,6 +45,8 @@ management:
       show-details: when_authorized
       roles: CAN_USE_ACTUATOR
       show-components: always
+  server:
+    port: 9000
 
 logging:
   level:
@@ -78,7 +78,8 @@ app:
       mapping: "/**"
     oauth2:
       route:
-        redirect: /
+        front: ${FRONTEND_PUBLIC_HOST}
+        gateway: ${GATEWAY_PUBLIC_HOST}
       endpoints:
         authorize: /api/oauth2/authorize
         callback: /api/oauth2/callback

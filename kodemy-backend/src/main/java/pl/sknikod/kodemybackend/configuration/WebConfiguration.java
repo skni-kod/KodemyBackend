@@ -27,7 +27,7 @@ public class WebConfiguration {
     public LanNetworkHandler lanNetworkHandler(
             LanNetworkProperties lanNetworkProperties,
             JwtProvider jwtProvider,
-            @Value("${network.routes.auth}") String authRouteBaseUrl
+            @Value("${network.route.auth}") String authRouteBaseUrl
     ) {
         LanRestTemplate lanRestTemplate = new LanRestTemplate(
                 lanNetworkProperties.connectTimeoutMs, lanNetworkProperties.readTimeoutMs, jwtProvider
@@ -39,7 +39,7 @@ public class WebConfiguration {
     @Setter
     @Component
     @NoArgsConstructor
-    @ConfigurationProperties(prefix = "network.databus")
+    @ConfigurationProperties(prefix = "network.lan")
     public static class LanNetworkProperties {
         private String username;
         private String password;

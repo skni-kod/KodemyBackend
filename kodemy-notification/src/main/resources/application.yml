@@ -37,3 +37,5 @@ management:
       show-details: when_authorized
       roles: CAN_USE_ACTUATOR
       show-components: always
+  server:
+    port: 9000
