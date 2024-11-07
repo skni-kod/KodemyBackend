@@ -27,6 +27,12 @@ spring:
             - Path=/api/materials
             - Method=POST
 
+        - id: materials-grades
+          uri: ${network.route.backend}
+          predicates:
+            - Path=/api/materials/{materialId}/grades
+            - Method=POST
+
         - id: users-materials
           uri: ${network.route.auth}
           predicates:
