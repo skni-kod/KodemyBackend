@@ -20,3 +20,8 @@ network:
 
 jwt:
   expiration-mins: 60
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}

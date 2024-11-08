@@ -61,6 +61,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     implementation("pl.sknikod:commons")
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
