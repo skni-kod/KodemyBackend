@@ -16,7 +16,7 @@ import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 
-@RequestMapping("/api/materials")
+@RequestMapping("/api/search/materials")
 @SwaggerResponse
 @Tag(name = "Material")
 public interface MaterialControllerDefinition {

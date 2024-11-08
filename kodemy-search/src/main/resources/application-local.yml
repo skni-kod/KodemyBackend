@@ -14,3 +14,8 @@ logging:
 
 opensearch:
   host: http://localhost:9200
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
