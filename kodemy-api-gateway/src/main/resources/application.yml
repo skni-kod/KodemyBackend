@@ -12,14 +12,14 @@ spring:
           uri: lb://kodemy-notification
           predicates:
             - Path=/api/notification/**
-        - id: search
-          uri: lb://kodemy-search
-          predicates:
-            - Path=/api/materials/**
         - id: oauth2_auth
           uri: ${network.route.auth}
           predicates:
             - Path=/api/oauth2/**,/api/auth/**,/api/logout
+        - id: search
+          uri: lb://kodemy-search
+          predicates:
+            - Path=/api/materials
         - id: backend
           uri: lb://kodemy-backend
           predicates:
