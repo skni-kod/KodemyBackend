@@ -15,7 +15,7 @@ spring:
         - id: search
           uri: lb://kodemy-search
           predicates:
-            - Path=/api/search/**
+            - Path=/api/materials/**
         - id: oauth2_auth
           uri: ${network.route.auth}
           predicates:
