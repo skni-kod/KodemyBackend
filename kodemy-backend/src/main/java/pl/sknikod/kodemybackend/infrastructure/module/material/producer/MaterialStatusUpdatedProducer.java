@@ -1,6 +1,8 @@
 package pl.sknikod.kodemybackend.infrastructure.module.material.producer;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Component;

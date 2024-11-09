@@ -1,7 +1,9 @@
 package pl.sknikod.kodemysearch.infrastructure.module.material;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
@@ -12,8 +14,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemysearch.infrastructure.dao.MaterialSearchDao;
-import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 
 import java.util.Date;
 import java.util.List;

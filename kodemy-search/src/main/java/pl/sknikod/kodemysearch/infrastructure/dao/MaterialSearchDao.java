@@ -4,7 +4,10 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch.core.*;
+import org.opensearch.client.opensearch.core.IndexRequest;
+import org.opensearch.client.opensearch.core.IndexResponse;
+import org.opensearch.client.opensearch.core.UpdateRequest;
+import org.opensearch.client.opensearch.core.UpdateResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
@@ -69,8 +72,8 @@ public class MaterialSearchDao implements SearchDao<MaterialIndexData> {
 
     public Try<PageImpl<MaterialIndexData>> search(SearchCriteria criteria) {
         return Try.of(() -> openSearchClient.search(
-                SearchRequestBuilder.from(criteria).toSearchRequest(INDEX), MaterialIndexData.class
-        ))
+                        SearchRequestBuilder.from(criteria).toSearchRequest(INDEX), MaterialIndexData.class
+                ))
                 .mapTry(response -> {
                     final var hits = response.hits();
                     return new PageImpl<MaterialIndexData>(

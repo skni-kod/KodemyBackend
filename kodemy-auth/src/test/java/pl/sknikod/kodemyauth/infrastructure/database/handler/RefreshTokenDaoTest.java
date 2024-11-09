@@ -5,13 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.dao.OptimisticLockingFailureException;
+import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.factory.UserFactory;
+import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshTokenRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.UserRepository;
-import pl.sknikod.kodemyauth.BaseTest;
-import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 
 import java.util.Optional;

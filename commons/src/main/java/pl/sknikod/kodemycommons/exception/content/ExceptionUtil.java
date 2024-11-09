@@ -12,7 +12,7 @@ public class ExceptionUtil {
         return getRuntimeOrDefault(throwable, new InternalError500Exception());
     }
 
-    public static RuntimeException throwIfFailure(Throwable throwable, String pattern, Object ...args) {
+    public static RuntimeException throwIfFailure(Throwable throwable, String pattern, Object... args) {
         return getRuntimeOrDefault(throwable, new InternalError500Exception(pattern, args));
     }
 }

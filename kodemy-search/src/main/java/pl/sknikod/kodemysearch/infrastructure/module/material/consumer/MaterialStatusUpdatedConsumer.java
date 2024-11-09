@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class MaterialStatusUpdatedConsumer implements Consumer<String> {
     private final MaterialUpdateStatusService materialUpdateStatusService;
-    
+
     @Override
     public void accept(String msg) {
         log.info("Consuming message from materialStatusUpdated");

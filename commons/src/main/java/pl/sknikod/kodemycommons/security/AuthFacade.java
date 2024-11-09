@@ -10,13 +10,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthFacade {
-    private static SecurityContext getContext(){
+    private static SecurityContext getContext() {
         return SecurityContextHolder.getContext();
     }
 
@@ -60,7 +59,7 @@ public class AuthFacade {
         return setAuthentication(authentication, false);
     }
 
-    public static boolean hasAnyAuthority(String... authorities){
+    public static boolean hasAnyAuthority(String... authorities) {
         List<String> authorityList = Arrays.asList(authorities);
         return getAuthentication()
                 .map(Authentication::getAuthorities)
@@ -70,7 +69,7 @@ public class AuthFacade {
                 .isPresent();
     }
 
-    public static boolean hasAuthority(String authority){
+    public static boolean hasAuthority(String authority) {
         return hasAnyAuthority(authority);
     }
 }

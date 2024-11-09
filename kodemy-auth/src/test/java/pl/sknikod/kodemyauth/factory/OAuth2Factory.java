@@ -6,11 +6,11 @@ import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.github.Github
 import java.util.Map;
 
 public class OAuth2Factory {
-    private OAuth2Factory(){
+    private OAuth2Factory() {
 
     }
 
-    public static OAuth2Provider.User oAuth2GithubUser(){
+    public static OAuth2Provider.User oAuth2GithubUser() {
         return new GithubOAuth2Provider.GithubUser(Map.of(
                 "id", 1L,
                 "login", "username",

@@ -3,11 +3,11 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.CategoryFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.CategoryRepository;
-import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Optional;

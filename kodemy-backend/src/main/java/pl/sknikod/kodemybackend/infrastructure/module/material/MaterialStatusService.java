@@ -2,10 +2,9 @@ package pl.sknikod.kodemybackend.infrastructure.module.material;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialStatusUpdatedProducer;
-import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialUpdatedProducer;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;

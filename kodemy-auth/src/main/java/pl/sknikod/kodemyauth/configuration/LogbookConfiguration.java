@@ -7,7 +7,7 @@ import org.zalando.logbook.Logbook;
 @Configuration
 public class LogbookConfiguration {
     @Bean
-    public Logbook logbook(){
+    public Logbook logbook() {
         return Logbook.create();
     }
 }

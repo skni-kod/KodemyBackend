@@ -45,7 +45,7 @@ public class GradeDao {
     ) {
         LocalDateTime fromDateTime = minDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime toDateTime = maxDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        
+
         return Try.of(() -> gradeRepository.findGradesByMaterialInDateRange(
                 materialId,
                 fromDateTime, toDateTime,

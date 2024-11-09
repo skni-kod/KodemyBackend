@@ -11,6 +11,7 @@ import pl.sknikod.kodemybackend.infrastructure.rest.TagControllerDefinition;
 
 import java.net.URI;
 import java.util.List;
+
 @Controller
 @AllArgsConstructor
 public class TagController implements TagControllerDefinition {

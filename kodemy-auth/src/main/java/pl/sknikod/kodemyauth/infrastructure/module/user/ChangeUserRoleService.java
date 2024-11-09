@@ -2,8 +2,8 @@ package pl.sknikod.kodemyauth.infrastructure.module.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.dao.UserDao;
+import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;

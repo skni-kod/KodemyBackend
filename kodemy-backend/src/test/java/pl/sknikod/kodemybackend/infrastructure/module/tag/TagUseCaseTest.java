@@ -3,13 +3,13 @@ package pl.sknikod.kodemybackend.infrastructure.module.tag;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.TagMapper;
-import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddRequest;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
-import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +24,7 @@ class TagServiceTest extends BaseTest {
     final TagService tagService = new TagService(tagDao, new TagMapperImpl());
 
     static final TagAddRequest request = new TagAddRequest();
+
     static {
         request.setName("name");
     }

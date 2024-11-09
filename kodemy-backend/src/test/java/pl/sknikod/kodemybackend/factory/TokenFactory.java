@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.UUID;
 
 public class TokenFactory {
-    private TokenFactory() {}
+    private TokenFactory() {
+    }
 
     public static JwtProvider.Token jwtServiceToken = jwtServiceToken();
     public static JwtProvider.Token.Deserialize jwtServiceTokenDeserialize = jwtServiceTokenDeserialize();

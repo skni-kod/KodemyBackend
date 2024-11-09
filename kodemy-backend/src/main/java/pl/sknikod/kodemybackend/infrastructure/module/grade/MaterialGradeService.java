@@ -12,11 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
-import pl.sknikod.kodemybackend.infrastructure.database.Grade;
-import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.GradeDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
@@ -61,7 +61,7 @@ public class MaterialGradeService {
                 .map(page -> {
                     var list = page.getContent()
                             .stream()
-                            .map(g->{
+                            .map(g -> {
                                 var username = lanNetworkHandler.getUser(g.getUserId())
                                         .getOrElseThrow(ExceptionUtil::throwIfFailure);
                                 return gradeMapper.map(g, username);

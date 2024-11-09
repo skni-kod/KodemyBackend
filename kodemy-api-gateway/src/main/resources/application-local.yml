@@ -17,7 +17,7 @@ app:
     cors:
       allowed-origins:
         - ${network.route.front}
-          
+
 eureka:
   client:
     service-url:

@@ -3,25 +3,29 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.add;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.sknikod.kodemybackend.factory.*;
-import pl.sknikod.kodemybackend.infrastructure.database.Material;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
+import pl.sknikod.kodemybackend.factory.CategoryFactory;
+import pl.sknikod.kodemybackend.factory.MaterialFactory;
+import pl.sknikod.kodemybackend.factory.TagFactory;
+import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.TypeDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialCreateService;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducerTest;
-import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 class MaterialCreateServiceTest extends BaseTest {
     private final MaterialDao materialDao =

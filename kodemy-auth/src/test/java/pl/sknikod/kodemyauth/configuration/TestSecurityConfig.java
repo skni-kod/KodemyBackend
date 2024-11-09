@@ -40,7 +40,7 @@ public class TestSecurityConfig {
     }
 
     @Bean
-    public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(){
+    public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler() {
         return Mockito.mock(OAuth2LoginSuccessHandler.class);
     }
 

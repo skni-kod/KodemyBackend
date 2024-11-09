@@ -62,7 +62,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties){
+    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties) {
         return new JwtProvider(jwtProperties);
     }
 

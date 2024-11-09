@@ -8,8 +8,8 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer
 public class KodemyServiceRegistryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KodemyServiceRegistryApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KodemyServiceRegistryApplication.class, args);
+    }
 
 }

@@ -2,12 +2,12 @@ package pl.sknikod.kodemybackend.infrastructure.module.category;
 
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.CategoryFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.CategoryMapper;
-import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.module.category.model.SingleCategoryResponse;
-import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import static org.junit.jupiter.api.Assertions.*;

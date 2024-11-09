@@ -10,7 +10,7 @@ logging.level:
 
 jwt:
   expiration-mins: 60
-  
+
 eureka:
   client:
     serviceUrl:

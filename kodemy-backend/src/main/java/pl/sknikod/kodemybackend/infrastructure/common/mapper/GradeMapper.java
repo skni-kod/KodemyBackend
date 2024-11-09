@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GradeMapper {
-    default MaterialGradeService.GradePageable map(Grade grade, String username){
+    default MaterialGradeService.GradePageable map(Grade grade, String username) {
         return new MaterialGradeService.GradePageable(
                 grade.getId(),
                 grade.getValue(),

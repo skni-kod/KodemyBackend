@@ -1,6 +1,5 @@
 package pl.sknikod.kodemybackend.infrastructure.module.material.producer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 

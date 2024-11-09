@@ -27,7 +27,8 @@
 
         <createTable tableName="roles_permissions">
             <column name="permission_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_roles_permissions_permission" references="permissions(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_roles_permissions_permission"
+                             references="permissions(id)"/>
             </column>
             <column name="role_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_roles_permissions_role" references="roles(id)"/>
@@ -84,7 +85,7 @@
                    (2, 'ROLE_MODERATOR'),
                    (3, 'ROLE_ADMIN'),
                    (4, 'ROLE_SUPERADMIN');
-        ]]></sql>
+            ]]></sql>
 
         <sql><![CDATA[
             INSERT INTO permissions (id, name)
@@ -107,22 +108,24 @@
         <sql><![CDATA[
             -- ROLE_MODERATOR
             INSERT INTO roles_permissions (role_id, permission_id)
-            VALUES (2, 1),  -- CAN_MODIFY_TAGS
-                   (2, 2),  -- CAN_APPROVED_MATERIAL
-                   (2, 3),  -- CAN_GET_USER_INFO
-                   (2, 4),  -- CAN_VIEW_ALL_MATERIALS
-                   (2, 5);  -- CAN_DEPRECATE_MATERIAL
+            VALUES (2, 1), -- CAN_MODIFY_TAGS
+                   (2, 2), -- CAN_APPROVED_MATERIAL
+                   (2, 3), -- CAN_GET_USER_INFO
+                   (2, 4), -- CAN_VIEW_ALL_MATERIALS
+                   (2, 5);
+            -- CAN_DEPRECATE_MATERIAL
 
             -- ROLE_ADMIN
             INSERT INTO roles_permissions (role_id, permission_id)
-            VALUES (3, 1),  -- CAN_MODIFY_TAGS
-                   (3, 2),  -- CAN_APPROVED_MATERIAL
-                   (3, 6),  -- CAN_AUTO_APPROVED_MATERIAL
-                   (3, 7),  -- CAN_GET_USERS
-                   (3, 8),  -- CAN_BANNING_USERS
-                   (3, 3),  -- CAN_GET_USER_INFO
-                   (3, 4),  -- CAN_VIEW_ALL_MATERIALS
-                   (3, 5);  -- CAN_DEPRECATE_MATERIAL
+            VALUES (3, 1), -- CAN_MODIFY_TAGS
+                   (3, 2), -- CAN_APPROVED_MATERIAL
+                   (3, 6), -- CAN_AUTO_APPROVED_MATERIAL
+                   (3, 7), -- CAN_GET_USERS
+                   (3, 8), -- CAN_BANNING_USERS
+                   (3, 3), -- CAN_GET_USER_INFO
+                   (3, 4), -- CAN_VIEW_ALL_MATERIALS
+                   (3, 5);
+            -- CAN_DEPRECATE_MATERIAL
 
             -- ROLE_SUPERADMIN
             INSERT INTO roles_permissions (role_id, permission_id)
@@ -140,7 +143,7 @@
                    (4, 5),  -- CAN_DEPRECATE_MATERIAL
                    (4, 12), -- CAN_BAN_MATERIAL
                    (4, 13); -- CAN_UNBAN_MATERIAL
-        ]]></sql>
+            ]]></sql>
     </changeSet>
 
     <changeSet id="0001-3" author="MarcinBator">

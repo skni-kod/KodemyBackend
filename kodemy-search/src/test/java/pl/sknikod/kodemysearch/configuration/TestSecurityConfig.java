@@ -21,7 +21,7 @@ public class TestSecurityConfig {
     }
 
     @Bean
-    public JwtProvider jwtProvider(){
+    public JwtProvider jwtProvider() {
         return Mockito.mock(JwtProvider.class);
     }
 }
