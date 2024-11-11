@@ -1,6 +1,7 @@
 package pl.sknikod.kodemysearch.infrastructure.module.material;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;

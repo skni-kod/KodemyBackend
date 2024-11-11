@@ -2,13 +2,14 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.infrastructure.dao.SectionDao;
 import pl.sknikod.kodemybackend.infrastructure.database.SectionRepository;
-import pl.sknikod.kodemybackend.BaseTest;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 class SectionDaoTest extends BaseTest {

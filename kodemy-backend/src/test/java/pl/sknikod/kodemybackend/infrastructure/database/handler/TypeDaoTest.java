@@ -2,10 +2,10 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.TypeDao;
 import pl.sknikod.kodemybackend.infrastructure.database.TypeRepository;
-import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Collections;

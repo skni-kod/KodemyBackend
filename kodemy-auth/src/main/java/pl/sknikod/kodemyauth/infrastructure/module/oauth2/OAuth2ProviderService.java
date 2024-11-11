@@ -1,8 +1,6 @@
 package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
 
 import java.util.List;

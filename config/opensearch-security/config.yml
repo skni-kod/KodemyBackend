@@ -75,7 +75,7 @@ config:
         #internalProxies: '.*' # trust all internal proxies, regex pattern
         #remoteIpHeader:  'x-forwarded-for'
     authc:
-      basic_internal_auth_domain:  # <- Settings for Basic authentication
+      basic_internal_auth_domain: # <- Settings for Basic authentication
         description: "Authenticate via HTTP Basic against internal users database"
         http_enabled: true
         transport_enabled: true

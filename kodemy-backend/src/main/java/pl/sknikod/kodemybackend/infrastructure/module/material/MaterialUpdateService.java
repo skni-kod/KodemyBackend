@@ -22,12 +22,8 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.APPROVED;
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.PENDING;

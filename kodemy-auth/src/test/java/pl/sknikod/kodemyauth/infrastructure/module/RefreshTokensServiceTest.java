@@ -4,17 +4,17 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.factory.TokenFactory;
 import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
-import pl.sknikod.kodemyauth.BaseTest;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.RefreshTokensService;
 import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class RefreshTokensServiceTest extends BaseTest {

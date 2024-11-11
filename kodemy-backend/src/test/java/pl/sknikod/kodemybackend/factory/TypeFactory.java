@@ -6,7 +6,7 @@ public class TypeFactory {
     private TypeFactory() {
     }
 
-    public static Type type(){
+    public static Type type() {
         var type = new Type();
         type.setId(1L);
         return type;

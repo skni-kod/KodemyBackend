@@ -3,11 +3,11 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.OptimisticLockingFailureException;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.TagRepository;
-import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemycommons.exception.AlreadyExists409Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
@@ -26,7 +26,7 @@ class TagDaoTest extends BaseTest {
             new TagDao(tagRepository);
 
     @Test
-    void findAllByIdIn_shouldSucceed(){
+    void findAllByIdIn_shouldSucceed() {
         // given
         when(tagRepository.findTagsByIdIn(any()))
                 .thenReturn(Set.of(new Tag()));
@@ -38,7 +38,7 @@ class TagDaoTest extends BaseTest {
     }
 
     @Test
-    void findAllByIdIn_shouldFailure_whenAnyTagNotFound(){
+    void findAllByIdIn_shouldFailure_whenAnyTagNotFound() {
         // given
         when(tagRepository.findTagsByIdIn(any()))
                 .thenReturn(Collections.emptySet());

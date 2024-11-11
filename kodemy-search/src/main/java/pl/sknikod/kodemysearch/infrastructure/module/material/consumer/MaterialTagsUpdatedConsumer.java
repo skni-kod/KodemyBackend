@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 @Component("materialTagsUpdated")
 @RequiredArgsConstructor
 public class MaterialTagsUpdatedConsumer implements Consumer<String> {
-    
+
     @Override
     public void accept(String msg) {
         log.info("Consuming message from materialTagsUpdated");

@@ -21,7 +21,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "LEFT JOIN Grade g ON m.id = g.material.id " +
             "WHERE (:userId IS NULL OR m.userId = :userId) " +
             "AND (:id IS NULL OR m.id = :id) " +
-            "AND (:phrase IS NULL OR m.title LIKE CONCAT('%', CAST(:phrase as string ), '%'))"+
+            "AND (:phrase IS NULL OR m.title LIKE CONCAT('%', CAST(:phrase as string ), '%'))" +
             "AND ((:statuses) IS NULL OR m.status IN (:statuses)) " +
             "AND (:createdBy IS NULL OR m.createdBy = :createdBy) " +
             "AND (:sectionId IS NULL OR m.category.id IN (" +

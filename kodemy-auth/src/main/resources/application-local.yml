@@ -30,3 +30,8 @@ app:
       route:
         front: http://localhost:3000
         gateway: ${network.route.gateway}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}

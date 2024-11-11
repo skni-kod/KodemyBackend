@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.UUID;
 
 public class TokenFactory {
-    private TokenFactory() {}
+    private TokenFactory() {
+    }
 
     public static RefreshToken refreshToken = refreshToken();
     public static JwtProvider.Token jwtProviderToken = jwtProviderToken();

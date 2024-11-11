@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MaterialStatusChangeData {
-	private Long id;
-	private MaterialStatus status;
+    private Long id;
+    private MaterialStatus status;
 }

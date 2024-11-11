@@ -16,18 +16,18 @@ import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialStat
 @RequiredArgsConstructor
 @DependsOn("rabbitConfiguration")
 public class MaterialUpdateStatusService {
-	private final MaterialSearchDao materialSearchDao;
-	private final ObjectMapper objectMapper;
+    private final MaterialSearchDao materialSearchDao;
+    private final ObjectMapper objectMapper;
 
-	private Try<MaterialStatusChangeData> mapToMaterialStatusChangeData(String msg) {
-		return Try.of(() -> objectMapper.readValue(msg, MaterialStatusChangeData.class))
-				.onFailure(ex -> log.error("Status change failed due to an exception: {}", ex.getMessage(), ex));
-	}
-	
-	public String updateStatus(String msg){
-		return mapToMaterialStatusChangeData(msg)
-				.flatMap(d->materialSearchDao.update(d.getId(), d.getStatus()))
-				.map(WriteResponseBase::id)
-				.getOrElseThrow(ExceptionUtil::throwIfFailure);
-	}
+    private Try<MaterialStatusChangeData> mapToMaterialStatusChangeData(String msg) {
+        return Try.of(() -> objectMapper.readValue(msg, MaterialStatusChangeData.class))
+                .onFailure(ex -> log.error("Status change failed due to an exception: {}", ex.getMessage(), ex));
+    }
+
+    public String updateStatus(String msg) {
+        return mapToMaterialStatusChangeData(msg)
+                .flatMap(d -> materialSearchDao.update(d.getId(), d.getStatus()))
+                .map(WriteResponseBase::id)
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
+    }
 }

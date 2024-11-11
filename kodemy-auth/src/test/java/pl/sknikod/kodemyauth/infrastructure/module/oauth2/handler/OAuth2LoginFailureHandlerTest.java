@@ -14,7 +14,7 @@ import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class OAuth2LoginFailureHandlerTest extends BaseTest {

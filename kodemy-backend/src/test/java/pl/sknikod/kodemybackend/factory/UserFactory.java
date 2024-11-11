@@ -4,7 +4,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 public class UserFactory {

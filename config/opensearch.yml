@@ -5,7 +5,7 @@ cluster.name: kodemy-os-cluster
 node.name: kodemy-os-n1
 
 # Comma-separated list of hostnames or IP addresses of nodes in the cluster
-discovery.seed_hosts: ["kodemy-os-n1"]
+discovery.seed_hosts: [ "kodemy-os-n1" ]
 
 # Discovery type for single-node configuration
 discovery.type: single-node

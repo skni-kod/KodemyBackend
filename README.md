@@ -26,10 +26,11 @@ Before you can run the project, you will need the following applications:
    docker-compose up -d
    ```
 
-4. Go to local database ([localhost:5432](http://localhost:5432)) with the following credentials and execute the SQL command:
+4. Go to local database ([localhost:5432](http://localhost:5432)) with the following credentials and execute the SQL
+   command:
 
-   - **Username:** postgres
-   - **Password:** postgres
+    - **Username:** postgres
+    - **Password:** postgres
 
    ```sql
    CREATE SCHEMA IF NOT EXISTS "kodemy-auth";
@@ -39,11 +40,11 @@ Before you can run the project, you will need the following applications:
 
 5. Run individual services in IntelliJ with the following settings for `Active profiles`:
 
-   - `KodemyAuthApplication`: `local`
-   - `KodemyBackendApplication`: `local`
-   - `KodemyGatewayApplication`: `local`
-   - ~~`KodemyNotificationApplication`: `local`~~
-   - `KodemySearchApplication`: `local`
+    - `KodemyAuthApplication`: `local`
+    - `KodemyBackendApplication`: `local`
+    - `KodemyGatewayApplication`: `local`
+    - ~~`KodemyNotificationApplication`: `local`~~
+    - `KodemySearchApplication`: `local`
 
 6. Once the project is running, you can access the API documentation (OpenAPI v3) for almost all microservices:
 
@@ -54,7 +55,8 @@ Before you can run the project, you will need the following applications:
 
 ### RabbitMQ
 
-To access the RabbitMQ management UI, go to [http://localhost:15672](http://localhost:15672) with the following credentials:
+To access the RabbitMQ management UI, go to [http://localhost:15672](http://localhost:15672) with the following
+credentials:
 
 - **Username:** rabbitmq
 - **Password:** rabbitmq

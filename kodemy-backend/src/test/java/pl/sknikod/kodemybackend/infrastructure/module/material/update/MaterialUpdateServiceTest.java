@@ -3,17 +3,17 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.update;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemybackend.factory.CategoryFactory;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.factory.TagFactory;
 import pl.sknikod.kodemybackend.factory.TypeFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.*;
-import pl.sknikod.kodemybackend.infrastructure.database.dao.*;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
+import pl.sknikod.kodemybackend.infrastructure.database.dao.*;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducer;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialRabbitProducerTest;
-import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialUpdateService;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
@@ -62,7 +62,7 @@ class MaterialUpdateServiceTest extends BaseTest {
     void update_shouldSucceed() {
         // given
         var response = new MaterialUpdateService.MaterialUpdateResponse(
-                MATERIAL.getId(), null, null, null,null,null,null
+                MATERIAL.getId(), null, null, null, null, null, null
         );
         when(materialDao.findById(any()))
                 .thenReturn(Try.success(MATERIAL));

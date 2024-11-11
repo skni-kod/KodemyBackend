@@ -30,7 +30,7 @@ spring:
             clientId: Ov23liqWT50Vtt0A0uIg
             clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
             redirect-uri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
-            scope: ['user:email', 'read:user']
+            scope: [ 'user:email', 'read:user' ]
 
 management:
   endpoints:

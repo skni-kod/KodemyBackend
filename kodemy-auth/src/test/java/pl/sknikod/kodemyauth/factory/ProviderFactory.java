@@ -3,10 +3,10 @@ package pl.sknikod.kodemyauth.factory;
 import pl.sknikod.kodemyauth.infrastructure.database.Provider;
 
 public class ProviderFactory {
-    private ProviderFactory(){
+    private ProviderFactory() {
     }
 
-    public static Provider provider(String providerType){
+    public static Provider provider(String providerType) {
         var provider = new Provider();
         provider.setId(1L);
         provider.setProviderType(providerType);

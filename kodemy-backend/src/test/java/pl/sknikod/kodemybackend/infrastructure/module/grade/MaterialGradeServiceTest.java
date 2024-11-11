@@ -6,16 +6,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import pl.sknikod.kodemybackend.BaseTest;
+import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemybackend.factory.GradeFactory;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.infrastructure.common.mapper.GradeMapper;
-import pl.sknikod.kodemybackend.infrastructure.database.Grade;
-import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.dao.GradeDao;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
+import pl.sknikod.kodemybackend.infrastructure.database.Grade;
+import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
-import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemybackend.WithUserPrincipal;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
@@ -71,22 +71,22 @@ class MaterialGradeServiceTest extends BaseTest {
         // when & then
         assertThrows(RuntimeException.class, () -> materialGradeService.addGrade(3L, request));
     }
-    
+
     @Test
-    void showGrades_shouldSuccess(){
+    void showGrades_shouldSuccess() {
         //given
         //when
-        var result = materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialFilterSearchParams(), 1L);
+        var result = materialGradeService.showGrades(PageRequest.of(1, 1), new GradeMaterialFilterSearchParams(), 1L);
         //then
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
     }
 
     @Test
-    void showGrades_shouldThrowException_whenRepoError(){
+    void showGrades_shouldThrowException_whenRepoError() {
         //given
         //when & then
-        assertThrows(RuntimeException.class, () -> materialGradeService.showGrades(PageRequest.of(1,1), new GradeMaterialFilterSearchParams(), 2L));
+        assertThrows(RuntimeException.class, () -> materialGradeService.showGrades(PageRequest.of(1, 1), new GradeMaterialFilterSearchParams(), 2L));
     }
 
     static class TestGradeDao extends GradeDao {

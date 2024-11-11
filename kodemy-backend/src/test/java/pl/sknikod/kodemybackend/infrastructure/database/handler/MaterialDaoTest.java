@@ -3,10 +3,10 @@ package pl.sknikod.kodemybackend.infrastructure.database.handler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.OptimisticLockingFailureException;
+import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemybackend.factory.MaterialFactory;
 import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
-import pl.sknikod.kodemybackend.BaseTest;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
 import java.util.Optional;
