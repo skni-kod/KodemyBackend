@@ -34,4 +34,4 @@ app:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URL}
+      defaultZone: http://localhost:8761/eureka

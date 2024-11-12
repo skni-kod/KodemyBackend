@@ -86,3 +86,8 @@ app:
         redirect: /api/callback
     roles:
       primary: ROLE_USER
+      
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}

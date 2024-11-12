@@ -92,3 +92,8 @@ opensearch:
       alias: materials-alias
   username: admin
   password: admin
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}

@@ -58,3 +58,8 @@ app:
     cors:
       allowed-origins:
         - ${network.route.front}
+          
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
