@@ -39,13 +39,13 @@ services:
       discovery.type: single-node
       DISABLE_SECURITY_PLUGIN: "true"
       bootstrap.memory_lock: "true"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
+    #   nofile:
+    #     soft: 65536
+    #     hard: 65536
     volumes:
       - opensearch_vol:/usr/share/opensearch/data
       #- ./config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
@@ -75,8 +75,25 @@ services:
     deploy:
       replicas: 1
 
+  kodemy-service-registry:
+    image: kodemy-service-registry:latest
+    build:
+      context: ./kodemy-service-registry
+      dockerfile: ./Dockerfile
+    ports:
+      - "8761:8080"
+    networks:
+      - kodemy
+    environment:
+      FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
+    deploy:
+      replicas: 1
+
   kodemy-api-gateway:
     image: kodemy-api-gateway:latest
+    build:
+      context: ./kodemy-api-gateway
+      dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -88,8 +105,13 @@ services:
 
   kodemy-auth:
     image: kodemy-auth:latest
+    build:
+      context: ./kodemy-auth
+      dockerfile: ./Dockerfile
     networks:
       - kodemy
+    ports:
+      - "8081:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
@@ -104,8 +126,13 @@ services:
 
   kodemy-backend:
     image: kodemy-backend:latest
+    build:
+      context: ./kodemy-backend
+      dockerfile: ./Dockerfile
     networks:
       - kodemy
+    ports:
+      - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
@@ -122,8 +149,13 @@ services:
 
   kodemy-search:
     image: kodemy-search:latest
+    build:
+      context: ./kodemy-search
+      dockerfile: ./Dockerfile
     networks:
       - kodemy
+    ports:
+      - "8083:8080"
     environment:
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
