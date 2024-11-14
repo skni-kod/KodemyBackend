@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:14.1-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
@@ -31,7 +31,7 @@ services:
       replicas: 1
 
   opensearch:
-    image: opensearchproject/opensearch:2.17.1
+    image: opensearchproject/opensearch:latest
     environment:
       OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       cluster.name: kodemy-os-cluster
@@ -50,13 +50,16 @@ services:
     volumes:
       - opensearch_vol:/usr/share/opensearch/data
       #- ./config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+    ports:
+      - 9200:9200
+      - 9600:9600
     networks:
       - kodemy
 
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.15.0
+    image: opensearchproject/opensearch-dashboards:latest
     environment:
-      OPENSEARCH_HOSTS: ${OPENSEARCH_HOSTS}
+      OPENSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: true
       #ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
       #ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
