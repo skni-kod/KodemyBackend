@@ -46,6 +46,7 @@ network:
     auth: http://kodemy-auth:8080
     backend: http://kodemy-backend:8080
     search: http://kodemy-search:8080
+    front: ${FRONTEND_PUBLIC_HOST}
 
 logging:
   level:

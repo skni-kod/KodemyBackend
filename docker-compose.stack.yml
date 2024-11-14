@@ -7,8 +7,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_vol:/var/lib/postgresql/data
+      - ./init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
     ports:
-      - 5435:${POSTGRES_PORT}
+      - ${POSTGRES_PORT}:5432
     networks:
       - kodemy
     deploy:
@@ -17,8 +18,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_vol:/var/lib/rabbitmq
     ports:
@@ -30,7 +31,7 @@ services:
       replicas: 1
 
   opensearch:
-    image: opensearchproject/opensearch:2.15.0
+    image: opensearchproject/opensearch:2.17.1
     environment:
       OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       cluster.name: kodemy-os-cluster
@@ -81,11 +82,9 @@ services:
       context: ./kodemy-service-registry
       dockerfile: ./Dockerfile
     ports:
-      - "8761:8080"
+      - "8761:8761"
     networks:
       - kodemy
-    environment:
-      FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
     deploy:
       replicas: 1
 
@@ -100,8 +99,11 @@ services:
       - kodemy
     environment:
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
+      EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
+    depends_on:
+      - kodemy-service-registry
 
   kodemy-auth:
     image: kodemy-auth:latest
@@ -114,15 +116,17 @@ services:
       - "8081:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
       GATEWAY_PUBLIC_HOST: ${GATEWAY_PUBLIC_HOST}
+      EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
     depends_on:
       - postgres
       - redis
+      - kodemy-service-registry
 
   kodemy-backend:
     image: kodemy-backend:latest
@@ -135,12 +139,37 @@ services:
       - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
-      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
-      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      EUREKA_URL: ${EUREKA_URL}
+    deploy:
+      replicas: 1
+    depends_on:
+      - postgres
+      - rabbitmq
+      
+  kodemy-notification:
+    image: kodemy-notification:latest
+    build:
+      context: ./kodemy-notification
+      dockerfile: ./Dockerfile
+    networks:
+      - kodemy
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
     depends_on:
@@ -159,8 +188,9 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
-      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
-      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
     depends_on:
