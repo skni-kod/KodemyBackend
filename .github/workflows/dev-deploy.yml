@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -21,4 +21,4 @@ jobs:
             git pull || { echo "Error: git pull failed" >&2; exit 1; }
             ./kodemy.sh
             echo "$(date): backend deployed successfully" >> deploy-log.txt 
-            docker system prune -f 
+            docker system prune -f
