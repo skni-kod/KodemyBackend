@@ -15,4 +15,4 @@ cd ../kodemy-service-registry
 ./gradlew build -x test
 cd ../
 
-docker compose -f docker-compose.stack.yml up --build
+docker compose -f docker-compose.stack.yml up --build -d
