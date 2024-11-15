@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "dev-deploy" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/kodemy/KodemyBackend/
+            git checkout dev-deploy
+            git pull || { echo "Error: git pull failed" >&2; exit 1; }
+            ./kodemy.sh
+            echo "$(date): backend deployed successfully" >> deploy-log.txt 
+            docker system prune -f
