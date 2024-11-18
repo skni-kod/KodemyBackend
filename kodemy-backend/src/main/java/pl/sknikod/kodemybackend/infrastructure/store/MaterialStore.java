@@ -58,7 +58,7 @@ public class MaterialStore {
     @AfterAction(action = AfterAction.Action.UPDATE)
     public Try<Material> update(Material material) {
         return Try.of(() -> materialRepository.save(material))
-                .onFailure(th -> log.error("Cannot save material", th));
+                .onFailure(th -> log.error("Cannot update material", th));
     }
 
     public Try<Tuple2<Page<FindAllPageObject>, UserStore.User>> findAll(

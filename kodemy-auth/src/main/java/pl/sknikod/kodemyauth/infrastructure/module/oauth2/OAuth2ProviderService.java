@@ -2,7 +2,7 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2Provider;
 
 import java.util.List;
 

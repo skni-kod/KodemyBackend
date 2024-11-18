@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.*;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2ProviderResult;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
@@ -26,15 +26,15 @@ public class UserStore {
     private final RoleRepository roleRepository;
     private final SecurityConfiguration.RoleProperties roleProperties;
 
-    public Optional<User> save(OAuth2ProviderResult providerUser) {
+    public Optional<User> save(OAuth2ProcessorResult result) {
         return this.fetchRole(roleProperties.getPrimary())
                 .map(role -> new User(
-                        providerUser.getUsername(), providerUser.getEmail(),
-                        providerUser.getPhoto(), role))
+                        result.getUsername(), result.getEmail(),
+                        result.getPhoto(), role))
                 .map(user -> {
                     var provider = new Provider(
-                            providerUser.getPrincipalId(), providerUser.getRegistrationId(),
-                            providerUser.getEmail(), providerUser.getPhoto(), user
+                            result.getPrincipalId(), result.getRegistrationId(),
+                            result.getEmail(), result.getPhoto(), user
                     );
                     user.setProviders(Set.of(provider));
                     return user;
@@ -52,9 +52,9 @@ public class UserStore {
                 .onFailure(th -> log.error(th.getMessage()));
     }
 
-    public Try<User> findByProviderUser(OAuth2ProviderResult providerUser) {
+    public Try<User> findByProviderUser(OAuth2ProcessorResult result) {
         return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
-                        providerUser.getPrincipalId(), providerUser.getRegistrationId()
+                        result.getPrincipalId(), result.getRegistrationId()
                 ))
                 .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, User.class));
     }

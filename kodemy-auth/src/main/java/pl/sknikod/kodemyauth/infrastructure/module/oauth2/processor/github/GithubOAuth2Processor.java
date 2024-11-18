@@ -1,45 +1,28 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.github;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.github;
 
 import io.vavr.control.Try;
 import lombok.Data;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2ProviderResult;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2ProviderSuperclass;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2Processor;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
-@Component
 @Slf4j
-public class GithubOAuth2Provider extends OAuth2ProviderSuperclass implements OAuth2Provider {
-    private static final String REGISTRATION_ID = "github";
-
-    public GithubOAuth2Provider(OAuth2RestTemplate oAuth2RestTemplate) {
+public class GithubOAuth2Processor extends OAuth2Processor {
+    public GithubOAuth2Processor(OAuth2RestTemplate oAuth2RestTemplate) {
         super(oAuth2RestTemplate);
     }
 
     @Override
-    public String getRegistrationId() {
-        return REGISTRATION_ID;
-    }
-
-    @Override
-    public boolean isApply(String registrationId) {
-        return getRegistrationId().equals(registrationId);
-    }
-
-    @Override
-    public OAuth2ProviderResult retrieve(OAuth2UserRequest userRequest) {
+    public OAuth2ProcessorResult process(OAuth2UserRequest userRequest) {
         Map<String, Object> attributes = super.getAttributes(userRequest);
-        attributes.put("registrationId", REGISTRATION_ID);
         fixEmailNull(attributes, userRequest);
-        return new GithubOAuth2ProviderResult(attributes);
+        return new GithubOAuth2ProcessorResult(attributes);
     }
 
     private void fixEmailNull(Map<String, Object> attributes, OAuth2UserRequest userRequest) {

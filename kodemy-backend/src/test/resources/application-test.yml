@@ -5,3 +5,7 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-test.xml
   profiles:
     active: test
+
+eureka:
+  client:
+    enabled: false

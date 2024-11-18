@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-@Component
 @RequiredArgsConstructor
 public class OAuth2RestTemplate {
     private final RestTemplate restTemplate;

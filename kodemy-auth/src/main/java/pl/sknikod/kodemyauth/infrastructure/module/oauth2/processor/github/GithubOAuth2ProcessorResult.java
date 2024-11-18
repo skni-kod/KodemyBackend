@@ -1,11 +1,11 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.github;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.github;
 
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2ProviderResult;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
 
 import java.util.Map;
 
-public class GithubOAuth2ProviderResult extends OAuth2ProviderResult {
-    public GithubOAuth2ProviderResult(Map<String, Object> attributes) {
+public class GithubOAuth2ProcessorResult extends OAuth2ProcessorResult {
+    public GithubOAuth2ProcessorResult(Map<String, Object> attributes) {
         super(attributes);
     }
 

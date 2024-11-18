@@ -15,8 +15,8 @@ import pl.sknikod.kodemyauth.infrastructure.database.Permission;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2Provider;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.provider.OAuth2ProviderResult;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2Provider;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2UserPrincipal;
 import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
 
@@ -38,7 +38,7 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
                 .orElse(null);
     }
 
-    private Optional<OAuth2ProviderResult> retrieveUser(OAuth2UserRequest userRequest, Iterator<OAuth2Provider> iterator) {
+    private Optional<OAuth2ProcessorResult> retrieveUser(OAuth2UserRequest userRequest, Iterator<OAuth2Provider> iterator) {
         if (!iterator.hasNext()) {
             log.info("No processable provider for registration ID: {}", userRequest.getClientRegistration().getRegistrationId());
             return Optional.empty();
@@ -51,17 +51,17 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
         return retrieveUser(userRequest, iterator); // check another one
     }
 
-    private Tuple2<User, OAuth2ProviderResult> createOrLoadUser(OAuth2ProviderResult providerUser) {
+    private Tuple2<User, OAuth2ProcessorResult> createOrLoadUser(OAuth2ProcessorResult providerUser) {
         return userStore.findByProviderUser(providerUser)
                 .fold(unused -> Tuple.of(this.createNewUser(providerUser), providerUser), user -> Tuple.of(user, providerUser));
     }
 
-    private User createNewUser(OAuth2ProviderResult providerUser) {
+    private User createNewUser(OAuth2ProcessorResult providerUser) {
         return userStore.save(providerUser)
                 .orElse(null);
     }
 
-    private OAuth2UserPrincipal toUserPrincipal(Tuple2<User, OAuth2ProviderResult> userTuple2) {
+    private OAuth2UserPrincipal toUserPrincipal(Tuple2<User, OAuth2ProcessorResult> userTuple2) {
         return Try.of(() -> roleRepository.findById(userTuple2._1.getRole().getId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
