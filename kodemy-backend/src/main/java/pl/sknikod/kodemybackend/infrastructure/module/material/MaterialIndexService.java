@@ -4,29 +4,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
-import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
-import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialUpdatedProducer;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class MaterialIndexService {
     private static final Integer MAX_PAGE_SIZE_FOR_INDEX = 2000;
     private static final Integer MAX_CONCURRENT_TASKS = 100;
     private final GradeRepository gradeRepository;
     private final MaterialRepository materialRepository;
-    private final MaterialUpdatedProducer materialUpdatedProducer;
-    private final LanNetworkHandler lanNetworkHandler;
 
     @Async
     public void reindex(Instant from, Instant to) {
@@ -45,19 +42,19 @@ public class MaterialIndexService {
                 final var materialIds = materialsToIndex.stream().map(Material::getId).toList();
                 final var gradesMap = gradeRepository.findAverageGradeByMaterialsIds(materialIds).stream()
                         .collect(Collectors.toMap(key -> (Long) key[0], key -> (Double) key[1]));
-                final var users = lanNetworkHandler.getUsers(materialsToIndex.stream().map(Material::getUserId))
-                        .getOrElse(Collections.emptyMap());
+//                final var users = lanNetworkHandler.getUsers(materialsToIndex.stream().map(Material::getUserId))
+//                        .getOrElse(Collections.emptyMap());
                 executorService.submit(() -> {
                     try {
                         materialsToIndex.forEach(material -> {
-                            final var user = users.get(material.getUserId());
-                            if (user != null) {
+                            final var user = /*users.get(material.getUserId())*/(Long) null;
+                            /*if (user != null) {
                                 var message = MaterialUpdatedProducer.Message.map(
                                         material, gradesMap.getOrDefault(material.getId(), 0.00),
                                         new MaterialUpdatedProducer.Message.Author(material.getUserId(), user)
                                 );
                                 materialUpdatedProducer.publish(message);
-                            }
+                            }*/
                         });
                     } finally {
                         countDownLatch.countDown();

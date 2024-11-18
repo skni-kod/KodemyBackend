@@ -1,6 +1,5 @@
 package pl.sknikod.kodemysearch.infrastructure.module.material;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemysearch.infrastructure.dao.MaterialSearchDao;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPageable;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,9 +81,10 @@ public class MaterialSearchService {
     }
 
     private boolean filterByAvgGrade(MaterialFilterSearchParams filterSearchParams, MaterialPageable m) {
-        double gradeAvg = m.avgGrade;
-        return (filterSearchParams.getMinAvgGrade() == null || gradeAvg >= filterSearchParams.getMinAvgGrade()) &&
-                (filterSearchParams.getMaxAvgGrade() == null || gradeAvg <= filterSearchParams.getMaxAvgGrade());
+        //double gradeAvg = m.avgGrade;
+//        return (filterSearchParams.getMinAvgGrade() == null || gradeAvg >= filterSearchParams.getMinAvgGrade()) &&
+//                (filterSearchParams.getMaxAvgGrade() == null || gradeAvg <= filterSearchParams.getMaxAvgGrade());
+        return true;
     }
 
     @Getter
@@ -112,37 +112,4 @@ public class MaterialSearchService {
         MaterialPageable map(MaterialIndexData indexData);
     }
 
-    public record MaterialPageable(
-            Long id,
-            String title,
-            String description,
-            MaterialStatus status,
-            boolean isActive,
-            double avgGrade,
-            AuthorDetails author,
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-            Date createdDate,
-            Long sectionId,
-            Long categoryId,
-            List<TagDetails> tags
-    ) {
-        public enum MaterialStatus {
-            APPROVED,
-            PENDING,
-            REJECTED,
-            EDITED,
-            BANNED,
-            DRAFT,
-            BAN_REQUESTED,
-            DEPRECATION_REQUEST,
-            DEPRECATED,
-            DELETED
-        }
-
-        public record TagDetails(Long id, String name) {
-        }
-
-        public record AuthorDetails(Long id, String username) {
-        }
-    }
 }

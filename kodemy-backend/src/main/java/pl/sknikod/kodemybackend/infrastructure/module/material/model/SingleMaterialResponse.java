@@ -2,10 +2,11 @@ package pl.sknikod.kodemybackend.infrastructure.module.material.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.vavr.control.Try;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
-import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
+import pl.sknikod.kodemybackend.infrastructure.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 import java.time.LocalDateTime;
@@ -61,7 +62,7 @@ public class SingleMaterialResponse {
         String name;
     }
 
-    public static SingleMaterialResponse map(Material material, Double averageGrade, List<Long> gradeStats, String userUsername) {
+    public static SingleMaterialResponse map(Material material, String userUsername, Double averageGrade, List<Long> gradeStats) {
         return new SingleMaterialResponse(
                 material.getId(),
                 material.getTitle(),

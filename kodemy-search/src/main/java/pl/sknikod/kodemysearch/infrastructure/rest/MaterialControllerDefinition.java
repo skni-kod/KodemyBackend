@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
+import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPageable;
 
 @RequestMapping("/api/materials")
 @SwaggerResponse
@@ -20,7 +21,7 @@ public interface MaterialControllerDefinition {
     @Operation(summary = "Show all materials")
     @SwaggerResponse.SuccessCode200
     @GetMapping
-    ResponseEntity<Page<MaterialSearchService.MaterialPageable>> search(
+    ResponseEntity<Page<MaterialPageable>> search(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(value = "sortField", defaultValue = "CREATED_DATE") MaterialSearchService.MaterialSortField sortField,

@@ -33,8 +33,7 @@ public class MaterialController implements MaterialControllerDefinition {
             Long materialId, MaterialUpdateService.MaterialUpdateRequest body
     ) {
         var materialResponse = materialUpdateService.update(materialId, body);
-        return ResponseEntity
-                .ok().body(materialResponse);
+        return ResponseEntity.ok().body(materialResponse);
     }
 
     @Override
