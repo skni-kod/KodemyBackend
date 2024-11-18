@@ -3,3 +3,7 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: test
+
+eureka:
+  client:
+    enabled: false
