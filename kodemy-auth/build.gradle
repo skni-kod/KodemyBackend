@@ -66,13 +66,16 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.8'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.0'
     constraints {
         testImplementation('org.apache.commons:commons-compress:1.26.2') {
             because '<1.25.x vulnerability'
         }
     }
-    testImplementation 'org.testcontainers:postgresql:1.19.8'
+    testImplementation 'org.testcontainers:postgresql:1.20.0'
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'

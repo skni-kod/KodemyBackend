@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.security.AuthFacade;
@@ -16,6 +17,7 @@ import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.UUID;
 
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class LogoutRequestHandler implements LogoutHandler {

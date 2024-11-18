@@ -11,8 +11,9 @@ import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemysearch.infrastructure.dao.MaterialSearchDao;
+import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialFilterSearchParams;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPageable;
@@ -20,14 +21,15 @@ import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPage
 import java.util.List;
 import java.util.Objects;
 
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class MaterialSearchService {
-    private final MaterialSearchDao materialSearchDao;
+    private final MaterialSearchStore materialSearchStore;
     private final MaterialSearchMapper mapper;
 
     public Page<MaterialPageable> search(MaterialFilterSearchParams filterSearchParams, Pageable pageRequest) {
-        return materialSearchDao.search(mapToSearchCriteria(filterSearchParams, pageRequest))
+        return materialSearchStore.search(mapToSearchCriteria(filterSearchParams, pageRequest))
                 .map(page -> new PageImpl<>(mapper.map(page.getContent()), page.getPageable(), page.getTotalElements()))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }

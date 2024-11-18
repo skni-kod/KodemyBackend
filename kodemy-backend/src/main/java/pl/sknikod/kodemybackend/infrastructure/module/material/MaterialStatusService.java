@@ -10,8 +10,8 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
 
-import static pl.sknikod.kodemybackend.infrastructure.model.MaterialStatusUtil.getAuthorityForStatusChange;
-import static pl.sknikod.kodemybackend.infrastructure.model.MaterialStatusUtil.getPossibleStatuses;
+import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getAuthorityForStatusChange;
+import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getPossibleStatuses;
 
 @Service
 @AllArgsConstructor
