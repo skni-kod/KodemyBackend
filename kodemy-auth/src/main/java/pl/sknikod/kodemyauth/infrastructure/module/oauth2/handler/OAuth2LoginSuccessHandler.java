@@ -7,10 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
+import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
+import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.security.AuthFacade;
@@ -20,11 +23,24 @@ import pl.sknikod.kodemycommons.security.UserPrincipal;
 import java.util.Map;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
     private final String redirectPath;
-    private final RefreshTokenDao refreshTokenRepositoryHandler;
+    private final RefreshTokenStore refreshTokenStore;
+
+    @Autowired
+    public OAuth2LoginSuccessHandler(
+            JwtProvider jwtProvider,
+            @Value("${app.security.oauth2.route.front}") String frontRoute,
+            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
+            RefreshTokenStore refreshTokenStore,
+            RouteRedirectStrategy routeRedirectStrategy
+    ) {
+        this(jwtProvider, (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint, refreshTokenStore);
+        this.setRedirectStrategy(routeRedirectStrategy);
+    }
 
     @Override
     public void onAuthenticationSuccess(
@@ -49,7 +65,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokens(UserPrincipal userPrincipal) {
         return Try.of(() -> jwtProvider.generateUserToken(map(userPrincipal)))
-                .flatMapTry(bearerToken -> refreshTokenRepositoryHandler
+                .flatMapTry(bearerToken -> refreshTokenStore
                         .createAndGet(userPrincipal.getId(), bearerToken.id())
                         .map(refreshToken -> Tuple.of(bearerToken, refreshToken)))
                 .onFailure(th -> log.error("Error during tokens generation", th));

@@ -57,17 +57,12 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtConfiguration.JwtProperties jwtProperties() {
-        return new JwtConfiguration.JwtProperties();
+    public JwtProvider jwtProvider(JwtConfiguration jwtConfiguration) {
+        return new JwtProvider(jwtConfiguration.getJwtProperties());
     }
 
     @Bean
-    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties) {
-        return new JwtProvider(jwtProperties);
-    }
-
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter(JwtConfiguration.JwtProperties jwtProperties) {
-        return new JwtAuthorizationFilter(jwtProperties);
+    public JwtAuthorizationFilter jwtAuthorizationFilter(JwtProvider jwtProvider) {
+        return new JwtAuthorizationFilter(jwtProvider);
     }
 }

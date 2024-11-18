@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.mapper.GradeMapper;
-import pl.sknikod.kodemybackend.infrastructure.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
 import pl.sknikod.kodemybackend.infrastructure.store.GradeStore;
 import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
@@ -55,7 +54,9 @@ public class GradeService {
         private String grade;
     }
 
-    public record GradePageable(Long id, Double value, UserDetails author) {
+    public record GradePageable(Long id, Double value, AuthorDetails author) {
+        public record AuthorDetails(Long id, String username) {
+        }
     }
 }
 

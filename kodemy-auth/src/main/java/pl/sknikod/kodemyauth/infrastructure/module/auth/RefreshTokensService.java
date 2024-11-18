@@ -8,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
-import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
+import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.security.JwtProvider;
 
@@ -26,12 +26,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RefreshTokensService {
     private final RoleRepository roleRepository;
-    private final RefreshTokenDao refreshTokenDao;
+    private final RefreshTokenStore refreshTokenStore;
     private final JwtProvider jwtProvider;
-    private final SecurityConfiguration.RoleProperties roleProperties;
 
     public RefreshTokensResponse refresh(UUID refresh, UUID bearerJti) {
-        return refreshTokenDao.findByTokenAndBearerJti(refresh, bearerJti)
+        return refreshTokenStore.findByTokenAndBearerJti(refresh, bearerJti)
                 .flatMapTry(this::generateTokensAndInvalidate)
                 .map(tokens -> new RefreshTokensResponse(
                         tokens._2.getToken().toString(), tokens._1.value()))
@@ -40,11 +39,11 @@ public class RefreshTokensService {
 
     private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {
         return Try.of(() -> jwtProvider.generateUserToken(map(refreshToken.getUser())))
-                .flatMapTry(bearerToken -> refreshTokenDao
+                .flatMapTry(bearerToken -> refreshTokenStore
                         .createAndGet(refreshToken.getUser(), bearerToken.id())
                         .map(newRefreshToken -> Tuple.of(bearerToken, newRefreshToken))
                         .onFailure(th -> log.error("Error during tokens generation", th)))
-                .peek(unused -> refreshTokenDao.invalidate(refreshToken));
+                .peek(unused -> refreshTokenStore.invalidate(refreshToken));
     }
 
     private JwtProvider.Input map(User user) {

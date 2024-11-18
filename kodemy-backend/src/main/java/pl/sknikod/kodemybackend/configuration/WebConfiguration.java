@@ -1,13 +1,9 @@
 package pl.sknikod.kodemybackend.configuration;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemycommons.exception.handler.RestExceptionHandler;
 import pl.sknikod.kodemycommons.network.LanRestTemplate;
@@ -17,7 +13,7 @@ import pl.sknikod.kodemycommons.security.JwtProvider;
 public class WebConfiguration {
 
     @Bean
-    public RestExceptionHandler restExceptionHandler(){
+    public RestExceptionHandler restExceptionHandler() {
         return new RestExceptionHandler();
     }
 
@@ -29,19 +25,9 @@ public class WebConfiguration {
     }
 
     @Bean
-    public LanRestTemplate lanRestTemplate(LanNetworkProperties lanNetworkProperties, JwtProvider jwtProvider) {
-        return new LanRestTemplate(lanNetworkProperties.connectTimeoutMs, lanNetworkProperties.readTimeoutMs, jwtProvider);
-    }
-
-    @Getter
-    @Setter
-    @Component
-    @NoArgsConstructor
-    @ConfigurationProperties(prefix = "network.lan")
-    public static class LanNetworkProperties {
-        private String username;
-        private String password;
-        private int connectTimeoutMs;
-        private int readTimeoutMs;
+    public LanRestTemplate lanRestTemplate(
+            @Value("${network.connect-timeout-ms}") int connectTimeoutMs, @Value("${network.read-timeout-ms}") int readTimeoutMs, JwtProvider jwtProvider
+    ) {
+        return new LanRestTemplate(connectTimeoutMs, readTimeoutMs, jwtProvider);
     }
 }

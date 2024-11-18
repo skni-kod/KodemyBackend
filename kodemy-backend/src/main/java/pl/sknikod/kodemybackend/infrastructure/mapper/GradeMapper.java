@@ -2,11 +2,8 @@ package pl.sknikod.kodemybackend.infrastructure.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import pl.sknikod.kodemybackend.infrastructure.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.GradeService;
-
-import java.util.Set;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GradeMapper {
@@ -14,7 +11,7 @@ public interface GradeMapper {
         return new GradeService.GradePageable(
                 grade.getId(),
                 grade.getValue(),
-                new UserDetails(
+                new GradeService.GradePageable.AuthorDetails(
                         grade.getUserId(),
                         username
                 )
