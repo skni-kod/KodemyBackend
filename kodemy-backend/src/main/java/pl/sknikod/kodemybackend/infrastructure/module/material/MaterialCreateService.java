@@ -15,19 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
-import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
-import pl.sknikod.kodemybackend.infrastructure.dao.TagDao;
-import pl.sknikod.kodemybackend.infrastructure.dao.TypeDao;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.Type;
-import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialCreatedProducer;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialCreatedProducer;
+import pl.sknikod.kodemybackend.infrastructure.store.CategoryStore;
+import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
+import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
+import pl.sknikod.kodemybackend.infrastructure.store.TypeStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
-import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Set;
@@ -36,38 +35,31 @@ import static pl.sknikod.kodemybackend.infrastructure.database.Material.Material
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.PENDING;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class MaterialCreateService {
-    private final MaterialDao materialDao;
-    private final TypeDao typeDao;
+    private final MaterialStore materialStore;
+    private final TypeStore typeStore;
     private final MaterialCreateMapper createMaterialMapper;
-    private final CategoryDao categoryDao;
-    private final TagDao tagDao;
-    private final MaterialCreatedProducer materialCreatedProducer;
+    private final CategoryStore categoryStore;
+    private final TagStore tagStore;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
-        var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(InternalError500Exception::new);
-        var category = categoryDao.findById(body.categoryId)
+        var category = categoryStore.findById(body.categoryId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var type = typeDao.findById(body.typeId)
+        var type = typeStore.findById(body.typeId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var tags = tagDao.findAllByIdIn(body.tagsIds)
+        var tags = tagStore.findAllByIdIn(body.tagsIds)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
 
-        return Try.of(() -> this.toMaterial(body, userPrincipal, category, type, tags))
-                .flatMap(materialDao::save)
-                .peek(material -> {
-                    if (material.getStatus() == APPROVED)
-                        materialCreatedProducer.publish(MaterialCreatedProducer.Message.map(material, userPrincipal));
-                })
+        return Try.of(() -> this.toMaterial(body, category, type, tags))
+                .flatMap(materialStore::save)
                 .map(createMaterialMapper::map)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     private Material toMaterial(
             MaterialCreateRequest body,
-            UserPrincipal userPrincipal,
             Category category,
             Type type,
             Set<Tag> tags
@@ -80,8 +72,9 @@ public class MaterialCreateService {
         material.setCategory(category);
         material.setType(type);
         material.setTags(tags);
-        material.setUserId(userPrincipal.getId());
-        var isApprovedMaterial = userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
+        var user = AuthFacade.getCurrentUserPrincipal().get();
+        material.setUserId(user.getId());
+        var isApprovedMaterial = user.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                 ? APPROVED : PENDING;
         material.setStatus(isApprovedMaterial);
         return material;
