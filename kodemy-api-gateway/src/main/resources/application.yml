@@ -4,26 +4,49 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth
-          uri: lb://kodemy-auth
-          predicates:
-            - Path=/api/auth/**,/api/users/**,/api/roles/**
-        - id: notification
-          uri: lb://kodemy-notification
-          predicates:
-            - Path=/api/notification/**
         - id: oauth2_auth
           uri: ${network.route.auth}
           predicates:
             - Path=/api/oauth2/**,/api/auth/**,/api/logout
-        - id: search
-          uri: lb://kodemy-search
+
+        - id: search-materials
+          uri: ${network.route.search}
           predicates:
             - Path=/api/materials
-        - id: backend
-          uri: lb://kodemy-backend
+            - Method=GET
+
+        - id: materials-get
+          uri: ${network.route.backend}
           predicates:
-            - Path=/api/**
+            - Path=/api/materials/{materialId}/**
+            - Method=GET
+
+        - id: materials-post
+          uri: ${network.route.backend}
+          predicates:
+            - Path=/api/materials
+            - Method=POST
+
+        - id: materials-grades
+          uri: ${network.route.backend}
+          predicates:
+            - Path=/api/materials/{materialId}/grades
+            - Method=POST
+
+        - id: users-materials
+          uri: ${network.route.auth}
+          predicates:
+            - Path=/api/users/{userId}/materials
+
+        - id: users_roles
+          uri: ${network.route.auth}
+          predicates:
+            - Path=/api/users/**,/api/roles
+
+        - id: tags_types_sections_categories_admin
+          uri: ${network.route.backend}
+          predicates:
+            - Path=/api/tags,/api/types,/api/sections,/api/categories/{categoryId},/api/admin/**
 
 management:
   endpoints:

@@ -12,13 +12,13 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public class SearchCriteria {
-    ContentField contentField;
+    String anyPhrase;
     List<PhraseField> phraseFields = new ArrayList<>();
     List<RangeField<?>> rangeFields = new ArrayList<>();
     Pageable pageable;
 
-    public SearchCriteria(@NonNull String content, @NonNull Pageable pageable) {
-        this.contentField = new ContentField(content);
+    public SearchCriteria(@NonNull String anyPhrase, @NonNull Pageable pageable) {
+        this.anyPhrase = anyPhrase;
         this.pageable = pageable;
     }
 

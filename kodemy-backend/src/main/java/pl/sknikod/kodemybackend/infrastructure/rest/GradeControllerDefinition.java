@@ -40,6 +40,6 @@ public interface GradeControllerDefinition {
             @RequestParam(value = "sort", defaultValue = "VALUE") GradeMaterialSortField sort,
             @RequestParam(value = "sort_direction", defaultValue = "DESC") Sort.Direction sortDirection,
             @Parameter(description = "{\"createdDateFrom\":\"2023-01-01T00:00:00\",\"createdDateTo\":\"2023-12-12T23:59:59\"}")
-            @RequestParam(value = "filters", required = false, defaultValue = "{}") GradeMaterialFilterSearchParams filterSearchParams
+            @RequestParam(value = "filters", required = false) GradeMaterialFilterSearchParams filterSearchParams
     );
 }

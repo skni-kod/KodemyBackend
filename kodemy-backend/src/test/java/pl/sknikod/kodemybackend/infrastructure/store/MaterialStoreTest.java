@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.FilterSearchParams;
+import pl.sknikod.kodemybackend.infrastructure.rest.UserControllerDefinition;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 
@@ -133,7 +133,7 @@ class MaterialStoreTest {
 
     @Test
     void findAll_success() {
-        var result = store.findAll(new FilterSearchParams(), null, ID, null);
+        var result = store.findAll(new UserControllerDefinition.FilterSearchParams(), null, ID, null);
 
         Assertions.assertFalse(result.isEmpty());
 
@@ -143,7 +143,7 @@ class MaterialStoreTest {
     void findAll_userStoreError() {
         Mockito.when(userStore.findById(Mockito.eq(ID))).thenReturn(Try.failure(new InternalError500Exception()));
 
-        var result = store.findAll(new FilterSearchParams(), null, ID, null);
+        var result = store.findAll(new UserControllerDefinition.FilterSearchParams(), null, ID, null);
 
         Assertions.assertTrue(result.isFailure());
         Assertions.assertInstanceOf(InternalError500Exception.class, result.getCause());
@@ -157,7 +157,7 @@ class MaterialStoreTest {
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()
         )).thenThrow(new RuntimeException());
 
-        var result = store.findAll(new FilterSearchParams(), null, ID, null);
+        var result = store.findAll(new UserControllerDefinition.FilterSearchParams(), null, ID, null);
 
         Assertions.assertTrue(result.isFailure());
     }

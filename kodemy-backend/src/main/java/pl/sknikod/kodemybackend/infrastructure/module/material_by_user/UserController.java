@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemybackend.infrastructure.module.material.model.FilterSearchParams;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialSortField;
 import pl.sknikod.kodemybackend.infrastructure.rest.UserControllerDefinition;

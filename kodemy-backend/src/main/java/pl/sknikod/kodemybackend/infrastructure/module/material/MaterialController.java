@@ -1,15 +1,20 @@
 package pl.sknikod.kodemybackend.infrastructure.module.material;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
 import pl.sknikod.kodemybackend.infrastructure.rest.MaterialControllerDefinition;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -19,6 +24,7 @@ public class MaterialController implements MaterialControllerDefinition {
     private final MaterialGetByIdService materialGetByIdService;
     private final MaterialIndexService materialIndexService;
     private final MaterialStatusService materialStatusService;
+    private final MaterialManageService materialManageService;
 
     @Override
     public ResponseEntity<MaterialCreateService.MaterialCreateResponse> create(MaterialCreateService.MaterialCreateRequest body) {
@@ -52,5 +58,14 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialGetByIdService.showDetails(materialId));
+    }
+
+    @Override
+    public ResponseEntity<Page<MaterialPageable>> manage(int size, int page, MaterialSortField sortField, Sort.Direction sortDirection, MaterialFilterSearchParams filterSearchParams) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialManageService.manage(
+                        Objects.requireNonNullElse(filterSearchParams, new MaterialFilterSearchParams()),
+                        PageRequest.of(page, size, sortDirection, sortField.getField())
+                ));
     }
 }

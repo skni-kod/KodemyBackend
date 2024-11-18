@@ -2,19 +2,21 @@ package pl.sknikod.kodemybackend.infrastructure.module.material;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
-import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
+import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialUpdatedProducer;
+import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
+import pl.sknikod.kodemybackend.infrastructure.store.UserStore;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,51 +24,49 @@ import java.util.stream.Collectors;
 public class MaterialIndexService {
     private static final Integer MAX_PAGE_SIZE_FOR_INDEX = 2000;
     private static final Integer MAX_CONCURRENT_TASKS = 100;
-    private final GradeRepository gradeRepository;
-    private final MaterialRepository materialRepository;
+    private final MaterialStore materialStore;
+    private final MaterialUpdatedProducer materialUpdatedProducer;
 
     @Async
     public void reindex(Instant from, Instant to) {
         final var executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         try {
-
             final var fromDate = LocalDateTime.ofInstant(from, ZoneId.systemDefault().getRules().getOffset(from));
             final var toDate = LocalDateTime.ofInstant(to, ZoneId.systemDefault().getRules().getOffset(to));
             final var pageable = PageRequest.of(0, MAX_PAGE_SIZE_FOR_INDEX);
-
-            var materialPage = materialRepository.findMaterialsInDateRangeWithPage(fromDate, toDate, pageable);
-            final var countDownLatch = new CountDownLatch(materialPage.getTotalPages());
-
-            do {
-                final var materialsToIndex = materialPage.getContent();
-                final var materialIds = materialsToIndex.stream().map(Material::getId).toList();
-                final var gradesMap = gradeRepository.findAverageGradeByMaterialsIds(materialIds).stream()
-                        .collect(Collectors.toMap(key -> (Long) key[0], key -> (Double) key[1]));
-//                final var users = lanNetworkHandler.getUsers(materialsToIndex.stream().map(Material::getUserId))
-//                        .getOrElse(Collections.emptyMap());
-                executorService.submit(() -> {
-                    try {
-                        materialsToIndex.forEach(material -> {
-                            final var user = /*users.get(material.getUserId())*/(Long) null;
-                            /*if (user != null) {
-                                var message = MaterialUpdatedProducer.Message.map(
-                                        material, gradesMap.getOrDefault(material.getId(), 0.00),
-                                        new MaterialUpdatedProducer.Message.Author(material.getUserId(), user)
-                                );
-                                materialUpdatedProducer.publish(message);
-                            }*/
-                        });
-                    } finally {
-                        countDownLatch.countDown();
-                    }
-                });
-                materialPage = materialRepository.findMaterialsInDateRangeWithPage(fromDate, toDate, pageable.next());
-            } while (materialPage.hasNext());
+            var findTry = materialStore.findAllInDateRange(fromDate, toDate, pageable);
+            if (findTry.isFailure()) {
+                return;
+            }
+            final var countDownLatch = new CountDownLatch(findTry.get().getTotalPages());
+            while (findTry.isSuccess()) {
+                executorService.submit(reindexTask(findTry.get(), countDownLatch));
+                if (!findTry.get().hasNext()) {
+                    break;
+                }
+                findTry = materialStore.findAllInDateRange(fromDate, toDate, pageable.next());
+            }
             countDownLatch.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
             executorService.shutdown();
         }
+    }
+
+    private Runnable reindexTask(Page<MaterialStore.FindAllPageWithUserObject> page, CountDownLatch countDownLatch) {
+        return () -> {
+            try {
+                page.getContent().forEach(findAllObject -> {
+                    if (findAllObject.getUsername() != null) {
+                        materialUpdatedProducer.publish(MaterialUpdatedProducer.Message.map(
+                                findAllObject.getMaterial(), findAllObject.getAvgGrade(), findAllObject.getUsername()
+                        ));
+                    }
+                });
+            } finally {
+                countDownLatch.countDown();
+            }
+        };
     }
 }

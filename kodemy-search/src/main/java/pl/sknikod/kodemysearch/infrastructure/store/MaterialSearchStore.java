@@ -72,7 +72,7 @@ public class MaterialSearchStore implements SearchStore<MaterialIndexData> {
 
     public Try<PageImpl<MaterialIndexData>> search(SearchCriteria criteria) {
         return Try.of(() -> openSearchClient.search(
-                        SearchRequestBuilder.from(criteria).toSearchRequest(INDEX), MaterialIndexData.class
+                        new SearchRequestBuilder(INDEX, criteria).build(), MaterialIndexData.class
                 ))
                 .mapTry(response -> {
                     final var hits = response.hits();

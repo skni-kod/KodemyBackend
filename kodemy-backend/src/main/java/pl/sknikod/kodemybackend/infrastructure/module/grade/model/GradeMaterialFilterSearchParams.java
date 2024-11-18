@@ -1,5 +1,6 @@
 package pl.sknikod.kodemybackend.infrastructure.module.grade.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GradeMaterialFilterSearchParams {
     Date createdDateFrom;
     Date createdDateTo;
