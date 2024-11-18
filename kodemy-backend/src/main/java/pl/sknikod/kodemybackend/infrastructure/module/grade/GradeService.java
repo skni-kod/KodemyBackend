@@ -13,7 +13,6 @@ import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
 import pl.sknikod.kodemybackend.infrastructure.store.GradeStore;
-import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemybackend.infrastructure.store.UserStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class GradeService {
-    private final MaterialStore materialStore;
     private final GradeMapper gradeMapper;
     private final GradeStore gradeStore;
 

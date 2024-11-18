@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,7 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
             "FROM Grade g " +
             "WHERE g.material.id IN :materialIds " +
             "GROUP BY g.material.id")
-    Set<Object[]> findAverageGradeByMaterialsIds(List<Long> materialIds);
+    Set<Object[]> findAvgGradeByMaterialsIds(Collection<Long> materialIds);
 
     @Query("SELECT g FROM Grade g WHERE g.material.id = :materialId AND g.createdDate BETWEEN :from AND :to")
     Page<Grade> findGradesByMaterialInDateRange(Long materialId, LocalDateTime from, LocalDateTime to, Pageable pageable);

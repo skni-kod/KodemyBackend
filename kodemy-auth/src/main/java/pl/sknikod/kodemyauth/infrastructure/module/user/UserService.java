@@ -9,12 +9,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import pl.sknikod.kodemyauth.infrastructure.rest.UserControllerDefinition;
 import pl.sknikod.kodemyauth.infrastructure.store.RoleStore;
 import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
-import pl.sknikod.kodemyauth.infrastructure.module.user.model.FilterSearchParams;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.security.AuthFacade;
@@ -54,7 +54,7 @@ public class UserService {
                 .orElseThrow(InternalError500Exception::new);
     }
 
-    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, FilterSearchParams filterSearchParams) {
+    public Page<UserInfoResponse> searchUsers(PageRequest pageRequest, UserControllerDefinition.FilterSearchParams filterSearchParams) {
         Page<User> users = userStore.findByUsernameOrEmailOrRole(
                 filterSearchParams.getUsername(),
                 filterSearchParams.getEmail(),

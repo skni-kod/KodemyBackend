@@ -3,7 +3,10 @@ package pl.sknikod.kodemybackend.infrastructure.store;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +21,7 @@ import pl.sknikod.kodemycommons.security.AuthFacade;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,5 +93,23 @@ public class GradeStore {
                 .mapTry(unused -> new Grade(value, AuthFacade.getCurrentUserPrincipal().get().getId(), materialId))
                 .map(gradeRepository::save)
                 .onFailure(th -> log.error("Cannot add grade", th));
+    }
+
+    public Try<List<FindAvgGradeObject>> findAvgGradeByMaterialsIds(Collection<Long> ids) {
+        return Try.of(() -> gradeRepository.findAvgGradeByMaterialsIds(ids))
+                .map(Collection::stream)
+                .map(objects -> objects.map(FindAvgGradeObject::new).toList());
+    }
+
+    @Getter
+    @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+    public static class FindAvgGradeObject {
+        Long materialId;
+        Double avgGrade;
+
+        public FindAvgGradeObject(Object[] objects) {
+            this.materialId = (Long) objects[0];
+            this.avgGrade = (Double) objects[1];
+        }
     }
 }
