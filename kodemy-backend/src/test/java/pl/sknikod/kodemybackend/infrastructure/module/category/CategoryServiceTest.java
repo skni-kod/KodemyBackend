@@ -1,54 +1,38 @@
 package pl.sknikod.kodemybackend.infrastructure.module.category;
 
 import io.vavr.control.Try;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.sknikod.kodemybackend.BaseTest;
-import pl.sknikod.kodemybackend.factory.CategoryFactory;
-import pl.sknikod.kodemybackend.infrastructure.common.mapper.CategoryMapper;
-import pl.sknikod.kodemybackend.infrastructure.dao.CategoryDao;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import pl.sknikod.kodemybackend.SuperclassTest;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
-import pl.sknikod.kodemybackend.infrastructure.module.category.model.SingleCategoryResponse;
-import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemybackend.infrastructure.database.Section;
+import pl.sknikod.kodemybackend.infrastructure.mapper.CategoryMapper;
+import pl.sknikod.kodemybackend.infrastructure.store.CategoryStore;
 
-import static org.junit.jupiter.api.Assertions.*;
+class CategoryServiceTest extends SuperclassTest {
 
-class CategoryServiceTest extends BaseTest {
-    final CategoryService categoryService = new CategoryService(new TestCategoryDao(), new CategoryMapperImpl());
+    @MockBean
+    private CategoryStore categoryStore;
 
-    @Test
-    void showCategoryInfo_shouldSucceed() {
-        // given
-        var id = 1L;
-        // when
-        var result = categoryService.showCategoryInfo(id);
-        // then
-        assertNotNull(result);
-        assertEquals(id, result.id());
-    }
+    @Autowired
+    private CategoryService categoryService;
 
     @Test
-    void showCategoryInfo_shouldThrowException_whenCategoryNotFound() {
-        // given
-        // when & then
-        assertThrows(NotFound404Exception.class, () -> categoryService.showCategoryInfo(2L));
-    }
+    void showCategoryInfo_success() {
+        var category = new Category();
+        category.setId(1L);
+        category.setSection(new Section());
+        category.setName("name");
 
-    static class CategoryMapperImpl implements CategoryMapper {
-        @Override
-        public SingleCategoryResponse map(Category category) {
-            return new SingleCategoryResponse(category.getId(), null, null);
-        }
-    }
+        Mockito.when(categoryStore.findById(Mockito.eq(category.getId()))).thenReturn(Try.success(category));
 
-    static class TestCategoryDao extends CategoryDao {
-        public TestCategoryDao() {
-            super(null);
-        }
+        var result = categoryService.showCategoryInfo(category.getId());
 
-        @Override
-        public Try<Category> findById(Long id) {
-            if (id == 1) return Try.success(CategoryFactory.category(id));
-            throw new NotFound404Exception("");
-        }
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(category.getId(), result.id());
+        Assertions.assertEquals(category.getName(), result.name());
     }
 }

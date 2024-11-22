@@ -2,43 +2,38 @@ package pl.sknikod.kodemybackend.infrastructure.module.material;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.infrastructure.dao.MaterialDao;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
-import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialStatusUpdatedProducer;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
 
-import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getAuthorityForStatusChange;
-import static pl.sknikod.kodemybackend.infrastructure.common.model.MaterialStatusUtil.getPossibleStatuses;
+import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getAuthorityForStatusChange;
+import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getPossibleStatuses;
 
+@Service
 @AllArgsConstructor
 public class MaterialStatusService {
-    private final MaterialDao materialDao;
-    private final MaterialStatusUpdatedProducer materialStatusUpdatedProducer;
+    private final MaterialStore materialStore;
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) {
-        var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(InternalError500Exception::new);
-        return materialDao.findById(materialId)
+        return materialStore.findById(materialId, true)
+                .map(MaterialStore.FindByIdObject::getMaterial)
                 .filter(material -> {
                     var possibleStatuses = getPossibleStatuses(material.getStatus());
                     var neededAuthority = getAuthorityForStatusChange(material.getStatus(), newStatus);
-                    return possibleStatuses.contains(newStatus) && canUserUpdateStatus(userPrincipal, neededAuthority, material);
+                    return possibleStatuses.contains(newStatus) && canUserUpdateStatus(neededAuthority, material);
                 })
-                .peek(m -> m.setStatus(newStatus))
-                .flatMap(materialDao::save)
-                .peek(material -> materialStatusUpdatedProducer.publish(
-                        new MaterialStatusUpdatedProducer.Message(materialId, material.getStatus())
-                ))
-                .map(Material::getStatus)
+                .flatMap(unused -> materialStore.changeStatus(materialId, newStatus))
+                .map(tuple -> tuple._2)
                 .toTry(() -> new Validation400Exception("Cannot update status of the material"))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
-    private boolean canUserUpdateStatus(UserPrincipal userPrincipal, SimpleGrantedAuthority neededAuthority, Material material) {
+    private boolean canUserUpdateStatus(SimpleGrantedAuthority neededAuthority, Material material) {
+        UserPrincipal userPrincipal = AuthFacade.getCurrentUserPrincipal().get();
         return userPrincipal.getAuthorities().contains(neededAuthority)
                 || isOwnerStatusUpdatePossible(neededAuthority, material, userPrincipal.getId());
     }

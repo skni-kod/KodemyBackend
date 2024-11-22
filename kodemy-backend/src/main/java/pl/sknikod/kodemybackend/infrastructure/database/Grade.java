@@ -22,6 +22,13 @@ public class Grade extends BaseEntity {
     @JoinColumn(name = "material_id", nullable = false)
     private Material material;
 
+    public Grade(Double value, Long userId, Long materialId) {
+        this.value = value;
+        this.userId = userId;
+        this.material = new Material();
+        this.material.setId(materialId);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

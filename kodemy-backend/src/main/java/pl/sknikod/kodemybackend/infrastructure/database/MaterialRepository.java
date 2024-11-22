@@ -3,7 +3,9 @@ package pl.sknikod.kodemybackend.infrastructure.database;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -23,7 +25,6 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             "AND (:id IS NULL OR m.id = :id) " +
             "AND (:phrase IS NULL OR m.title LIKE CONCAT('%', CAST(:phrase as string ), '%'))" +
             "AND ((:statuses) IS NULL OR m.status IN (:statuses)) " +
-            "AND (:createdBy IS NULL OR m.createdBy = :createdBy) " +
             "AND (:sectionId IS NULL OR m.category.id IN (" +
             "   SELECT c.id FROM Category c WHERE c.section.id = :sectionId)) " +
             "AND (:categoryIds IS NULL OR m.category.id IN :categoryIds) " +
@@ -38,7 +39,6 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             Long id,
             String phrase,
             List<Material.MaterialStatus> statuses,
-            String createdBy,
             Long sectionId,
             List<Long> categoryIds,
             List<Long> tagIds,
@@ -49,4 +49,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
             Double maxAvgGrade,
             Pageable pageable
     );
+
+    @Modifying
+    @Query(value = "UPDATE materials SET status = :newStatus where id = :materialId", nativeQuery = true)
+    void updateStatus(Long materialId, Material.MaterialStatus newStatus);
 }

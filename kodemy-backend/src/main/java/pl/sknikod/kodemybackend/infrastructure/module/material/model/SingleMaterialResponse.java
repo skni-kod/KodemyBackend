@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
-import pl.sknikod.kodemybackend.infrastructure.common.model.UserDetails;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 
 import java.time.LocalDateTime;
@@ -27,12 +26,10 @@ public class SingleMaterialResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime createdDate;
 
-    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class AuthorDetails extends UserDetails {
-        public AuthorDetails(Long id, String username) {
-            super(id, username);
-        }
+    public static class AuthorDetails {
+        Long id;
+        String username;
     }
 
     @Value
@@ -61,7 +58,7 @@ public class SingleMaterialResponse {
         String name;
     }
 
-    public static SingleMaterialResponse map(Material material, Double averageGrade, List<Long> gradeStats, String userUsername) {
+    public static SingleMaterialResponse map(Material material, String userUsername, Double averageGrade, List<Long> gradeStats) {
         return new SingleMaterialResponse(
                 material.getId(),
                 material.getTitle(),
