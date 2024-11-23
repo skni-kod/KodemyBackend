@@ -1,4 +1,4 @@
-name: Deploy
+name: DEV - Deploy
 
 on:
   push:
@@ -6,22 +6,24 @@ on:
 
 jobs:
   checkout:
+    name: Prepare
     runs-on: self-hosted
     steps:
-    - name: Checkout
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.REMOTE_USER }}
-        port: ${{ secrets.REMOTE_PORT }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
-          cd $WORKING_DIRECTORY
-        
-          git checkout dev-deploy
-          git pull
+      - name: Checkout
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
+            cd $WORKING_DIRECTORY
+            
+            git checkout dev-deploy || exit 1
+            git pull || exit 1
   validate:
+    name: Pre-deploy
     runs-on: self-hosted
     needs: [checkout]
     steps:
@@ -51,7 +53,7 @@ jobs:
             docker exec -t $DATASOURCE_CONTAINER psql -lqt -U $DATASOURCE_USERNAME | grep -q $DATASOURCE_DATABASE \
               || { echo "Database $DATASOURCE_DATABASE does not exist."; exit 1; }
             
-            echo "Validate database - schema"
+            echo "Validate database - schemas"
             SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
             for SCHEMA in "${SCHEMAS[@]}"
             do
@@ -62,6 +64,7 @@ jobs:
                 | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
             done
   deploy:
+    name: Deploy
     runs-on: self-hosted
     needs: [ validate ]
     steps:
@@ -97,22 +100,21 @@ jobs:
             cd /commons
             ./gradlew build
             
-            cd ../kodemy-api-gateway
+            cd $WORKING_DIRECTORY/kodemy-api-gateway
             ./gradlew build -x test
-            cd ../kodemy-auth
+            cd $WORKING_DIRECTORY/kodemy-auth
             ./gradlew build -x test
-            cd ../kodemy-backend
+            cd $WORKING_DIRECTORY/kodemy-backend
             ./gradlew build -x test
-            cd ../kodemy-notification
+            cd $WORKING_DIRECTORY/kodemy-notification
             ./gradlew build -x test
-            cd ../kodemy-search
+            cd $WORKING_DIRECTORY/kodemy-search
             ./gradlew build -x test
-            cd ../kodemy-service-registry
+            cd $WORKING_DIRECTORY/kodemy-service-registry
             ./gradlew build -x test
             
             cd $WORKING_DIRECTORY
             docker compose -f docker-compose.services.yml up --build -d
-
       - name: Cleanup
         uses: appleboy/ssh-action@master
         with:
@@ -121,4 +123,4 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker system prune -f 
+            docker system prune -f
