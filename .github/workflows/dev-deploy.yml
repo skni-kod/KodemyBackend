@@ -19,8 +19,8 @@ jobs:
           export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
           cd $WORKING_DIRECTORY
         
-          git checkout dev-deploy || {echo "Error: git checkout failed"  exit 1}
-          git pull || { echo "Error: git pull failed" >&2; exit 1 }
+          git checkout dev-deploy
+          git pull
   validate:
     runs-on: self-hosted
     needs: [checkout]
