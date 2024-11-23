@@ -14,9 +14,11 @@ spring:
           destination: material-tags-updated
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-backend
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL}?currentSchema=kodemy-backend
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      schema: kodemy-backend
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql

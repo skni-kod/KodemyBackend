@@ -3,9 +3,11 @@ spring:
   banner.location: classpath:banner.txt
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres/kodemy?currentSchema=kodemy-auth
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL}?currentSchema=kodemy-auth
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      schema: kodemy-auth
   data:
     redis:
       host: redis
@@ -18,6 +20,7 @@ spring:
     show-sql: true
     properties:
       hibernate.types.print.banner: false
+    
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
     contexts: prod
@@ -27,8 +30,8 @@ spring:
       client:
         registration:
           github:
-            clientId: Ov23liqWT50Vtt0A0uIg
-            clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
+            clientId: Ov23li5LD47i4815okXp
+            clientSecret: fd2972bffedc3ad0e0a9eeda2935e4ac0255c70a
             redirect-uri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
             scope: [ 'user:email', 'read:user' ]
 
