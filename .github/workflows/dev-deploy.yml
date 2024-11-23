@@ -1,8 +1,10 @@
 name: DEV - Deploy
 
 on:
-  push:
-    branches: [ "dev-deploy" ]
+  workflow_dispatch:
+#on:
+#  push:
+#    branches: [ "dev-deploy" ]
 
 jobs:
   prepare:
@@ -76,7 +78,7 @@ jobs:
             export WORKING_DIRECTORY=${{ secrets.WORKING_DIRECTORY }}
             cd $WORKING_DIRECTORY
             
-            git checkout dev-deploy || exit 1
+            git checkout dev || exit 1
             git pull || exit 1
   validate:
     name: Pre-deploy
