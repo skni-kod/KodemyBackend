@@ -6,6 +6,8 @@ spring:
       host: localhost
   datasource:
     url: jdbc:postgresql://localhost:5435/kodemy?currentSchema=kodemy-auth
+    username: postgres
+    password: postgres
 
 management:
   server:
