@@ -33,7 +33,7 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export NETWORK_NAME=kodemy
+            export NETWORK_NAME=kodemybackend_kodemy
             export DATASOURCE_CONTAINER=kodemybackend-postgres-1
             export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
             export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
@@ -74,7 +74,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
-            export NETWORK_NAME=kodemy
+            export NETWORK_NAME=kodemybackend_kodemy
             export DATASOURCE_CONTAINER=kodemybackend-postgres-1
             export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
             export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
