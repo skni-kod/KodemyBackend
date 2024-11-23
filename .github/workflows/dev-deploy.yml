@@ -5,8 +5,67 @@ on:
     branches: [ "dev-deploy" ]
 
 jobs:
-  checkout:
+  prepare:
     name: Prepare
+    runs-on: self-hosted
+    steps:
+      - name: Check environment variables
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            REQUIRED_VARS=\
+            (
+              ${{ secrets.REMOTE_HOST }}
+              ${{ secrets.REMOTE_USER }}
+              ${{ secrets.REMOTE_PORT }}
+              ${{ secrets.SSH_PRIVATE_KEY }}
+              ${{ secrets.WORKING_DIRECTORY }}
+              ${{ secrets.NETWORK_NAME }}
+              ${{ secrets.DATASOURCE_CONTAINER }}
+              ${{ secrets.DATASOURCE_USERNAME }}
+              ${{ secrets.DATASOURCE_PASSWORD }}
+              ${{ secrets.DATASOURCE_DATABASE }}
+              ${{ secrets.RABBITMQ_HOST }}
+              ${{ secrets.RABBITMQ_PORT }}
+              ${{ secrets.RABBITMQ_USERNAME }}
+              ${{ secrets.RABBITMQ_PASSWORD }}
+              ${{ secrets.RABBITMQ_PASSWORD }}
+              ${{ secrets.ELASTICSEARCH_USERNAME }}
+              ${{ secrets.ELASTICSEARCH_PASSWORD }}
+              ${{ secrets.EUREKA_URL }}
+              ${{ secrets.FRONTEND_PUBLIC_HOST }}
+              ${{ secrets.GATEWAY_PUBLIC_HOST }}
+            )
+            EXIT=0
+            for VAR in "${REQUIRED_VARS[@]}"; do
+              [ -z "${!VAR}" ] && echo "Environment variable $VAR is missing." && EXIT=1
+            done
+            exit $EXIT
+            
+            export WORKING_DIRECTORY=${{ secrets.WORKING_DIRECTORY }}
+            export NETWORK_NAME=${{ secrets.NETWORK_NAME }}
+            export DATASOURCE_CONTAINER=${{ secrets.DATASOURCE_CONTAINER }}
+            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
+            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
+            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
+            export RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}
+            export RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}
+            export RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}
+            export RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}
+            export ELASTICSEARCH_HOSTS=${{ secrets.RABBITMQ_PASSWORD }}
+            export ELASTICSEARCH_USERNAME=${{ secrets.ELASTICSEARCH_USERNAME }}
+            export ELASTICSEARCH_PASSWORD=${{ secrets.ELASTICSEARCH_PASSWORD }}
+            export EUREKA_URL=${{ secrets.EUREKA_URL }}
+            export FRONTEND_PUBLIC_HOST=${{ secrets.FRONTEND_PUBLIC_HOST }}
+            export GATEWAY_PUBLIC_HOST=${{ secrets.GATEWAY_PUBLIC_HOST }}
+            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
+  checkout:
+    name: Checkout $ Pull
+    needs: [ prepare ]
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -17,7 +76,6 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
             cd $WORKING_DIRECTORY
             
             git checkout dev-deploy || exit 1
@@ -25,7 +83,7 @@ jobs:
   validate:
     name: Pre-deploy
     runs-on: self-hosted
-    needs: [checkout]
+    needs: [ checkout ]
     steps:
       - name: Validate
         uses: appleboy/ssh-action@master
@@ -35,12 +93,6 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export NETWORK_NAME=kodemybackend_kodemy
-            export DATASOURCE_CONTAINER=kodemybackend-postgres-1
-            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
-            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
-            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
-            
             echo "Validate network"
             docker network inspect $NETWORK_NAME > /dev/null 2>&1 \
               || { echo "Network $NETWORK_NAME is not available."; exit 1; }
@@ -76,25 +128,6 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
-            export NETWORK_NAME=kodemybackend_kodemy
-            export DATASOURCE_CONTAINER=kodemybackend-postgres-1
-            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
-            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
-            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
-            export EXPOSE_PORT=${{ secrets.EXPOSE_PORT }}
-            export RABBITMQ_HOST=rabbitmq
-            export RABBITMQ_PORT=5672
-            export RABBITMQ_USERNAME=rabbitmq
-            export RABBITMQ_PASSWORD=rabbitmq
-            export ELASTICSEARCH_HOSTS=["http://opensearch:9200"]
-            export ELASTICSEARCH_USERNAME=opensearch
-            export ELASTICSEARCH_PASSWORD=opensearch
-            export EUREKA_URL=http://kodemy-service-registry:8761/eureka/
-            export FRONTEND_PUBLIC_HOST=http://localhost:3000
-            export GATEWAY_PUBLIC_HOST=http://localhost:8080
-            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
-            
             cd $WORKING_DIRECTORY
             
             cd /commons
