@@ -133,6 +133,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export WORKING_DIRECTORY=${{ secrets.WORKING_DIRECTORY }}
+            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
+            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
+            
             cd $WORKING_DIRECTORY
             
             cd /commons
