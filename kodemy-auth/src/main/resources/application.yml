@@ -30,8 +30,8 @@ spring:
       client:
         registration:
           github:
-            clientId: Ov23liqWT50Vtt0A0uIg
-            clientSecret: 8d3b1c72e34f2077e433c46f0aea4b980c15226b
+            clientId: Ov23li5LD47i4815okXp
+            clientSecret: fd2972bffedc3ad0e0a9eeda2935e4ac0255c70a
             redirect-uri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
             scope: [ 'user:email', 'read:user' ]
 
