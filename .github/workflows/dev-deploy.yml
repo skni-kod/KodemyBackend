@@ -1,10 +1,10 @@
 name: DEV - Deploy
 
+# on:
+#   workflow_dispatch:
 on:
-  workflow_dispatch:
-#on:
-#  push:
-#    branches: [ "dev-deploy" ] 
+ push:
+   branches: [ "dev" ] 
 
 jobs:
   prepare:
