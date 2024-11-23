@@ -107,6 +107,7 @@ jobs:
             
             echo "Validate database - schemas"
             SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
+            
             for SCHEMA in "${SCHEMAS[@]}"
             do
               docker exec -t $DATASOURCE_CONTAINER psql \
