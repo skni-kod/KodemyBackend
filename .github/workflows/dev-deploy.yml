@@ -5,10 +5,27 @@ on:
     branches: [ "dev-deploy" ]
 
 jobs:
-  build:
+  checkout:
     runs-on: self-hosted
     steps:
-      - name: Deploy
+    - name: Checkout
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        port: ${{ secrets.REMOTE_PORT }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
+          cd $WORKING_DIRECTORY
+        
+          git checkout dev-deploy || {echo "Error: git checkout failed" >&2; exit 1;}
+          git pull || { echo "Error: git pull failed" >&2; exit 1; }
+  validate:
+    runs-on: self-hosted
+    needs: [checkout]
+    steps:
+      - name: Validate
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -16,9 +33,92 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/kodemy/KodemyBackend/
-            git checkout dev-deploy
-            git pull || { echo "Error: git pull failed" >&2; exit 1; }
-            ./kodemy.sh
-            echo "$(date): backend deployed successfully" >> deploy-log.txt 
+            export NETWORK_NAME=kodemy
+            export DATASOURCE_CONTAINER=kodemybackend-postgres-1
+            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
+            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
+            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
+            
+            echo "Validate network"
+            docker network inspect $NETWORK_NAME > /dev/null 2>&1 \
+              || { echo "Network $NETWORK_NAME is not available."; exit 1; }
+            
+            echo "Validate database - container"
+            docker exec -t $DATASOURCE_CONTAINER pg_isready \
+              || { echo "PostgreSQL is not running."; exit 1; }
+            
+            echo "Validate database - database"
+            docker exec -t $DATASOURCE_CONTAINER psql -lqt -U $DATASOURCE_USERNAME | grep -q $DATASOURCE_DATABASE \
+              || { echo "Database $DATASOURCE_DATABASE does not exist."; exit 1; }
+            
+            echo "Validate database - schema"
+            SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
+            for SCHEMA in "${SCHEMAS[@]}"
+            do
+              docker exec -t $DATASOURCE_CONTAINER psql \
+                -U $DATASOURCE_USERNAME \
+                -d $DATASOURCE_DATABASE \
+                -tAc "SELECT 1 FROM information_schema.schemata WHERE schema_name = '$SCHEMA'" \
+                | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
+            done
+  deploy:
+    runs-on: self-hosted
+    needs: [ validate ]
+    steps:
+      - name: Build & deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export WORKING_DIRECTORY=/home/kodemy/KodemyBackend/
+            export NETWORK_NAME=kodemy
+            export DATASOURCE_CONTAINER=kodemybackend-postgres-1
+            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
+            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
+            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
+            export EXPOSE_PORT=${{ secrets.EXPOSE_PORT }}
+            export RABBITMQ_HOST=rabbitmq
+            export RABBITMQ_PORT=5672
+            export RABBITMQ_USERNAME=rabbitmq
+            export RABBITMQ_PASSWORD=rabbitmq
+            export ELASTICSEARCH_HOSTS=["http://opensearch:9200"]
+            export ELASTICSEARCH_USERNAME=opensearch
+            export ELASTICSEARCH_PASSWORD=opensearch
+            export EUREKA_URL=http://kodemy-service-registry:8761/eureka/
+            export FRONTEND_PUBLIC_HOST=http://localhost:3000
+            export GATEWAY_PUBLIC_HOST=http://localhost:8080
+            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
+            
+            cd $WORKING_DIRECTORY
+            
+            cd /commons
+            ./gradlew build
+            
+            cd ../kodemy-api-gateway
+            ./gradlew build -x test
+            cd ../kodemy-auth
+            ./gradlew build -x test
+            cd ../kodemy-backend
+            ./gradlew build -x test
+            cd ../kodemy-notification
+            ./gradlew build -x test
+            cd ../kodemy-search
+            ./gradlew build -x test
+            cd ../kodemy-service-registry
+            ./gradlew build -x test
+            
+            cd $WORKING_DIRECTORY
+            docker compose -f docker-compose.services.yml up --build -d
+
+      - name: Cleanup
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             docker system prune -f 
