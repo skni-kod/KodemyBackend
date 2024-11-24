@@ -2,7 +2,7 @@ name: DEV - Deploy
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ "dev" ]
     paths:
       - '!.gitignore'
       - '!.gitattributes'
