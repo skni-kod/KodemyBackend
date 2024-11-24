@@ -3,10 +3,10 @@ name: DEV - Deploy
 on:
   push:
     branches: [ "dev" ]
-    # paths:
-    #   - '!.gitignore'
-    #   - '!.gitattributes'
-    #   - '!README.md'
+    paths-ignore:
+      - '.gitignore'
+      - '.gitattributes'
+      - 'README.md'
 
 env:
   WORKING_DIRECTORY: ${{ secrets.WORKING_DIRECTORY }}
