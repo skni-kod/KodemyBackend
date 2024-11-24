@@ -8,7 +8,7 @@ Before you can run the project, you will need the following applications:
 
 - Java JDK 17
 - Docker / Docker Compose
-- IntelliJ IDEA (IDE)
+- IntelliJ IDEA (IDE) 
 
 ## Running project
 
