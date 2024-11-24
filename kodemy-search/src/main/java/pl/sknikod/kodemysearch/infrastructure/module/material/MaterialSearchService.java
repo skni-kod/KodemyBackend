@@ -17,6 +17,7 @@ import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPage
 import pl.sknikod.kodemysearch.infrastructure.rest.MaterialControllerDefinition;
 import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,10 +46,12 @@ public class MaterialSearchService {
                     "sectionId", filterSearchParams.getSectionId().toString(), false, false
             ));
         var categoryIds = filterSearchParams.getCategoryIds();
-        if (Objects.nonNull(categoryIds) && categoryIds.length != 0) {
-            criteria.addPhraseField(new SearchCriteria.PhraseField(
-                    "categoryIds", StringUtils.join(categoryIds, ' '), false, false
-            ));
+        if (Objects.nonNull(categoryIds) && !categoryIds.isEmpty()) {
+            categoryIds.forEach(categoryId -> {
+                criteria.addPhraseField(new SearchCriteria.PhraseField(
+                        "categoryId", String.valueOf(categoryId), false, false
+                ));
+            });
         }
         if (Objects.nonNull(filterSearchParams.getMinAvgGrade()) || Objects.nonNull(filterSearchParams.getMaxAvgGrade()))
             criteria.addRangeField(new SearchCriteria.RangeField<>(

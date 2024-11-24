@@ -71,7 +71,7 @@ public class SearchRequestBuilder {
         var query = field.isWildcard()
                 ? WildcardQuery.of(w -> w.field(field.getName()).value(field.getValue())).toQuery()
                 : MatchPhraseQuery.of(m -> m.field(field.getName()).query(field.getValue())).toQuery();
-        (field.isMustNot() ? mustNotQueries : mustQueries).add(query);
+        (field.isMustNot() ? mustNotQueries : shouldQueries).add(query);
     }
 
     private void append(SearchCriteria.RangeField<?> field) {

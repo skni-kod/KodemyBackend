@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemybackend.infrastructure.aspect.AfterAction;
 import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
@@ -81,6 +82,7 @@ public class GradeStore {
                 });
     }
 
+    @AfterAction(action = AfterAction.Action.GRADE_ADD)
     public Try<Grade> addGrade(Long materialId, double value) {
         return Try.of(() -> {
                     if (materialRepository.existsById(materialId)) {

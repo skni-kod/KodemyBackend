@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPageable;
 
+import java.util.List;
+
 @RequestMapping("/api/materials")
 @SwaggerResponse
 @Tag(name = "Material")
@@ -58,7 +60,7 @@ public interface MaterialControllerDefinition {
                   "phrase": "phrase",
                   "id": 1,
                   "sectionId": 1,
-                  "categoryIds": [1],
+                  "categoryIds": [1,1],
                   "minAvgGrade": 2.2,
                   "maxAvgGrade": 4.2
                 }""";
@@ -66,8 +68,8 @@ public interface MaterialControllerDefinition {
         String phrase;
         Long id;
         Long sectionId;
-        Long[] categoryIds;
-        Long[] tagsIds;
+        List<Long> categoryIds;
+        List<Long> tagsIds;
         Double minAvgGrade;
         Double maxAvgGrade;
 

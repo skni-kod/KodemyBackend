@@ -12,6 +12,8 @@ spring:
           destination: material-status-updated
         materialTagsUpdated-out-0:
           destination: material-tags-updated
+        materialGradeUpdated-out-0:
+          destination: material-grade-updated
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SPRING_DATASOURCE_URL}?currentSchema=kodemy-backend

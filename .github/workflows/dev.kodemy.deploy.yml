@@ -1,12 +1,14 @@
-name: DEV - Deploy
+name: DEV - KodemyBackend deploy
 
 on:
   push:
     branches: [ "dev" ]
     paths-ignore:
       - '.gitignore'
-      - '.gitattributes'
+      - 'docker-compose.deploy.yml'
+      - 'docker-compose.yml'
       - 'README.md'
+      - 'config'
 
 env:
   WORKING_DIRECTORY: ${{ secrets.WORKING_DIRECTORY }}
@@ -115,12 +117,12 @@ jobs:
                 | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
             done
   build-and-deploy:
-    name: Build & Deploy
+    name: Build, Test, Deploy
     runs-on: self-hosted
     needs: [ validate ]
     environment: dev
     steps:
-      - name: Build & Deploy
+      - name: Build, Test, Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -128,9 +130,10 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: |
-            WORKING_DIRECTORY,DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DATABASE
-            RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USERNAME, RABBITMQ_PASSWORD,
-            ELASTICSEARCH_HOSTS, ELASTICSEARCH_USERNAME, ELASTICSEARCH_PASSWORD,
+            WORKING_DIRECTORY,
+            DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DATABASE
+            RABBITMQ_HOST,RABBITMQ_PORT,RABBITMQ_USERNAME,RABBITMQ_PASSWORD,
+            ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
             EUREKA_URL,
             FRONTEND_PUBLIC_HOST,
             GATEWAY_PUBLIC_HOST
@@ -150,10 +153,10 @@ jobs:
             ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-service-registry
             ./gradlew clean assemble -x test
-            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
             
+            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
             cd $WORKING_DIRECTORY
-            docker compose -f docker-compose.services.yml up --build -d
+            docker compose -f docker-compose.app.yml up --build -d
       - name: Cleanup
         uses: appleboy/ssh-action@master
         with:
