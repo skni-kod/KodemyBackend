@@ -4,7 +4,7 @@ This is the backend for Kodemy project (SKNI Kod), written in Spring Boot and Gr
 
 ## Prerequisites
 
-Before you can run the project, you will need the following applications:
+Before you can run the project, you will need the following applications: 
 
 - Java JDK 17
 - Docker / Docker Compose
