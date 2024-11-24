@@ -1,103 +1,98 @@
 name: DEV - Deploy
 
-# on:
-#   workflow_dispatch:
 on:
- push:
-   branches: [ "dev" ] 
+  workflow_dispatch:
+  push:
+    branches: [ dev ]
+    paths:
+      - '!.gitignore'
+      - '!.gitattributes'
+      - '!README.md'
+
+env:
+  WORKING_DIRECTORY: ${{ secrets.WORKING_DIRECTORY }}
+  NETWORK_NAME: ${{ secrets.NETWORK_NAME }}
+  DATASOURCE_CONTAINER: ${{ secrets.DATASOURCE_CONTAINER }}
+  DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
+  DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+  DATASOURCE_DATABASE: ${{ secrets.DATASOURCE_DATABASE }}
+  RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
+  RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
+  RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
+  RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+  ELASTICSEARCH_HOSTS: ${{ secrets.RABBITMQ_PASSWORD }}
+  ELASTICSEARCH_USERNAME: ${{ secrets.ELASTICSEARCH_USERNAME }}
+  ELASTICSEARCH_PASSWORD: ${{ secrets.ELASTICSEARCH_PASSWORD }}
+  EUREKA_URL: ${{ secrets.EUREKA_URL }}
+  FRONTEND_PUBLIC_HOST: ${{ secrets.FRONTEND_PUBLIC_HOST }}
+  GATEWAY_PUBLIC_HOST: ${{ secrets.GATEWAY_PUBLIC_HOST }}
 
 jobs:
   prepare:
     name: Prepare
     runs-on: self-hosted
     steps:
-      - name: Check environment variables
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          port: ${{ secrets.REMOTE_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            REQUIRED_VARS=\
-            (
-              ${{ secrets.REMOTE_HOST }}
-              ${{ secrets.REMOTE_USER }}
-              ${{ secrets.REMOTE_PORT }}
-              ${{ secrets.SSH_PRIVATE_KEY }}
-              ${{ secrets.WORKING_DIRECTORY }}
-              ${{ secrets.NETWORK_NAME }}
-              ${{ secrets.DATASOURCE_CONTAINER }}
-              ${{ secrets.DATASOURCE_USERNAME }}
-              ${{ secrets.DATASOURCE_PASSWORD }}
-              ${{ secrets.DATASOURCE_DATABASE }}
-              ${{ secrets.RABBITMQ_HOST }}
-              ${{ secrets.RABBITMQ_PORT }}
-              ${{ secrets.RABBITMQ_USERNAME }}
-              ${{ secrets.RABBITMQ_PASSWORD }}
-              ${{ secrets.RABBITMQ_PASSWORD }}
-              ${{ secrets.ELASTICSEARCH_USERNAME }}
-              ${{ secrets.ELASTICSEARCH_PASSWORD }}
-              ${{ secrets.EUREKA_URL }}
-              ${{ secrets.FRONTEND_PUBLIC_HOST }}
-              ${{ secrets.GATEWAY_PUBLIC_HOST }}
-            )
-            EXIT=0
-            for VAR in "${REQUIRED_VARS[@]}"; do
-              [ -z "${!VAR}" ] && echo "Environment variable $VAR is missing." && EXIT=1
-            done
-            exit $EXIT
-            
-            export DATASOURCE_CONTAINER=${{ secrets.DATASOURCE_CONTAINER }}
-            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
-            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
-            export RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}
-            export RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}
-            export RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}
-            export RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}
-            export ELASTICSEARCH_HOSTS=${{ secrets.RABBITMQ_PASSWORD }}
-            export ELASTICSEARCH_USERNAME=${{ secrets.ELASTICSEARCH_USERNAME }}
-            export ELASTICSEARCH_PASSWORD=${{ secrets.ELASTICSEARCH_PASSWORD }}
-            export EUREKA_URL=${{ secrets.EUREKA_URL }}
-            export FRONTEND_PUBLIC_HOST=${{ secrets.FRONTEND_PUBLIC_HOST }}
-            export GATEWAY_PUBLIC_HOST=${{ secrets.GATEWAY_PUBLIC_HOST }}
-            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
-  checkout:
-    name: Checkout $ Pull
+      - name: Check environments
+        run: |
+          REQUIRED_VARS=\
+          (
+            "WORKING_DIRECTORY"
+            "NETWORK_NAME"
+            "DATASOURCE_CONTAINER"
+            "DATASOURCE_USERNAME"
+            "DATASOURCE_PASSWORD"
+            "DATASOURCE_DATABASE"
+            "RABBITMQ_HOST"
+            "RABBITMQ_PORT"
+            "RABBITMQ_USERNAME"
+            "RABBITMQ_PASSWORD"
+            "RABBITMQ_PASSWORD"
+            "ELASTICSEARCH_USERNAME"
+            "ELASTICSEARCH_PASSWORD"
+            "EUREKA_URL"
+            "FRONTEND_PUBLIC_HOST"
+            "GATEWAY_PUBLIC_HOST"
+          )
+          EXIT=0
+          for VAR in "${REQUIRED_VARS[@]}"; do
+            [ -z "${!VAR}" ] && echo "Environment variable $VAR is missing." && EXIT=1
+          done
+          exit $EXIT
+  update-branch:
+    name: Update branch
     needs: [ prepare ]
     runs-on: self-hosted
+    environment: dev
     steps:
-      - name: Checkout
+      - name: Update ${{ github.ref_name }}
         uses: appleboy/ssh-action@master
+        env:
+          BRANCH: ${{ github.ref_name }}
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: WORKING_DIRECTORY,BRANCH
           script: |
-            export WORKING_DIRECTORY=${{ secrets.WORKING_DIRECTORY }}
             cd $WORKING_DIRECTORY
-            
-            git checkout dev || exit 1
-            git pull || exit 1
+            git checkout $BRANCH || exit 1
+            git pull origin $BRANCH || exit 1
   validate:
-    name: Pre-deploy
+    name: Validate services
     runs-on: self-hosted
-    needs: [ checkout ]
+    needs: [ update-branch ]
+    environment: dev
     steps:
-      - name: Validate
+      - name: Validate services
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: WORKING_DIRECTORY,NETWORK_NAME,DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_DATABASE
           script: |
-            export NETWORK_NAME=${{ secrets.NETWORK_NAME }}
-            export DATASOURCE_CONTAINER=${{ secrets.DATASOURCE_CONTAINER }}
-            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
-            export DATASOURCE_DATABASE=${{ secrets.DATASOURCE_DATABASE }}
-            
             echo "Validate network"
             docker network inspect $NETWORK_NAME > /dev/null 2>&1 \
               || { echo "Network $NETWORK_NAME is not available."; exit 1; }
@@ -111,9 +106,8 @@ jobs:
               || { echo "Database $DATASOURCE_DATABASE does not exist."; exit 1; }
             
             echo "Validate database - schemas"
-            SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
-            
-            for SCHEMA in "${SCHEMAS[@]}"
+            DATASOURCE_SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
+            for SCHEMA in "${DATASOURCE_SCHEMAS[@]}"
             do
               docker exec -t $DATASOURCE_CONTAINER psql \
                 -U $DATASOURCE_USERNAME \
@@ -121,40 +115,43 @@ jobs:
                 -tAc "SELECT 1 FROM information_schema.schemata WHERE schema_name = '$SCHEMA'" \
                 | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
             done
-  deploy:
-    name: Deploy
+  build-and-deploy:
+    name: Build & Deploy
     runs-on: self-hosted
     needs: [ validate ]
+    environment: dev
     steps:
-      - name: Build & deploy
+      - name: Build & Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: |
+            WORKING_DIRECTORY,DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DATABASE
+            RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USERNAME, RABBITMQ_PASSWORD,
+            ELASTICSEARCH_HOSTS, ELASTICSEARCH_USERNAME, ELASTICSEARCH_PASSWORD,
+            EUREKA_URL,
+            FRONTEND_PUBLIC_HOST,
+            GATEWAY_PUBLIC_HOST
           script: |
-            export WORKING_DIRECTORY=${{ secrets.WORKING_DIRECTORY }}
-            export DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}
-            export DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}
-            
-            cd $WORKING_DIRECTORY
-            
-            cd /commons
-            ./gradlew build
+            cd $WORKING_DIRECTORY/commons
+            ./gradlew clean assemble
             
             cd $WORKING_DIRECTORY/kodemy-api-gateway
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-auth
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-backend
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-notification
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-search
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-service-registry
-            ./gradlew build -x test
+            ./gradlew clean assemble -x test
+            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
             
             cd $WORKING_DIRECTORY
             docker compose -f docker-compose.services.yml up --build -d
