@@ -11,38 +11,27 @@ on:
       - 'config'
 
 env:
-  WORKING_DIRECTORY: e
-  NETWORK_NAME: e
-  DATASOURCE_CONTAINER: e
+  WORKING_DIRECTORY: ${{ vars.WORKING_DIRECTORY }}
+  NETWORK_NAME: ${{ vars.NETWORK_NAME }}
+  DATASOURCE_CONTAINER: ${{ vars.DATASOURCE_CONTAINER }}
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
   DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-  DATASOURCE_DB: e
-  RABBITMQ_HOST: e
-  RABBITMQ_PORT: e
+  DATASOURCE_DB: ${{ vars.DATASOURCE_DB }}
+  RABBITMQ_HOST: ${{ vars.RABBITMQ_HOST }}
+  RABBITMQ_PORT: ${{ vars.RABBITMQ_PORT }}
   RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
   RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
-  ELASTICSEARCH_HOSTS: e
+  ELASTICSEARCH_HOSTS: ${{ vars.RABBITMQ_PASSWORD }}
   ELASTICSEARCH_USERNAME: ${{ secrets.ELASTICSEARCH_USERNAME }}
   ELASTICSEARCH_PASSWORD: ${{ secrets.ELASTICSEARCH_PASSWORD }}
-  EUREKA_URL: e
-  FRONTEND_PUBLIC_HOST: e
-  GATEWAY_PUBLIC_HOST: e
+  EUREKA_URL: ${{ vars.EUREKA_URL }}
+  FRONTEND_PUBLIC_HOST: ${{ vars.FRONTEND_PUBLIC_HOST }}
+  GATEWAY_PUBLIC_HOST: ${{ vars.GATEWAY_PUBLIC_HOST }}
 
 jobs:
   prepare:
     name: Prepare
     runs-on: self-hosted
-    env:
-      EUREKA_URL: e
-      FRONTEND_PUBLIC_HOST: e
-      GATEWAY_PUBLIC_HOST: e
-      ELASTICSEARCH_HOSTS: e
-      DATASOURCE_DB: e
-      RABBITMQ_HOST: e
-      RABBITMQ_PORT: e
-      WORKING_DIRECTORY: e
-      NETWORK_NAME: e
-      DATASOURCE_CONTAINER: e
     steps:
       - name: Check environments
         run: |
@@ -74,8 +63,6 @@ jobs:
     name: Update branch
     needs: [ prepare ]
     runs-on: self-hosted
-    env:
-      WORKING_DIRECTORY: e
     environment: dev
     steps:
       - name: Update ${{ github.ref_name }}
@@ -97,11 +84,6 @@ jobs:
     runs-on: self-hosted
     needs: [ update-branch ]
     environment: dev
-    env:
-      DATASOURCE_DB: e
-      WORKING_DIRECTORY: e
-      NETWORK_NAME: e
-      DATASOURCE_CONTAINER: e
     steps:
       - name: Validate services
         uses: appleboy/ssh-action@master
@@ -139,17 +121,6 @@ jobs:
     runs-on: self-hosted
     needs: [ validate ]
     environment: dev
-    env:
-      EUREKA_URL: e
-      FRONTEND_PUBLIC_HOST: e
-      GATEWAY_PUBLIC_HOST: e
-      ELASTICSEARCH_HOSTS: e
-      DATASOURCE_DB: e
-      RABBITMQ_HOST: e
-      RABBITMQ_PORT: e
-      WORKING_DIRECTORY: e
-      NETWORK_NAME: e
-      DATASOURCE_CONTAINER: e
     steps:
       - name: Build, Test, Deploy
         uses: appleboy/ssh-action@master
