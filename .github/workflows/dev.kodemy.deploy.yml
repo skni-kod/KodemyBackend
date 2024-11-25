@@ -16,7 +16,7 @@ env:
   DATASOURCE_CONTAINER: ${{ secrets.DATASOURCE_CONTAINER }}
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
   DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-  DATASOURCE_DATABASE: ${{ secrets.DATASOURCE_DATABASE }}
+  DATASOURCE_DB: ${{ secrets.DATASOURCE_DB }}
   RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
   RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
   RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
@@ -42,7 +42,7 @@ jobs:
             "DATASOURCE_CONTAINER"
             "DATASOURCE_USERNAME"
             "DATASOURCE_PASSWORD"
-            "DATASOURCE_DATABASE"
+            "DATASOURCE_DB"
             "RABBITMQ_HOST"
             "RABBITMQ_PORT"
             "RABBITMQ_USERNAME"
@@ -92,7 +92,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: WORKING_DIRECTORY,NETWORK_NAME,DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_DATABASE
+          envs: WORKING_DIRECTORY,NETWORK_NAME,DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_DB
           script: |
             echo "Validate network"
             docker network inspect $NETWORK_NAME > /dev/null 2>&1 \
@@ -103,8 +103,8 @@ jobs:
               || { echo "PostgreSQL is not running."; exit 1; }
             
             echo "Validate database - database"
-            docker exec -t $DATASOURCE_CONTAINER psql -lqt -U $DATASOURCE_USERNAME | grep -q $DATASOURCE_DATABASE \
-              || { echo "Database $DATASOURCE_DATABASE does not exist."; exit 1; }
+            docker exec -t $DATASOURCE_CONTAINER psql -lqt -U $DATASOURCE_USERNAME | grep -q $DATASOURCE_DB \
+              || { echo "Database $DATASOURCE_DB does not exist."; exit 1; }
             
             echo "Validate database - schemas"
             DATASOURCE_SCHEMAS=("kodemy-auth" "kodemy-backend" "kodemy-notification")
@@ -112,7 +112,7 @@ jobs:
             do
               docker exec -t $DATASOURCE_CONTAINER psql \
                 -U $DATASOURCE_USERNAME \
-                -d $DATASOURCE_DATABASE \
+                -d $DATASOURCE_DB \
                 -tAc "SELECT 1 FROM information_schema.schemata WHERE schema_name = '$SCHEMA'" \
                 | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
             done
@@ -131,7 +131,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: |
             WORKING_DIRECTORY,
-            DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DATABASE
+            DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DB,
             RABBITMQ_HOST,RABBITMQ_PORT,RABBITMQ_USERNAME,RABBITMQ_PASSWORD,
             ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
             EUREKA_URL,
@@ -154,9 +154,9 @@ jobs:
             cd $WORKING_DIRECTORY/kodemy-service-registry
             ./gradlew clean assemble -x test
             
-            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
+            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DB
             echo $DATASOURCE_CONTAINER >> logs.txt
-            echo $DATASOURCE_DATABASE >> logs.txt
+            echo $$DATASOURCE_DB >> logs.txt
             echo $GATEWAY_PUBLIC_HOST >> logs.txt
 
             cd $WORKING_DIRECTORY
