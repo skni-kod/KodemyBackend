@@ -32,7 +32,7 @@ spring:
           github:
             clientId: Ov23li5LD47i4815okXp
             clientSecret: fd2972bffedc3ad0e0a9eeda2935e4ac0255c70a
-            redirect-uri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
+            redirectUri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
             scope: [ 'user:email', 'read:user' ]
 
 management:

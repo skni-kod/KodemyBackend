@@ -13,6 +13,7 @@ public @interface AfterAction {
     enum Action {
         SAVE,
         UPDATE,
-        STATUS_UPDATE
+        STATUS_UPDATE,
+        GRADE_ADD
     }
 }

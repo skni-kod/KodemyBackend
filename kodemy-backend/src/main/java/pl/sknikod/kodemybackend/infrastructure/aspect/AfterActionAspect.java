@@ -9,8 +9,10 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialCreatedProducer;
+import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialGradeUpdatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialStatusUpdatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialUpdatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.store.GradeStore;
@@ -26,6 +28,7 @@ public class AfterActionAspect {
     private final MaterialCreatedProducer materialCreatedProducer;
     private final MaterialUpdatedProducer materialUpdatedProducer;
     private final MaterialStatusUpdatedProducer materialStatusUpdatedProducer;
+    private final MaterialGradeUpdatedProducer materialGradeUpdatedProducer;
 
     @Pointcut("@annotation(afterAction)")
     public void afterActionPointcut(AfterAction afterAction) {
@@ -39,6 +42,7 @@ public class AfterActionAspect {
             case SAVE -> afterSave((Try<Material>) result);
             case UPDATE -> afterUpdate((Try<Material>) result);
             case STATUS_UPDATE -> afterStatusUpdate((Tuple2<Long, Material.MaterialStatus>) result);
+            case GRADE_ADD -> afterGradeAdd((Try<Grade>) result);
         }
     }
 
@@ -71,5 +75,13 @@ public class AfterActionAspect {
         log.info("After status update action executed");
         Try.of(() -> new MaterialStatusUpdatedProducer.Message(result._1, result._2))
                 .peek(materialStatusUpdatedProducer::publish);
+    }
+
+    private void afterGradeAdd(Try<Grade> result) {
+        log.info("After grade add action executed");
+        result.flatMap(grade -> gradeStore.findAvgGradeByMaterial(grade.getMaterial().getId())
+                .map(avgGrade -> Tuple.of(grade.getMaterial().getId(), avgGrade)))
+                .map(tuple -> new MaterialGradeUpdatedProducer.Message(tuple._1, tuple._2))
+                .peek(materialGradeUpdatedProducer::publish);
     }
 }

@@ -54,11 +54,11 @@ public interface UserControllerDefinition {
         public static final String SEARCH_FIELDS_DOC = """
                 {
                     "phrase": "phrase",
-                    "id": 0,
+                    "id": 1,
                     "statuses": ["PENDING"],
-                    "sectionId": 0,
-                    "categoryIds": [0],
-                    "tagIds": [0],
+                    "sectionId": 1,
+                    "categoryIds": [1,1],
+                    "tagIds": [1],
                     "minAvgGrade": 2.2,
                     "maxAvgGrade": 4.2
                 }""";

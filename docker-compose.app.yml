@@ -1,84 +1,4 @@
 services:
-  postgres:
-    image: postgres:14.1-alpine
-    environment:
-      POSTGRES_USER: ${POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_vol:/var/lib/postgresql/data
-      - ./init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
-    ports:
-      - ${POSTGRES_PORT}:5432
-    networks:
-      - kodemy
-    deploy:
-      replicas: 1
-
-  rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-    volumes:
-      - rabbitmq_vol:/var/lib/rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - kodemy
-    deploy:
-      replicas: 1
-
-  opensearch:
-    image: opensearchproject/opensearch:latest
-    environment:
-      OPENSEARCH_JAVA_OPTS: "-Xms1024m -Xmx1024m"
-      cluster.name: kodemy-os-cluster
-      node.name: kodemy-os-n1
-      discovery.seed_hosts: kodemy-os-n1
-      discovery.type: single-node
-      DISABLE_SECURITY_PLUGIN: "true"
-      bootstrap.memory_lock: "true"
-    # ulimits:
-    #   memlock:
-    #     soft: -1
-    #     hard: -1
-    #   nofile:
-    #     soft: 65536
-    #     hard: 65536
-    volumes:
-      - opensearch_vol:/usr/share/opensearch/data
-      #- ./config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
-    ports:
-      - 9200:9200
-      - 9600:9600
-    networks:
-      - kodemy
-
-  opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:latest
-    environment:
-      OPENSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
-      DISABLE_SECURITY_DASHBOARDS_PLUGIN: true
-      #ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
-      #ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
-    ports:
-      - "5601:5601"
-    networks:
-      - kodemy
-    depends_on:
-      - opensearch
-
-  redis:
-    image: redis:latest
-    volumes:
-      - redis_vol:/data
-    networks:
-      - kodemy
-    deploy:
-      replicas: 1
-
   kodemy-service-registry:
     image: kodemy-service-registry:latest
     build:
@@ -119,16 +39,14 @@ services:
       - "8081:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
       GATEWAY_PUBLIC_HOST: ${GATEWAY_PUBLIC_HOST}
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
     depends_on:
-      - postgres
-      - redis
       - kodemy-service-registry
 
   kodemy-backend:
@@ -142,8 +60,8 @@ services:
       - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -151,10 +69,7 @@ services:
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
-    depends_on:
-      - postgres
-      - rabbitmq
-      
+
   kodemy-notification:
     image: kodemy-notification:latest
     build:
@@ -166,8 +81,8 @@ services:
       - "8084:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -175,9 +90,6 @@ services:
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
-    depends_on:
-      - postgres
-      - rabbitmq
 
   kodemy-search:
     image: kodemy-search:latest
@@ -196,19 +108,6 @@ services:
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
-    depends_on:
-      - opensearch
-      - rabbitmq
-
+      
 networks:
   kodemy:
-
-volumes:
-  postgres_vol:
-    driver: local
-  rabbitmq_vol:
-    driver: local
-  opensearch_vol:
-    driver: local
-  redis_vol:
-    driver: local

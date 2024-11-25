@@ -84,4 +84,14 @@ public class MaterialSearchStore implements SearchStore<MaterialIndexData> {
                 })
                 .onFailure(th -> log.error("Error during search", th));
     }
+
+    public Try<UpdateResponse<MaterialIndexData>> update(Long materialId, double avgGrade) {
+        return Try.of(() -> {
+                    var updateRequest = new UpdateRequest.Builder<MaterialIndexData, Map<String, String>>()
+                            .index(INDEX).id(materialId.toString())
+                            .doc(Map.of("avgGrade", String.valueOf(avgGrade))).build();
+                    return openSearchClient.update(updateRequest, MaterialIndexData.class);
+                })
+                .onFailure(th -> log.error("Failed to update material average grade", th));
+    }
 }

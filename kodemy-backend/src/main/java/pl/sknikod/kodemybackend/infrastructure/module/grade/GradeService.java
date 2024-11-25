@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.mapper.GradeMapper;
 import pl.sknikod.kodemybackend.infrastructure.module.grade.model.GradeMaterialFilterSearchParams;
@@ -27,8 +26,8 @@ public class GradeService {
     private final GradeMapper gradeMapper;
     private final GradeStore gradeStore;
 
-    public Grade addGrade(Long materialId, MaterialAddGradeRequest request) {
-        return gradeStore.addGrade(materialId, Double.parseDouble(request.getGrade()))
+    public void addGrade(Long materialId, MaterialAddGradeRequest request) {
+        gradeStore.addGrade(materialId, Double.parseDouble(request.getGrade()))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 

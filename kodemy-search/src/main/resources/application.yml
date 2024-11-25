@@ -3,7 +3,7 @@ spring:
   banner.location: classpath:banner.txt
   cloud:
     function:
-      definition: materialCreated;materialUpdated;materialStatusUpdated;materialTagsUpdated
+      definition: materialCreated;materialUpdated;materialStatusUpdated;materialTagsUpdated;materialGradeUpdated
     stream:
       default-binder: rabbit
       bindings:
@@ -23,6 +23,10 @@ spring:
           contentType: application/json
           destination: material-tags-updated
           group: kodemy
+        materialGradeUpdated-in-0:
+          contentType: application/json
+          destination: material-grade-updated
+          group: kodemy
       rabbit:
         bindings:
           materialCreated-in-0:
@@ -41,6 +45,11 @@ spring:
               dlqTtl: 10000
               dlqDeadLetterExchange:
           materialTagsUpdated-in-0:
+            consumer:
+              auto-bind-dlq: true
+              dlqTtl: 10000
+              dlqDeadLetterExchange:
+          materialGradeUpdated-in-0:
             consumer:
               auto-bind-dlq: true
               dlqTtl: 10000
