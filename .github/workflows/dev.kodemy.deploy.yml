@@ -155,6 +155,8 @@ jobs:
             ./gradlew clean assemble -x test
             
             export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DATABASE
+            echo $DATASOURCE_URL
+
             cd $WORKING_DIRECTORY
             docker compose -f docker-compose.app.yml up --build -d
       - name: Cleanup
