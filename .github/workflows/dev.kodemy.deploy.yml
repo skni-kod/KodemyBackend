@@ -32,6 +32,17 @@ jobs:
   prepare:
     name: Prepare
     runs-on: self-hosted
+    env:
+      EUREKA_URL: e
+      FRONTEND_PUBLIC_HOST: e
+      GATEWAY_PUBLIC_HOST: e
+      ELASTICSEARCH_HOSTS: e
+      DATASOURCE_DB: e
+      RABBITMQ_HOST: e
+      RABBITMQ_PORT: e
+      WORKING_DIRECTORY: e
+      NETWORK_NAME: e
+      DATASOURCE_CONTAINER: e
     steps:
       - name: Check environments
         run: |
@@ -63,6 +74,8 @@ jobs:
     name: Update branch
     needs: [ prepare ]
     runs-on: self-hosted
+    env:
+      WORKING_DIRECTORY: e
     environment: dev
     steps:
       - name: Update ${{ github.ref_name }}
@@ -84,6 +97,11 @@ jobs:
     runs-on: self-hosted
     needs: [ update-branch ]
     environment: dev
+    env:
+      DATASOURCE_DB: e
+      WORKING_DIRECTORY: e
+      NETWORK_NAME: e
+      DATASOURCE_CONTAINER: e
     steps:
       - name: Validate services
         uses: appleboy/ssh-action@master
@@ -121,6 +139,17 @@ jobs:
     runs-on: self-hosted
     needs: [ validate ]
     environment: dev
+    env:
+      EUREKA_URL: e
+      FRONTEND_PUBLIC_HOST: e
+      GATEWAY_PUBLIC_HOST: e
+      ELASTICSEARCH_HOSTS: e
+      DATASOURCE_DB: e
+      RABBITMQ_HOST: e
+      RABBITMQ_PORT: e
+      WORKING_DIRECTORY: e
+      NETWORK_NAME: e
+      DATASOURCE_CONTAINER: e
     steps:
       - name: Build, Test, Deploy
         uses: appleboy/ssh-action@master
