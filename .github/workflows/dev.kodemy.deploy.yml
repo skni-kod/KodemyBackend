@@ -21,6 +21,7 @@ env:
   EUREKA_URL: ${{ vars.EUREKA_URL }}
   FRONTEND_PUBLIC_HOST: ${{ vars.FRONTEND_PUBLIC_HOST }}
   GATEWAY_PUBLIC_HOST: ${{ vars.GATEWAY_PUBLIC_HOST }}
+  OAUTH_GITHUB_ID: ${{ vars.OAUTH_GITHUB_ID }}
   
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
   DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
@@ -28,6 +29,8 @@ env:
   RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
   ELASTICSEARCH_USERNAME: ${{ secrets.ELASTICSEARCH_USERNAME }}
   ELASTICSEARCH_PASSWORD: ${{ secrets.ELASTICSEARCH_PASSWORD }}
+  OAUTH_GITHUB_KEY: ${{ secrets.OAUTH_GITHUB_KEY }}
+  JWT_KEY: ${{ secrets.JWT_KEY }}
 
 jobs:
   prepare:
@@ -55,6 +58,9 @@ jobs:
             "EUREKA_URL"
             "FRONTEND_PUBLIC_HOST"
             "GATEWAY_PUBLIC_HOST"
+            "OAUTH_GITHUB_ID"
+            "OAUTH_GITHUB_KEY"
+            "JWT_KEY"
           )
           EXIT=0
           for VAR in "${REQUIRED_VARS[@]}"; do
@@ -138,7 +144,9 @@ jobs:
             ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
             EUREKA_URL,
             FRONTEND_PUBLIC_HOST,
-            GATEWAY_PUBLIC_HOST
+            GATEWAY_PUBLIC_HOST,
+            OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
+            JWT_KEY
           script: |
             cd $WORKING_DIRECTORY/commons
             ./gradlew clean assemble

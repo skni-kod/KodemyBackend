@@ -30,8 +30,8 @@ spring:
       client:
         registration:
           github:
-            clientId: Ov23li5LD47i4815okXp
-            clientSecret: fd2972bffedc3ad0e0a9eeda2935e4ac0255c70a
+            clientId: ${OAUTH_GITHUB_ID}
+            clientSecret: ${OAUTH_GITHUB_KEY}
             redirectUri: ${app.security.oauth2.route.gateway}${app.security.oauth2.endpoints.callback}/github
             scope: [ 'user:email', 'read:user' ]
 
@@ -72,7 +72,7 @@ network:
     gateway: ${GATEWAY_PUBLIC_HOST}
 
 jwt:
-  secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
+  secret-key: ${JWT_KEY}
 
 app:
   security:

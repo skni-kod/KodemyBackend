@@ -44,6 +44,9 @@ services:
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
       GATEWAY_PUBLIC_HOST: ${GATEWAY_PUBLIC_HOST}
       EUREKA_URL: ${EUREKA_URL}
+      OAUTH_GITHUB_ID: ${OAUTH_GITHUB_ID}
+      OAUTH_GITHUB_KEY: ${OAUTH_GITHUB_KEY}
+      JWT_KEY: ${JWT_KEY}
     deploy:
       replicas: 1
     depends_on:
@@ -67,6 +70,7 @@ services:
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       EUREKA_URL: ${EUREKA_URL}
+      JWT_KEY: ${JWT_KEY}
     deploy:
       replicas: 1
 
@@ -106,6 +110,7 @@ services:
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       EUREKA_URL: ${EUREKA_URL}
+      JWT_KEY: ${JWT_KEY}
     deploy:
       replicas: 1
       
