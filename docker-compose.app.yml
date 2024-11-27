@@ -22,6 +22,7 @@ services:
       - kodemy
     environment:
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
