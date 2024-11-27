@@ -21,14 +21,14 @@ public class WebConfiguration {
 
     @Bean
     public CorsWebFilter corsFilter(CorsProperties corsProperties) {
-        log.info("Configuring CORS: {}", corsProperties.allowedOrigins);
+        log.info("Configuring CORS: {}", corsProperties.getAllowedOrigins());
         var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(corsProperties.credentials);
-        corsConfiguration.setAllowedOrigins(corsProperties.allowedOrigins);
+        corsConfiguration.setAllowCredentials(corsProperties.isCredentials());
+        corsConfiguration.setAllowedOrigins(corsProperties.getAllowedOrigins());
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         var source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(corsProperties.mapping, corsConfiguration);
+        source.registerCorsConfiguration(corsProperties.getMapping(), corsConfiguration);
         return new CorsWebFilter(source);
     }
 
