@@ -2,7 +2,7 @@ name: DEV - KodemyBackend deploy
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev-deploy" ]
     paths-ignore:
       - '.gitignore'
       - 'docker-compose.deploy.yml'

@@ -3,7 +3,7 @@ spring:
   banner.location: classpath:banner.txt
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL}
+    url: ${SPRING_DATASOURCE_URL}?currentSchema=kodemy-auth
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
@@ -20,7 +20,7 @@ spring:
     show-sql: true
     properties:
       hibernate.types.print.banner: false
-    
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
     contexts: prod
@@ -89,7 +89,7 @@ app:
         redirect: /api/callback
     roles:
       primary: ROLE_USER
-      
+
 eureka:
   client:
     serviceUrl:
