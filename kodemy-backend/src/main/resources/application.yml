@@ -63,15 +63,12 @@ management:
 network:
   route:
     auth: http://kodemy-auth:8080
-  lan:
-    username: user
-    password: password
-    connect-timeout-ms: 3000
-    read-timeout-ms: 5000
+  connect-timeout-ms: 3000
+  read-timeout-ms: 5000
 
 jwt:
   secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
-  
+
 eureka:
   client:
     serviceUrl:

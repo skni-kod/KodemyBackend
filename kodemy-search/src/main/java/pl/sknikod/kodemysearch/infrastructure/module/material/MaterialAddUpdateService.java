@@ -8,18 +8,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.opensearch.client.opensearch._types.WriteResponseBase;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemysearch.infrastructure.dao.MaterialSearchDao;
+import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexEvent;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 @DependsOn("rabbitConfiguration")
 public class MaterialAddUpdateService {
-    private final MaterialSearchDao materialSearchDao;
+    private final MaterialSearchStore materialSearchStore;
     private final ObjectMapper objectMapper;
     private final MaterialIndexDataMapper mapper;
 
@@ -31,14 +31,14 @@ public class MaterialAddUpdateService {
 
     public String index(String msg) {
         return mapToMaterialIndexData(msg)
-                .flatMap(materialSearchDao::save)
+                .flatMap(materialSearchStore::save)
                 .map(WriteResponseBase::id)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     public String reindex(String msg) {
         return mapToMaterialIndexData(msg)
-                .flatMap(materialSearchDao::update)
+                .flatMap(materialSearchStore::update)
                 .map(WriteResponseBase::id)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }

@@ -1,6 +1,5 @@
 package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 
-import io.vavr.control.Try;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,23 +8,23 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.stereotype.Component;
+import pl.sknikod.kodemyauth.infrastructure.store.AuthRedisStore;
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.util.Base64;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class OAuth2AuthorizationRequestRepository implements
         AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
     private static final String AUTH_REQ_PREFIX = "oauth2_auth_request";
-    private static final Duration SESSION_STORE_DURATION = Duration.ofMinutes(5);
-    private final StringRedisTemplate redisTemplate;
+    private final AuthRedisStore authRedisStore;
 
     private final HttpSessionOAuth2AuthorizationRequestRepository delegate =
             new HttpSessionOAuth2AuthorizationRequestRepository();
@@ -33,8 +32,7 @@ public class OAuth2AuthorizationRequestRepository implements
     @Override
     @Nullable
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        return Try.of(() -> redisTemplate.opsForValue().get(getRedisKey(getStateParam(request))))
-                .onFailure(th -> log.error("Problem with getting {} redis key value", AUTH_REQ_PREFIX, th))
+        return authRedisStore.findByKey(getRedisKey(getStateParam(request)))
                 .mapTry(encodedReq -> (OAuth2AuthorizationRequest) Base64Coder.decode(encodedReq))
                 .getOrNull();
     }
@@ -57,11 +55,7 @@ public class OAuth2AuthorizationRequestRepository implements
         }
         var state = authorizationRequest.getState();
         if (state != null) {
-            Try.of(() -> {
-                var encodedReq = Base64Coder.encode(authorizationRequest);
-                redisTemplate.opsForValue().set(getRedisKey(state), encodedReq, SESSION_STORE_DURATION);
-                return true;
-            }).onFailure(th -> log.error("Problem with store {} redis key", AUTH_REQ_PREFIX, th));
+            authRedisStore.save(getRedisKey(state), Base64Coder.encode(authorizationRequest));
         }
     }
 
@@ -70,8 +64,7 @@ public class OAuth2AuthorizationRequestRepository implements
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         OAuth2AuthorizationRequest authorizationRequest = loadAuthorizationRequest(request);
         if (authorizationRequest != null) {
-            Try.of(() -> redisTemplate.delete(getRedisKey(getStateParam(request))))
-                    .onFailure(th -> log.warn("Cannot delete redis {} key", AUTH_REQ_PREFIX, th));
+            authRedisStore.delete(getRedisKey(getStateParam(request)));
         }
         return authorizationRequest;
     }

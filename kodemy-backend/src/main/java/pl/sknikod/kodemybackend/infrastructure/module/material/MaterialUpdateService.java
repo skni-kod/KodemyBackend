@@ -10,17 +10,17 @@ import lombok.Data;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import pl.sknikod.kodemybackend.infrastructure.common.lan.LanNetworkHandler;
-import pl.sknikod.kodemybackend.infrastructure.dao.*;
+import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.Type;
-import pl.sknikod.kodemybackend.infrastructure.module.material.producer.MaterialUpdatedProducer;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemybackend.infrastructure.store.CategoryStore;
+import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
+import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
+import pl.sknikod.kodemybackend.infrastructure.store.TypeStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
-import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Set;
@@ -28,39 +28,30 @@ import java.util.Set;
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.APPROVED;
 import static pl.sknikod.kodemybackend.infrastructure.database.Material.MaterialStatus.PENDING;
 
+@Service
 @AllArgsConstructor
 public class MaterialUpdateService {
     private final MaterialUpdateMapper updateMaterialMapper;
-    private final CategoryDao categoryDao;
-    private final TypeDao typeDao;
-    private final TagDao tagDao;
-    private final MaterialDao materialDao;
-    private final MaterialUpdatedProducer materialUpdatedProducer;
-    private final GradeDao gradeDao;
+    private final CategoryStore categoryStore;
+    private final TypeStore typeStore;
+    private final TagStore tagStore;
+    private final MaterialStore materialStore;
     private static final SimpleGrantedAuthority CAN_AUTO_APPROVED_MATERIAL =
             new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL");
-    private final LanNetworkHandler lanNetworkHandler;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
-        var userPrincipal = AuthFacade.getCurrentUserPrincipal()
-                .orElseThrow(InternalError500Exception::new);
-        var material = materialDao.findById(materialId)
+        var material = materialStore.findById(materialId, true)
+                .map(MaterialStore.FindByIdObject::getMaterial)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var category = categoryDao.findById(body.categoryId)
+        var category = categoryStore.findById(body.categoryId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var type = typeDao.findById(body.typeId)
+        var type = typeStore.findById(body.typeId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var tags = tagDao.findAllByIdIn(body.tagsIds)
-                .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        var avgGrade = gradeDao.findAvgGradeByMaterial(material.getId())
-                .getOrElseThrow(ExceptionUtil::throwIfFailure);
-        final var userUsername = lanNetworkHandler.getUser(material.getUserId())
+        var tags = tagStore.findAllByIdIn(body.tagsIds)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
 
-        return Try.of(() -> updateEntity(material, body, userPrincipal, category, type, tags))
-                .flatMap(materialDao::save)
-                .peek(entity -> materialUpdatedProducer.publish(MaterialUpdatedProducer.Message.map(
-                        material, avgGrade, new MaterialUpdatedProducer.Message.Author(material.getUserId(), userUsername))))
+        return Try.of(() -> updateEntity(material, body, category, type, tags))
+                .flatMap(materialStore::update)
                 .map(updateMaterialMapper::map)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
@@ -68,7 +59,6 @@ public class MaterialUpdateService {
     private Material updateEntity(
             Material material,
             MaterialUpdateRequest body,
-            UserPrincipal userPrincipal,
             Category category,
             Type type,
             Set<Tag> tags
@@ -80,7 +70,7 @@ public class MaterialUpdateService {
         material.setCategory(category);
         material.setType(type);
         material.setTags(tags);
-        material.setStatus(validateStatus(userPrincipal.getAuthorities(), material.getStatus()));
+        material.setStatus(validateStatus(AuthFacade.getCurrentUserPrincipal().get().getAuthorities(), material.getStatus()));
         return material;
     }
 

@@ -5,17 +5,32 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
 
 import java.util.Map;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     private final String redirectPath;
     private static final Map<String, String> GENERAL_ERROR_PARAMS = Map.of("error", "authentication_error");
+
+    @Autowired
+    public OAuth2LoginFailureHandler(
+            RouteRedirectStrategy routeRedirectStrategy,
+            @Value("${app.security.oauth2.route.front}") String frontRoute,
+            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
+    ) {
+        this((frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint);
+        this.setRedirectStrategy(routeRedirectStrategy);
+    }
 
     @Override
     public void onAuthenticationFailure(

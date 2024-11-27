@@ -21,7 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.dao.RefreshTokenDao;
+import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutRequestHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutSuccessHandler;
@@ -98,70 +98,20 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtConfiguration.JwtProperties jwtProperties() {
-        return new JwtConfiguration.JwtProperties();
-    }
-
-    @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter(
             OAuth2EndpointsProperties oAuth2EndpointsProperties,
-            JwtConfiguration.JwtProperties jwtProperties
+            JwtProvider jwtProvider
     ) {
         final var permitPaths = List.of(
                 oAuth2EndpointsProperties.authorize + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX,
                 oAuth2EndpointsProperties.callback + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX
         );
-        return new JwtAuthorizationFilter(permitPaths, jwtProperties);
+        return new JwtAuthorizationFilter(permitPaths, jwtProvider);
     }
 
     @Bean
-    public OAuth2AuthorizationRequestRepository oAuth2AuthorizeRequestResolver(
-            StringRedisTemplate stringRedisTemplate
-    ) {
-        return new OAuth2AuthorizationRequestRepository(stringRedisTemplate);
-    }
-
-    @Bean
-    public JwtProvider jwtProvider(JwtConfiguration.JwtProperties jwtProperties) {
-        return new JwtProvider(jwtProperties);
-    }
-
-    @Bean
-    public OAuth2LoginSuccessHandler oAuth2SuccessProcessHandler(
-            JwtProvider jwtProvider,
-            @Value("${app.security.oauth2.route.front}") String frontRoute,
-            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint,
-            RefreshTokenDao refreshTokenRepositoryHandler,
-            RouteRedirectStrategy routeRedirectStrategy
-    ) {
-        var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;
-        final var handler = new OAuth2LoginSuccessHandler(jwtProvider, redirectPath, refreshTokenRepositoryHandler);
-        handler.setRedirectStrategy(routeRedirectStrategy);
-        return handler;
-    }
-
-    @Bean
-    public OAuth2LoginFailureHandler oAuth2FailureProcessHandler(
-            RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${app.security.oauth2.route.front}") String frontRoute,
-            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
-    ) {
-        var redirectPath = (frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint;
-        final var handler = new OAuth2LoginFailureHandler(redirectPath);
-        handler.setRedirectStrategy(routeRedirectStrategy);
-        return handler;
-    }
-
-    @Bean
-    public LogoutRequestHandler logoutRequestHandler(
-            LogoutService logoutService, JwtProvider jwtProvider) {
-        return new LogoutRequestHandler(logoutService, jwtProvider);
-    }
-
-    @Bean
-    public LogoutSuccessHandler logoutSuccessHandler(
-            @Value("${network.route.gateway}") String gatewayRoute) {
-        return new LogoutSuccessHandler(gatewayRoute);
+    public JwtProvider jwtProvider(JwtConfiguration jwtConfiguration) {
+        return new JwtProvider(jwtConfiguration.getJwtProperties());
     }
 
     @Getter
