@@ -80,7 +80,7 @@ logging:
 app:
   security:
     cors:
-      allowed-origins: ${ALLOWED_ORIGINS}
+      allowed-origins: ${ALLOWED_ORIGINS:[]}
           
 eureka:
   client:
