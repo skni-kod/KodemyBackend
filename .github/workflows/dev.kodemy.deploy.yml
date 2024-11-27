@@ -150,7 +150,6 @@ jobs:
             OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
             JWT_KEY
           script: |
-            echo "$CORS_ALLOWED_ORIGINS" >> test.txt
           
             cd $WORKING_DIRECTORY/commons
             ./gradlew clean assemble
