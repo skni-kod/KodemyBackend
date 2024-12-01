@@ -21,6 +21,8 @@ services:
     environment:
       FRONTEND_PUBLIC_HOST: ${FRONTEND_PUBLIC_HOST}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      OAUTH_GITHUB_ID: ${OAUTH_GITHUB_ID}
+      OAUTH_GITHUB_KEY: ${OAUTH_GITHUB_KEY}
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
