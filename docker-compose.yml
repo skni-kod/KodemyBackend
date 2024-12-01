@@ -11,6 +11,18 @@ services:
       - postgres_vol:/var/lib/postgresql/data
     networks:
       - kodemy
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kodemy@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -77,6 +89,8 @@ networks:
 
 volumes:
   postgres_vol:
+    driver: local
+  pgadmin_data:
     driver: local
   rabbitmq_vol:
     driver: local
