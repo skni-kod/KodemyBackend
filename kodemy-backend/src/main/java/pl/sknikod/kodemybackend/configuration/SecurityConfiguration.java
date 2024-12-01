@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,19 +34,18 @@ public class SecurityConfiguration {
             HttpSecurity http,
             JwtAuthorizationFilter jwtAuthorizationFilter,
             ServletExceptionHandler servletExceptionHandler
-            //LogoutSuccessHandler logoutSuccessHandler
     ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(servletExceptionHandler::entryPoint)
                         .accessDeniedHandler(servletExceptionHandler::accessDenied)
                 )
-                //.logout(config -> config.logoutSuccessHandler(logoutSuccessHandler))
+                .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }

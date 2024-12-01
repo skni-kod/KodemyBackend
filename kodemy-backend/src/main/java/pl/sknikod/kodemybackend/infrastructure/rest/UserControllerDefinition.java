@@ -25,7 +25,6 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialSor
 import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/api/users")

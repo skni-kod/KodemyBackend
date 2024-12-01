@@ -20,7 +20,7 @@ spring:
     show-sql: true
     properties:
       hibernate.types.print.banner: false
-    
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-root.xml
     contexts: prod
@@ -67,8 +67,8 @@ logbook:
       - path: /actuator/health
         methods: "*"
 
-network:
-  route:
+service:
+  baseUrl:
     gateway: http://kodemy-api-gateway:8080
 
 jwt:
@@ -80,16 +80,16 @@ app:
       credentials: true
       mapping: "/**"
     oauth2:
-      route:
+      baseUrl:
         front: ${FRONTEND_PUBLIC_HOST}
         gateway: ${GATEWAY_PUBLIC_HOST}
-      endpoints:
+      endpoint:
         authorize: /api/oauth2/authorize
         callback: /api/oauth2/callback
         redirect: /api/callback
     roles:
       primary: ROLE_USER
-      
+
 eureka:
   client:
     serviceUrl:

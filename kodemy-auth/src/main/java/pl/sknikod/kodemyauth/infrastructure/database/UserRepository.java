@@ -17,10 +17,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             value = """
                     SELECT u FROM User u \
                     INNER JOIN Provider up ON u = up.user \
-                    WHERE up.principalId = :principalId AND up.providerType = :registrationId\
+                    WHERE up.principalId = :principalId AND up.providerType = :registration\
                     """
     )
-    User findUserByPrincipalIdAndAuthProvider(String principalId, String registrationId);
+    User findUserByPrincipalIdAndAuthProvider(String principalId, String registration);
 
     @Query(
             value = """

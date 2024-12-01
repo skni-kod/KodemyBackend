@@ -7,14 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.RefreshToken;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
 import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collection;
@@ -34,7 +33,7 @@ public class RefreshTokensService {
                 .flatMapTry(this::generateTokensAndInvalidate)
                 .map(tokens -> new RefreshTokensResponse(
                         tokens._2.getToken().toString(), tokens._1.value()))
-                .getOrElseThrow(th -> new InternalError500Exception());
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {

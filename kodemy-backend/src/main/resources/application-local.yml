@@ -17,8 +17,8 @@ management:
 logging.level:
   org.springframework.security: DEBUG
 
-network:
-  route:
+service:
+  baseUrl:
     auth: http://localhost:8080
 
 jwt:
@@ -26,5 +26,4 @@ jwt:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+    enabled: false

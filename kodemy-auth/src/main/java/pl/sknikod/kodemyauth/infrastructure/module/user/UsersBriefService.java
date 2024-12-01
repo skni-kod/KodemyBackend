@@ -3,8 +3,8 @@ package pl.sknikod.kodemyauth.infrastructure.module.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.SimpleUserResponse;
+import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import java.util.List;
