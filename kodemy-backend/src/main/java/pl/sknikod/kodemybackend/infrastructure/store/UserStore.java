@@ -31,7 +31,7 @@ public class UserStore {
         };
     }
 
-    public UserStore(LanRestTemplate lanRestTemplate, @Value("${network.route.auth}") String authRouteBaseUrl) {
+    public UserStore(LanRestTemplate lanRestTemplate, @Value("${service.baseUrl.auth}") String authRouteBaseUrl) {
         this.lanRestTemplate = lanRestTemplate;
         this.authRouteBaseUrl = authRouteBaseUrl;
     }

@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.*;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
@@ -26,7 +26,7 @@ public class UserStore {
     private final RoleRepository roleRepository;
     private final SecurityConfiguration.RoleProperties roleProperties;
 
-    public Optional<User> save(OAuth2ProcessorResult result) {
+    public Optional<User> save(ProviderUser result) {
         return this.fetchRole(roleProperties.getPrimary())
                 .map(role -> new User(
                         result.getUsername(), result.getEmail(),
@@ -52,7 +52,7 @@ public class UserStore {
                 .onFailure(th -> log.error(th.getMessage()));
     }
 
-    public Try<User> findByProviderUser(OAuth2ProcessorResult result) {
+    public Try<User> findByProviderUser(ProviderUser result) {
         return Option.of(userRepository.findUserByPrincipalIdAndAuthProvider(
                         result.getPrincipalId(), result.getRegistrationId()
                 ))

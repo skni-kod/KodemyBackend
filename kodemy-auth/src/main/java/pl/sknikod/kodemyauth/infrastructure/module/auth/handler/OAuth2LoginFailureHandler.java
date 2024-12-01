@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler;
+package pl.sknikod.kodemyauth.infrastructure.module.auth.handler;
 
 import io.vavr.control.Try;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +25,8 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
     @Autowired
     public OAuth2LoginFailureHandler(
             RouteRedirectStrategy routeRedirectStrategy,
-            @Value("${app.security.oauth2.route.front}") String frontRoute,
-            @Value("${app.security.oauth2.endpoints.redirect}") String redirectEndpoint
+            @Value("${app.security.oauth2.baseUrl.front}") String frontRoute,
+            @Value("${app.security.oauth2.endpoint.redirect}") String redirectEndpoint
     ) {
         this((frontRoute.equals("/") ? null : frontRoute) + redirectEndpoint);
         this.setRedirectStrategy(routeRedirectStrategy);

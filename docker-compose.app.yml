@@ -4,8 +4,6 @@ services:
     build:
       context: ./kodemy-service-registry
       dockerfile: ./Dockerfile
-    ports:
-      - "8761:8761"
     networks:
       - kodemy
     deploy:
@@ -35,8 +33,6 @@ services:
       dockerfile: ./Dockerfile
     networks:
       - kodemy
-    ports:
-      - "8081:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-auth
       SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
@@ -56,8 +52,6 @@ services:
       dockerfile: ./Dockerfile
     networks:
       - kodemy
-    ports:
-      - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
       SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
@@ -77,8 +71,6 @@ services:
       dockerfile: ./Dockerfile
     networks:
       - kodemy
-    ports:
-      - "8084:8080"
     environment:
       SPRING_DATASOURCE_URL: ${DATASOURCE_URL}?currentSchema=kodemy-backend
       SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
@@ -98,8 +90,6 @@ services:
       dockerfile: ./Dockerfile
     networks:
       - kodemy
-    ports:
-      - "8083:8080"
     environment:
       SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
       SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
@@ -108,6 +98,7 @@ services:
       EUREKA_URL: ${EUREKA_URL}
     deploy:
       replicas: 1
-      
+
 networks:
   kodemy:
+    driver: bridge

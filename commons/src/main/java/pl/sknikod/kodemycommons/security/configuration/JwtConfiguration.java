@@ -20,7 +20,7 @@ public class JwtConfiguration {
     @NoArgsConstructor
     @ConfigurationProperties(prefix = "jwt")
     public static class JwtProperties {
-        private String secretKey;
+        private String secretKey = "";
         private Bearer bearer = new Bearer();
         private Delegation delegation = new Delegation();
 

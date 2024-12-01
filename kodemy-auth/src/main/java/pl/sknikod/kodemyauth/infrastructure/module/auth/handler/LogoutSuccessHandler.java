@@ -14,7 +14,7 @@ import java.io.IOException;
 public class LogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
     private final String gatewayRoute;
 
-    public LogoutSuccessHandler(@Value("${network.route.gateway}") String gatewayRoute) {
+    public LogoutSuccessHandler(@Value("${service.baseUrl.gateway}") String gatewayRoute) {
         this.gatewayRoute = gatewayRoute;
     }
 

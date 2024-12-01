@@ -1,7 +1,10 @@
 package pl.sknikod.kodemyauth.infrastructure.rest;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,4 +23,9 @@ public interface AuthControllerDefinition {
             @RequestParam UUID refresh,
             @RequestParam UUID bearerJti
     );
+
+    @GetMapping("/access_token")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearer")
+    ResponseEntity<?> getAccessToken(HttpServletRequest request);
 }

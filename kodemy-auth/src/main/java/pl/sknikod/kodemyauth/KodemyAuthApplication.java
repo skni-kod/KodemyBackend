@@ -3,9 +3,7 @@ package pl.sknikod.kodemyauth;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.security.SecuritySchemes;
+import io.swagger.v3.oas.annotations.security.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -27,6 +25,16 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
                 type = SecuritySchemeType.HTTP,
                 scheme = "bearer",
                 bearerFormat = "JWT"
+        ),
+        @SecurityScheme(
+                name = "oauth2",
+                type = SecuritySchemeType.OAUTH2,
+                description = """
+                        OAuth2 authorization is handled by the running kodemy-api-gateway service.\n
+                        No client_id or client_secret required.""",
+                flows = @OAuthFlows(authorizationCode = @OAuthFlow(
+                        authorizationUrl = "${service.baseUrl.gateway}${app.security.oauth2.endpoint.authorize}/github"
+                ))
         )
 })
 @EnableDiscoveryClient

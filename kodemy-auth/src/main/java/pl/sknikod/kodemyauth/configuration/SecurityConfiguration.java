@@ -5,32 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.LogoutService;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutRequestHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutSuccessHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2AuthorizationRequestRepository;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.OAuth2Service;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginFailureHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.handler.OAuth2LoginSuccessHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2Constant;
-import pl.sknikod.kodemyauth.util.route.RouteRedirectStrategy;
+import pl.sknikod.kodemycommons.exception.handler.RestExceptionHandler;
 import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommons.security.JwtAuthorizationFilter;
 import pl.sknikod.kodemycommons.security.JwtProvider;
@@ -50,12 +43,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthorizationFilter jwtAuthorizationFilter,
-            OAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository,
-            OAuth2EndpointsProperties oAuth2EndpointsProperties,
-            OAuth2Service oAuth2Service,
-            OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler,
-            OAuth2LoginFailureHandler oAuth2LoginFailureHandler,
             ServletExceptionHandler servletExceptionHandler,
             LogoutRequestHandler logoutRequestHandler,
             LogoutSuccessHandler logoutSuccessHandler
@@ -64,19 +51,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
-                .addFilterBefore(jwtAuthorizationFilter, LogoutFilter.class)
-                .oauth2Login(login -> login
-                        .authorizationEndpoint(config -> config
-                                .baseUri(oAuth2EndpointsProperties.authorize)
-                                .authorizationRequestRepository(oAuth2AuthorizationRequestRepository)
-                        )
-                        .redirectionEndpoint(config -> config.baseUri(
-                                oAuth2EndpointsProperties.callback + OAuth2Constant.OAUTH2_PROVIDER_SUFFIX
-                        ))
-                        .userInfoEndpoint(config -> config.userService(oAuth2Service))
-                        .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler(oAuth2LoginFailureHandler)
-                )
+                .oauth2Login(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(servletExceptionHandler::entryPoint)
                         .accessDeniedHandler(servletExceptionHandler::accessDenied)
@@ -95,6 +70,11 @@ public class SecurityConfiguration {
     @Bean
     public ServletExceptionHandler servletExceptionHandler(ObjectMapper objectMapper) {
         return new ServletExceptionHandler(objectMapper);
+    }
+
+    @Bean
+    public RestExceptionHandler restExceptionHandler(){
+        return new RestExceptionHandler();
     }
 
     @Bean

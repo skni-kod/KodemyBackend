@@ -4,49 +4,68 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: oauth2_callback
+          uri: ${service.baseUrl.auth}
+          predicates:
+            - Path=${app.security.oauth2.endpoint.callback}/{provider}
+          filters:
+            - RewritePath=${app.security.oauth2.endpoint.callback}/(?<provider>.*), ${app.security.oauth2.endpoint.authorize}/${provider}
+            - name: FrontendRedirect
+              args:
+                location: ${service.baseUrl.front}
+
         - id: oauth2_auth
-          uri: ${network.route.auth}
+          uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/oauth2/**,/api/auth/**,/api/logout
 
         - id: search-materials
-          uri: ${network.route.search}
+          uri: ${service.baseUrl.search}
           predicates:
             - Path=/api/materials
             - Method=GET
 
         - id: materials-get
-          uri: ${network.route.backend}
+          uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/materials/{materialId}/**
             - Method=GET
 
         - id: materials-post
-          uri: ${network.route.backend}
+          uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/materials
             - Method=POST
 
         - id: materials-grades
-          uri: ${network.route.backend}
+          uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/materials/{materialId}/grades
             - Method=POST
 
         - id: users-materials
-          uri: ${network.route.auth}
+          uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/{userId}/materials
 
         - id: users_roles
-          uri: ${network.route.auth}
+          uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/**,/api/roles
 
         - id: tags_types_sections_categories_admin
-          uri: ${network.route.backend}
+          uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/tags,/api/types,/api/sections,/api/categories/{categoryId},/api/admin/**
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: Ov23li5LD47i4815okXp
+            clientSecret: fd2972bffedc3ad0e0a9eeda2935e4ac0255c70a
+            redirect-uri: "{baseUrl}${app.security.oauth2.endpoint.callback}/github"
+            scope: [ 'user:email', 'read:user' ]
 
 management:
   endpoints:
@@ -64,8 +83,8 @@ management:
   server:
     port: 9000
 
-network:
-  route:
+service:
+  baseUrl:
     auth: http://kodemy-auth:8080
     backend: http://kodemy-backend:8080
     search: http://kodemy-search:8080
@@ -81,8 +100,13 @@ app:
   security:
     cors:
       allowed-origins:
-        - ${network.route.front}
-          
+        - ${service.baseUrl.front}
+    oauth2:
+      endpoint:
+        authorize: /api/oauth2/authorize
+        callback: /api/oauth2/callback
+        redirect: /api/callback
+
 eureka:
   client:
     serviceUrl:
