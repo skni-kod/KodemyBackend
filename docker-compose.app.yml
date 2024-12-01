@@ -48,6 +48,8 @@ services:
       OAUTH_GITHUB_ID: ${OAUTH_GITHUB_ID}
       OAUTH_GITHUB_KEY: ${OAUTH_GITHUB_KEY}
       JWT_KEY: ${JWT_KEY}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     deploy:
       replicas: 1
     depends_on:

@@ -23,6 +23,8 @@ env:
   CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
   GATEWAY_PUBLIC_HOST: ${{ vars.GATEWAY_PUBLIC_HOST }}
   OAUTH_GITHUB_ID: ${{ vars.OAUTH_GITHUB_ID }}
+  REDIS_HOST: ${{ vars.REDIS_HOST }}
+  REDIS_PORT: ${{ vars.REDIS_PORT }}
   
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
   DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
@@ -63,6 +65,8 @@ jobs:
             "OAUTH_GITHUB_ID"
             "OAUTH_GITHUB_KEY"
             "JWT_KEY"
+            "REDIS_HOST"
+            "REDIS_PORT"
           )
           EXIT=0
           for VAR in "${REQUIRED_VARS[@]}"; do
@@ -148,7 +152,8 @@ jobs:
             FRONTEND_PUBLIC_HOST,CORS_ALLOWED_ORIGINS,
             GATEWAY_PUBLIC_HOST,
             OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
-            JWT_KEY
+            JWT_KEY,
+            REDIS_HOST,REDIS_PORT
           script: |
           
             cd $WORKING_DIRECTORY/commons
