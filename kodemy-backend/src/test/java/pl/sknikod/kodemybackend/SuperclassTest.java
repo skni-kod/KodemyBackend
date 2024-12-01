@@ -59,11 +59,11 @@ public class SuperclassTest {
         registry.add("spring.datasource.username", dataSource::getUsername);
         registry.add("spring.datasource.password", dataSource::getPassword);
 
-        registry.add("network.route.auth", () -> "http://localhost:" + wireMockServer.port());
+        registry.add("service.baseUrl.auth", () -> "http://localhost:" + wireMockServer.port());
     }
 
     @DynamicPropertySource
     private static void wireMockProperties(DynamicPropertyRegistry registry) {
-        registry.add("network.route.auth", () -> "http://localhost:8080");
+        registry.add("service.baseUrl.auth", () -> "http://localhost:8080");
     }
 }

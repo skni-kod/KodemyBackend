@@ -6,7 +6,6 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.event.Producer;
-import pl.sknikod.kodemybackend.infrastructure.store.UserStore;
 
 import java.time.Instant;
 import java.time.ZoneId;

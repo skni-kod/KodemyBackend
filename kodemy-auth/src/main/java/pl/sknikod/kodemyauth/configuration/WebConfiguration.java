@@ -10,19 +10,13 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2RestTemplate;
 
 import java.util.Collections;
 
 @Configuration
 @Slf4j
 public class WebConfiguration {
-
-    @Bean
-    public BufferingClientHttpRequestFactory bufferingClientHttpRequestFactory() {
-        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
-        return new BufferingClientHttpRequestFactory(requestFactory);
-    }
+    public static final String OAUTH2_REST_TEMPLATE = "oAuth2RestTemplate";
 
     @Bean
     @LoadBalanced
@@ -30,18 +24,20 @@ public class WebConfiguration {
             RestTemplateBuilder restTemplateBuilder,
             LogbookClientHttpRequestInterceptor logbookInterceptor
     ) {
-        restTemplateBuilder.requestFactory(this::bufferingClientHttpRequestFactory);
+        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+        restTemplateBuilder.requestFactory(() -> new BufferingClientHttpRequestFactory(requestFactory));
         restTemplateBuilder.additionalInterceptors(Collections.singletonList(logbookInterceptor));
         return restTemplateBuilder.build();
     }
 
-    @Bean
-    public OAuth2RestTemplate oAuth2RestTemplate(
+    @Bean(OAUTH2_REST_TEMPLATE)
+    public RestTemplate oAuth2RestTemplate(
             RestTemplateBuilder restTemplateBuilder,
             LogbookClientHttpRequestInterceptor logbookInterceptor
     ) {
-        restTemplateBuilder.requestFactory(this::bufferingClientHttpRequestFactory);
+        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+        restTemplateBuilder.requestFactory(() -> new BufferingClientHttpRequestFactory(requestFactory));
         restTemplateBuilder.additionalInterceptors(Collections.singletonList(logbookInterceptor));
-        return new OAuth2RestTemplate(restTemplateBuilder.build());
+        return restTemplateBuilder.build();
     }
 }

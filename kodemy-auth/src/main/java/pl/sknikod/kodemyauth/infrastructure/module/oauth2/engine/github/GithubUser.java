@@ -1,17 +1,20 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.github;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.github;
 
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.processor.OAuth2ProcessorResult;
+import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
 
 import java.util.Map;
 
-public class GithubOAuth2ProcessorResult extends OAuth2ProcessorResult {
-    public GithubOAuth2ProcessorResult(Map<String, Object> attributes) {
+public class GithubUser extends ProviderUser {
+    public GithubUser(Map<String, Object> attributes) {
         super(attributes);
     }
 
     @Override
     public String getRegistrationId() {
-        return attributes.get("registration_id").toString();
+        return attributes
+                .get(DefaultServerOAuth2AuthorizationRequestResolver.DEFAULT_REGISTRATION_ID_URI_VARIABLE_NAME)
+                .toString();
     }
 
     @Override

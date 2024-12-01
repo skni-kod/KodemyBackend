@@ -3,7 +3,6 @@ package pl.sknikod.kodemysearch.infrastructure.module.material;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -17,7 +16,6 @@ import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialPage
 import pl.sknikod.kodemysearch.infrastructure.rest.MaterialControllerDefinition;
 import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

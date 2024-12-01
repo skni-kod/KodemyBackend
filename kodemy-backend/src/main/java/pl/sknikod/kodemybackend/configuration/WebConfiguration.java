@@ -26,7 +26,7 @@ public class WebConfiguration {
 
     @Bean
     public LanRestTemplate lanRestTemplate(
-            @Value("${network.connect-timeout-ms}") int connectTimeoutMs, @Value("${network.read-timeout-ms}") int readTimeoutMs, JwtProvider jwtProvider
+            @Value("${service.connect-timeout-ms}") int connectTimeoutMs, @Value("${service.read-timeout-ms}") int readTimeoutMs, JwtProvider jwtProvider
     ) {
         return new LanRestTemplate(connectTimeoutMs, readTimeoutMs, jwtProvider);
     }

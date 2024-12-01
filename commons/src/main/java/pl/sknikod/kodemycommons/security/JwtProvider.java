@@ -99,13 +99,14 @@ public class JwtProvider {
     public Try<Token.Deserialize> parseToken(String token) {
         return parseClaims(token)
                 .mapTry(claims -> {
+                    var bearerId = claims.get(ClaimKey.BEARER_ID, UUID.class);
                     var id = claims.get(ClaimKey.ID, Long.class);
                     var username = claims.get(ClaimKey.USERNAME, String.class);
                     @SuppressWarnings("unchecked")
                     List<String> roles = (List<String>) claims.get(ClaimKey.AUTHORITIES, List.class);
                     var authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
                     var state = Optional.ofNullable(claims.get(ClaimKey.STATE, Integer.class)).orElse(8);
-                    return new Token.Deserialize(id, username, state, authorities);
+                    return new Token.Deserialize(bearerId, id, username, state, authorities);
                 })
                 .onFailure(th -> log.error("Cannot parse token"));
     }
@@ -131,6 +132,7 @@ public class JwtProvider {
         static String USERNAME = Claims.SUBJECT;
         static String STATE = "state";
         static String AUTHORITIES = "authorities";
+        static String BEARER_ID = Claims.ID;
     }
 
     @Getter
@@ -171,6 +173,7 @@ public class JwtProvider {
         @Getter
         @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
         public static class Deserialize {
+            UUID bearerId;
             Long id;
             String username;
             boolean isExpired;
@@ -179,7 +182,8 @@ public class JwtProvider {
             boolean isEnabled;
             Set<SimpleGrantedAuthority> authorities;
 
-            public Deserialize(Long id, String username, Integer state, Set<SimpleGrantedAuthority> authorities) {
+            public Deserialize(UUID bearerId, Long id, String username, Integer state, Set<SimpleGrantedAuthority> authorities) {
+                this.bearerId = bearerId;
                 this.id = id;
                 this.username = username;
                 if (state != null) {

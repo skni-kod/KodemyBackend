@@ -1,27 +1,16 @@
 package pl.sknikod.kodemybackend.configuration;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.AbstractRabbitListenerEndpoint;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.cloud.stream.config.BindingProperties;
 import org.springframework.cloud.stream.config.BindingServiceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 

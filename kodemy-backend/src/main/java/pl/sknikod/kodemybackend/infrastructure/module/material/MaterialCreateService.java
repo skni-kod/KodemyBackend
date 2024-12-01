@@ -20,7 +20,6 @@ import pl.sknikod.kodemybackend.infrastructure.database.Category;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.Tag;
 import pl.sknikod.kodemybackend.infrastructure.database.Type;
-import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialCreatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.store.CategoryStore;
 import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TagStore;

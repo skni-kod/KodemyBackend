@@ -1,22 +1,27 @@
 package pl.sknikod.kodemyauth.infrastructure.module.auth;
 
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
-import pl.sknikod.kodemycommons.security.UserPrincipal;
-
-import java.util.UUID;
+import pl.sknikod.kodemyauth.util.web.BearerHelper;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.JwtProvider;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LogoutService {
+public class LogoutService implements BearerHelper {
     private final RefreshTokenStore refreshTokenRepositoryHandler;
+    private final JwtProvider jwtProvider;
 
-    public Boolean logout(UserPrincipal userPrincipal, UUID bearerJti) {
-        return refreshTokenRepositoryHandler.invalidateByUserIdAnfBearerJti(userPrincipal.getId(), bearerJti)
-                .getOrElseThrow(th -> new InternalError500Exception());
+    public void logout(String authorizationHeader) {
+        Try.of(() -> authorizationHeader)
+                .map(this::extractBearer)
+                .flatMap(jwtProvider::parseToken)
+                .flatMap(token -> refreshTokenRepositoryHandler.invalidateByUserIdAnfBearerJti(token.getId(), token.getBearerId()))
+                .onFailure(th -> log.error("Error during logout", th))
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 }

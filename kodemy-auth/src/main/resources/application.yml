@@ -3,7 +3,7 @@ spring:
   banner.location: classpath:banner.txt
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL}?currentSchema=kodemy-auth
+    url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
@@ -67,9 +67,9 @@ logbook:
       - path: /actuator/health
         methods: "*"
 
-network:
-  route:
-    gateway: ${GATEWAY_PUBLIC_HOST}
+service:
+  baseUrl:
+    gateway: http://kodemy-api-gateway:8080
 
 jwt:
   secret-key: ${JWT_KEY}
@@ -80,10 +80,10 @@ app:
       credentials: true
       mapping: "/**"
     oauth2:
-      route:
+      baseUrl:
         front: ${FRONTEND_PUBLIC_HOST}
         gateway: ${GATEWAY_PUBLIC_HOST}
-      endpoints:
+      endpoint:
         authorize: /api/oauth2/authorize
         callback: /api/oauth2/callback
         redirect: /api/callback
