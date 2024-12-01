@@ -3,10 +3,9 @@ package pl.sknikod.kodemybackend.infrastructure.module.tag;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.mapper.TagMapper;
-import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddRequest;
 import pl.sknikod.kodemybackend.infrastructure.module.tag.model.TagAddResponse;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
+import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
 import java.util.List;
@@ -26,6 +25,6 @@ public class TagService {
     public List<TagAddResponse> showTags() {
         return tagStore.findAll()
                 .map(tagMapper::map)
-                .getOrElseThrow(th -> new InternalError500Exception());
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 }

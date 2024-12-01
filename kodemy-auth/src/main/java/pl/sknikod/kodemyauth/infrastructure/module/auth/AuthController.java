@@ -16,6 +16,7 @@ import java.util.UUID;
 public class AuthController implements AuthControllerDefinition {
     private final AccessTokenService accessTokenService;
     private final RefreshTokensService refreshTokensService;
+    private final LogoutService logoutService;
 
     @Override
     public ResponseEntity<RefreshTokensResponse> validateToken(UUID refresh, UUID bearerJti) {
@@ -24,8 +25,14 @@ public class AuthController implements AuthControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<?> getAccessToken(HttpServletRequest request) {
+    public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(accessTokenService.getAccessToken(request.getHeader(HttpHeaders.AUTHORIZATION)));
+    }
+
+    @Override
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        logoutService.logout(request.getHeader(HttpHeaders.AUTHORIZATION));
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

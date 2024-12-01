@@ -2,22 +2,23 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemyauth.infrastructure.database.Permission;
-import pl.sknikod.kodemyauth.infrastructure.database.Role;
-import pl.sknikod.kodemyauth.infrastructure.database.RoleRepository;
-import pl.sknikod.kodemyauth.infrastructure.database.User;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderEngine;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.Registration;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2UserPrincipal;
+import pl.sknikod.kodemyauth.infrastructure.database.*;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderEngine;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.Registration;
+import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
 import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
-import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
+import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
+import pl.sknikod.kodemycommons.security.JwtProvider;
+import pl.sknikod.kodemycommons.security.UserPrincipal;
 
 import java.util.Collections;
 import java.util.Map;
@@ -31,22 +32,28 @@ public class OAuth2AuthorizeService {
     private final ProviderEngine providerEngine;
     private final RoleRepository roleRepository;
     private final UserStore userStore;
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenStore refreshTokenStore;
 
-    public void authorize(Registration registrationId, Map<String, String> parameters) {
-        Try.of(() -> {
+    public AuthorizeResponse authorize(Registration registrationId, Map<String, String> parameters) {
+        return Try.of(() -> {
             if (!parameters.containsKey("code")) {
                 throw new Validation400Exception("Bad parameters map");
             }
-            return providerEngine.createProviderUser(registrationId.getId(), parameters)
+            return Option.ofOptional(providerEngine.createProviderUser(registrationId.getId(), parameters))
                     .map(this::createOrLoadUser)
                     .map(this::toUserPrincipal)
-                    .orElse(null);
-        }).getOrElseThrow(() -> new InternalError500Exception());
+                    .map(this::generateTokens)
+                    .map(tokens -> new AuthorizeResponse(tokens._1.value(), tokens._2.getToken().toString()))
+                    .getOrNull();
+        }).getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     private Tuple2<User, ProviderUser> createOrLoadUser(ProviderUser providerUser) {
-        return userStore.findByProviderUser(providerUser)
-                .fold(unused -> Tuple.of(this.createNewUser(providerUser), providerUser), user -> Tuple.of(user, providerUser));
+        return userStore.findByProviderUser(providerUser).fold(
+                th -> Tuple.of(this.createNewUser(providerUser), providerUser),
+                user -> Tuple.of(user, providerUser)
+        );
     }
 
     private User createNewUser(ProviderUser providerUser) {
@@ -54,28 +61,53 @@ public class OAuth2AuthorizeService {
                 .orElse(null);
     }
 
-    private OAuth2UserPrincipal toUserPrincipal(Tuple2<User, ProviderUser> userTuple2) {
+    private UserPrincipal toUserPrincipal(Tuple2<User, ProviderUser> userTuple2) {
         return Try.of(() -> roleRepository.findById(userTuple2._1.getRole().getId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(Role::getPermissions)
                 .onFailure(th -> log.error("Cannot retrieve authorities for role", th))
                 .fold(
-                        unused -> map(userTuple2._1, Collections.emptySet(), userTuple2._2.getAttributes()),
-                        permissions -> map(userTuple2._1, permissions, userTuple2._2.getAttributes())
+                        th -> map(userTuple2._1, Collections.emptySet()),
+                        permissions -> map(userTuple2._1, permissions)
                 );
     }
 
-    private OAuth2UserPrincipal map(User user, Set<Permission> permissions, Map<String, Object> attributes) {
-        return new OAuth2UserPrincipal(
+    private UserPrincipal map(User user, Set<Permission> permissions) {
+        return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),
                 user.getIsExpired(),
                 user.getIsLocked(),
                 user.getIsCredentialsExpired(),
                 user.getIsEnabled(),
-                permissions.stream().map(Permission::getName).map(SimpleGrantedAuthority::new).toList(),
-                attributes
+                permissions.stream().map(Permission::getName).map(SimpleGrantedAuthority::new).toList()
         );
+    }
+
+    private Tuple2<JwtProvider.Token, RefreshToken> generateTokens(UserPrincipal userPrincipal) {
+        return Try.of(() -> jwtProvider.generateUserToken(mapToJwtInput(userPrincipal))).flatMapTry(bearerToken -> {
+            return refreshTokenStore.createAndGet(userPrincipal.getId(), bearerToken.id())
+                    .map(newRefreshToken -> Tuple.of(bearerToken, newRefreshToken))
+                    .onFailure(th -> log.error("Error during tokens generation", th));
+        }).getOrElseThrow(ExceptionUtil::throwIfFailure);
+    }
+
+    private JwtProvider.Input mapToJwtInput(UserPrincipal user) {
+        return new JwtProvider.Input(
+                user.getId(),
+                user.getUsername(),
+                !user.isAccountNonExpired(),
+                !user.isAccountNonLocked(),
+                !user.isCredentialsNonExpired(),
+                user.isEnabled(),
+                user.getAuthorities()
+        );
+    }
+
+    @Value
+    public static class AuthorizeResponse {
+        String accessToken;
+        String refreshToken;
     }
 }

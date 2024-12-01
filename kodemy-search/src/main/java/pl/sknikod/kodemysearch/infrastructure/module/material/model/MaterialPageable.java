@@ -1,7 +1,6 @@
 package pl.sknikod.kodemysearch.infrastructure.module.material.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService;
 
 import java.util.Date;
 import java.util.List;

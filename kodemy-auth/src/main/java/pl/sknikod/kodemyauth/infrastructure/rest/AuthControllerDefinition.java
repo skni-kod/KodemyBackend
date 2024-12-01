@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
@@ -27,5 +28,10 @@ public interface AuthControllerDefinition {
     @GetMapping("/access_token")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearer")
-    ResponseEntity<?> getAccessToken(HttpServletRequest request);
+    ResponseEntity<String> getAccessToken(HttpServletRequest request);
+
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<Void> logout(HttpServletRequest request);
+
 }

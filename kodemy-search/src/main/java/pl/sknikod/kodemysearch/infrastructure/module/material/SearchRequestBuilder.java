@@ -5,7 +5,10 @@ import io.jsonwebtoken.lang.Strings;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.SortOrder;
-import org.opensearch.client.opensearch._types.query_dsl.*;
+import org.opensearch.client.opensearch._types.query_dsl.MatchPhraseQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.WildcardQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.springframework.data.domain.Pageable;
 

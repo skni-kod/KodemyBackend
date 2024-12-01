@@ -10,9 +10,9 @@ import org.opensearch.client.opensearch._types.WriteResponseBase;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexData;
 import pl.sknikod.kodemysearch.infrastructure.module.material.model.MaterialIndexEvent;
+import pl.sknikod.kodemysearch.infrastructure.store.MaterialSearchStore;
 
 @Slf4j
 @Service

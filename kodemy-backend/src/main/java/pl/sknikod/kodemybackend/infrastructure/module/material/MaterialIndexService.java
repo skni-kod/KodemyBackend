@@ -6,11 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
-import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
 import pl.sknikod.kodemybackend.infrastructure.event.producer.MaterialUpdatedProducer;
 import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
-import pl.sknikod.kodemybackend.infrastructure.store.UserStore;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

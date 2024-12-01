@@ -11,8 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,8 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutRequestHandler;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.handler.LogoutSuccessHandler;
 import pl.sknikod.kodemyauth.infrastructure.module.oauth2.util.OAuth2Constant;
 import pl.sknikod.kodemycommons.exception.handler.RestExceptionHandler;
 import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
@@ -43,26 +39,19 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            ServletExceptionHandler servletExceptionHandler,
-            LogoutRequestHandler logoutRequestHandler,
-            LogoutSuccessHandler logoutSuccessHandler
+            ServletExceptionHandler servletExceptionHandler
     ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(autz -> autz.anyRequest().permitAll())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .oauth2Login(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(servletExceptionHandler::entryPoint)
                         .accessDeniedHandler(servletExceptionHandler::accessDenied)
                 )
-                .logout(config -> config
-                        .logoutUrl("/api/logout")
-                        .addLogoutHandler(logoutRequestHandler)
-                        .logoutSuccessHandler(logoutSuccessHandler)
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                )
+                .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }

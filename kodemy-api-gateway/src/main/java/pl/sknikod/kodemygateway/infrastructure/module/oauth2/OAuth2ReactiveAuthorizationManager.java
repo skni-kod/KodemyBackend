@@ -1,9 +1,7 @@
 package pl.sknikod.kodemygateway.infrastructure.module.oauth2;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationToken;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -11,13 +9,10 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -47,29 +42,11 @@ public class OAuth2ReactiveAuthorizationManager implements ReactiveAuthenticatio
         return new OAuth2LoginAuthenticationToken(
                 token.getClientRegistration(),
                 token.getAuthorizationExchange(),
-                emptyOAuth2User(),
-                Collections.emptyList(),
-                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "gateway_token_value", null, null),
+                new DefaultOAuth2User(token.getAuthorities(), Map.of("name", token.getName()), "name"),
+                token.getAuthorities(),
+                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, token.getAccessToken().getTokenValue(),
+                        token.getAccessToken().getIssuedAt(), token.getAccessToken().getExpiresAt()),
                 token.getRefreshToken()
         );
-    }
-
-    private OAuth2User emptyOAuth2User() {
-        return new OAuth2User() {
-            @Override
-            public Map<String, Object> getAttributes() {
-                return Map.of();
-            }
-
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return List.of();
-            }
-
-            @Override
-            public String getName() {
-                return OAuth2User.class.getSimpleName();
-            }
-        };
     }
 }

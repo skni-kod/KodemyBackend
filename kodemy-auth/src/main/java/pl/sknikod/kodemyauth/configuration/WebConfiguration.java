@@ -19,18 +19,13 @@ public class WebConfiguration {
     public static final String OAUTH2_REST_TEMPLATE = "oAuth2RestTemplate";
 
     @Bean
-    public BufferingClientHttpRequestFactory bufferingClientHttpRequestFactory() {
-        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
-        return new BufferingClientHttpRequestFactory(requestFactory);
-    }
-
-    @Bean
     @LoadBalanced
     public RestTemplate restTemplate(
             RestTemplateBuilder restTemplateBuilder,
             LogbookClientHttpRequestInterceptor logbookInterceptor
     ) {
-        restTemplateBuilder.requestFactory(this::bufferingClientHttpRequestFactory);
+        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+        restTemplateBuilder.requestFactory(() -> new BufferingClientHttpRequestFactory(requestFactory));
         restTemplateBuilder.additionalInterceptors(Collections.singletonList(logbookInterceptor));
         return restTemplateBuilder.build();
     }
@@ -40,7 +35,8 @@ public class WebConfiguration {
             RestTemplateBuilder restTemplateBuilder,
             LogbookClientHttpRequestInterceptor logbookInterceptor
     ) {
-        restTemplateBuilder.requestFactory(this::bufferingClientHttpRequestFactory);
+        var requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+        restTemplateBuilder.requestFactory(() -> new BufferingClientHttpRequestFactory(requestFactory));
         restTemplateBuilder.additionalInterceptors(Collections.singletonList(logbookInterceptor));
         return restTemplateBuilder.build();
     }
