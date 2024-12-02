@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.Map;
 
 @Component
@@ -44,8 +45,7 @@ public class OAuth2ReactiveAuthorizationManager implements ReactiveAuthenticatio
                 token.getAuthorizationExchange(),
                 new DefaultOAuth2User(token.getAuthorities(), Map.of("name", token.getName()), "name"),
                 token.getAuthorities(),
-                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, token.getAccessToken().getTokenValue(),
-                        token.getAccessToken().getIssuedAt(), token.getAccessToken().getExpiresAt()),
+                new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "tokenValue", Instant.now(), Instant.now()),
                 token.getRefreshToken()
         );
     }
