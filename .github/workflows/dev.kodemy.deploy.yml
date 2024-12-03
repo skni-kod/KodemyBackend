@@ -196,9 +196,18 @@ jobs:
       - name: Determine new tag
         id: tag
         run: |
-          new_tag="${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}"
-          echo "New tag: $new_tag"
+          tags=$(git tag -l)
+          latest_tag=$(echo "$tags" | grep -E '^0\.0\.[0-9]+$' | sort -V | tail -n 1)
           
+          if [ -n "$latest_tag" ]; then
+            version_number=$(echo "$latest_tag" | sed 's/^0\.0\.//')
+            new_version=$((version_number + 1))
+            new_tag="0.0.$new_version"
+          else
+            new_tag="0.0.1"
+          fi
+      
+          echo "New tag: $new_tag"
           echo "TAG_NAME=$new_tag" >> $GITHUB_ENV
   
       - name: Create tag
