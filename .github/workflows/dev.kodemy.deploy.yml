@@ -191,27 +191,24 @@ jobs:
     name: Create tag
     runs-on: self-hosted
     steps:
-      - name: Determine new tag
-        id: tag
+      - name: Set Dist Version
         run: |
-          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Last tag: $last_tag"
+          BUILD_NUMBER="${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}"
+          echo "${BUILD_NUMBER}"
+          VERSION="$(mvn -q -U -Dexpression=project.build.finalName help:evaluate -DforceStdout=true -DbuildNumber=${BUILD_NUMBER})"
+          echo "DIST_VERSION=${VERSION}" >> $GITHUB_ENV
           
-          new_tag=$(echo $last_tag | awk -F. '{printf "v%d.%d.%d", $1, $2+1, 0}')
-          echo "New tag: $new_tag"
-          
-          echo "TAG_NAME=$new_tag" >> $GITHUB_ENV
-  
-      - name: Create tag
-        uses: actions/github-script@v5
+      - name: Create Tag
+        uses: actions/github-script@v6
         with:
           script: |
+            const {DIST_VERSION} = process.env          
             github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/tags/${{ env.TAG_NAME }}`,
-              sha: context.sha
-            });
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${DIST_VERSION}`,
+                sha: context.sha
+            })
 
 
 
