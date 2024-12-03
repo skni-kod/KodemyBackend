@@ -17,20 +17,20 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class AddAuthorizationGatewayFilterFactory
+public class RewriteCookieToBearerGatewayFilterFactory
         extends AbstractGatewayFilterFactory<Object> {
 
-    public AddAuthorizationGatewayFilterFactory() {
+    public RewriteCookieToBearerGatewayFilterFactory() {
         super(Object.class);
     }
 
     @Override
     public GatewayFilter apply(Object config) {
-        return new AddAuthorizationFilter();
+        return new RewriteCookieToBearerFilter();
     }
 
     @RequiredArgsConstructor
-    private static final class AddAuthorizationFilter implements GatewayFilter {
+    private static final class RewriteCookieToBearerFilter implements GatewayFilter {
         private static final String ACCESS_TOKEN_COOKIE = "AUTH_CONTEXT";
 
         @Override
@@ -39,7 +39,7 @@ public class AddAuthorizationGatewayFilterFactory
                     .map(HttpCookie::getValue)
                     .filter(Strings::isNotEmpty)
                     .map(token -> {
-                        log.info("Adding {} header", HttpHeaders.AUTHORIZATION);
+                        log.info("Rewrite cookie to {} header", HttpHeaders.AUTHORIZATION);
                         ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                                 .header(HttpHeaders.COOKIE, (String) null)

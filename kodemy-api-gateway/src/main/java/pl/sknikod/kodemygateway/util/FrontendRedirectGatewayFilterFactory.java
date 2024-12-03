@@ -90,13 +90,13 @@ public class FrontendRedirectGatewayFilterFactory
 
             var accessToken = createCookie(
                     ACCESS_TOKEN_COOKIE,
-                    "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJwbC5za25pa29kLmtvZGVteSIsImp0aSI6ImVhM2FiMDljLTU5ZGQtNGI1Zi04OGVkLTk3YzNiZmRhNmMyNiIsInN1YiI6IkthcnRWZW4iLCJpYXQiOjE3MzMwNjY3MjYsImV4cCI6MTczMzEwOTkyNiwiaWQiOjEsImF1dGhvcml0aWVzIjpbIkNBTl9BVVRPX0FQUFJPVkVEX01BVEVSSUFMIiwiQ0FOX0RFUFJFQ0FURV9NQVRFUklBTCIsIkNBTl9VTkJBTl9NQVRFUklBTCIsIkNBTl9CQU5fTUFURVJJQUwiLCJDQU5fTU9ESUZZX1RBR1MiLCJDQU5fUkVBRF9OT1RJRklDQVRJT05TIiwiQ0FOX0JBTk5JTkdfVVNFUlMiLCJDQU5fR0VUX1VTRVJfSU5GTyIsIkNBTl9HRVRfVVNFUlMiLCJDQU5fSU5ERVgiLCJDQU5fVklFV19BTExfTUFURVJJQUxTIiwiQ0FOX0FTU0lHTl9ST0xFUyIsIkNBTl9BUFBST1ZFRF9NQVRFUklBTCJdLCJzdGF0ZSI6OH0.FTQheX7efGI4Ie2IqZy_ZVOdvWw9HZIfQYDvdtqwuCrTguL7QLiGLTA0HDif3Xu",
+                    accessTokens.get(0),
                     Duration.ofDays(1)
             );
 
             var refreshToken = createCookie(
                     REFRESH_TOKEN_COOKIE,
-                    "16fcb136-fd3c-490c-b151-184c07d3871e",
+                    refreshTokens.get(0),
                     Duration.ofDays(1)
             );
 
