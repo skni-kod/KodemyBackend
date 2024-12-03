@@ -190,28 +190,28 @@ jobs:
   create-tag:
     name: Create tag
     runs-on: self-hosted
-    # needs: [ build-and-deploy ]
     steps:
       - name: Determine new tag
         id: tag
         run: |
           last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "Last tag: $last_tag"
-      
+          
           new_tag=$(echo $last_tag | awk -F. '{printf "v%d.%d.%d", $1, $2+1, 0}')
           echo "New tag: $new_tag"
           
-          echo "tag=$new_tag" >> $GITHUB_ENV
-
+          echo "TAG_NAME=$new_tag" >> $GITHUB_ENV
+  
       - name: Create tag
         uses: actions/github-script@v5
         with:
           script: |
-            const {TAG_NAME} = process.env
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${TAG_NAME}',
+              ref: `refs/tags/${{ env.TAG_NAME }}`,
               sha: context.sha
-            })
+            });
+
+
 
