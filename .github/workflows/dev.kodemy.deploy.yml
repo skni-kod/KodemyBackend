@@ -203,6 +203,8 @@ jobs:
           envs: |
             WORKING_DIRECTORY
           script: |
+            cd $WORKING_DIRECTORY
+          
             tags=$(git tag -l)
             latest_tag=$(echo "$tags" | grep -E '^0\.0\.[0-9]+$' | sort -V | tail -n 1)
             
