@@ -210,8 +210,11 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: |
+            WORKING_DIRECTORY,TAG_NAME
           script: |
-            git tag ${{ env.TAG_NAME }}
+            cd $WORKING_DIRECTORY
+            git tag $TAG_NAME
             git push origin --tags
 
           # uses: actions/github-script@v5
