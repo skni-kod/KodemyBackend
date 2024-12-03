@@ -99,7 +99,7 @@ public class JwtProvider {
     public Try<Token.Deserialize> parseToken(String token) {
         return parseClaims(token)
                 .mapTry(claims -> {
-                    var bearerId = claims.get(ClaimKey.BEARER_ID, UUID.class);
+                    var bearerId = UUID.fromString(claims.get(ClaimKey.BEARER_ID, String.class));
                     var id = claims.get(ClaimKey.ID, Long.class);
                     var username = claims.get(ClaimKey.USERNAME, String.class);
                     @SuppressWarnings("unchecked")
@@ -108,7 +108,7 @@ public class JwtProvider {
                     var state = Optional.ofNullable(claims.get(ClaimKey.STATE, Integer.class)).orElse(8);
                     return new Token.Deserialize(bearerId, id, username, state, authorities);
                 })
-                .onFailure(th -> log.error("Cannot parse token"));
+                .onFailure(th -> log.error("Cannot parse token", th));
     }
 
     private Try<Claims> parseClaims(String token) {

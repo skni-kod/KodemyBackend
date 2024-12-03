@@ -21,11 +21,18 @@ import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final List<AntPathRequestMatcher> notFilterMatchers;
     private final JwtProvider jwtProvider;
+    private static final Predicate<String> BEARER_HEADER_MATCHER;
+
+    static {
+        BEARER_HEADER_MATCHER = Pattern.compile("[Bb]earer .*\\..*\\..*").asMatchPredicate();
+    }
 
     public JwtAuthorizationFilter(
             List<String> permitPaths,
@@ -62,7 +69,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return Option.of(request.getHeader(HttpHeaders.AUTHORIZATION))
                 .toTry(() -> new RuntimeException("Authorization header is empty or invalid"))
                 .onFailure(th -> log.debug(th.getMessage()))
-                .filter(v -> v.startsWith("Bearer "))
+                .filter(BEARER_HEADER_MATCHER)
                 .map(header -> header.substring(7));
     }
 

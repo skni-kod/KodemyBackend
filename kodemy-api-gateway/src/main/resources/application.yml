@@ -13,14 +13,14 @@ spring:
             - name: FrontendRedirect
               args:
                 location: ${service.baseUrl.front}
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: auth_logout
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/auth/logout
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
             - Logout
 
         - id: oauth2_auth
@@ -28,7 +28,7 @@ spring:
           predicates:
             - Path=/api/oauth2/**,/api/auth/**
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: search-materials
           uri: ${service.baseUrl.search}
@@ -42,7 +42,7 @@ spring:
             - Path=/api/materials/{materialId}/**
             - Method=GET
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: materials-post
           uri: ${service.baseUrl.backend}
@@ -50,7 +50,7 @@ spring:
             - Path=/api/materials
             - Method=POST
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: materials-grades
           uri: ${service.baseUrl.backend}
@@ -58,28 +58,28 @@ spring:
             - Path=/api/materials/{materialId}/grades
             - Method=POST
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: users-materials
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/{userId}/materials
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: users_roles
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/**,/api/roles
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
 
         - id: tags_types_sections_categories_admin
           uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/tags,/api/types,/api/sections,/api/categories/{categoryId},/api/admin/**
           filters:
-            - AddAuthorization
+            - RewriteCookieToBearer
   security:
     oauth2:
       client:
