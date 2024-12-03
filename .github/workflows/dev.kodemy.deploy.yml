@@ -205,10 +205,9 @@ jobs:
 
       - name: Create tag
         uses: actions/github-script@v5
-        env:
-          TAG_NAME: ${{ env.tag }}
         with:
           script: |
+            const {TAG_NAME} = process.env
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
