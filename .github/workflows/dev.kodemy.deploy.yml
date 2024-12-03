@@ -130,66 +130,67 @@ jobs:
                 -tAc "SELECT 1 FROM information_schema.schemata WHERE schema_name = '$SCHEMA'" \
                 | grep -q 1 || { echo "Schema $SCHEMA does not exist."; exit 1; }
             done
-  build-and-deploy:
-    name: Build, Test, Deploy
-    runs-on: self-hosted
-    needs: [ validate ]
-    environment: dev
-    steps:
-      - name: Build, Test, Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          port: ${{ secrets.REMOTE_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: |
-            WORKING_DIRECTORY,
-            DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DB,
-            RABBITMQ_HOST,RABBITMQ_PORT,RABBITMQ_USERNAME,RABBITMQ_PASSWORD,
-            ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
-            EUREKA_URL,
-            FRONTEND_PUBLIC_HOST,CORS_ALLOWED_ORIGINS,
-            GATEWAY_PUBLIC_HOST,
-            OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
-            JWT_KEY,
-            REDIS_HOST,REDIS_PORT
-          script: |
+            
+  # build-and-deploy:
+  #   name: Build, Test, Deploy
+  #   runs-on: self-hosted
+  #   needs: [ validate ]
+  #   environment: dev
+  #   steps:
+  #     - name: Build, Test, Deploy
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.REMOTE_HOST }}
+  #         username: ${{ secrets.REMOTE_USER }}
+  #         port: ${{ secrets.REMOTE_PORT }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         envs: |
+  #           WORKING_DIRECTORY,
+  #           DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DB,
+  #           RABBITMQ_HOST,RABBITMQ_PORT,RABBITMQ_USERNAME,RABBITMQ_PASSWORD,
+  #           ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
+  #           EUREKA_URL,
+  #           FRONTEND_PUBLIC_HOST,CORS_ALLOWED_ORIGINS,
+  #           GATEWAY_PUBLIC_HOST,
+  #           OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
+  #           JWT_KEY,
+  #           REDIS_HOST,REDIS_PORT
+  #         script: |
           
-            cd $WORKING_DIRECTORY/commons
-            ./gradlew clean assemble
+  #           cd $WORKING_DIRECTORY/commons
+  #           ./gradlew clean assemble
             
-            cd $WORKING_DIRECTORY/kodemy-api-gateway
-            ./gradlew clean assemble -x test
-            cd $WORKING_DIRECTORY/kodemy-auth
-            ./gradlew clean assemble -x test
-            cd $WORKING_DIRECTORY/kodemy-backend
-            ./gradlew clean assemble -x test
-            cd $WORKING_DIRECTORY/kodemy-notification
-            ./gradlew clean assemble -x test
-            cd $WORKING_DIRECTORY/kodemy-search
-            ./gradlew clean assemble -x test
-            cd $WORKING_DIRECTORY/kodemy-service-registry
-            ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-api-gateway
+  #           ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-auth
+  #           ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-backend
+  #           ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-notification
+  #           ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-search
+  #           ./gradlew clean assemble -x test
+  #           cd $WORKING_DIRECTORY/kodemy-service-registry
+  #           ./gradlew clean assemble -x test
             
-            export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DB
+  #           export DATASOURCE_URL=jdbc:postgresql://$DATASOURCE_CONTAINER/$DATASOURCE_DB
 
-            cd $WORKING_DIRECTORY
-            docker compose -f docker-compose.app.yml -f docker-compose.app.expose.yml up --build -d
-      - name: Cleanup
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          port: ${{ secrets.REMOTE_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker system prune -f
+  #           cd $WORKING_DIRECTORY
+  #           docker compose -f docker-compose.app.yml -f docker-compose.app.expose.yml up --build -d
+  #     - name: Cleanup
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.REMOTE_HOST }}
+  #         username: ${{ secrets.REMOTE_USER }}
+  #         port: ${{ secrets.REMOTE_PORT }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           docker system prune -f
 
   create-tag:
     name: Create tag
     runs-on: self-hosted
-    needs: [ build-and-deploy ]
+    # needs: [ build-and-deploy ]
     steps:
       - name: Determine new tag
         id: tag
@@ -202,10 +203,16 @@ jobs:
           
           echo "tag=$new_tag" >> $GITHUB_ENV
 
-      - name: Create and push tag
+      - name: Create tag
+        uses: actions/github-script@v5
         env:
           TAG_NAME: ${{ env.tag }}
-        run: |
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/$TAG_NAME',
+              sha: context.sha
+            })
 
