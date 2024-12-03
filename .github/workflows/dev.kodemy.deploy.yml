@@ -207,14 +207,24 @@ jobs:
 
             git tag -l | xargs git tag -d
             git fetch --tags
-            
             tags=$(git tag -l)
-            latest_tag=$(echo "$tags" | grep -E '^0\.0\.[0-9]+$' | sort -V | tail -n 1)
+            
+            latest_tag=$(echo "$tags" | grep -E '^v?0\.[0-9]+\.[0-9]+(-.*)?$' | sort -V | tail -n 1)
             
             if [ -n "$latest_tag" ]; then
-              version_number=$(echo "$latest_tag" | sed 's/^0\.0\.//')
-              new_version=$((version_number + 1))
-              new_tag="0.0.$new_version"
+              if [[ "$latest_tag" == v* ]]; then
+                latest_tag="${latest_tag#v}"
+              fi
+              
+              base_version=$(echo "$latest_tag" | sed 's/-.*//')
+              
+              major=$(echo "$base_version" | cut -d'.' -f1)
+              minor=$(echo "$base_version" | cut -d'.' -f2)
+              patch=$(echo "$base_version" | cut -d'.' -f3)
+              
+              new_patch=$((patch + 1))
+              
+              new_tag="${major}.${minor}.${new_patch}"
             else
               new_tag="0.0.1"
             fi
