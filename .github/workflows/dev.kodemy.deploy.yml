@@ -195,7 +195,7 @@ jobs:
         run: |
           BUILD_NUMBER="${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}"
           echo "${BUILD_NUMBER}"
-          VERSION="$(mvn -q -U -Dexpression=project.build.finalName help:evaluate -DforceStdout=true -DbuildNumber=${BUILD_NUMBER})"
+          VERSION=$(echo $last_tag | awk -F. '{printf "v%d.%d.%d", $1, $2+1, 0}')
           echo "DIST_VERSION=${VERSION}" >> $GITHUB_ENV
           
       - name: Create Tag
