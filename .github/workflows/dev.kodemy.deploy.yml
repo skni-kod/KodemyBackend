@@ -185,3 +185,27 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker system prune -f
+
+  create-tag:
+    name: Create tag
+    runs-on: self-hosted
+    needs: [ build-and-deploy ]
+    steps:
+      - name: Determine new tag
+        id: tag
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Last tag: $last_tag"
+      
+          new_tag=$(echo $last_tag | awk -F. '{printf "v%d.%d.%d", $1, $2+1, 0}')
+          echo "New tag: $new_tag"
+          
+          echo "tag=$new_tag" >> $GITHUB_ENV
+
+      - name: Create and push tag
+        env:
+          TAG_NAME: ${{ env.tag }}
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
