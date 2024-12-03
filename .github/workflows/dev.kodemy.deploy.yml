@@ -224,7 +224,7 @@ jobs:
               
               new_patch=$((patch + 1))
               
-              new_tag="${major}.${minor}.${new_patch}"
+              new_tag="${major}.${minor}.${new_patch}-dev"
             else
               new_tag="0.0.1"
             fi
