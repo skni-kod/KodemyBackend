@@ -195,10 +195,7 @@ jobs:
       - name: Determine new tag
         id: tag
         run: |
-          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Last tag: $last_tag"
-          
-          new_tag=$(echo $last_tag | awk -F. '{printf "v%d.%d.%d", $1, $2+1, 0}')
+          new_tag="${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}"
           echo "New tag: $new_tag"
           
           echo "TAG_NAME=$new_tag" >> $GITHUB_ENV
@@ -216,16 +213,6 @@ jobs:
             cd $WORKING_DIRECTORY
             git tag $TAG_NAME
             git push origin --tags
-
-          # uses: actions/github-script@v5
-          # script: |
-          #   github.rest.git.createRef({
-          #     owner: context.repo.owner,
-          #     repo: context.repo.repo,
-          #     ref: `refs/tags/${{ env.TAG_NAME }}`,
-          #     sha: context.sha
-          #   });
-
 
 
 
