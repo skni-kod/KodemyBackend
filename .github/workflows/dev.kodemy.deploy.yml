@@ -177,6 +177,49 @@ jobs:
 
             cd $WORKING_DIRECTORY
             docker compose -f docker-compose.app.yml -f docker-compose.app.expose.yml up --build -d
+            export CONTAINERS=$(docker-compose -f docker-compose.app.yml ps -q)
+            
+      - name: Validate running
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: |
+            WORKING_DIRECTORY,
+            DATASOURCE_CONTAINER,DATASOURCE_USERNAME,DATASOURCE_PASSWORD,DATASOURCE_DB,
+            RABBITMQ_HOST,RABBITMQ_PORT,RABBITMQ_USERNAME,RABBITMQ_PASSWORD,
+            ELASTICSEARCH_HOSTS,ELASTICSEARCH_USERNAME,ELASTICSEARCH_PASSWORD,
+            EUREKA_URL,
+            FRONTEND_PUBLIC_HOST,CORS_ALLOWED_ORIGINS,
+            GATEWAY_PUBLIC_HOST,
+            OAUTH_GITHUB_ID,OAUTH_GITHUB_KEY,
+            JWT_KEY,
+            REDIS_HOST,REDIS_PORT
+          script: |
+            cd $WORKING_DIRECTORY
+
+            echo "Waiting 1 minute..."
+            sleep 1m
+
+            for container in $CONTAINERS; do
+                status=$(docker inspect --format='{{.State.Status}}' $container)
+                if [ "$status" != "running" ]; then
+                    echo "$container not running"
+                    docker compose -f docker-compose.app.yml -f docker-compose.app.expose.yml -f docker-compose.backup.yml up -d
+                    exit 1
+                fi
+            done
+
+            echo "All containers validated successfully."   
+            docker commit kodemybackend-kodemy-service-registry-1 kodemy-service-registry:backup
+            docker commit kodemybackend-kodemy-api-gateway-1 kodemy-api-gateway:backup
+            docker commit kodemybackend-kodemy-auth-1 kodemy-auth:backup
+            docker commit kodemybackend-kodemy-backend-1 kodemy-backend:backup
+            docker commit kodemybackend-kodemy-notification-1 kodemy-notification:backup
+            docker commit kodemybackend-kodemy-search-1 kodemy-search:backup
+        
       - name: Cleanup
         uses: appleboy/ssh-action@master
         with:
