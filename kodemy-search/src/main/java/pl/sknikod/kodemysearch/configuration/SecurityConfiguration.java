@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,10 +15,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import pl.sknikod.kodemycommons.exception.handler.ServletExceptionHandler;
 import pl.sknikod.kodemycommons.security.JwtAuthorizationFilter;
 import pl.sknikod.kodemycommons.security.JwtProvider;
-import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +26,6 @@ import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
         securedEnabled = true,
         jsr250Enabled = true)
 @AllArgsConstructor
-@Import({JwtConfiguration.class})
 @EnableAutoConfiguration(exclude = UserDetailsServiceAutoConfiguration.class)
 public class SecurityConfiguration {
     @Bean
@@ -55,12 +55,17 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtProvider jwtProvider(JwtConfiguration jwtConfiguration) {
-        return new JwtProvider(jwtConfiguration.getJwtProperties());
+    public JwtProvider jwtProvider(JwtProperties jwtProperties) {
+        return new JwtProvider(jwtProperties);
     }
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter(JwtProvider jwtProvider) {
         return new JwtAuthorizationFilter(jwtProvider);
+    }
+
+    @Component
+    @ConfigurationProperties(prefix = "app.security.jwt")
+    public static class JwtProperties extends JwtProvider.Properties {
     }
 }

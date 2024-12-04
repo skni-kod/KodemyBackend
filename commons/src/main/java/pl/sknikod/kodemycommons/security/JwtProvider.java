@@ -8,13 +8,13 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
 import pl.sknikod.kodemycommons.exception.Authentication403Exception;
-import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class JwtProvider {
-    private final JwtConfiguration.JwtProperties jwtProperties;
+    private final Properties jwtProperties;
     private final SecretKey key;
     private static final String ISSUER = "pl.sknikod.kodemy";
     private final JwtParser parser;
 
-    public JwtProvider(JwtConfiguration.JwtProperties jwtProperties) {
+    public JwtProvider(Properties jwtProperties) {
         this.jwtProperties = jwtProperties;
         this.key = generateKey(jwtProperties.getSecretKey());
         this.parser = buildParser(this.key);
@@ -52,7 +52,7 @@ public class JwtProvider {
                 ClaimKey.AUTHORITIES, List.of(authority)));
     }
 
-    public Token generateUserToken(@NonNull Input input) {
+    public Token generateUserToken(Input input) {
         Assert.notNull(input, "input cannot be null");
         var authorities = input.authorities != null && !input.authorities.isEmpty()
                 ? input.authorities.stream().map(SimpleGrantedAuthority::getAuthority).toList()
@@ -71,8 +71,8 @@ public class JwtProvider {
         final UUID jti = UUID.randomUUID();
         final Date issuedAt = new Date(System.currentTimeMillis());
         final Date expiration = new Date(issuedAt.getTime() + 1000L * 60 * switch (tokenType) {
-            case USER_TOKEN -> jwtProperties.getBearer().getExpirationMin();
-            case DELEGATION_TOKEN -> jwtProperties.getDelegation().getExpirationMin();
+            case USER_TOKEN -> jwtProperties.getBearerExpirationMin();
+            case DELEGATION_TOKEN -> jwtProperties.getDelegationExpirationMin();
         });
         return new Token(jti, generate(jti, subject, issuedAt, expiration, claims), expiration);
 
@@ -198,5 +198,14 @@ public class JwtProvider {
                 this.authorities = authorities;
             }
         }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public abstract static class Properties {
+        private String secretKey = "";
+        private Integer bearerExpirationMin = 15;
+        private Integer delegationExpirationMin = 60;
     }
 }

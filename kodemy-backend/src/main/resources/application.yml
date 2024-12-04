@@ -68,8 +68,10 @@ service:
   connect-timeout-ms: 3000
   read-timeout-ms: 5000
 
-jwt:
-  secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
+app:
+  security:
+    jwt:
+      secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
 
 eureka:
   client:

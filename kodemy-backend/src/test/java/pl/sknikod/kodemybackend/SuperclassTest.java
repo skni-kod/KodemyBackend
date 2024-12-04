@@ -2,30 +2,23 @@ package pl.sknikod.kodemybackend;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.sknikod.kodemycommons.security.configuration.JwtConfiguration;
-
-import java.util.logging.Logger;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
 @ContextConfiguration(classes = KodemyBackendApplication.class)
 @ImportAutoConfiguration(value = TestChannelBinderConfiguration.class)
-@Import({JwtConfiguration.class})
 @Testcontainers
 public class SuperclassTest {
     @Container
