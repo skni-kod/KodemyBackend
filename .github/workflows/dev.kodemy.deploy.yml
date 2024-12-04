@@ -177,7 +177,7 @@ jobs:
 
             cd $WORKING_DIRECTORY
             docker compose -f docker-compose.app.yml -f docker-compose.app.expose.yml up --build -d
-            export CONTAINERS=$(docker-compose -f docker-compose.app.yml ps -q)
+            export BACKEND_CONTAINERS=$(docker-compose -f docker-compose.app.yml ps -q)
             
       - name: Validate running
         uses: appleboy/ssh-action@master
@@ -203,7 +203,7 @@ jobs:
             echo "Waiting 1 minute..."
             sleep 1m
 
-            for container in $CONTAINERS; do
+            for container in $BACKEND_CONTAINERS; do
                 status=$(docker inspect --format='{{.State.Status}}' $container)
                 if [ "$status" != "running" ]; then
                     echo "$container not running"
