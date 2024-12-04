@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.StatusesToChangeResponse;
 import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
@@ -29,6 +30,14 @@ public class MaterialStatusService {
                 .flatMap(unused -> materialStore.changeStatus(materialId, newStatus))
                 .map(tuple -> tuple._2)
                 .toTry(() -> new Validation400Exception("Cannot update status of the material"))
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
+    }
+
+    StatusesToChangeResponse showStatusesToChange(Long materialId) {
+        return materialStore.findById(materialId, true)
+                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(material -> getPossibleStatuses(material.getStatus()))
+                .map(StatusesToChangeResponse::new)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
