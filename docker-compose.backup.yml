@@ -1,0 +1,18 @@
+services:
+  kodemy-service-registry:
+    image: kodemy-service-registry:backup
+
+  kodemy-api-gateway:
+    image: kodemy-api-gateway:backup
+
+  kodemy-auth:
+    image: kodemy-auth:backup
+
+  kodemy-backend:
+    image: kodemy-backend:backup
+
+  kodemy-notification:
+    image: kodemy-notification:backup
+
+  kodemy-search:
+    image: kodemy-search:backup
