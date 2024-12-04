@@ -21,8 +21,10 @@ service:
   baseUrl:
     auth: http://localhost:8080
 
-jwt:
-  expiration-mins: 60
+app:
+  security:
+    jwt:
+      bearer-expiration-min: 60
 
 eureka:
   client:

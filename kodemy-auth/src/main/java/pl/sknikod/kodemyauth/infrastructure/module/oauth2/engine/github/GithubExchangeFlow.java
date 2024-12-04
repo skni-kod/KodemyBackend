@@ -51,7 +51,7 @@ public class GithubExchangeFlow extends ProviderExchangeFlow {
         return new GithubUser(attributes);
     }
 
-    private Email fixEmailNull(Map<String, Object> attributes, ClientRegistration clientRegistration, AccessToken accessToken) {
+    private String fixEmailNull(Map<String, Object> attributes, ClientRegistration clientRegistration, AccessToken accessToken) {
         log.info("Fetching {}'s user emails", clientRegistration.getRegistrationId());
         var headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -67,6 +67,7 @@ public class GithubExchangeFlow extends ProviderExchangeFlow {
                 .toTry(() -> new InternalError500Exception("Failed to fetch user emails"))
                 .map(HttpEntity::getBody)
                 .map(emails -> emails.stream().filter(e -> e.primary).findFirst().orElse(null))
+                .map(Email::getEmail)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 

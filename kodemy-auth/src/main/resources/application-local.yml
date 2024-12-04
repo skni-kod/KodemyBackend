@@ -29,12 +29,10 @@ service:
   baseUrl:
     gateway: http://localhost:8080
 
-jwt:
-  bearer:
-    expiration-min: 720
-
 app:
   security:
+    jwt:
+      bearer-expiration-min: 720
     oauth2:
       baseUrl:
         front: http://localhost:3000

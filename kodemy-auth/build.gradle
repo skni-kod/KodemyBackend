@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.7'
     id 'io.spring.dependency-management' version '1.1.5'
+    id 'idea'
+    id 'groovy'
 }
 
 ext {
@@ -69,6 +71,10 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.cloud:spring-cloud-stream'
     testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+    testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'
+    testImplementation 'net.bytebuddy:byte-buddy'
+    testImplementation "org.apache.groovy:groovy"
+    testImplementation "org.apache.groovy:groovy-json"
     testImplementation 'org.testcontainers:junit-jupiter:1.20.0'
     constraints {
         testImplementation('org.apache.commons:commons-compress:1.26.2') {
