@@ -15,6 +15,7 @@ public class SearchCriteria {
     String anyPhrase;
     List<PhraseField> phraseFields = new ArrayList<>();
     List<RangeField<?>> rangeFields = new ArrayList<>();
+    List<ArrayField> arrayFields = new ArrayList<>();
     Pageable pageable;
 
     public SearchCriteria(@NonNull String anyPhrase, @NonNull Pageable pageable) {
@@ -28,6 +29,10 @@ public class SearchCriteria {
 
     public void addRangeField(RangeField<?> field) {
         rangeFields.add(field);
+    }
+
+    public void addArrayField(ArrayField field) {
+        arrayFields.add(field);
     }
 
     @Getter
@@ -62,6 +67,16 @@ public class SearchCriteria {
             this.value = value;
             this.wildcard = wildcard;
             this.mustNot = mustNot;
+        }
+    }
+
+    @Getter
+    public static class ArrayField extends Field {
+        private final List<String> values;
+
+        public ArrayField(String name, List<String> values) {
+            super(name);
+            this.values = values;
         }
     }
 
