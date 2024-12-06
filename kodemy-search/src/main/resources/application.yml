@@ -90,8 +90,10 @@ logbook:
       - path: /actuator/health
         methods: "*"
 
-jwt:
-  secret-key: ${JWT_KEY}
+app:
+  security:
+    jwt:
+      secret-key: ${JWT_KEY}
 
 opensearch:
   host: http://opensearch:9200

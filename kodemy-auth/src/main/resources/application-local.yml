@@ -30,12 +30,11 @@ service:
   baseUrl:
     gateway: http://localhost:8080
 
-jwt:
-  bearer:
-    expiration-min: 720
-
 app:
   security:
+    jwt:
+      secret-key: YWJjZGVmZ2hjvbwjrW5vcHFyc3R1dnd4eXoxMjM0NTY3OnDMTIzNDU2Nzg5MDEyMzQ1Njc4OTAf=
+      bearer-expiration-min: 720
     oauth2:
       baseUrl:
         front: http://localhost:3000

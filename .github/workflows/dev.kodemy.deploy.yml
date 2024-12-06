@@ -163,7 +163,7 @@ jobs:
             cd $WORKING_DIRECTORY/kodemy-api-gateway
             ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-auth
-            ./gradlew clean assemble -x test
+            ./gradlew clean assemble
             cd $WORKING_DIRECTORY/kodemy-backend
             ./gradlew clean assemble -x test
             cd $WORKING_DIRECTORY/kodemy-notification

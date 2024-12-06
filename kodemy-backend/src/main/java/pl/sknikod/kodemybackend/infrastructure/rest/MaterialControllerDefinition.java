@@ -22,6 +22,7 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialCreateSer
 import pl.sknikod.kodemybackend.infrastructure.module.material.MaterialUpdateService;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.StatusesToChangeResponse;
 import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
 import java.time.Instant;
@@ -84,6 +85,11 @@ public interface MaterialControllerDefinition {
     @SwaggerResponse.SuccessCode200
     @GetMapping("/{materialId}")
     ResponseEntity<SingleMaterialResponse> showDetails(@PathVariable Long materialId);
+
+    @Operation(summary = "Show all possible statuses to change")
+    @SwaggerResponse.SuccessCode200
+    @GetMapping("/{materialId}/status/evaluate")
+    ResponseEntity<StatusesToChangeResponse> showStatusesToChange(@PathVariable Long materialId);
 
     @Operation(summary = "Show all materials")
     @SwaggerResponse.SuccessCode200

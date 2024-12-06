@@ -70,8 +70,10 @@ service:
   connect-timeout-ms: 3000
   read-timeout-ms: 5000
 
-jwt:
-  secret-key: ${JWT_KEY}
+app:
+  security:
+    jwt:
+      secret-key: ${JWT_KEY}
 
 eureka:
   client:

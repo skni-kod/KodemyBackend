@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialPageable;
 import pl.sknikod.kodemybackend.infrastructure.module.material.model.SingleMaterialResponse;
+import pl.sknikod.kodemybackend.infrastructure.module.material.model.StatusesToChangeResponse;
 import pl.sknikod.kodemybackend.infrastructure.rest.MaterialControllerDefinition;
 
 import java.net.URI;
@@ -58,6 +59,12 @@ public class MaterialController implements MaterialControllerDefinition {
     public ResponseEntity<SingleMaterialResponse> showDetails(Long materialId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(materialGetByIdService.showDetails(materialId));
+    }
+
+    @Override
+    public ResponseEntity<StatusesToChangeResponse> showStatusesToChange(Long materialId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(materialStatusService.showStatusesToChange(materialId));
     }
 
     @Override
