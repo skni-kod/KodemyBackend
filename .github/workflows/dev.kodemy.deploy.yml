@@ -29,9 +29,14 @@ env:
   GATEWAY_PUBLIC_HOST: ${{ secrets.GATEWAY_PUBLIC_HOST }}
 
 jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/dev.kodemy.test.yml
+  
   prepare:
     name: Prepare
     runs-on: self-hosted
+    needs: [ test ]
     steps:
       - name: Check environments
         run: |
