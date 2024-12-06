@@ -45,11 +45,8 @@ public class MaterialSearchService {
             ));
         var categoryIds = filterSearchParams.getCategoryIds();
         if (Objects.nonNull(categoryIds) && !categoryIds.isEmpty()) {
-            categoryIds.forEach(categoryId -> {
-                criteria.addPhraseField(new SearchCriteria.PhraseField(
-                        "categoryId", String.valueOf(categoryId), false, false
-                ));
-            });
+            criteria.addArrayField(new SearchCriteria.ArrayField(
+                    "categoryId", categoryIds.stream().map(String::valueOf).toList()));
         }
         if (Objects.nonNull(filterSearchParams.getMinAvgGrade()) || Objects.nonNull(filterSearchParams.getMaxAvgGrade()))
             criteria.addRangeField(new SearchCriteria.RangeField<>(
