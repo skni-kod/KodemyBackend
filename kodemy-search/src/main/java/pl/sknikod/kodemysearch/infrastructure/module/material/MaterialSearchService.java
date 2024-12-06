@@ -46,7 +46,7 @@ public class MaterialSearchService {
         var categoryIds = filterSearchParams.getCategoryIds();
         if (Objects.nonNull(categoryIds) && !categoryIds.isEmpty()) {
             criteria.addArrayField(new SearchCriteria.ArrayField(
-                    "categoryId", categoryIds.stream().map(Object::toString).toList()));
+                    "categoryId", categoryIds.stream().map(String::valueOf).toList()));
         }
         if (Objects.nonNull(filterSearchParams.getMinAvgGrade()) || Objects.nonNull(filterSearchParams.getMaxAvgGrade()))
             criteria.addRangeField(new SearchCriteria.RangeField<>(
