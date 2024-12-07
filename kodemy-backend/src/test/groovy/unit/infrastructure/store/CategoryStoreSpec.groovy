@@ -7,28 +7,28 @@ import pl.sknikod.kodemybackend.infrastructure.store.CategoryStore
 import pl.sknikod.kodemycommons.exception.NotFound404Exception
 import spock.lang.Specification
 
-class CategoryStoreSpec extends Specification{
+class CategoryStoreSpec extends Specification {
     def categoryRepository = Mock(CategoryRepository)
-    
+
     def categoryStore = new CategoryStore(categoryRepository)
-    
+
     private static final CATEGORY_ID = 1L
-    
-    def "shouldFindCategoryById" () {
+
+    def "shouldFindCategoryById"() {
         given:
-            categoryRepository.findById(CATEGORY_ID) >> Optional.of(new Category())
+        categoryRepository.findById(CATEGORY_ID) >> Optional.of(new Category())
         when:
-            def result = categoryStore.findById(CATEGORY_ID)
+        def result = categoryStore.findById(CATEGORY_ID)
         then:
-            Assert.that(!result.isEmpty())
+        Assert.that(!result.isEmpty())
     }
 
-    def "shouldThrowNotFoundWhenFindCategoryById" () {
+    def "shouldThrowNotFoundWhenFindCategoryById"() {
         given:
-            categoryRepository.findById(CATEGORY_ID) >> Optional.empty()
+        categoryRepository.findById(CATEGORY_ID) >> Optional.empty()
         when:
-            categoryStore.findById(CATEGORY_ID).get()
+        categoryStore.findById(CATEGORY_ID).get()
         then:
-            thrown(NotFound404Exception)
+        thrown(NotFound404Exception)
     }
 }

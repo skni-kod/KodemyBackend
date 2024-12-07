@@ -36,11 +36,6 @@ public class UserStore {
         this.authRouteBaseUrl = authRouteBaseUrl;
     }
 
-    private String createURI(Stream<Long> ids) {
-        String queryString = ids.map(id -> "user=" + id).collect(Collectors.joining("&"));
-        return authRouteBaseUrl + "/api/users/brief?" + queryString;
-    }
-
     public Try<List<User>> findUsersById(Stream<Long> ids) {
         return Try.of(() -> lanRestTemplate.exchange(createURI(ids), HttpMethod.GET, null, USERS_LIST_TYPE))
                 .map(HttpEntity::getBody)
@@ -58,6 +53,11 @@ public class UserStore {
                 .mapTry(users -> users.get(0))
                 .onFailure(th -> log.error(LOG_PROBLEM, th))
                 .toTry(InternalError500Exception::new);
+    }
+
+    private String createURI(Stream<Long> ids) {
+        String queryString = ids.map(id -> "user=" + id).collect(Collectors.joining("&"));
+        return authRouteBaseUrl + "/api/users/brief?" + queryString;
     }
 
     @Setter

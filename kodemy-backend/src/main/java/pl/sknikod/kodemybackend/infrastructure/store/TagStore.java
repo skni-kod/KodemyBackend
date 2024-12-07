@@ -31,7 +31,7 @@ public class TagStore {
         if (tagRepository.existsByName(name))
             return Try.failure(new AlreadyExists409Exception(ExceptionMsgPattern.ENTITY_ALREADY_EXISTS, Tag.class));
         return Try.of(() -> tagRepository.save(new Tag(name)))
-                .onFailure(th -> log.warn("Cannot save refresh token", th));
+                .onFailure(th -> log.warn("Cannot save tag", th));
     }
 
     public Try<List<Tag>> findAll() {
