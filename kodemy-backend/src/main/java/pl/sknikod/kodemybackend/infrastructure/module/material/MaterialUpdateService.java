@@ -41,7 +41,7 @@ public class MaterialUpdateService {
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         var material = materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
         var category = categoryStore.findById(body.categoryId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);

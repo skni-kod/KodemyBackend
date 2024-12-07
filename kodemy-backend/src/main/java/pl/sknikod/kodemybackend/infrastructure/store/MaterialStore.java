@@ -116,15 +116,6 @@ public class MaterialStore {
                 });
     }
 
-    @AfterAction(action = AfterAction.Action.STATUS_UPDATE)
-    public Try<Tuple2<Long, Material.MaterialStatus>> changeStatus(Long materialId, Material.MaterialStatus newStatus) {
-        return Try.of(() -> {
-                    materialRepository.updateStatus(materialId, newStatus);
-                    return Tuple.of(materialId, newStatus);
-                })
-                .onFailure(th -> log.error("Cannot change material status to {}", newStatus, th));
-    }
-
     public Try<Page<FindAllPageWithUserObject>> findAllInDateRange(LocalDateTime fromDate, LocalDateTime toDate, PageRequest pageable) {
         return Try.of(() -> materialRepository.findMaterialsInDateRangeWithPage(fromDate, toDate, pageable))
                 .mapTry(materials -> {
@@ -157,12 +148,16 @@ public class MaterialStore {
                 });
     }
 
-    @Value
-    public static class FindByIdObject {
-        Material material;
-        String username;
-        Double avgGrade;
-        List<Long> gradeStats;
+    @AfterAction(action = AfterAction.Action.STATUS_UPDATE)
+    public Try<Tuple2<Long, Material.MaterialStatus>> changeStatus(Long materialId, Material.MaterialStatus newStatus) {
+        return Try.of(() -> {
+                    materialRepository.updateStatus(materialId, newStatus);
+                    return Tuple.of(materialId, newStatus);
+                })
+                .onFailure(th -> log.error("Cannot change material status to {}", newStatus, th));
+    }
+
+    public record FindByIdObject(Material material, String username, Double avgGrade, List<Long> gradeStats) {
     }
 
     @Value

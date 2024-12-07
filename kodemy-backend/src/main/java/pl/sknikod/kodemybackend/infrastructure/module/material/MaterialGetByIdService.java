@@ -18,8 +18,8 @@ public class MaterialGetByIdService {
     public SingleMaterialResponse showDetails(Long materialId) {
         return materialStore.findById(materialId)
                 .mapTry(findByIdObject -> SingleMaterialResponse.map(
-                        findByIdObject.getMaterial(), findByIdObject.getUsername(),
-                        findByIdObject.getAvgGrade(), findByIdObject.getGradeStats()
+                        findByIdObject.material(), findByIdObject.username(),
+                        findByIdObject.avgGrade(), findByIdObject.gradeStats()
                 ))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }

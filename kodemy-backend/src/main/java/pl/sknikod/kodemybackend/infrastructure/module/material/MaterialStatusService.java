@@ -21,7 +21,7 @@ public class MaterialStatusService {
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) {
         return materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .filter(material -> {
                     var possibleStatuses = getPossibleStatuses(material.getStatus());
                     var neededAuthority = getAuthorityForStatusChange(material.getStatus(), newStatus);
@@ -35,7 +35,7 @@ public class MaterialStatusService {
 
     StatusesToChangeResponse showStatusesToChange(Long materialId) {
         return materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .map(material -> getPossibleStatuses(material.getStatus()))
                 .map(StatusesToChangeResponse::new)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
