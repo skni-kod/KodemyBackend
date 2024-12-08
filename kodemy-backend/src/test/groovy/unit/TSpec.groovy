@@ -5,12 +5,12 @@ import spock.lang.Specification
 class TSpec extends Specification {
     def "shouldTrue"() {
         given:
-            def email = ""
+        def email = ""
         when:
-            email = ""  
+        email = ""
         then:
-            verifyAll {
-                email == ""
-            }
+        verifyAll {
+            email == ""
+        }
     }
 }

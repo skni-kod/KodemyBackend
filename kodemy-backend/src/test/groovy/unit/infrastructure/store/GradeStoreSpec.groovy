@@ -33,8 +33,10 @@ class GradeStoreSpec extends Specification {
     def "shouldFindAvgGradeByMaterialId"() {
         given:
         gradeRepository.findAvgGradeByMaterialId(MATERIAL_ID) >> GRADE
+
         when:
         def result = gradeStore.findAvgGradeByMaterial(MATERIAL_ID).get()
+
         then:
         Assert.that(result == 3.0)
     }
@@ -51,8 +53,10 @@ class GradeStoreSpec extends Specification {
                 >> 0L
         gradeRepository.countAllByMaterialIdAndValue(MATERIAL_ID, 5.0)
                 >> 0L
+
         when:
         def result = gradeStore.getGradeStats(MATERIAL_ID).get()
+
         then:
         Assert.that(result == List.of(0L, 0L, 1L, 0L, 0L))
     }
@@ -61,8 +65,10 @@ class GradeStoreSpec extends Specification {
         given:
         def grade = new Grade()
         gradeRepository.save(_ as Grade) >> grade
+
         when:
         def result = gradeStore.save(grade).get()
+
         then:
         Assert.that(grade == result)
     }
@@ -75,7 +81,6 @@ class GradeStoreSpec extends Specification {
         def user = new UserStore.User()
         user.id = USER_ID
         user.username = "name"
-
         gradeRepository.findGradesByMaterialInDateRange(
                 MATERIAL_ID,
                 _ as LocalDateTime,
@@ -83,6 +88,7 @@ class GradeStoreSpec extends Specification {
                 _ as PageRequest
         ) >> new PageImpl<Grade>(grades)
         userStore.findUsersById(_ as Set) >> Try.success(new ArrayList<>(List.of(user)))
+
         when:
         def result = gradeStore.findGradesByMaterialInDateRange(
                 MATERIAL_ID,
@@ -90,6 +96,7 @@ class GradeStoreSpec extends Specification {
                 Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()),
                 PageRequest.of(1, 1,)
         ).get()
+
         then:
         verifyAll(result) {
             result._1() == new PageImpl<Grade>(grades)
@@ -102,7 +109,6 @@ class GradeStoreSpec extends Specification {
         def grades = List.of(
                 new Grade(GRADE, USER_ID, MATERIAL_ID)
         )
-
         gradeRepository.findGradesByMaterialInDateRange(
                 MATERIAL_ID,
                 _ as LocalDateTime,
@@ -110,6 +116,7 @@ class GradeStoreSpec extends Specification {
                 _ as PageRequest
         ) >> new PageImpl<Grade>(grades)
         userStore.findUsersById(_ as Set) >> Try.success(new ArrayList<>())
+
         when:
         gradeStore.findGradesByMaterialInDateRange(
                 MATERIAL_ID,
@@ -117,6 +124,7 @@ class GradeStoreSpec extends Specification {
                 Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()),
                 PageRequest.of(1, 1,)
         ).get()
+
         then:
         thrown(IllegalStateException)
     }
@@ -130,8 +138,10 @@ class GradeStoreSpec extends Specification {
                 USER_ID, "", false, false,
                 false, true, new HashSet<SimpleGrantedAuthority>()
         ))
+
         when:
         def result = gradeStore.addGrade(MATERIAL_ID, GRADE).get()
+
         then:
         Assert.that(grade == result)
     }
@@ -139,8 +149,10 @@ class GradeStoreSpec extends Specification {
     def "shouldThrowWhenAddGrade"() {
         given:
         materialRepository.existsById(MATERIAL_ID) >> false
+
         when:
         gradeStore.addGrade(MATERIAL_ID, GRADE).get()
+
         then:
         thrown(NotFound404Exception)
     }
@@ -149,8 +161,10 @@ class GradeStoreSpec extends Specification {
         given:
         gradeRepository.findAvgGradeByMaterialsIds(_ as List<Long>)
                 >> new HashSet<Object[]>()
+
         when:
         def result = gradeStore.findAvgGradeByMaterialsIds(List.of(1L)).get()
+
         then:
         Assert.that(result in List<GradeStore.FindAvgGradeObject>)
     }

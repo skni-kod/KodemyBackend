@@ -23,8 +23,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.of(Optional.of(new ArrayList<>(List.of(user))))
+
         when:
         def result = userStore.findUsersById(Stream.of(1L)).get()
+
         then:
         Assert.that(result == List.of(user))
     }
@@ -33,8 +35,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.internalServerError()
+
         when:
         userStore.findUsersById(Stream.of(1L)).get()
+
         then:
         thrown(InternalError500Exception)
     }
@@ -43,8 +47,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.of(Optional.of(new ArrayList<>(List.of(user))))
+
         when:
         def result = userStore.findUsersById(List.of(1L)).get()
+
         then:
         Assert.that(result == List.of(user))
     }
@@ -53,8 +59,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.internalServerError()
+
         when:
         userStore.findUsersById(List.of(1L)).get()
+
         then:
         thrown(InternalError500Exception)
     }
@@ -63,8 +71,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.of(Optional.of(new ArrayList<>(List.of(user))))
+
         when:
         def result = userStore.findById(1L).get()
+
         then:
         Assert.that(result == user)
     }
@@ -73,8 +83,10 @@ class UserStoreSpec extends Specification {
         given:
         lanRestTemplate.exchange(_ as String, HttpMethod.GET, null, _ as ParameterizedTypeReference)
                 >> ResponseEntity.internalServerError()
+
         when:
         userStore.findById(1L).get()
+
         then:
         thrown(InternalError500Exception)
     }

@@ -20,8 +20,10 @@ class TagStoreSpec extends Specification {
         given:
         tagRepository.findTagsByIdIn(List.of(1L))
                 >> Set.of(tag)
+
         when:
         def result = tagStore.findAllByIdIn(List.of(1L)).get()
+
         then:
         Assert.that(result == Set.of(tag))
     }
@@ -30,8 +32,10 @@ class TagStoreSpec extends Specification {
         given:
         tagRepository.findTagsByIdIn(List.of(1L))
                 >> new HashSet<Tag>()
+
         when:
         tagStore.findAllByIdIn(List.of(1L)).get()
+
         then:
         thrown(NotFound404Exception)
     }
@@ -40,8 +44,10 @@ class TagStoreSpec extends Specification {
         given:
         tagRepository.existsByName(tag.name) >> false
         tagRepository.save(_ as Tag) >> tag
+
         when:
         def result = tagStore.save(tag.name).get()
+
         then:
         Assert.that(result == tag)
     }
@@ -49,8 +55,10 @@ class TagStoreSpec extends Specification {
     def "shouldThrowWhenSave"() {
         given:
         tagRepository.existsByName(tag.name) >> true
+
         when:
         tagStore.save(tag.name).get()
+
         then:
         thrown(AlreadyExists409Exception)
     }
@@ -58,8 +66,10 @@ class TagStoreSpec extends Specification {
     def "shouldFindAll"() {
         given:
         tagRepository.findAll() >> new ArrayList<Tag>(List.of(tag))
+
         when:
         def result = tagStore.findAll().get()
+
         then:
         Assert.that(result == List.of(tag))
     }

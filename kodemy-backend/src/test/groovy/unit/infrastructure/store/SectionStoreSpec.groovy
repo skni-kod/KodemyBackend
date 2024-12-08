@@ -16,8 +16,10 @@ class SectionStoreSpec extends Specification {
         def section = new Section()
         sectionRepository.findAllWithFetchCategories()
                 >> new ArrayList<Section>(List.of(section))
+
         when:
         def result = sectionStore.findAll().get()
+
         then:
         Assert.that(result == List.of(section))
     }

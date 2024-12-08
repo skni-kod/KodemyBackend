@@ -17,8 +17,10 @@ class CategoryStoreSpec extends Specification {
     def "shouldFindCategoryById"() {
         given:
         categoryRepository.findById(CATEGORY_ID) >> Optional.of(new Category())
+
         when:
         def result = categoryStore.findById(CATEGORY_ID)
+
         then:
         Assert.that(!result.isEmpty())
     }
@@ -26,8 +28,10 @@ class CategoryStoreSpec extends Specification {
     def "shouldThrowNotFoundWhenFindCategoryById"() {
         given:
         categoryRepository.findById(CATEGORY_ID) >> Optional.empty()
+
         when:
         categoryStore.findById(CATEGORY_ID).get()
+
         then:
         thrown(NotFound404Exception)
     }

@@ -17,8 +17,10 @@ class TypeStoreSpec extends Specification {
     def "shouldFindById"() {
         given:
         typeRepository.findById(1L) >> Optional.of(type)
+
         when:
         def result = typeStore.findById(1L).get()
+
         then:
         Assert.that(result == type)
     }
@@ -26,8 +28,10 @@ class TypeStoreSpec extends Specification {
     def "shouldThrowWhenFindById"() {
         given:
         typeRepository.findById(1L) >> Optional.empty()
+
         when:
         typeStore.findById(1L).get()
+
         then:
         thrown(NotFound404Exception)
     }
@@ -35,8 +39,10 @@ class TypeStoreSpec extends Specification {
     def "shouldFindAll"() {
         given:
         typeRepository.findAll() >> new ArrayList<Type>(List.of(type))
+
         when:
         def result = typeStore.findAll().get()
+
         then:
         Assert.that(result == List.of(type))
     }
