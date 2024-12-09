@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController implements UserControllerDefinition {
+public class MaterialGetByUserController implements UserControllerDefinition {
     private final MaterialGetByUserService materialGetByUserService;
 
     @Override

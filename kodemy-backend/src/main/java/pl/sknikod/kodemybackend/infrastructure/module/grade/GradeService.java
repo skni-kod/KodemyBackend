@@ -37,9 +37,7 @@ public class GradeService {
         Date maxDate = Objects.requireNonNullElse(
                 filterSearchParams.getCreatedDateTo(), GradeRepository.DATE_MAX);
         return gradeStore.findGradesByMaterialInDateRange(materialId, minDate, maxDate, pageRequest)
-                .map(tuple -> tuple.map2(users -> {
-                    return users.stream().collect(Collectors.toMap(UserStore.User::getId, UserStore.User::getUsername));
-                }))
+                .map(tuple -> tuple.map2(users -> users.stream().collect(Collectors.toMap(UserStore.User::getId, UserStore.User::getUsername))))
                 .mapTry(tuple -> tuple._1.map(grade -> gradeMapper.map(grade, tuple._2.get(grade.getUserId()))))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
