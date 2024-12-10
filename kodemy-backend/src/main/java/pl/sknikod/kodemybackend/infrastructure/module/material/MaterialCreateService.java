@@ -25,7 +25,6 @@ import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TypeStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.util.PrincipalUtil;
 
 import java.util.List;

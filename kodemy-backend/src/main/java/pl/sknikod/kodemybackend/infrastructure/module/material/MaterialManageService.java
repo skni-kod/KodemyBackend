@@ -26,7 +26,7 @@ public class MaterialManageService {
             PageRequest pageRequest
     ) {
         return materialStore.findAll(createFindAllFilters(materialFilterSearchParams, pageRequest))
-                .map(tuple -> tuple.map2(users -> 
+                .map(tuple -> tuple.map2(users ->
                         users.stream().collect(Collectors.toMap(UserStore.User::getId, UserStore.User::getUsername)))
                 )
                 .mapTry(tuple -> tuple._1.map(object -> MaterialPageable.map(
