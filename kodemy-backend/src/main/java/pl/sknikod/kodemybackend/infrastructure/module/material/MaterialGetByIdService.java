@@ -12,7 +12,6 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 @Service
 @RequiredArgsConstructor
 public class MaterialGetByIdService {
-    private final GradeStore gradeStore;
     private final MaterialStore materialStore;
 
     public SingleMaterialResponse showDetails(Long materialId) {

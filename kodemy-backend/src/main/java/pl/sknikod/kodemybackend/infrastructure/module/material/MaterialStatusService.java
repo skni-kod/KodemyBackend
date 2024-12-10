@@ -33,7 +33,7 @@ public class MaterialStatusService {
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
-    StatusesToChangeResponse showStatusesToChange(Long materialId) {
+    public StatusesToChangeResponse showStatusesToChange(Long materialId) {
         return materialStore.findById(materialId, true)
                 .map(MaterialStore.FindByIdObject::material)
                 .map(material -> getPossibleStatuses(material.getStatus()))

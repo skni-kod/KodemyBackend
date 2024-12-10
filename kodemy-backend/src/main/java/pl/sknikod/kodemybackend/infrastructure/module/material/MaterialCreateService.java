@@ -26,6 +26,7 @@ import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TypeStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.util.PrincipalUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -39,9 +40,10 @@ import static pl.sknikod.kodemybackend.infrastructure.database.Material.Material
 public class MaterialCreateService {
     private final MaterialStore materialStore;
     private final TypeStore typeStore;
-    private final MaterialCreateMapper createMaterialMapper;
+    private final MaterialCreateMapper materialCreateMapper;
     private final CategoryStore categoryStore;
     private final TagStore tagStore;
+    private final PrincipalUtil principalUtil;
 
     public MaterialCreateResponse create(MaterialCreateRequest body) {
         var category = categoryStore.findById(body.categoryId)
@@ -53,7 +55,7 @@ public class MaterialCreateService {
 
         return Try.of(() -> this.toMaterial(body, category, type, tags))
                 .flatMap(materialStore::save)
-                .map(createMaterialMapper::map)
+                .map(materialCreateMapper::map)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
@@ -71,7 +73,7 @@ public class MaterialCreateService {
         material.setCategory(category);
         material.setType(type);
         material.setTags(tags);
-        var user = AuthFacade.getCurrentUserPrincipal().get();
+        var user = principalUtil.getPrincipal().get();
         material.setUserId(user.getId());
         var isApprovedMaterial = user.getAuthorities().contains(new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL"))
                 ? APPROVED : PENDING;
