@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemycommons.exception.handler.RestExceptionHandler;
 import pl.sknikod.kodemycommons.network.LanRestTemplate;
 import pl.sknikod.kodemycommons.security.JwtProvider;
+import pl.sknikod.kodemycommons.util.PrincipalUtil;
 
 @Configuration
 public class WebConfiguration {
@@ -29,5 +30,10 @@ public class WebConfiguration {
             @Value("${service.connect-timeout-ms}") int connectTimeoutMs, @Value("${service.read-timeout-ms}") int readTimeoutMs, JwtProvider jwtProvider
     ) {
         return new LanRestTemplate(connectTimeoutMs, readTimeoutMs, jwtProvider);
+    }
+    
+    @Bean
+    public PrincipalUtil principalUtil(){
+        return new PrincipalUtil();
     }
 }

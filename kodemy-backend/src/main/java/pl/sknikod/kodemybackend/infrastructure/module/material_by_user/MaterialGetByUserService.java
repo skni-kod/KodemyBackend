@@ -24,12 +24,6 @@ public class MaterialGetByUserService {
     private static final SimpleGrantedAuthority CAN_VIEW_ALL_MATERIALS =
             new SimpleGrantedAuthority("CAN_VIEW_ALL_MATERIALS");
 
-    private Page<MaterialPageable> mapToMaterialPageable(Page<MaterialStore.FindAllPageObject> materials, UserStore.User user) {
-        return materials.map(material1 -> MaterialPageable.map(
-                material1.getMaterial(), material1.getAvgGrade(), user.getUsername()
-        ));
-    }
-
     public Page<MaterialPageable> getPersonalMaterials(Long userId, UserControllerDefinition.FilterSearchParams filterSearchParams, PageRequest pageRequest) {
         var statuses = (userCannotViewNotApprovedMaterials(userId))
                 ? List.of(Material.MaterialStatus.APPROVED) : filterSearchParams.getStatuses();
@@ -54,6 +48,12 @@ public class MaterialGetByUserService {
                 params.getMinAvgGrade(),
                 pageRequest
         );
+    }
+
+    private Page<MaterialPageable> mapToMaterialPageable(Page<MaterialStore.FindAllPageObject> materials, UserStore.User user) {
+        return materials.map(material1 -> MaterialPageable.map(
+                material1.getMaterial(), material1.getAvgGrade(), user.getUsername()
+        ));
     }
 
     private static boolean userCannotViewNotApprovedMaterials(Long userId) {

@@ -16,16 +16,13 @@ import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
+import pl.sknikod.kodemycommons.util.PrincipalUtil;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
-import pl.sknikod.kodemycommons.security.AuthFacade;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +33,7 @@ public class GradeStore {
     private final GradeRepository gradeRepository;
     private final UserStore userStore;
     private final MaterialRepository materialRepository;
+    private final PrincipalUtil principalUtil;
 
     public Try<Double> findAvgGradeByMaterial(Long id) {
         return Try.of(() -> gradeRepository.findAvgGradeByMaterialId(id));
@@ -95,7 +93,7 @@ public class GradeStore {
                             ExceptionMsgPattern.ENTITY_NOT_FOUND_BY_PARAM, Material.class.getSimpleName(), "id", materialId
                     );
                 })
-                .mapTry(unused -> new Grade(value, AuthFacade.getCurrentUserPrincipal().get().getId(), materialId))
+                .mapTry(unused -> new Grade(value, principalUtil.getPrincipal().get().getId(), materialId))
                 .map(gradeRepository::save)
                 .onFailure(th -> log.error("Cannot add grade", th));
     }
@@ -116,5 +114,5 @@ public class GradeStore {
             this.materialId = (Long) objects[0];
             this.avgGrade = (Double) objects[1];
         }
-    }
+    }    
 }

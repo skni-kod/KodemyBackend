@@ -20,7 +20,7 @@ import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TagStore;
 import pl.sknikod.kodemybackend.infrastructure.store.TypeStore;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommons.security.AuthFacade;
+import pl.sknikod.kodemycommons.util.PrincipalUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -38,10 +38,11 @@ public class MaterialUpdateService {
     private final MaterialStore materialStore;
     private static final SimpleGrantedAuthority CAN_AUTO_APPROVED_MATERIAL =
             new SimpleGrantedAuthority("CAN_AUTO_APPROVED_MATERIAL");
+    private final PrincipalUtil principalUtil;
 
     public MaterialUpdateResponse update(Long materialId, MaterialUpdateRequest body) {
         var material = materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
         var category = categoryStore.findById(body.categoryId)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
@@ -70,7 +71,7 @@ public class MaterialUpdateService {
         material.setCategory(category);
         material.setType(type);
         material.setTags(tags);
-        material.setStatus(validateStatus(AuthFacade.getCurrentUserPrincipal().get().getAuthorities(), material.getStatus()));
+        material.setStatus(validateStatus(principalUtil.getPrincipal().get().getAuthorities(), material.getStatus()));
         return material;
     }
 

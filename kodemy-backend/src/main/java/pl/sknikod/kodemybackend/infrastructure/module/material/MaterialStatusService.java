@@ -8,8 +8,8 @@ import pl.sknikod.kodemybackend.infrastructure.module.material.model.StatusesToC
 import pl.sknikod.kodemybackend.infrastructure.store.MaterialStore;
 import pl.sknikod.kodemycommons.exception.Validation400Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
-import pl.sknikod.kodemycommons.security.AuthFacade;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
+import pl.sknikod.kodemycommons.util.PrincipalUtil;
 
 import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getAuthorityForStatusChange;
 import static pl.sknikod.kodemybackend.infrastructure.module.material.model.MaterialStatusUtil.getPossibleStatuses;
@@ -18,10 +18,11 @@ import static pl.sknikod.kodemybackend.infrastructure.module.material.model.Mate
 @AllArgsConstructor
 public class MaterialStatusService {
     private final MaterialStore materialStore;
+    private final PrincipalUtil principalUtil;
 
     public Material.MaterialStatus update(Long materialId, Material.MaterialStatus newStatus) {
         return materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .filter(material -> {
                     var possibleStatuses = getPossibleStatuses(material.getStatus());
                     var neededAuthority = getAuthorityForStatusChange(material.getStatus(), newStatus);
@@ -33,16 +34,16 @@ public class MaterialStatusService {
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
-    StatusesToChangeResponse showStatusesToChange(Long materialId) {
+    public StatusesToChangeResponse showStatusesToChange(Long materialId) {
         return materialStore.findById(materialId, true)
-                .map(MaterialStore.FindByIdObject::getMaterial)
+                .map(MaterialStore.FindByIdObject::material)
                 .map(material -> getPossibleStatuses(material.getStatus()))
                 .map(StatusesToChangeResponse::new)
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     private boolean canUserUpdateStatus(SimpleGrantedAuthority neededAuthority, Material material) {
-        UserPrincipal userPrincipal = AuthFacade.getCurrentUserPrincipal().get();
+        UserPrincipal userPrincipal = principalUtil.getPrincipal().get();
         return userPrincipal.getAuthorities().contains(neededAuthority)
                 || isOwnerStatusUpdatePossible(neededAuthority, material, userPrincipal.getId());
     }
