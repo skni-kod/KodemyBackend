@@ -21,31 +21,31 @@ class MaterialSearchServiceSpec extends Specification {
     @Unroll
     def "should create search criteria from filter search params for #description"() {
         given:
-        def filterSearchParams = params
-        def pageable = PageRequest.of(0, 10)
+            def filterSearchParams = params
+            def pageable = PageRequest.of(0, 10)
 
         when:
-        try {
-            materialSearchService.search(filterSearchParams as MaterialFilterSearchParams, pageable)
-        } catch (Exception ignored) {
-            // We don't care about the result. We only check creating search criteria
-        }
+            try {
+                materialSearchService.search(filterSearchParams as MaterialFilterSearchParams, pageable)
+            } catch (Exception ignored) {
+                // We don't care about the result. We only check creating search criteria
+            }
 
         then: "search criteria are created based on filter search params"
-        1 * materialSearchStore.search({
-            it.anyPhrase == filterSearchParams.phrase &&
-            it.pageable == pageable &&
-            it.phraseFields.size() == expected.phraseFieldsCount &&
-            it.phraseFields.any { field -> field.name == "id" && field.value == filterSearchParams.id.toString() } &&
-            it.phraseFields.any { field -> field.name == "sectionId" && field.value == filterSearchParams.sectionId.toString() } &&
-            it.arrayFields.size() == expected.arrayFieldsCount &&
-            it.arrayFields.any { field -> field.name == "categoryId" && field.values == filterSearchParams.categoryIds.collect { it.toString() } } &&
-            it.rangeFields.size() == expected.rangeFieldsCount &&
-            it.rangeFields.any { field -> field.name == "avgGrade" && field.from == filterSearchParams.minAvgGrade && field.to == filterSearchParams.maxAvgGrade }
-        })
+            1 * materialSearchStore.search({
+                it.anyPhrase == filterSearchParams.phrase &&
+                it.pageable == pageable &&
+                it.phraseFields.size() == expected.phraseFieldsCount &&
+                it.phraseFields.any { field -> field.name == "id" && field.value == filterSearchParams.id.toString() } &&
+                it.phraseFields.any { field -> field.name == "sectionId" && field.value == filterSearchParams.sectionId.toString() } &&
+                it.arrayFields.size() == expected.arrayFieldsCount &&
+                it.arrayFields.any { field -> field.name == "categoryId" && field.values == filterSearchParams.categoryIds.collect { it.toString() } } &&
+                it.rangeFields.size() == expected.rangeFieldsCount &&
+                it.rangeFields.any { field -> field.name == "avgGrade" && field.from == filterSearchParams.minAvgGrade && field.to == filterSearchParams.maxAvgGrade }
+            })
 
         where:
-        [params, expected, description] << searchParamsProvider()
+            [params, expected, description] << searchParamsProvider()
     }
 
     def searchParamsProvider() {
