@@ -3,11 +3,13 @@ package pl.sknikod.kodemysearch.infrastructure.module.material;
 import io.jsonwebtoken.lang.Assert;
 import io.jsonwebtoken.lang.Strings;
 import org.opensearch.client.json.JsonData;
+import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.query_dsl.MatchPhraseQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.WildcardQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +44,7 @@ public class SearchRequestBuilder {
         any(criteria.getAnyPhrase());
         criteria.getPhraseFields().forEach(this::append);
         criteria.getRangeFields().forEach(this::append);
+        criteria.getArrayFields().forEach(this::append);
     }
 
     private void with(Pageable pageable) {
@@ -74,7 +77,7 @@ public class SearchRequestBuilder {
         var query = field.isWildcard()
                 ? WildcardQuery.of(w -> w.field(field.getName()).value(field.getValue())).toQuery()
                 : MatchPhraseQuery.of(m -> m.field(field.getName()).query(field.getValue())).toQuery();
-        (field.isMustNot() ? mustNotQueries : shouldQueries).add(query);
+        (field.isMustNot() ? mustNotQueries : mustQueries).add(query);
     }
 
     private void append(SearchCriteria.RangeField<?> field) {
@@ -86,6 +89,17 @@ public class SearchRequestBuilder {
         if (field.getTo() != null) rangeQueryBuilder.lte(JsonData.of(field.getTo()));
         mustQueries.add(rangeQueryBuilder.build().toQuery());
     }
+
+    private void append(SearchCriteria.ArrayField field) {
+        if (field == null || field.getValues().isEmpty()) {
+            return;
+        }
+        var query = TermsQuery.of(t -> t.field(field.getName())
+                .terms(terms -> terms.value(field.getValues().stream().map(FieldValue::of).toList()))
+        ).toQuery();
+        mustQueries.add(query);
+    }
+
 
     public SearchRequest build() {
         return new SearchRequest.Builder()
