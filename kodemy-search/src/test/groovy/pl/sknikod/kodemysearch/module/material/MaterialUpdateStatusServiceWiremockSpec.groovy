@@ -24,23 +24,23 @@ class MaterialUpdateStatusServiceWiremockSpec extends SuperclassSpec {
 
     def "should return correct id when update status"() {
         given: "A mocked OpenSearch response"
-            updateStatusWiremockStub()
+            updateStatusWiremockStubForId("5")
         when:
-            def status = materialUpdateStatusService.updateStatus('{"id":5,"status":"BANNED"}')
+            def id = materialUpdateStatusService.updateStatus('{"id":5,"status":"BANNED"}')
         then:
-            assertThat(status).isEqualTo("5")
+            assertThat(id).isEqualTo("5")
     }
 
 
-    private static void updateStatusWiremockStub() {
-        WIREMOCK.stubFor(post(urlPathEqualTo("/materials/_update/5"))
+    private static void updateStatusWiremockStubForId(String id) {
+        WIREMOCK.stubFor(post(urlPathEqualTo("/materials/_update/$id"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("""
                             {
                                 "_index": "material-index",
-                                "_id": "5",
+                                "_id": "$id",
                                 "_version": 1,
                                 "_primary_term": 5,
                                 "_seq_no": 5,
@@ -51,7 +51,7 @@ class MaterialUpdateStatusServiceWiremockSpec extends SuperclassSpec {
                                     "failed": 0
                                 },
                                 "data": {
-                                    "id": 5,
+                                    "id": $id,
                                     "title": "Sample Title",
                                     "description": "Sample description of the material.",
                                     "status": "BANNED",

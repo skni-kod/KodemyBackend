@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import pl.sknikod.kodemysearch.configuration.LogbookConfiguration
 import pl.sknikod.kodemysearch.configuration.OpenSearchConfiguration
 import pl.sknikod.kodemysearch.infrastructure.module.ModuleBeanConfiguration
+import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialAddUpdateService
+import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialAddUpdateService$MaterialIndexDataMapperImpl
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialSearchService$MaterialSearchMapperImpl
 import pl.sknikod.kodemysearch.infrastructure.module.material.MaterialUpdateStatusService
@@ -34,6 +36,13 @@ class MaterialHelper {
     static MaterialUpdateStatusService defaultMaterialUpdateStatusService() {
         return new MaterialUpdateStatusService(
                 createMaterialSearchStore(), new ModuleBeanConfiguration().objectMapper()
+        )
+    }
+
+    static MaterialAddUpdateService defaultMaterialAddUpdateService() {
+        return new MaterialAddUpdateService(
+                createMaterialSearchStore(), new ModuleBeanConfiguration().objectMapper(),
+                new MaterialAddUpdateService$MaterialIndexDataMapperImpl()
         )
     }
 
