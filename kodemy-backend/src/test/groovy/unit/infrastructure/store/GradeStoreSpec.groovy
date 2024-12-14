@@ -10,6 +10,7 @@ import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository
 import pl.sknikod.kodemybackend.infrastructure.store.GradeStore
 import pl.sknikod.kodemybackend.infrastructure.store.UserStore
+import pl.sknikod.kodemycommons.exception.AlreadyExists409Exception
 import pl.sknikod.kodemycommons.exception.NotFound404Exception
 import pl.sknikod.kodemycommons.security.UserPrincipal
 import pl.sknikod.kodemycommons.util.PrincipalUtil
@@ -144,6 +145,35 @@ class GradeStoreSpec extends Specification {
 
         then:
         Assert.that(grade == result)
+    }
+
+
+    def "same user cannot add more than 1 grade under the material"() {
+        given:
+            materialRepository.existsById(MATERIAL_ID) >> true
+            principalUtil.getPrincipal() >> Optional.of(new UserPrincipal(
+                    USER_ID, "", false, false,
+                    false, true, new HashSet<SimpleGrantedAuthority>()
+            ))
+        and:
+            def savedGrades = []
+            gradeRepository.save(_ as Grade) >> { Grade g ->
+                savedGrades << g
+                return g
+            }
+            gradeRepository.existsByMaterialIdAndUserId(_ as Long, _ as Long) >> { Long materialIdArg, Long userIdArg ->
+                savedGrades.any { it.material.id == materialIdArg && it.userId == userIdArg }
+            }
+
+        when: "add grade to the same material more than 1 time"
+            def firstAdd = gradeStore.addGrade(1, 1)
+            def secondAdd = gradeStore.addGrade(1, 2)
+
+        then: "second addition is failure"
+            firstAdd.isSuccess()
+            secondAdd.isFailure()
+            secondAdd.failed().get() instanceof AlreadyExists409Exception
+
     }
 
     def "shouldThrowWhenAddGrade"() {

@@ -16,6 +16,7 @@ import pl.sknikod.kodemybackend.infrastructure.database.Grade;
 import pl.sknikod.kodemybackend.infrastructure.database.GradeRepository;
 import pl.sknikod.kodemybackend.infrastructure.database.Material;
 import pl.sknikod.kodemybackend.infrastructure.database.MaterialRepository;
+import pl.sknikod.kodemycommons.exception.AlreadyExists409Exception;
 import pl.sknikod.kodemycommons.util.PrincipalUtil;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
@@ -92,6 +93,14 @@ public class GradeStore {
                     throw new NotFound404Exception(
                             ExceptionMsgPattern.ENTITY_NOT_FOUND_BY_PARAM, Material.class.getSimpleName(), "id", materialId
                     );
+                })
+                .andThenTry(() -> {
+                    var userId = principalUtil.getPrincipal().get().getId();
+                    if (gradeRepository.existsByMaterialIdAndUserId(materialId, userId)) {
+                        throw new AlreadyExists409Exception(
+                                ExceptionMsgPattern.ENTITY_ALREADY_EXISTS, "userId"
+                        );
+                    }
                 })
                 .mapTry(unused -> new Grade(value, principalUtil.getPrincipal().get().getId(), materialId))
                 .map(gradeRepository::save)
