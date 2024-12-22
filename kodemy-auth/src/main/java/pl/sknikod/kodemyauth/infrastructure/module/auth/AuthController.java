@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.model.AuthInfoResponse;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.model.GetAuthService;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
 import pl.sknikod.kodemyauth.infrastructure.rest.AuthControllerDefinition;
 
@@ -17,6 +19,12 @@ public class AuthController implements AuthControllerDefinition {
     private final AccessTokenService accessTokenService;
     private final RefreshTokensService refreshTokensService;
     private final LogoutService logoutService;
+    private final GetAuthService getAuthService;
+
+    @Override
+    public ResponseEntity<AuthInfoResponse> getAuth() {
+        return ResponseEntity.status(HttpStatus.OK).body(getAuthService.getAuth());
+    }
 
     @Override
     public ResponseEntity<RefreshTokensResponse> validateToken(UUID refresh, UUID bearerJti) {

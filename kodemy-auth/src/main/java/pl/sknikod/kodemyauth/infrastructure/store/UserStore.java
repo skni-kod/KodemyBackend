@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pl.sknikod.kodemyauth.configuration.SecurityConfiguration;
 import pl.sknikod.kodemyauth.infrastructure.database.*;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.sknikod.kodemyauth.infrastructure.module.auth.model.AuthInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.module.auth.model.RefreshTokensResponse;
 import pl.sknikod.kodemycommons.doc.SwaggerResponse;
 
@@ -19,6 +20,10 @@ import java.util.UUID;
 @SwaggerResponse
 @SwaggerResponse.SuccessCode200
 public interface AuthControllerDefinition {
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<AuthInfoResponse> getAuth();
+
     @GetMapping("/refresh")
     ResponseEntity<RefreshTokensResponse> validateToken(
             @RequestParam UUID refresh,

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange;
 
 import io.vavr.control.Try;
 import lombok.NonNull;
@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.client.RestTemplate;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.github.GithubUser;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
@@ -24,7 +25,7 @@ import static org.springframework.security.oauth2.client.web.server.DefaultServe
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class ProviderExchangeFlow {
+public abstract class ProviderExchange {
     protected final RestTemplate restTemplate;
     private static final ParameterizedTypeReference<Map<String, Object>> PARAMETERIZED_MAP_TYPE;
 
@@ -37,7 +38,7 @@ public abstract class ProviderExchangeFlow {
 
     public abstract boolean isApply(String registrationId);
 
-    public abstract ProviderUser exchange(ClientRegistrationRepository repository, String code);
+    public abstract Try<ProviderUser> exchange(ClientRegistrationRepository repository, String code);
 
     protected Map<String, Object> initNewAttributesMap(ClientRegistration clientRegistration) {
         return new HashMap<>(Map.of(DEFAULT_REGISTRATION_ID_URI_VARIABLE_NAME, clientRegistration.getRegistrationId()));

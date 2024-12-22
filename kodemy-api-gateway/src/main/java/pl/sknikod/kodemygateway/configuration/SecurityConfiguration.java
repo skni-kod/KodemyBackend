@@ -11,11 +11,11 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
-import pl.sknikod.kodemygateway.infrastructure.module.oauth2.OAuth2ReactiveAuthorizationManager;
-import reactor.core.publisher.Mono;
+import pl.sknikod.kodemygateway.infrastructure.module.oauth2.ReactiveAuthorizationManager;
+import pl.sknikod.kodemygateway.infrastructure.module.oauth2.handler.AuthenticationFailureHandler;
+import pl.sknikod.kodemygateway.infrastructure.module.oauth2.handler.AuthenticationSuccessHandler;
 
 import java.util.function.Function;
 
@@ -38,7 +38,9 @@ public class SecurityConfiguration {
             ServerHttpSecurity http,
             ServerOAuth2AuthorizationRequestResolver authorizationRequestResolver,
             @Value("${app.security.oauth2.endpoint.callback}") String callbackEndpoint,
-            OAuth2ReactiveAuthorizationManager reactiveAuthenticationManager
+            ReactiveAuthorizationManager reactiveAuthenticationManager,
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            AuthenticationFailureHandler authenticationFailureHandler
     ) {
         http
                 .authorizeExchange(auth -> auth.anyExchange().permitAll())
@@ -46,23 +48,11 @@ public class SecurityConfiguration {
                         .authorizationRequestResolver(authorizationRequestResolver)
                         .authenticationMatcher(callbackMatcher(callbackEndpoint))
                         .authenticationManager(reactiveAuthenticationManager)
-                        .authenticationSuccessHandler(authenticationSuccessHandler())
-                        // TODO check if need change
-                        //.authenticationFailureHandler(authenticationFailureHandler())
+                        .authenticationSuccessHandler(authenticationSuccessHandler)
+                        .authenticationFailureHandler(authenticationFailureHandler)
                 );
         return http.build();
     }
-
-    private ServerAuthenticationSuccessHandler authenticationSuccessHandler() {
-        return (webFilterExchange, authentication) -> webFilterExchange
-                .getChain()
-                .filter(webFilterExchange.getExchange())
-                .and(Mono.empty());
-    }
-
-    /*private ServerAuthenticationFailureHandler authenticationFailureHandler() {
-        return (webFilterExchange, exception) -> Mono.empty();
-    }*/
 
     @Bean
     public ServerOAuth2AuthorizationRequestResolver oAuth2AuthorizationRequestResolver(

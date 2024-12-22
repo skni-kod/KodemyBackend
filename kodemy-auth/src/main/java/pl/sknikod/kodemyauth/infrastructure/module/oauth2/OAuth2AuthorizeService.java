@@ -2,7 +2,6 @@ package pl.sknikod.kodemyauth.infrastructure.module.oauth2;
 
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -10,12 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemyauth.infrastructure.database.*;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderEngine;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.Registration;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ExchangeEngine;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.Registration;
 import pl.sknikod.kodemyauth.infrastructure.store.RefreshTokenStore;
 import pl.sknikod.kodemyauth.infrastructure.store.UserStore;
-import pl.sknikod.kodemycommons.exception.Validation400Exception;
+import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.JwtProvider;
 import pl.sknikod.kodemycommons.security.UserPrincipal;
@@ -29,7 +28,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class OAuth2AuthorizeService {
-    private final ProviderEngine providerEngine;
+    private final ExchangeEngine exchangeEngine;
     private final RoleRepository roleRepository;
     private final UserStore userStore;
     private final JwtProvider jwtProvider;
@@ -37,16 +36,17 @@ public class OAuth2AuthorizeService {
 
     public AuthorizeResponse authorize(Registration registrationId, Map<String, String> parameters) {
         return Try.of(() -> {
-            if (!parameters.containsKey("code")) {
-                throw new Validation400Exception("Bad parameters map");
-            }
-            return Option.ofOptional(providerEngine.createProviderUser(registrationId.getId(), parameters))
-                    .map(this::createOrLoadUser)
-                    .map(this::toUserPrincipal)
-                    .map(this::generateTokens)
-                    .map(tokens -> new AuthorizeResponse(tokens._1.value(), tokens._2.getToken().toString()))
-                    .getOrNull();
-        }).getOrElseThrow(ExceptionUtil::throwIfFailure);
+                    if (parameters.containsKey("code")) {
+                        return true;
+                    }
+                    throw new InternalError500Exception();
+                })
+                .flatMap(aBoolean -> exchangeEngine.createProviderUser(registrationId.getId(), parameters))
+                .map(this::createOrLoadUser)
+                .map(this::toUserPrincipal)
+                .map(this::generateTokens)
+                .map(tokens -> new AuthorizeResponse(tokens._1.value(), tokens._2.getToken().toString()))
+                .getOrElseThrow(ExceptionUtil::throwIfFailure);
     }
 
     private Tuple2<User, ProviderUser> createOrLoadUser(ProviderUser providerUser) {

@@ -1,7 +1,7 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.github;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.github;
 
 import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
 
 import java.util.Map;
 

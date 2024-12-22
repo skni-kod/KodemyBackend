@@ -4,17 +4,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: oauth2_callback
-          uri: ${service.baseUrl.auth}
-          predicates:
-            - Path=${app.security.oauth2.endpoint.callback}/{provider}
-          filters:
-            - RewritePath=${app.security.oauth2.endpoint.callback}/(?<provider>.*), ${app.security.oauth2.endpoint.authorize}/${provider}
-            - name: FrontendRedirect
-              args:
-                location: ${service.baseUrl.front}
-            - RewriteCookieToBearer
-
         - id: auth_logout
           uri: ${service.baseUrl.auth}
           predicates:

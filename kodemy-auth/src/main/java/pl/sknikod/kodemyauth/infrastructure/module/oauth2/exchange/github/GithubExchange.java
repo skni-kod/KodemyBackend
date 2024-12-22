@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.github;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.github;
 
 import io.vavr.control.Try;
 import lombok.Data;
@@ -14,9 +14,9 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import pl.sknikod.kodemyauth.configuration.WebConfiguration;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderExchangeFlow;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.ProviderUser;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.Registration;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderExchange;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.ProviderUser;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.Registration;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 
@@ -26,8 +26,8 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class GithubExchangeFlow extends ProviderExchangeFlow {
-    public GithubExchangeFlow(@Qualifier(WebConfiguration.OAUTH2_REST_TEMPLATE) RestTemplate restTemplate) {
+public class GithubExchange extends ProviderExchange {
+    public GithubExchange(@Qualifier(WebConfiguration.OAUTH2_REST_TEMPLATE) RestTemplate restTemplate) {
         super(restTemplate);
     }
 
@@ -42,13 +42,15 @@ public class GithubExchangeFlow extends ProviderExchangeFlow {
     }
 
     @Override
-    public ProviderUser exchange(ClientRegistrationRepository repository, String code) {
-        ClientRegistration clientRegistration = repository.findByRegistrationId(getRegistration().getId());
-        Map<String, Object> attributes = initNewAttributesMap(clientRegistration);
-        AccessToken accessToken = super.postForAccessToken(clientRegistration, code);
-        attributes.putAll(super.getUserAttributes(clientRegistration, accessToken));
-        attributes.put("email", fixEmailNull(attributes, clientRegistration, accessToken));
-        return new GithubUser(attributes);
+    public Try<ProviderUser> exchange(ClientRegistrationRepository repository, String code) {
+        return Try.of(() -> {
+            ClientRegistration clientRegistration = repository.findByRegistrationId(getRegistration().getId());
+            Map<String, Object> attributes = initNewAttributesMap(clientRegistration);
+            AccessToken accessToken = super.postForAccessToken(clientRegistration, code);
+            attributes.putAll(super.getUserAttributes(clientRegistration, accessToken));
+            attributes.put("email", fixEmailNull(attributes, clientRegistration, accessToken));
+            return new GithubUser(attributes);
+        });
     }
 
     private String fixEmailNull(Map<String, Object> attributes, ClientRegistration clientRegistration, AccessToken accessToken) {

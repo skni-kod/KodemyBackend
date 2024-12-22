@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine.Registration;
+import pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange.Registration;
 import pl.sknikod.kodemyauth.infrastructure.rest.OAuth2ControllerDefinition;
 
 import java.util.List;
@@ -25,12 +25,9 @@ public class OAuth2Controller implements OAuth2ControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<Void> authorize(
+    public ResponseEntity<OAuth2AuthorizeService.AuthorizeResponse> authorize(
             Registration registration, Map<String, String> parameters) {
-        final var tokens = oAuth2AuthorizeService.authorize(registration, parameters);
         return ResponseEntity.status(HttpStatus.OK)
-                .header(ACCESS_TOKEN_COOKIE, tokens.getAccessToken())
-                .header(REFRESH_TOKEN_COOKIE, tokens.getRefreshToken())
-                .build();
+                .body(oAuth2AuthorizeService.authorize(registration, parameters));
     }
 }
