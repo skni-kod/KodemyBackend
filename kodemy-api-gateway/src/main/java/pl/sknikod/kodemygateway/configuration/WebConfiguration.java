@@ -5,12 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +43,12 @@ public class WebConfiguration {
         private List<String> allowedOrigins = new ArrayList<>();
         private String mapping = "/**";
         private boolean credentials = true;
+    }
+
+    @Bean
+    @LoadBalanced
+    public WebClient webClient(WebClient.Builder builder) {
+        log.info("Configuring WebClient with LoadBalancer support");
+        return builder.build();
     }
 }

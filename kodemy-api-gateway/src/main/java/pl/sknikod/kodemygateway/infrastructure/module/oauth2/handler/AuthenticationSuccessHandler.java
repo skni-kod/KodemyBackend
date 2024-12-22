@@ -10,19 +10,24 @@ import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import pl.sknikod.kodemygateway.util.AuthCookies;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class AuthenticationSuccessHandler extends AuthenticationHandler implements ServerAuthenticationSuccessHandler {
+    private final Integer accessTokenAge;
+    private final Integer refreshTokenAge;
 
-
-    public AuthenticationSuccessHandler(@Value("${service.baseUrl.front}") String frontBaseUrl) {
+    public AuthenticationSuccessHandler(@Value("${service.baseUrl.front}") String frontBaseUrl,
+                                        @Value("${app.security.cookie.access-token-age}") Integer accessTokenAge,
+                                        @Value("${app.security.cookie.refresh-token-age}") Integer refreshTokenAge) {
         super(frontBaseUrl);
+        this.accessTokenAge = accessTokenAge;
+        this.refreshTokenAge = refreshTokenAge;
     }
 
     @Override
@@ -40,14 +45,12 @@ public class AuthenticationSuccessHandler extends AuthenticationHandler implemen
 
         OAuth2AccessToken accessToken = (OAuth2AccessToken) attributes.get("accessToken");
         OAuth2RefreshToken refreshToken = (OAuth2RefreshToken) attributes.get("refreshToken");
-        Instant now = Instant.now();
-        var accessTokenCookie = createCookie(
-                ACCESS_TOKEN_COOKIE, accessToken.getTokenValue(), Duration.between(now, accessToken.getExpiresAt())
+        var accessTokenCookie = AuthCookies.create(
+                AuthCookies.ACCESS_TOKEN, accessToken.getTokenValue(), Duration.ofMinutes(accessTokenAge)
         );
-        var refreshTokenCookie = createCookie(
-                REFRESH_TOKEN_COOKIE, refreshToken.getTokenValue(), Duration.between(now, refreshToken.getExpiresAt())
+        var refreshTokenCookie = AuthCookies.create(
+                AuthCookies.REFRESH_TOKEN, refreshToken.getTokenValue(), Duration.ofMinutes(refreshTokenAge)
         );
-
         headers.addAll(HttpHeaders.SET_COOKIE, List.of(accessTokenCookie.toString(), refreshTokenCookie.toString()));
     }
 }

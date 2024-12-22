@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -32,28 +33,28 @@ public class ReactiveAuthorizationManager implements ReactiveAuthenticationManag
             if (!authorizationResponse.getState().equals(authorizationRequest.getState())) {
                 return Mono.error(new OAuth2AuthorizationException(new OAuth2Error("invalid_state_parameter")));
             }
-            return this.authorizeResponseClient.getAuthorizeResponse(
-                            token.getClientRegistration(), token.getAuthorizationExchange())
-                    .map(authorizeResponse -> toToken(authorizeResponse, token))
+            return this.authorizeResponseClient.getAuthorizeResponse(token).map(toToken(token))
                     .onErrorMap(OAuth2AuthorizationException.class,
                             (e) -> new OAuth2AuthenticationException(e.getError(), e.getError().toString(), e));
         });
     }
 
-    private Authentication toToken(AuthorizeResponse authorizeResponse, OAuth2AuthorizationCodeAuthenticationToken token) {
-        Instant instant = Instant.now();
-        Instant instantPlus = Instant.from(instant).plus(Duration.ofMinutes(10));
-        OAuth2AccessToken accessToken = new OAuth2AccessToken(
-                OAuth2AccessToken.TokenType.BEARER, authorizeResponse.getAccessToken(), instant, instantPlus);
-        OAuth2RefreshToken refreshToken = new OAuth2RefreshToken(authorizeResponse.getRefreshToken(), instant, instantPlus);
-        Map<String, Object> attributes = Map.of(
-                "name", token.getName(), "accessToken", accessToken, "refreshToken", refreshToken);
-        return new OAuth2LoginAuthenticationToken(
-                token.getClientRegistration(),
-                token.getAuthorizationExchange(),
-                new DefaultOAuth2User(token.getAuthorities(), attributes, "name"),
-                token.getAuthorities(),
-                accessToken, refreshToken
-        );
+    private Function<? super AuthorizeResponse, Authentication> toToken(OAuth2AuthorizationCodeAuthenticationToken token) {
+        return authorizeResponse -> {
+            Instant instant = Instant.now();
+            Instant instantPlus = Instant.from(instant).plus(Duration.ofMinutes(10));
+            OAuth2AccessToken accessToken = new OAuth2AccessToken(
+                    OAuth2AccessToken.TokenType.BEARER, authorizeResponse.getAccessToken(), instant, instantPlus);
+            OAuth2RefreshToken refreshToken = new OAuth2RefreshToken(authorizeResponse.getRefreshToken(), instant, instantPlus);
+            Map<String, Object> attributes = Map.of(
+                    "name", token.getName(), "accessToken", accessToken, "refreshToken", refreshToken);
+            return new OAuth2LoginAuthenticationToken(
+                    token.getClientRegistration(),
+                    token.getAuthorizationExchange(),
+                    new DefaultOAuth2User(token.getAuthorities(), attributes, "name"),
+                    token.getAuthorities(),
+                    accessToken, refreshToken
+            );
+        };
     }
 }

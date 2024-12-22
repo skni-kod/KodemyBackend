@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -13,10 +15,10 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Lon
             value = """
                     SELECT t FROM RefreshToken t \
                     LEFT JOIN FETCH t.user \
-                    WHERE t.token = :token AND t.bearerId = :bearerJti \
+                    WHERE t.token = :token
                     """
     )
-    RefreshToken findRTByTokenAndBearerJtiWithFetchUser(UUID token, UUID bearerJti);
+    RefreshToken findRTByTokenWithFetchUser(UUID token);
 
     @Modifying
     @Query(
@@ -26,4 +28,6 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Lon
                     """
     )
     void deleteRTByUserIdAndBearerJti(Long userId, UUID bearerJti);
+
+    Optional<RefreshToken> findByTokenAndExpiredDateAfter(UUID token, LocalDateTime now);
 }

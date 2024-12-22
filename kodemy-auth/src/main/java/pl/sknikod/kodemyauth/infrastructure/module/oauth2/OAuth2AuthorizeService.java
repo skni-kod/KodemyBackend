@@ -36,10 +36,10 @@ public class OAuth2AuthorizeService {
 
     public AuthorizeResponse authorize(Registration registrationId, Map<String, String> parameters) {
         return Try.of(() -> {
-                    if (parameters.containsKey("code")) {
-                        return true;
+                    if (parameters.get("code") == null) {
+                        throw new InternalError500Exception();
                     }
-                    throw new InternalError500Exception();
+                    return true;
                 })
                 .flatMap(aBoolean -> exchangeEngine.createProviderUser(registrationId.getId(), parameters))
                 .map(this::createOrLoadUser)

@@ -25,7 +25,7 @@ class RefreshTokensServiceSpec extends Specification {
     def "should refresh token"() {
         given:
         def oldRefreshToken = RefreshTokenFactory.create(REFRESH, BEARER_JTI)
-        refreshTokenStore.findByTokenAndBearerJti(REFRESH, BEARER_JTI) >> Try.success(oldRefreshToken)
+        refreshTokenStore.find(REFRESH, BEARER_JTI) >> Try.success(oldRefreshToken)
         roleRepository.findById(_ as Long) >> Optional.of(RoleFactory.create())
         var newTokenId = UUID.randomUUID()
         jwtProvider.generateUserToken(_)

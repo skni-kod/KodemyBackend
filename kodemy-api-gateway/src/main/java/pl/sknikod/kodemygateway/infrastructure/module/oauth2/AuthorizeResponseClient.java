@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.lang.NonNull;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyExtractor;
 import org.springframework.web.reactive.function.BodyExtractors;
@@ -19,25 +18,24 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.function.Function;
 
 @Component
 public class AuthorizeResponseClient {
-    private final WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
     private final AuthorizeResponseBodyExtractor bodyExtractor = new AuthorizeResponseBodyExtractor();
-    private final Function<String, String> authorizeUriFunction;
+    private final String exchangeCodeUriString;
 
     public AuthorizeResponseClient(
-            @Value("${service.baseUrl.auth}") String authBaseUrl,
-            @Value("${app.security.oauth2.endpoint.authorize}") String authorizeEndpoint) {
-        this.authorizeUriFunction = (registrationId) -> authBaseUrl + authorizeEndpoint + "/" + registrationId;
+            WebClient webClient,
+            @Value("${service.uri.exchangeCode}") String exchangeCodeUri) {
+        this.webClient = webClient;
+        this.exchangeCodeUriString = exchangeCodeUri;
     }
 
-    public Mono<AuthorizeResponse> getAuthorizeResponse(
-            ClientRegistration clientRegistration, OAuth2AuthorizationExchange authorizationExchange) {
-        URI uri = UriComponentsBuilder.fromUriString(authorizeUriFunction.apply(clientRegistration.getRegistrationId()))
-                .queryParam("code", authorizationExchange.getAuthorizationResponse().getCode())
-                .build().toUri();
+    public Mono<AuthorizeResponse> getAuthorizeResponse(OAuth2AuthorizationCodeAuthenticationToken token) {
+        URI uri = UriComponentsBuilder.fromUriString(exchangeCodeUriString)
+                .queryParam("code", token.getAuthorizationExchange().getAuthorizationResponse().getCode())
+                .build(token.getClientRegistration().getRegistrationId());
         return this.webClient.get().uri(uri).exchangeToMono(clientResponse -> clientResponse.body(this.bodyExtractor));
     }
 

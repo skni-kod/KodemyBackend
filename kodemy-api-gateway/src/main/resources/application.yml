@@ -3,21 +3,20 @@ spring:
   banner.location: classpath:banner.txt
   cloud:
     gateway:
+      default-filters:
+        - RemoveRequestHeader=Cookie
       routes:
         - id: auth_logout
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/auth/logout
           filters:
-            - RewriteCookieToBearer
             - Logout
 
         - id: oauth2_auth
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/oauth2/**,/api/auth/**
-          filters:
-            - RewriteCookieToBearer
 
         - id: search-materials
           uri: ${service.baseUrl.search}
@@ -30,45 +29,33 @@ spring:
           predicates:
             - Path=/api/materials/{materialId}/**
             - Method=GET
-          filters:
-            - RewriteCookieToBearer
 
         - id: materials-post
           uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/materials
             - Method=POST
-          filters:
-            - RewriteCookieToBearer
 
         - id: materials-grades
           uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/materials/{materialId}/grades
             - Method=POST
-          filters:
-            - RewriteCookieToBearer
 
         - id: users-materials
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/{userId}/materials
-          filters:
-            - RewriteCookieToBearer
 
         - id: users_roles
           uri: ${service.baseUrl.auth}
           predicates:
             - Path=/api/users/**,/api/roles
-          filters:
-            - RewriteCookieToBearer
 
         - id: tags_types_sections_categories_admin
           uri: ${service.baseUrl.backend}
           predicates:
             - Path=/api/tags,/api/types,/api/sections,/api/categories/{categoryId},/api/admin/**
-          filters:
-            - RewriteCookieToBearer
   security:
     oauth2:
       client:
@@ -101,6 +88,9 @@ service:
     backend: http://kodemy-backend:8080
     search: http://kodemy-search:8080
     front: ${FRONTEND_PUBLIC_HOST}
+  uri:
+    exchangeCode: ${service.baseUrl.auth}${app.security.oauth2.endpoint.authorize}/{id}
+    refreshAccessToken: ${service.baseUrl.auth}/api/auth/access_token
 
 logging:
   level:
@@ -113,6 +103,9 @@ app:
     cors:
       allowed-origins:
         - ${service.baseUrl.front}
+    cookie:
+      access-token-age: 720
+      refresh-token-age: 1440
     oauth2:
       endpoint:
         authorize: /api/oauth2/authorize

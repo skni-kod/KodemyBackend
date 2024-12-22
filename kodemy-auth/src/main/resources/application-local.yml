@@ -32,7 +32,7 @@ service:
 app:
   security:
     jwt:
-      bearer-expiration-min: 720
+      bearer-expiration-min: 2
     oauth2:
       baseUrl:
         front: http://localhost:3000

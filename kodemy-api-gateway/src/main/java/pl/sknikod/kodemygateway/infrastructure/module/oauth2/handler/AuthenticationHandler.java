@@ -24,7 +24,7 @@ public abstract class AuthenticationHandler {
         this.frontBaseUrl = frontBaseUrl;
     }
 
-    private void performRedirect(ServerHttpResponse response, URI uri){
+    private void performRedirect(ServerHttpResponse response, URI uri) {
         response.setStatusCode(HttpStatus.FOUND);
         response.getHeaders().setLocation(uri);
     }
@@ -50,21 +50,10 @@ public abstract class AuthenticationHandler {
             OAuth2Error error = oauth2Exception.getError();
             if (error != null) {
                 params.add("error", error.getErrorCode());
-                params.add("details", error.getDescription());
                 return params;
             }
         }
         params.add("error", OAuth2ErrorCodes.SERVER_ERROR);
-        params.add("details", "Unknown authorization error");
         return params;
-    }
-
-    protected ResponseCookie createCookie(@NonNull String name, @NonNull String value, @NonNull Duration age) {
-        return ResponseCookie.from(name, value)
-                .path("/")
-                .httpOnly(true)
-                .sameSite("Lax")
-                .maxAge(age)
-                .build();
     }
 }

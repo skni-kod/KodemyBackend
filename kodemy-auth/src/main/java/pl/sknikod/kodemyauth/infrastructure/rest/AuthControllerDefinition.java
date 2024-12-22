@@ -24,11 +24,9 @@ public interface AuthControllerDefinition {
     @PreAuthorize("isAuthenticated()")
     ResponseEntity<AuthInfoResponse> getAuth();
 
-    @GetMapping("/refresh")
-    ResponseEntity<RefreshTokensResponse> validateToken(
-            @RequestParam UUID refresh,
-            @RequestParam UUID bearerJti
-    );
+    @PostMapping("/access_token")
+    ResponseEntity<RefreshTokensResponse> refreshAccessToken(
+            @RequestParam("grant_type") String grantType, @RequestParam("refresh_token") String refreshToken);
 
     @GetMapping("/access_token")
     @PreAuthorize("isAuthenticated()")

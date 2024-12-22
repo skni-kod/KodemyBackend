@@ -17,7 +17,6 @@ import pl.sknikod.kodemycommons.exception.content.ExceptionUtil;
 import pl.sknikod.kodemycommons.security.JwtProvider;
 
 import java.util.Collection;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,12 +27,23 @@ public class RefreshTokensService {
     private final RefreshTokenStore refreshTokenStore;
     private final JwtProvider jwtProvider;
 
-    public RefreshTokensResponse refresh(UUID refresh, UUID bearerJti) {
-        return refreshTokenStore.findByTokenAndBearerJti(refresh, bearerJti)
-                .flatMapTry(this::generateTokensAndInvalidate)
+    public RefreshTokensResponse refreshAccessToken(String grantType, String refreshToken) {
+        return Try.of(() -> validateRequest(grantType, refreshToken))
+                .flatMap(aBoolean -> refreshTokenStore.findByToken(refreshToken))
+                .flatMap(this::generateTokensAndInvalidate)
                 .map(tokens -> new RefreshTokensResponse(
                         tokens._2.getToken().toString(), tokens._1.value()))
                 .getOrElseThrow(ExceptionUtil::throwIfFailure);
+    }
+
+    private boolean validateRequest(String grantType, String refreshToken) {
+        if (!"refresh_token".equals(grantType)) {
+            throw new IllegalArgumentException();
+        }
+        if (!refreshTokenStore.isValidRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException();
+        }
+        return true;
     }
 
     private Try<Tuple2<JwtProvider.Token, RefreshToken>> generateTokensAndInvalidate(RefreshToken refreshToken) {

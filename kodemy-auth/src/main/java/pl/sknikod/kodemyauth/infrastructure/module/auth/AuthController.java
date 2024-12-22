@@ -27,9 +27,9 @@ public class AuthController implements AuthControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<RefreshTokensResponse> validateToken(UUID refresh, UUID bearerJti) {
+    public ResponseEntity<RefreshTokensResponse> refreshAccessToken(String grantType, String refreshToken) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(refreshTokensService.refresh(refresh, bearerJti));
+                .body(refreshTokensService.refreshAccessToken(grantType, refreshToken));
     }
 
     @Override
