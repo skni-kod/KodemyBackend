@@ -2,6 +2,7 @@ package pl.sknikod.kodemybackend.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -65,6 +66,7 @@ public class SecurityConfiguration {
     }
 
     @Component
+    @NoArgsConstructor
     @ConfigurationProperties(prefix = "app.security.jwt")
     public static class JwtProperties extends JwtProvider.Properties {
     }

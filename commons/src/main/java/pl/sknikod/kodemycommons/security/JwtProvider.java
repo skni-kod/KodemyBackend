@@ -204,7 +204,7 @@ public class JwtProvider {
     @Setter
     @NoArgsConstructor
     public abstract static class Properties {
-        private String secretKey = "";
+        private String secretKey;
         private Integer bearerExpirationMin = 15;
         private Integer delegationExpirationMin = 60;
     }

@@ -11,7 +11,7 @@ spring:
           predicates:
             - Path=/api/auth/logout
           filters:
-            - Logout
+            - LogoutRelay
 
         - id: oauth2_auth
           uri: ${service.baseUrl.auth}
