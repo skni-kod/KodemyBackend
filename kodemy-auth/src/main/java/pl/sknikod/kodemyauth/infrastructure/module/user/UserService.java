@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import pl.sknikod.kodemyauth.infrastructure.database.Role;
 import pl.sknikod.kodemyauth.infrastructure.database.User;
-import pl.sknikod.kodemyauth.infrastructure.module.auth.AuthService;
 import pl.sknikod.kodemyauth.infrastructure.module.user.model.UserInfoResponse;
 import pl.sknikod.kodemyauth.infrastructure.rest.UserControllerDefinition;
 import pl.sknikod.kodemyauth.infrastructure.store.RoleStore;
@@ -28,7 +27,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final RoleStore roleStore;
     private final UserStore userStore;
-    private final AuthService.AuthMapper authMapper;
+    private final AuthMapper authMapper;
 
     public static boolean checkPrivilege(String privilege) {
         return AuthFacade.getCurrentUserPrincipal()
@@ -75,6 +74,11 @@ public class UserService {
 
     @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {RoleMapper.class})
     public interface UserMapper {
+        UserInfoResponse map(User user);
+    }
+
+    @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+    public interface AuthMapper {
         UserInfoResponse map(User user);
     }
 }

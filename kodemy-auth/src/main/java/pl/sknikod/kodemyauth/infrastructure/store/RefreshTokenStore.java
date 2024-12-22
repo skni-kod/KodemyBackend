@@ -11,6 +11,7 @@ import pl.sknikod.kodemyauth.infrastructure.database.User;
 import pl.sknikod.kodemyauth.infrastructure.database.UserRepository;
 import pl.sknikod.kodemycommons.exception.InternalError500Exception;
 import pl.sknikod.kodemycommons.exception.NotFound404Exception;
+import pl.sknikod.kodemycommons.exception.Validation400Exception;
 import pl.sknikod.kodemycommons.exception.content.ExceptionMsgPattern;
 
 import java.time.LocalDateTime;
@@ -64,10 +65,22 @@ public class RefreshTokenStore {
                 .recoverWith(ex -> Try.failure(new InternalError500Exception()));
     }
 
-    public Try<RefreshToken> findByTokenAndBearerJti(UUID refresh, UUID bearerJti) {
-        return Option.of(refreshTokenRepository.findRTByTokenAndBearerJtiWithFetchUser(
-                        refresh, bearerJti))
-                .filter(refreshToken -> refreshToken.getExpiredDate().isAfter(LocalDateTime.now()))
+    public boolean isValidRefreshToken(String refreshToken) {
+        return Try.of(() -> refreshToken)
+                .mapTry(UUID::fromString)
+                .flatMap(token -> {
+                    if (refreshTokenRepository.findByTokenAndExpiredDateAfter(token, LocalDateTime.now()).isEmpty()) {
+                        return Try.failure(new Validation400Exception("Refresh token expired or invalidate"));
+                    }
+                    return Try.success(true);
+                })
+                .onFailure(th -> log.warn(th.getMessage()))
+                .getOrElse(false);
+    }
+
+    public Try<RefreshToken> findByToken(String refreshToken) {
+        return Option.of(refreshTokenRepository.findRTByTokenWithFetchUser(UUID.fromString(refreshToken)))
+                .filter(token -> token.getExpiredDate().isAfter(LocalDateTime.now()))
                 .toTry(() -> new NotFound404Exception(ExceptionMsgPattern.ENTITY_NOT_FOUND, RefreshToken.class))
                 .onFailure(th -> log.error(th.getMessage(), th));
     }

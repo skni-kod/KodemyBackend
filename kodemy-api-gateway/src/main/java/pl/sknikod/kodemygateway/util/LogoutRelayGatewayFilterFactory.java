@@ -21,15 +21,15 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
 
 @Component
 @Slf4j
-public class LogoutGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
+public class LogoutRelayGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
 
-    public LogoutGatewayFilterFactory() {
+    public LogoutRelayGatewayFilterFactory() {
         super(Object.class);
     }
 
     @Override
     public GatewayFilter apply(Object config) {
-        return new LogoutGatewayFilter();
+        return new LogoutRelayFilter();
     }
 
     @Getter
@@ -41,10 +41,7 @@ public class LogoutGatewayFilterFactory extends AbstractGatewayFilterFactory<Obj
     }
 
     @RequiredArgsConstructor
-    private static final class LogoutGatewayFilter implements GatewayFilter, Ordered {
-        private static final String ACCESS_TOKEN_COOKIE = "AUTH_CONTEXT";
-        private static final String REFRESH_TOKEN_COOKIE = "AUTH_PERSIST";
-
+    private static final class LogoutRelayFilter implements GatewayFilter, Ordered {
         @Override
         public int getOrder() {
             return NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER;
@@ -67,7 +64,8 @@ public class LogoutGatewayFilterFactory extends AbstractGatewayFilterFactory<Obj
             }
             response.getHeaders().addAll(
                     HttpHeaders.SET_COOKIE,
-                    List.of(createExpiredCookie(ACCESS_TOKEN_COOKIE).toString(), createExpiredCookie(REFRESH_TOKEN_COOKIE).toString())
+                    List.of(createExpiredCookie(AuthCookies.ACCESS_TOKEN).toString(),
+                            createExpiredCookie(AuthCookies.REFRESH_TOKEN).toString())
             );
         }
 

@@ -1,4 +1,4 @@
-package pl.sknikod.kodemyauth.infrastructure.module.oauth2.engine;
+package pl.sknikod.kodemyauth.infrastructure.module.oauth2.exchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
