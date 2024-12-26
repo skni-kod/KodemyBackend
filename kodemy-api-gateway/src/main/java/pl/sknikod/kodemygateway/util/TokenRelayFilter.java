@@ -57,12 +57,13 @@ public class TokenRelayFilter implements GlobalFilter {
             }
             return refreshAccessToken(refreshToken)
                     .flatMap(newAccessTokens -> {
-                        modifyHeaders(exchange, newAccessTokens);
+                        setAuthorizationHeader(exchange, newAccessTokens.token());
+                        updateAuthCookie(exchange, newAccessTokens);
                         return chain.filter(exchange);
                     })
-                    .onErrorMap(th -> new RuntimeException("Refresh token expired"));
+                    .onErrorMap(th -> new RuntimeException("Refresh token expired", th));
         }
-        modifyHeaders(exchange, accessToken);
+        setAuthorizationHeader(exchange, accessToken);
         return chain.filter(exchange);
     }
 
@@ -87,10 +88,7 @@ public class TokenRelayFilter implements GlobalFilter {
             );
 
             Integer exp = (Integer) claims.get("exp");
-            if (exp == null) {
-                return true;
-            }
-            return exp * 1000L < System.currentTimeMillis();
+            return exp == null || exp * 1000L < System.currentTimeMillis();
         } catch (Exception e) {
             log.error("Error decoding JWT", e);
             return true;
@@ -108,16 +106,14 @@ public class TokenRelayFilter implements GlobalFilter {
                 .bodyToMono(RefreshTokensResponse.class);
     }
 
-    private void modifyHeaders(ServerWebExchange exchange, String accessToken) {
+    private void setAuthorizationHeader(ServerWebExchange exchange, String accessToken) {
         exchange.getRequest()
                 .mutate()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build();
     }
 
-    private void modifyHeaders(ServerWebExchange exchange, RefreshTokensResponse tokens) {
-        modifyHeaders(exchange, tokens.token());
-
+    private void updateAuthCookie(ServerWebExchange exchange, RefreshTokensResponse tokens) {
         var accessTokenCookie = AuthCookies.create(
                 AuthCookies.ACCESS_TOKEN, tokens.token(), Duration.ofMinutes(accessTokenAge)
         );

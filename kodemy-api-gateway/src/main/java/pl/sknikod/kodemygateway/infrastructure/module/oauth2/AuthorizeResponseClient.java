@@ -2,6 +2,7 @@ package pl.sknikod.kodemygateway.infrastructure.module.oauth2;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationToken;
@@ -36,7 +37,12 @@ public class AuthorizeResponseClient {
         URI uri = UriComponentsBuilder.fromUriString(exchangeCodeUriString)
                 .queryParam("code", token.getAuthorizationExchange().getAuthorizationResponse().getCode())
                 .build(token.getClientRegistration().getRegistrationId());
-        return this.webClient.get().uri(uri).exchangeToMono(clientResponse -> clientResponse.body(this.bodyExtractor));
+        return this.webClient.get().uri(uri).exchangeToMono(clientResponse -> {
+            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                return clientResponse.body(this.bodyExtractor);
+            }
+            return clientResponse.createError();
+        });
     }
 
     public static class AuthorizeResponseBodyExtractor implements BodyExtractor<Mono<AuthorizeResponse>, ReactiveHttpInputMessage> {
