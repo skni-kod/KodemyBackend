@@ -147,7 +147,6 @@ class GradeStoreSpec extends Specification {
         Assert.that(grade == result)
     }
 
-
     def "same user cannot add more than 1 grade under the material"() {
         given:
             materialRepository.existsById(MATERIAL_ID) >> true
