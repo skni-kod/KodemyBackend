@@ -1,4 +1,4 @@
-name: DEV - KodemyBackend test
+name: Pull Request - compile & test
 
 on:
   pull_request:
@@ -29,20 +29,20 @@ jobs:
       - name: Build with Gradle Wrapper
         run: |
           cd commons
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           
           cd ../kodemy-api-gateway
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           cd ../kodemy-auth
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           cd ../kodemy-backend
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           cd ../kodemy-search
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           cd ../kodemy-notification
-          ./gradlew build -x test
+          ./gradlew classes testClasses
           cd ../kodemy-service-registry
-          ./gradlew build -x test
+          ./gradlew classes testClasses
         
   test:
     name: Run tests
@@ -72,7 +72,7 @@ jobs:
           ./gradlew test
           cd ../kodemy-search
           ./gradlew test
-#          cd ../kodemy-notification
-#          ./gradlew test
-#          cd ../kodemy-service-registry
-#          ./gradlew test
+          cd ../kodemy-notification
+          ./gradlew test
+          cd ../kodemy-service-registry
+          ./gradlew test
