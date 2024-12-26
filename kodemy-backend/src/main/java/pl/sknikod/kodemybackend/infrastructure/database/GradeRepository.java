@@ -41,4 +41,6 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
 
     @Query("SELECT g FROM Grade g WHERE g.material.id = :materialId AND g.createdDate BETWEEN :from AND :to")
     Page<Grade> findGradesByMaterialInDateRange(Long materialId, LocalDateTime from, LocalDateTime to, Pageable pageable);
+
+    boolean existsByMaterialIdAndUserId(Long materialId, Long userId);
 }

@@ -54,7 +54,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         extractBearer(request)
-                .flatMapTry(jwtProvider::parseToken)
+                .flatMap(jwtProvider::parseToken)
                 .map(this::toUserPrincipal)
                 .onFailure(th -> log.debug("Authenticate failure", th))
                 .onSuccess(user -> authenticate(request, user));
