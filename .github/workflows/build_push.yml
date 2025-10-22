@@ -1,0 +1,41 @@
+name: Build and push Kodemy images
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        service:
+          - kodemy-api-gateway
+          - kodemy-auth
+          - kodemy-backend
+          - kodemy-notification
+          - kodemy-search
+          - kodemy-service-registry
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.service }}
+          file: ./${{ matrix.service }}/Dockerfile
+          push: true
+          tags: ghcr.io/skni-kod/${{ matrix.service }}:${{ github.ref_name }}

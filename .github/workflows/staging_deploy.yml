@@ -1,0 +1,39 @@
+name: Staging deploy
+
+on:
+  push:
+    branches: [ dev-deploy ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build_push.yml
+
+  deploy:
+    needs: [ build ]
+    environment: staging
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy to staging
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /home/kni/kodemy_staging/kodemy_backend
+
+            echo "Pulling production images..."
+            docker compose -f docker-compose.stag.yml -f docker-compose.stag.expose.yml pull
+
+            echo "Starting services..."
+            docker compose -f docker-compose.stag.yml -f docker-compose.stag.expose.yml up -d
+
+            echo "Cleaning up unused resources..."
+            docker system prune -a -f
